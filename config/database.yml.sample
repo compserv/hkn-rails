@@ -11,10 +11,10 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: hkn-rails_development
+  database: hkn_rails_development
   pool: 5
-  username: hkn-rails
-  password:
+  username: hkn_rails
+  password: 
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -37,15 +37,15 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: hkn-rails_test
+  database: hkn_rails_test
   pool: 5
-  username: hkn-rails
-  password:
+  username: hkn_rails
+  password: 
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: hkn-rails_production
+  database: hkn_rails_production
   pool: 5
-  username: hkn-rails
-  password:
+  username: hkn_rails
+  password: 
