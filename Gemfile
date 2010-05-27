@@ -7,6 +7,8 @@ gem 'rails', '3.0.0.beta3'
 
 gem 'pg'
 
+gem 'rspec-rails', '>= 2.0.0.beta.8'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
