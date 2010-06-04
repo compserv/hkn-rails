@@ -3,7 +3,11 @@ HknRails::Application.routes.draw do |map|
 
   root :to => "home#index"
 
+  match "login" => "user_sessions#new"
+  match "create_session" => "user_sessions#create"
+  match "logout" => "user_sessions#destroy"
   resources :events
+  #resources :user_session
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

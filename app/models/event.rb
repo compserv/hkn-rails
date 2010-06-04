@@ -1,4 +1,17 @@
 class Event < ActiveRecord::Base
+
+  # === List of columns ===
+  #   id          : integer 
+  #   name        : string 
+  #   slug        : string 
+  #   location    : string 
+  #   description : text 
+  #   start_time  : datetime 
+  #   end_time    : datetime 
+  #   created_at  : datetime 
+  #   updated_at  : datetime 
+  # =======================
+
   validates :name, :presence => true
   validate :valid_time_range
 

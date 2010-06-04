@@ -352,11 +352,15 @@ $('.infobox_help').cluetip({
 
 <div id="userbar"><!-- PRODUCTION -->
     
-        Welcome, richardxia 
+<% if @current_user %>
+  Welcome, <%= @current_user.first_name + " " + @current_user.last_name %>
         <div class="userlinks small" style="clear:both">
-          [ <a href="/info/change-profile/">Settings</a> | <a href="/logout/">Logout</a> ]
+          [ <a href="/info/change-profile/">Settings</a> | <%= link_to "Logout", logout_path %>]
         </div>
         
+<% else %>
+  <%= link_to "Login", login_path %>
+<% end %>
 
 </div>
 

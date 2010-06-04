@@ -10,6 +10,7 @@ gem 'pg'
 gem 'rspec-rails', '>= 2.0.0.beta.8'
 gem 'ZenTest'
 gem 'autotest-rails'
+gem 'authlogic', :git => 'git://github.com/odorcicd/authlogic.git', :branch => 'rails3' 
 
 # Use unicorn as the web server
 # gem 'unicorn'
