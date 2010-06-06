@@ -1,0 +1,579 @@
+* richardxia (local) - css, html, rails, javascript, git - research - committed
+* rniwa (local/remote) - css, html, rails, javascript, ~git - nothing - committed 1st half of summer
+* ibrahimia (local/remote) - html, css, javascript, !rails, git - internship - committed
+* andrewlee (remote) - html, !rails, javascript, !git - internship - little-committed
+* tmagrino (local) - html, css, !rails, xml, ~javascript, git - research/ta/class - committed
+* akim (local) - html, css, javascript, rails, ~xml, git - research - committed
+* ingrid (remote) - html, rails, !git - don't know  - little-committed
+* kylim (remote) - !rails, html, !git - internship - little-committed
+* mcchang (remote) - !rails, html, git - working
+* adegtiar (remote) - !rails, html, git - internship - semi-committed
+* hilfialkaff (local) - !rails, html, git - research - committed
+
+website categories/modules
+* exam files
+* course surveys
+* course surveys sign up - keep as is
+* tutoring
+* events
+* indrel - db integration, secure resume dl
+* alumni - db integration
+* user pages
+* admin
+* dept services
+* candidiates
+* main/latest info
+* gallery - keep as is
+
+* calendar - different filters - include exam dates
+* caps on number of rsvps on events
+* think about who updates underground guide
+* think about having sample questions for exams from review sessions
+* present current plan midnight meeting and take in more suggestions
+
+perspectives
+* general
+	> main page (news)
+	> calendar - hkn events (open to public) (show ride counts)
+	> banner/code monkeys - still have access to exam files and course surveys and tutoring (have backup strategy)
+	> course surveys (think about TA's and profs) - keep globbing
+	> exam files
+	> underground guide (courses, grad school, jobs/internships (questions))
+	> tutoring
+	> review sessions
+	> infosessions
+	> irc
+	> mailing lists (possible)
+	> tours
+	> department events (faculty retreat, research panel)
+	> contact info/about
+	> yearbooks
+* companies - separate page
+	> main page for companies (/indrel/) (mention career fairs)
+	> resume books order (secure dl) - integrated with indrel db
+	> infosessions order - integrated with indrel db
+	> webforms (maybe also emails)
+* members(general)
+	> current members database (contact info, personal profile?)
+		- profile could include classes taking/taken
+	> update graduating members
+	> gallery/slideshow
+	> submit resume
+	> update profile - this includes pictures
+	> have option to show events only to members
+	> mailing list
+	> rsvps
+* alumni - same as members
+* candidates(general)
+	> candidate portal
+		- event tracking
+		- challenges
+		- quiz and other misc candidate requirements (additional forms)
+		- submit resumes
+		- course survey signups
+		- extra addon reqs
+	> announcements
+	> committee projects (pick from a bunch) - different systems (point system)
+	> rsvps and unrsvp
+	> application form
+* officers/committee members(members) - change name?
+	> add/edit/del events
+	> prot
+	> challenge confirmations
+	> tutoring signup
+	> leader board
+* special officers
+	> act
+		- track candidate requirement events
+	> bridge
+		- edit gallery
+		- upload yearbook
+		- update officer pictures
+	> deprel
+		- tour request notifications
+			+ send form info to deprel@
+			+ possibly have table keeping track of tour requests
+		- update department events (add any resources)
+	> indrel
+		- see resume book orders
+			+ generate resume book hash to company
+		- see infosession orders
+		- see webforms
+		- db integration
+		- flag event for treas
+	> pub
+		- update main page/latest info announcements
+	> serv
+		- track candidate requirement events
+	> studrel
+		- update exam files
+	> tutoring
+		- update turing hours
+			+ run scheduler themselves
+	> execs
+		- done later come from em
+* ops
+	> everything
+
+
+infrastructure
+ruby version: 1.9?
+rails version: 3.0? - see if plugins work on this
+postgresql version: min(8.4, apt)
+git:
+wiki: redmine
+
+* include docs and test cases
+* code reviews in small groups
+* run tests automatically on commits (hooks)
+* video conferencing - skype
+
+
+################# 2nd meeting ##########################
+Notes
+* possibly have requests to take down exam for exam files?
+* have ability to rate difficulties
+* look at course surveys
+* once you update the assignments, you have to update availability
+* tutoring should be able to manually make the schedule
+* ask paul about department events
+* a person should be course surveys
+* ask kevin if we should keep list of requirement for every semester
+
+### Current Models ###
+Exam - Exam Files
+Klass - Exam Files
+Course - Exam Files, Tutoring
+Availability - Tutoring
+Slot - Tutoring
+SlotChange - Tutoring
+Event - General
+Block - General
+RSVP - General
+Tour Requests - just a form that will take in input and send out email
+News - General
+Requirements - Candidates
+CourseSurvey
+Challenge
+EventReq - General
+EventType - General
+QuizResponse - Candidates
+Candidate - Candidates
+
+### Models in Description ###
+Exam - Exam Files
+* klass (Klass)
+* course (Course)
+* file (File)
+* exam Type (midterm, final, quiz)
+* number (midterm #2)
+* is_solution
+* tags?
+
+Tutor - Tutoring
+* courses taken (Course[])
+* courses taking (Course[])
+* preferred Courses (Course[])
+* EDIT: course preferences (Course Indexed, Contains number to indicate degree of knowledge)
+* availabilities (Availability)
+* assignments (Slot[])
+* programming Languages EDIT: same idea as course preferences
+
+Availability - Tutoring
+* times (EDIT: Time+PreferenceTuple[])
+* tutor (Tutor) 
+* preferred Room
+
+Slot - Tutoring
+* hour (Time)
+* tutors (Tutor[])
+* room
+* changes (SlotChange[])
+
+SlotChange - Tutoring
+* tutor
+* date
+* add/subtract
+
+Event - General
+* name
+* slug
+* location
+* description
+* start/end time
+* view permission
+* blocks (Block[])
+* event type (EventType)
+* rsvp?
+* rsvp transportation?
+* rsvp permission
+
+Block - General
+* rsvp cap
+* start/end time
+* rsvp's (RSVP[])
+
+RSVP - General
+* confirmed? (pending, rejected, accepted)
+* confirm_comment
+* person (Person)
+* block (block)
+* event (event)
+* comment
+* transportation
+
+News - General
+* text
+* date
+* type (alert, general, candidate)
+
+EDIT:
+Scrap this
+Requirements - Candidates
+* list of event reqs (EventReq[])
+* number of course surveys
+* number of challenges
+* quiz?
+* resume?
+* committee project?
+Use this
+Config Model
+*Includes candidate requirement info
+*Tutoring Global Controls such as times and whether the page is hidden
+
+CourseSurvey
+
+Challenge
+
+EventReq - General
+* type (EventType)
+* quantity
+
+EventType - General
+* name
+
+QuizResponse - Candidates
+* number
+* response
+
+Candidate - Candidates
+* person (Person)
+* prefs (Committee[])
+* comm (Committee)
+* pictures (Images[])
+* answers (QuizResponse)
+* EDIT: challenges
+* EDIT: committee project
+
+== 3rd Meeting ==
+=== Notes ===
+* Possilby rename CourseSurvey to KlassSurvey
+* EE42, EE100 have course survey for two different classes
+* ACL to maintain permissions to view sets of code
+* Do we need Committee model?
+
+=== Challenge ===
+* challenged (Candidate)
+* challenger (Person)
+* description
+* status  (pending, confirmed, rejected)
+* reason (why it's rejected)
+
+=== CourseSurvey ===
+* klass (Klass)
+* max surveryors
+* surveyors (Person[])
+* status (done, or not done, or contacted, scheduled) (ask csec)
+* scheduled time
+
+=== Course ===
+* department
+* course_number ("61A", no "AC", no "C")
+* suffix ("AC")
+* prefix ("R", "C", "H")
+* name ("Structure and Interpretation of Computer Programs")
+* description
+
+=== Klass ===
+* course (Course)
+* semester (includes year)
+* instructors (Instructor[])
+* TAs (Instructor[])
+* location
+* days/times of instruction
+* section (for cs194)
+* notes (title)
+* number of students enrolled
+
+=== Instructor ====
+* Name
+* Picture
+* etc. profile info
+* Faculty Surveys (CourseSurvey[])
+* TA Sureveys (CourSurvey[])
+
+=== Person ===
+* name
+* username
+* password (hashed) (go search in LDAP first)
+* grad semester
+* email
+* phone number
+* AIM
+* DOB
+* picture
+* resume
+* commmitteeships (Committeeship[])
+* rsvps (RSVP[])
+* groups (Group[])
+
+=== Committeeship ===
+* committee (Group)
+* semester
+* title (officer/committee member/candidate)
+
+=== Group ===
+* name
+* description
+
+END OF AKIM NOTES
+--------------------------+
+HKN Web-Dev Notes 5-23-10 |
+--------------------------+
+
+SUMMER PLAN:
+*Plan out weekly meetings
+*More communication on mailing lists
+*Wiki for minutes
+*Development Server: Arbiter for now
+THIS WEEK:
+*Get infrastructure up.
+*Install stuff.
+*Make sure you can use the dev server.
+
+=== Home Controller/View ===
+
+Main Page
+*Dynamic News Feed
+*Course Survey Search
+*Exam Files Search
+*Tutoring
+*Events
+*More student services/indrel intro text to about
+*Have intro blurb next to service (Tutoring blurb next to tutoring schedule)
+*Update pictures
+
+=== <s>Calendar Controller</s> Events Controller ===
+
+Calendar Action
+*Make less Ajaxy
+*make URL change with Ajax
+*Don't use INPUT buttons
+*Let calendar stretch days when there are many events
+*Timezones
+
+New (Officers/Commies only)
+*Add events from calendar
+
+Edit (Officers/Commies only)
+*Edit events from calendar
+
+Index
+*list
+*search/filter
+
+Show
+*title, time/date, location
+*description
+*RSVP limit/spaces remaining
+*RSVP form -> Redirect to RSVP/create
+*Who's coming (Separated by time block)
+**For Officers: driver information
+**For VP: event confirmation
+
+MyRSVPs
+*List of own RSVPs
+**Link to events (block)
+**Comment
+**Transport
+**Links to edit/delete
+
+=== Exam Files Controller ===
+(For each klass, add field for course website)
+
+Index
+*List all courses and # exams
+*Studrel should be able to edit from the index view through an inline editing icon link
+
+Show-By-Course
+*sort by {instructor, semester}
+*make search not AJAX
+*Make search smarter (170->CS170)
+
+Adding (Studrel/Admin Only)
+*Show one entry at a time
+**Add more with Ajax/Javascript
+*Fields for exam files (Klass, type, etc)
+*File upload/auto rename
+
+Editing/Deleting is similar to Adding
+
+=== Course Survey Controller ===
+
+Index
+*Simplify Search (Get rid of advanced options/examples)
+*Move image map higher
+*Delete/Move Help stuff lower
+*Info for profs/TAs
+*Hidden GSI info
+*Aggregate Stats
+*Too much redundant links
+*Contact info
+
+Course
+*Keep color coded bars?
+*Get rid of confidence interval
+*Description
+*Overall Ratings
+*Current instructor
+*Prereqs, Units
+*List of Klasses
+**Semester, Instructor, Ratings of effectiveness/worthwhileness
+**Graphics for statistics, make it obvious that it is a link
+
+Klass
+*Aggregate semester statistics
+*Keep everything about the same without the contact info and the aggregate overall dept. stats
+
+Instructor/TA
+*Stays about the same
+*Remove the "You may also be interested in..." stuff
+
+AggregateStats
+*Historical trends
+*List of semesters
+
+Search Results
+*Return either only instructors or only classes based on query
+*Automatically jump to that page if you have a single match
+
+=== Tutoring Sign-Up Controller ===
+
+Show
+*Show a specific person's availabilities
+
+Edit
+*Allow an officer to submit a new set of availabilities
+*Also allow them to change/update their preferences for classes/tools/languages
+
+=== Tutoring Schedule Controller ===
+
+Index
+*Same as before plus highlighting for:
+**Programming languages/EE (ew) Tools
+**Preferences (Three level system (No, Yes, Kind-Of, Currently), and fourth sort of level for nonexistant)
+*Mark the names with temporary for a switch
+*Multiple people for slot
+*THE WAY THIS WORKS:
+**Look up slots, make table using that, then look up slot-changes and apply like a patch, display the page.
+
+Generate
+*Generates tutoring schedule based on preferences
+*Update current assignments
+*Wipes Many-to-Many subtable between Tutors and Slots and repopulates it
+*Updates slots in place
+
+Edit
+*Allows manual permanent change to the schedule after it has been generated
+*Multiple Select boxes for each hour to select tutors
+*Basically like the old tutor admin page for viewing current schedule
+*Everyone is present in every Multiple Select box
+*Allow for temporary swaps by marking with a check box whether the edit is temporary or permanent
+
+AdminIndex
+*Allows for Hiding/Generating schedules
+*Links to generate action
+*Links to hide action
+*Links to Set-Tutoring-Times
+
+Hide
+*writes to Config Model whether the index should be visible
+*Will allow for a message as to why and turn ON/OFF
+
+Set-Tutoring-Times
+*Update Config table
+*Include warning that this will delete the current schedule
+
+=== UserPages Controller ===
+
+Index
+*List of all users
+*Keep similar listing to what we already have
+*Filtering by position type
+*Non Shitty Ajax
+
+Show
+*List of the RSVPs
+*Contact info
+*Update this through candidate project
+
+Edit
+*Upload Resume and what not
+*Basically same as before
+
+=== Candidate Controller ===
+
+Index
+*The Candidate Portal for candidates
+**The where you should be right now/are you on track thing needs to be better integrated
+**The announcements needs to be updated in a sane way
+**Committee info
+***Who are your officers
+***What is your project
+***Other candidates in your committee
+*Non candidates see nothing, mwahahahahahah
+*Links to Course Survey Sign-Up
+*Updates to status of the course surveys they are signed up for
+*Additional forms uploaded by VP (SHOULD INCLUDE SURVEY INSTRUCTIONS)
+
+Course Survey Sign-Up
+*Prevent signing up for two classes at the same time
+*When other people sign up for the same class, send email notification
+*Show who else has signed up for the same class as you sign up for it
+*Filter for whether the survey slot is filled already
+
+AdminPage (manages candidates for VP)
+*"All Candidate Events"
+*Flag candidates who could not possibly finish all req's by the end of semester
+*Quick Link to each candidate profile from their name
+*Option next to unconfirmed events to confirm
+*Initiating/Not Initiating/Undecided Options to mark candidates, makes it easier to migrate accounts later
+
+ManagePortal (Also an admin page)
+*Upload Additional Docs to the Portal
+*Delete Forms from portal
+*Change candidate requirements
+
+CsecAdminPage
+*Enable/Disable Sign Ups
+*Select Klasses: Page to choose which courses are to be surveyed
+*Manage Surveys: Page to manage/see classes which are going to be surveyed (who's doing it and the notes and whatnot)
+**Add info: status, time
+*Manage Candidates: Listing by candidates also
+
+=== Committee Controller ===
+
+Index
+*Listing of committees
+
+Show
+*Committee Name + Email
+*Committee people lists
+*General Description
+
+Admin
+*Manage Blurb
+*Manage Candidates: Allow for committee officers to edit each candidate's candidate project
+**There should also be an option to apply the same project to all the candidates
+
+End of May 30th Meeting
