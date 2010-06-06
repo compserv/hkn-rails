@@ -9,7 +9,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100604063250) do
+ActiveRecord::Schema.define(:version => 20100606201841) do
+
+  create_table "courses", :force => true do |t|
+    t.integer  "department"
+    t.string   "course_number", :null => false
+    t.string   "suffix"
+    t.string   "prefix"
+    t.string   "name",          :null => false
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "coursesurveys", :force => true do |t|
+    t.integer  "max_surveyors"
+    t.integer  "status"
+    t.datetime "scheduled_time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "events", :force => true do |t|
     t.string   "name",        :null => false
@@ -18,6 +37,27 @@ ActiveRecord::Schema.define(:version => 20100604063250) do
     t.text     "description"
     t.datetime "start_time",  :null => false
     t.datetime "end_time",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name",        :null => false
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "groups", ["name"], :name => "index_groups_on_name"
+
+  create_table "instructors", :force => true do |t|
+    t.string   "name",         :null => false
+    t.string   "picture"
+    t.string   "title"
+    t.string   "phone_number"
+    t.string   "email"
+    t.string   "home_page"
+    t.string   "interests"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
