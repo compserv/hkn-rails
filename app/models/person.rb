@@ -20,8 +20,13 @@ class Person < ActiveRecord::Base
   #   updated_at          : datetime 
   # =======================
 
+  validates :first_name,  :presence => true
+  validates :last_name,   :presence => true
+  # Username, password, and email validation is done by AuthLogic
+
   acts_as_authentic do |c|
     # Options go here if you have any
+    c.validates_length_of_password_field_options :minimum => 8
   end
 
   def valid_ldap_or_password?(password)
