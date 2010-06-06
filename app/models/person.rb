@@ -25,7 +25,6 @@ class Person < ActiveRecord::Base
   end
 
   def valid_ldap_or_password?(password)
-    puts "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
     return valid_ldap?(password) || valid_password?(password)
   end
 
