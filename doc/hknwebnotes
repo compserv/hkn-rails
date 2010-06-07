@@ -255,12 +255,12 @@ EventType - General
 QuizResponse - Candidates
 * number
 * response
+* candidate
 
 Candidate - Candidates
 * person (Person)
 * prefs (Committee[])
 * comm (Committee)
-* pictures (Images[])
 * answers (QuizResponse)
 * EDIT: challenges
 * EDIT: committee project
