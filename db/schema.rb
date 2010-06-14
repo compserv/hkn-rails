@@ -9,7 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100606235910) do
+ActiveRecord::Schema.define(:version => 20100613215815) do
+
+  create_table "candidates", :force => true do |t|
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "committee_preferences", :force => true do |t|
+    t.integer  "group_id",     :null => false
+    t.integer  "candidate_id", :null => false
+    t.integer  "rank"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "committeeships", :force => true do |t|
     t.string   "committee"
@@ -81,6 +95,25 @@ ActiveRecord::Schema.define(:version => 20100606235910) do
     t.string   "phone_number"
     t.string   "aim"
     t.date     "date_of_birth"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quiz_responses", :force => true do |t|
+    t.string   "number",       :null => false
+    t.string   "response"
+    t.integer  "candidate_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tutors", :force => true do |t|
+    t.string   "courses_taken"
+    t.string   "courses_taking"
+    t.string   "preferred_courses"
+    t.string   "availabilities"
+    t.string   "assignments"
+    t.string   "languages"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

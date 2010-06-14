@@ -11,6 +11,7 @@ class Course < ActiveRecord::Base
   #   created_at    : datetime 
   #   updated_at    : datetime 
   # =======================
+
   
   def get_dept_name()
     if department == 0 then
