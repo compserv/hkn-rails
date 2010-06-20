@@ -1,0 +1,79 @@
+/*** Standard Styling ***/
+html { height: 100%; }
+html body { height: 100%; font-family: "Lucida Grande",Verdana,Arial,sans-serif; line-height: 1.5em; font-size: 14px; margin: 0; padding: 0; background: #FFFFFF; }
+html ul, html ol { margin-left: 25px; margin-bottom: 12px; }
+html h1 { color: #003366; font-weight: bold; font-size: x-large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
+html h2 { font-size: large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
+html h3 { font-weight: bold; font-size: medium; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
+html img { border: none; }
+html p { line-height: 1.4; font-size: small; margin-bottom: 12px; }
+html li { line-height: 1.8; font-size: small; }
+html a { color: #3366CC; text-decoration: none; }
+html a:link { color: #3366CC; }
+html a:visited { color: #3366CC; }
+html a:hover { text-decoration: underline; }
+html input { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+html input:focus { border: 1px solid black; }
+html input[type=submit] { background: #EEEEEE; margin: 4px; }
+html input.short { width: 100px; }
+html select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+html select:focus { border: 1px solid black; }
+html textarea { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+html textarea:focus { border: 1px solid black; }
+html label { font-weight: bold; padding-right: 3px; color: #444444; text-align: left; }
+html .small { font-size: x-small; line-height: 1.3em; }
+html .aside { font-size: x-small; line-height: 1.3em; color: #444444; }
+html .warning { color: red; }
+html th, html td { padding: 4px; vertical-align: top; text-align: left; }
+html th { font-weight: bold; }
+html .infodiv { width: 300px; text-align: left; }
+html .two_column { width: 45%; float: left; }
+html .right_column { float: right; }
+html ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1em; text-indent: -1em; }
+
+/*** Main Layout ***/
+/* Header */
+html #header { text-align: center; }
+html #logo { margin: auto; background: #FFFFFF url("/static/images/site/watermark.png"); }
+html #navigation { font-family: "Trebuchet MS",Arial,tahoma,sans-serif; width: 100%; font-size: 15px; height: 54px; background: #003366; }
+html #toplevel { height: 30px; margin: 0 auto; width: 100%; text-align: center; display: inline; }
+html #toplevel ul { padding: 0; margin: 0; list-style: none; height: 30px; text-align: center; background: #336699; line-height: 30px; }
+html #toplevel li { display: inline; position: relative; top: 2px; padding: 5px 0px 5px 0px; margin: 0px 5px; height: 28px; line-height: 28px; text-align: center; }
+html #toplevel li a { text-align: center; text-decoration: none; color: #ffffff; padding: 0px 13px 5px 13px; }
+html #toplevel li a:visited { text-align: center; text-decoration: none; color: #ffffff; }
+html #toplevel li.selected { background: #003366; }
+html #toplevel li.selected:hover { background: #003366; }
+html #toplevel li:hover { background: #225588; }
+html .submenu { font-size: 13px; height: 24px; display: none; clear: both; }
+html .submenu ul { padding: 0; margin: 0; list-style: none; height: 24px; text-align: center; background: #003366; line-height: 24px; }
+html .submenu li { display: inline; padding: 0; margin: 0; height: 24px; text-align: center; }
+html .submenu li a { text-align: center; height: 18px; text-decoration: none; color: #ffffff; padding: 2px 7px 3px 10px; display: inline; }
+html .submenu li a:visited { text-align: center; height: 18px; text-decoration: none; color: #ffffff; display: inline; }
+html .submenu li a:hover { background: #002244; text-decoration: none; }
+
+/* Top Bar */
+html #topbar { border-left: 1px #003366 solid; border-right: 1px #003366 solid; border-bottom: 1px #003366 solid; padding-bottom: 3px; background: #ADC3DB; }
+html #topbar input { background: #DCE2ED; border: 1px #003366 solid; padding: 2px 3px; margin: 4px; }
+html #topbar input.text { width: 200px; }
+html #topbar .searchhelp { margin-left: 5px; }
+html #userbar { float: left; padding: 5px 8px 5px 8px; }
+html #searcharea { float: right; padding: 5px 8px; }
+html .searchcontrol { text-align: left; float: left; padding-left: 15px; }
+
+/* Main Content */
+html #content { padding: 0 10px 10px 10px; width: auto; background: #EAEFFF; }
+html #container { clear: both; padding: 12px 8px 20px 8px; width: auto; overflow: hidden; }
+
+/* Footer */
+html #footer { clear: both; background: #003366; color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
+html #footer a { color: #ffffff; }
+html #footer a:visited { color: #ffffff; }
+html #footer-right { float: right; }
+
+/* Messages */
+html #messages { display: block; font-size: 12px !important; margin: 0 0 3px; padding: 4px 25px 4px 25px; }
+html .message { border: solid 3px #003366; padding: 10px; background: #336699; color: #FFFFFF; }
+
+/*** Specific Page Styling ***/
+/* Info Bar */
+html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padding-left: 8px; margin-left: 12px; height: 100%; overflow: auto; }

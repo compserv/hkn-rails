@@ -8,7 +8,24 @@
 </head>
 <body>
 
+<div id="header">
+	<div id="logoback">
+		<div id="logo">
+			<a href="/">
+				<img src ="http://hkn.eecs.berkeley.edu/static/images/site/LogoDraftPlain.png" style="border:none">
+			</a>
+		</div>
+	</div>
+  <%= render "layouts/navigation" %>
+</div>
+
 <%= yield %>
+
+<div id="footer">
+	<div id="footer-right">Eta Kappa Nu, Mu Chapter (<a href="mailto:www@hkn.eecs.berkeley.edu">www@hkn.eecs.berkeley.edu</a>)</div>
+
+	<div id="footer-left"><a href="/">HOME</a> | <a href="/about/contact/">CONTACT</a></div>
+</div>
 
 </body>
 </html>
