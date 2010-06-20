@@ -1,4 +1,6 @@
 HknRails::Application.routes.draw do |map|
+  resources :properties
+
   get "home/index"
 
   root :to => "home#index"

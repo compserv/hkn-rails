@@ -1,0 +1,15 @@
+<p class="notice"><%= notice %></p>
+
+<p>
+  <b>Tutor version:</b>
+  <%= @property.tutor_version %>
+</p>
+
+<p>
+  <b>Semester:</b>
+  <%= @property.semester %>
+</p>
+
+
+<%= link_to 'Edit', edit_property_path(@property) %> |
+<%= link_to 'Back', properties_path %>
