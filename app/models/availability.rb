@@ -1,10 +1,23 @@
 class Availability < ActiveRecord::Base
 
+  # === List of columns ===
+  #   id         : integer 
+  #   created_at : datetime 
+  #   updated_at : datetime 
+  # =======================
+
+
   # ==== List of columns ====
   #   times          : Time[]
   #   tutor          : Tutor
   #   preferred_room : Int
   # =========================
+
+  # HKN tutoring is from 11am to 5pm, Monday to Friday
+  Max_Hour = 17
+  Min_Hour = 11
+  Max_Day = 5
+  Min_Day = 1
 
   has_many :Time
   has_one :tutor
@@ -22,6 +35,10 @@ class Availability < ActiveRecord::Base
   end 
 
   def valid_times
-
+    if !times.blank
+      times.length.times do |i|
+        errors[:base] << "Time must be within 11 to 5, Monday to Friday" unless ((time.hour <= Max_Hour and time.hour >= Min_Hour) and (time.wday <= Max_Day and time.wday >= Min_Day))
+      end    
+    end
   end
 end

@@ -1,5 +1,18 @@
 class Tutor < ActiveRecord::Base
 
+  # === List of columns ===
+  #   id                : integer 
+  #   courses_taken     : string 
+  #   courses_taking    : string 
+  #   preferred_courses : string 
+  #   availabilities    : string 
+  #   assignments       : string 
+  #   languages         : string 
+  #   created_at        : datetime 
+  #   updated_at        : datetime 
+  # =======================
+
+
   # ====== List of columns ======
   # courses_taken: Course[]
   # courses_taking: Course[]
@@ -10,6 +23,8 @@ class Tutor < ActiveRecord::Base
   # ===============================
 
   belongs_to :person
+
+  validates :person, :presence => true
 
   has_many :courses
   has_many :slots
