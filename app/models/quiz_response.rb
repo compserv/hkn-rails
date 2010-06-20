@@ -11,4 +11,7 @@ class QuizResponse < ActiveRecord::Base
 
   belongs_to :candidate
 
+  validates :number, :presence => true
+  validates :candidate, :presence => true
+
 end
