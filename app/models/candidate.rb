@@ -11,4 +11,6 @@ class Candidate < ActiveRecord::Base
   has_many :quiz_responses
   has_many :committee_preferences
 
+  validates :person, :presence => true
+
 end
