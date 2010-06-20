@@ -1,4 +1,4 @@
-class Event < ActiveRecord::Base
+class Tutor < ActiveRecord::Base
 
   # ====== List of columns ======
   # courses_taken: Course[]
