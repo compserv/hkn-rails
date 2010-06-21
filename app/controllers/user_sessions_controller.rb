@@ -7,6 +7,7 @@ class UserSessionsController < ApplicationController
   end
 
   def new
+    @hide_topbar = true
     @user_session = UserSession.new
   end
 

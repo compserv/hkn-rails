@@ -34,7 +34,7 @@ html ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1
 /*** Main Layout ***/
 /* Header */
 html #header { text-align: center; }
-html #logo { margin: auto; background: #FFFFFF url("/static/images/site/watermark.png"); }
+html #logo { margin: auto; background: #FFFFFF url("/images/site/watermark.png"); }
 html #navigation { font-family: "Trebuchet MS",Arial,tahoma,sans-serif; width: 100%; font-size: 15px; height: 54px; background: #003366; }
 html #toplevel { height: 30px; margin: 0 auto; width: 100%; text-align: center; display: inline; }
 html #toplevel ul { padding: 0; margin: 0; list-style: none; height: 30px; text-align: center; background: #336699; line-height: 30px; }

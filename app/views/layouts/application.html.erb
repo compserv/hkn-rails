@@ -11,20 +11,31 @@
 <div id="header">
 	<div id="logoback">
 		<div id="logo">
-			<a href="/">
-				<img src ="http://hkn.eecs.berkeley.edu/static/images/site/LogoDraftPlain.png" style="border:none">
-			</a>
+      <%= link_to image_tag("site/LogoDraftPlain.png"), root_url %>
 		</div>
 	</div>
   <%= render "layouts/navigation" %>
 </div>
 
+<div id="content">
+<% if !@hide_topbar %>
+  <div id="topbar">
+    <%= render "layouts/userbar" %>
+    <%= render "layouts/searcharea" %>
+    <div style="clear:both; line-height:0px">&nbsp;</div>
+  </div>
+<% end %>
+
+  <div id="container">
 <%= yield %>
+  </div>
+</div>
 
 <div id="footer">
 	<div id="footer-right">Eta Kappa Nu, Mu Chapter (<a href="mailto:www@hkn.eecs.berkeley.edu">www@hkn.eecs.berkeley.edu</a>)</div>
-
-	<div id="footer-left"><a href="/">HOME</a> | <a href="/about/contact/">CONTACT</a></div>
+  <div id="footer-left">
+    <%= link_to "HOME", root_url %> | <a href="/about/contact/">CONTACT</a>
+  </div>
 </div>
 
 </body>

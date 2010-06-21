@@ -1,66 +1,9 @@
-<div id="content">
-
- <div id="topbar">
-
-<div id="userbar"><!-- PRODUCTION -->
-    
-<% if @current_user %>
-  Welcome, <%= @current_user.first_name + " " + @current_user.last_name %>
-        <div class="userlinks small" style="clear:both">
-          [ <a href="/info/change-profile/">Settings</a> | <%= link_to "Logout", logout_path %> ]
-        </div>
-        
-<% else %>
-  <div class="small">
-    <%= link_to "Login", login_path %> or <a href="/account/register/">register</a>
-  </div>
-  
-<% end %>
-
-</div>
-
-<div id="searcharea">
-
-<div id="examfiles" class="searchcontrol">
-    <form action="/exam/list/" method="GET">
-        <input type="text"  autocomplete="off" id="id_exam_course" name="exam_course" value="Search Exams" class="text autoclear"/><script type="text/javascript">$('#id_exam_course').autocomplete('/exam/exam_autocomplete/');</script><input class="button" type=submit value=" Search ">
-    </form>
-    <div class="small searchhelp" rel="#exams_search_help">
-        example: CS 61a, ee 20, cs 188
-    </div>
-
-	
-</div>
-<div id="coursesurvey" class="searchcontrol">
-    <form action ="/student/CourseSurvey/search" method="GET">
-        <input class="autoclear text" type=input class="autoclear" name="n" value="Search Course Surveys"><input type="hidden" value="l1" name="sb"/><input type="hidden" value="1" name="recent"/><input type="hidden" value="1" name="sip"/><input type="hidden" value="1" name="sit"/><input type="hidden" value="1" name="sc"/><input type="hidden" value="1" name="sct"/><input class="button" type=submit value=" Search ">
-    </form>
-    <div class="small searchhelp" rel="#survey_search_help">
-        example: Hilfinger, hilf*, cs 61a
-    </div>
-    
-</div>
-
-	
-
-</div>
-<div style="clear:both; line-height:0px">&nbsp;</div>
-</div>
-
-
-
-
-<div id="container">
 	<div id="infobar">
 		<h1>Latest News</h1>
 		<p>Congratulations to all of the new Spring 2010 initiates! Thanks for all of the great memories throughout the semester. We hope you all have a great summer break and we look forward to seeing you next semester! We'll keep you posted on when the first members' meeting will be.</p>
 
 		
 		<div class="section">
-			    
-    
-</table>
-
 	<h3>All Events</h3>
 
     <div class="small infobar_links"><a href="/event/list/">view all events</a> | <a href="/event/calendar/">view events calendar</a></div>
@@ -108,7 +51,3 @@
     </p>
   </div>
   <div style="clear:both"></div>
-</div>
-
-</div>
-
