@@ -21,7 +21,8 @@ class Person < ActiveRecord::Base
   # =======================
 
   has_one :candidate
-
+  has_many :committeeships
+  
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
   # Username, password, and email validation is done by AuthLogic
