@@ -13,4 +13,6 @@ class Instructor < ActiveRecord::Base
   #   updated_at   : datetime 
   # =======================
 
+  has_many :coursesurveys
+
 end
