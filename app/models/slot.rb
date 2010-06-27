@@ -1,12 +1,5 @@
 class Slot < ActiveRecord::Base
 
-  # === List of columns ===
-  #   id         : integer 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  # =======================
-
-
   # ==== List of columns ====
   #   time    : Time
   #   tutors  : Tutor[]

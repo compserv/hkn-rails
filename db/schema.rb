@@ -9,7 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100621053417) do
+ActiveRecord::Schema.define(:version => 20100627181117) do
+
+  create_table "blocks", :force => true do |t|
+    t.integer  "rsvp_cap"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "candidates", :force => true do |t|
     t.integer  "person_id"
@@ -51,6 +59,7 @@ ActiveRecord::Schema.define(:version => 20100621053417) do
     t.datetime "scheduled_time"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "instructor_id"
   end
 
   create_table "events", :force => true do |t|
@@ -111,6 +120,17 @@ ActiveRecord::Schema.define(:version => 20100621053417) do
     t.string   "number",       :null => false
     t.string   "response"
     t.integer  "candidate_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rsvps", :force => true do |t|
+    t.string   "confirmed"
+    t.text     "confirm_comment"
+    t.integer  "person_id",       :null => false
+    t.integer  "event_id",        :null => false
+    t.text     "comment"
+    t.integer  "transportation"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
