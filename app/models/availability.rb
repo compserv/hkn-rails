@@ -1,10 +1,12 @@
 class Availability < ActiveRecord::Base
 
-  # ==== List of columns ====
-  #   times          : Time[]
-  #   tutor          : Tutor
-  #   preferred_room : Int
-  # =========================
+  # === List of columns ===
+  #   id             : integer 
+  #   tutor_id       : integer 
+  #   preferred_room : integer 
+  #   created_at     : datetime 
+  #   updated_at     : datetime 
+  # =======================
 
   # HKN tutoring is from 11am to 5pm, Monday to Friday
   Max_Hour = 17

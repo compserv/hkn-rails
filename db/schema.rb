@@ -9,7 +9,29 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100627101446) do
+ActiveRecord::Schema.define(:version => 20100627215338) do
+
+  create_table "availabilities", :force => true do |t|
+    t.integer  "tutor_id"
+    t.integer  "preferred_room"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "availabilities_times", :force => true do |t|
+    t.integer  "availability_id"
+    t.datetime "time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "blocks", :force => true do |t|
+    t.integer  "rsvp_cap"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "candidates", :force => true do |t|
     t.integer  "person_id"
@@ -41,6 +63,27 @@ ActiveRecord::Schema.define(:version => 20100627101446) do
     t.string   "prefix"
     t.string   "name",          :null => false
     t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "courses_preferred_tutors", :force => true do |t|
+    t.integer  "course_taking_id"
+    t.integer  "tutor_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "courses_taken_tutors", :force => true do |t|
+    t.integer  "course_taken_id"
+    t.integer  "tutor_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "courses_taking_tutors", :force => true do |t|
+    t.integer  "course_taking_id"
+    t.integer  "tutor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -111,17 +154,41 @@ ActiveRecord::Schema.define(:version => 20100627101446) do
   create_table "quiz_responses", :force => true do |t|
     t.string   "number",       :null => false
     t.string   "response"
-    t.integer  "candidate_id"
+    t.integer  "candidate_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rsvps", :force => true do |t|
+    t.string   "confirmed"
+    t.text     "confirm_comment"
+    t.integer  "person_id",       :null => false
+    t.integer  "event_id",        :null => false
+    t.text     "comment"
+    t.integer  "transportation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "slot_changes", :force => true do |t|
+    t.integer  "tutor_id"
+    t.datetime "date"
+    t.integer  "add_sub"
+    t.integer  "slot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "slots", :force => true do |t|
+    t.datetime "time"
+    t.integer  "room"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "tutors", :force => true do |t|
-    t.string   "courses_taken"
-    t.string   "courses_taking"
-    t.string   "preferred_courses"
-    t.string   "availabilities"
-    t.string   "assignments"
+    t.integer  "person_id",       :null => false
+    t.integer  "availability_id"
     t.string   "languages"
     t.datetime "created_at"
     t.datetime "updated_at"
