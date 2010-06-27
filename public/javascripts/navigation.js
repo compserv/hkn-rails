@@ -15,15 +15,14 @@ document.observe("dom:loaded", function() {
 	current = current.substring(0,current.indexOf('/'));
 	id = current;	
 	if (id.length != 0 && $(id).length != 0) {
-		$(id).addClass("selected");
+		$(id).addClassName("selected");
 		submenuid = current + "_submenu";
-		$(submenuid).show();	
+		//$(submenuid).show();	
+		$(submenuid).setStyle({ display: 'block' });
 	}
 	else {
 		$$(".navigation_toplevel_item:first-child").first().addClassName("selected");	
-		$$(".submenu").first().setStyle({
-display:  'block'
-});
+		$$(".submenu").first().setStyle({ display: 'block' });
 	}
 	$$(".navigation_toplevel_item").each(function(s) {
     s.observe("click", 
