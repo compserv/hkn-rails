@@ -1,0 +1,58 @@
+<p>
+  <b>Time:</b>
+  <%=h @event.time.strftime("%b %d, %Y, %I:%M:%S%p %Z") %>
+</p>
+
+<p>
+  <b>Location:</b>
+  <%=h @event.location %>
+</p>
+
+<p>
+  <b>Event type:</b>
+  <%=h @event.indrel_event_type %>
+</p>
+
+<p>
+  <b>Food:</b>
+  <%=h @event.food %>
+</p>
+
+<p>
+  <b>Prizes:</b>
+  <%=h @event.prizes %>
+</p>
+
+<p>
+  <b>Turnout:</b>
+  <%=h @event.turnout %>
+</p>
+
+<p>
+  <b>Company:</b>
+  <%=h @event.company %>
+</p>
+
+<p>
+  <b>Contact:</b>
+  <%=h @event.contact %>
+</p>
+
+<p>
+  <b>Officer:</b>
+  <%=h @event.officer %>
+</p>
+
+<p>
+  <b>Feedback:</b>
+  <%=h @event.feedback %>
+</p>
+
+<p>
+  <b>Comments:</b>
+  <%=h @event.comments %>
+</p>
+
+
+<%= link_to 'Edit', edit_indrel_event_path(@event) %> |
+<%= link_to 'Back', indrel_events_path %>
