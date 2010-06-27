@@ -23,7 +23,7 @@
 <% if !@hide_topbar %>
   <div id="topbar">
     <%= render "layouts/userbar" %>
-    <%= render "layouts/searcharea" %>
+    <%= render "layouts/searcharea" if @show_searcharea %>
     <div style="clear:both; line-height:0px">&nbsp;</div>
   </div>
 <% end %>

@@ -9,6 +9,14 @@ HknRails::Application.routes.draw do |map|
   match "create_session" => "user_sessions#create"
   match "logout" => "user_sessions#destroy"
   resources :events
+
+  # Static pages
+  scope "about" do
+    match "contact"   => "static#contact"
+    match "yearbook"  => "static#yearbook"
+    match "slideshow" => "static#slideshow"
+  end
+
   #resources :user_session
 
   # The priority is based upon order of creation:
