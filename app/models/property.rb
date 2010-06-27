@@ -8,7 +8,7 @@ class Property < ActiveRecord::Base
   #   updated_at    : datetime 
   # =======================
 
-  Semester = /(fa|sp)\d{2,2}/	#A regex which validates the semester
+  Semester = /^(fa|sp)\d{2,2}$/	#A regex which validates the semester
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validate :there_is_only_one, :on => :create
   validates :tutor_version, :numericality => {}
