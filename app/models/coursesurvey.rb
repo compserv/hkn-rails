@@ -10,6 +10,8 @@ class Coursesurvey < ActiveRecord::Base
   #   instructor_id  : integer 
   # =======================
 
+  belongs_to :instructor
+
   @@statusmap = { 0 => "Not Done", 1 => "Contacted", 2 => "Scheduled", 3 => "Done" }
 
   def get_status_text()
