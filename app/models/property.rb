@@ -15,12 +15,13 @@ class Property < ActiveRecord::Base
   def self.tutor_version=(version)
     prop = Property.first
     if prop.nil?
-      prop = Property.new(:tutor_version => version)
-      prop.save!
+      prop = Property.new(:tutor_version => version, :semester_version => 'fa10')
     else
       prop.tutor_version = version
     end
+	prop.save!
   end
+  
   def self.tutor_version
     prop = Property.first
     if prop.nil?
@@ -29,6 +30,26 @@ class Property < ActiveRecord::Base
       return prop.tutor_version
     end
   end
+
+  def self.semester=(semester)
+    prop = Property.first
+    if prop.nil?
+      prop = Property.new(:semester => semester, :tutor_version => -1)
+    else
+      prop.semester = semester
+    end
+	prop.save!
+  end
+  
+  def self.semester
+    prop = Property.first
+    if prop.nil?
+      return 'fa10'
+    else
+      return prop.semester
+    end
+  end
+  
   def there_is_only_one
     if Property.count > 0
       errors.add(:base, "There can only be one property entry")
