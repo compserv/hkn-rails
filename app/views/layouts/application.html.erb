@@ -4,6 +4,8 @@
   <title><%= "Eta Kappa Nu (HKN), Mu Chapter"%><%= " - #{@module_title}" unless @module_title.blank? %><%= " - #{@submodule_title}" unless @submodule_title.blank? %></title>
   <%= stylesheet_link_tag :all %>
   <%= javascript_include_tag :defaults %>
+  <!-- navigation.js should be rewritten at some point -->
+  <%= javascript_include_tag "navigation.js" %>
   <%= csrf_meta_tag %>
 </head>
 <body>
