@@ -1,0 +1,51 @@
+<% form_for(@event) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :time %><br />
+    <%= f.datetime_select :time %> PST
+  </p>
+  <p>
+    <%= f.label :location %><br />
+    <%= collection_select :indrel_event, :location_id, Location.all, :id, :name, {:include_blank => "None"} %>
+  </p>
+  <p>
+    <%= f.label :indrel_event_type %><br />
+    <%= collection_select :indrel_event, :indrel_event_type_id, IndrelEventType.all, :id, :name, {:include_blank => "None"} %>
+  </p>
+  <p>
+    <%= f.label :food %><br />
+    <%= f.text_area :food %>
+  </p>
+  <p>
+    <%= f.label :prizes %><br />
+    <%= f.text_area :prizes %>
+  </p>
+  <p>
+    <%= f.label :turnout %><br />
+    <%= f.text_field :turnout %>
+  </p>
+  <p>
+    <%= f.label :company %><br />
+    <%= collection_select :indrel_event, :company_id, Company.all, :id, :name %>
+  </p>
+  <p>
+    <%= f.label :contact %><br />
+    <%= collection_select :indrel_event, :contact_id, Contact.all, :id, :name, {:include_blank => "None"} %>
+  </p>
+  <p>
+    <%= f.label :officer %><br />
+    <%= f.text_field :officer %>
+  </p>
+  <p>
+    <%= f.label :feedback %><br />
+    <%= f.text_area :feedback %>
+  </p>
+  <p>
+    <%= f.label :comments %><br />
+    <%= f.text_area :comments %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end %>

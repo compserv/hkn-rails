@@ -1,14 +1,28 @@
 HknRails::Application.routes.draw do |map|
-  resources :properties
 
   get "home/index"
 
   root :to => "home#index"
 
+  # Login
   match "login" => "user_sessions#new"
   match "create_session" => "user_sessions#create"
   match "logout" => "user_sessions#destroy"
+
   resources :events
+  resources :properties
+
+  # Indrel site
+  scope "indrel" do
+    match "db" => "static#indrel_db"
+    scope "db" do
+      resources :companies
+      resources :contacts
+      resources :events, :controller => "indrel_events", :as => "indrel_events"
+      resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
+      resources :locations
+    end
+  end
 
   # Static pages
   scope "about" do
