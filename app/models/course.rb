@@ -12,7 +12,9 @@ class Course < ActiveRecord::Base
   #   updated_at    : datetime 
   # =======================
 
-  
+  validates :department, :presence => true
+  validates :course_number, :presence => true
+
   def get_dept_name()
     if department == 0 then
       "EE"
