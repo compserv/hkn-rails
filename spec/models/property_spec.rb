@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Property do
   before(:each) do
+    Property.destroy_all
     @good_opts = {
 	:tutor_version => 1,
 	:semester => 'fa10'
