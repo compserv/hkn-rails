@@ -1,13 +1,13 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0.beta3'
+gem 'rails', '3.0.0.beta4'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'
 
-gem 'rspec-rails', '>= 2.0.0.beta.8'
+gem 'rspec-rails', '>= 2.0.0.beta.14'
 gem 'ZenTest'
 gem 'autotest-rails'
 gem 'authlogic', :git => 'git://github.com/odorcicd/authlogic.git', :branch => 'rails3' 
