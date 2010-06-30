@@ -28,4 +28,12 @@ describe Property do
     prop = Property.create(@good_opts.merge(:tutor_version => 'over 9000'))
 	prop.should_not be_valid
   end
+  it "should allow convenience getters and setters for tutor_version" do
+    Property.tutor_version = 4
+    Property.tutor_version.should == 4
+  end
+  it "should allow convenience getters and setters for semester" do
+    Property.semester = 'sp10'
+    Property.semester.should == 'sp10'
+  end
 end

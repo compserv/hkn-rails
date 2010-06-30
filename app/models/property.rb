@@ -15,7 +15,7 @@ class Property < ActiveRecord::Base
   def self.tutor_version=(version)
     prop = Property.first
     if prop.nil?
-      prop = Property.new(:tutor_version => version, :semester_version => 'fa10')
+      prop = Property.new(:tutor_version => version, :semester => 'fa10')
     else
       prop.tutor_version = version
     end
