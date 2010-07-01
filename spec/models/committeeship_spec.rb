@@ -12,7 +12,15 @@ describe Committeeship do
     committeeship.should be_valid
   end
   it "should require a valid semester" do
-    committeeship = Committeeship.create(@good_opts.merge(:semester=>'fa100'))
+    committeeship = Committeeship.create(@good_opts.merge(:semester => 'fa100'))
     committeeship.should_not be_valid
   end
+  it "should require a valid committee" do
+    committeeship = Committeeship.create(@good_opts.merge(:committee => 'pubrel'))
+    committeeship.should_not be_valid
+  end
+  it "should require a valid title" do
+    committeeship = Committeeship.create(@good_opts.merge(:title => 'hoser'))
+    committeeship.should_not be_valid
+  end  
 end
