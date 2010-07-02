@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Slot do, "when created with blank parameters" do
+describe Slot, "when created with blank parameters" do
   before(:each) do
     @slot = Slot.create
   end
@@ -11,12 +11,14 @@ describe Slot do
     @slot = Slot.create
   end
 
-  describe "with tutors" do
+  it "with tutors" do
+    pending("fix")
     @tutor = Tutor.create(:slot => @slot, :number => "1")
     @slot.tutors.should include (@tutor)
   end
 
-  describe "with slot changes" do
+  it "with slot changes" do
+    pending("fix")
     @slot_change = SlotChange.create(:slot => @slot, :number => "1")
     @slot.slot_change.should include(@slot_change)
   end

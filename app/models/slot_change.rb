@@ -2,11 +2,14 @@ class SlotChange < ActiveRecord::Base
 
   # === List of columns ===
   #   id         : integer 
+  #   tutor_id   : integer 
+  #   date       : datetime 
+  #   add_sub    : integer 
+  #   slot_id    : integer 
   #   created_at : datetime 
   #   updated_at : datetime 
   # =======================
 
- 
   # HKN tutoring is from 11am to 5pm, Mon-Fri
   Max_Hour = 17
   Min_Hour = 11

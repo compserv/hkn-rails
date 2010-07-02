@@ -14,7 +14,7 @@ end
 describe Tutor do
   before(:each) do
     @person = mock_model(Person)
-    @tutor = Tutor.create(:person => @person
+    @tutor = Tutor.create(:person => @person)
   end
 
   it "should be valid when supplying a candidate" do

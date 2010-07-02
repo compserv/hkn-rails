@@ -3,7 +3,7 @@ html { height: 100%; }
 html body { height: 100%; font-family: "Lucida Grande",Verdana,Arial,sans-serif; line-height: 1.5em; font-size: 14px; margin: 0; padding: 0; background: #FFFFFF; }
 html ul, html ol { margin-left: 25px; margin-bottom: 12px; }
 html h1 { color: #003366; font-weight: bold; font-size: x-large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
-html h2 { font-size: large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
+html h2 { font-weight: inherit; font-size: large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
 html h3 { font-weight: bold; font-size: medium; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
 html img { border: none; }
 html p { line-height: 1.4; font-size: small; margin-bottom: 12px; }

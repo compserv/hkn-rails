@@ -1,0 +1,46 @@
+<h1>Listing events</h1>
+
+<table>
+  <tr>
+    <th>Time</th>
+    <th>Company</th>
+    <th>Food</th>
+    <th>Contact</th>
+    <th>Turnout</th>
+    <th rowspan="2">Comments</th>
+  </tr>
+  <tr>
+    <th>Location</th>
+    <th>Event type</th>
+    <th>Prizes</th>
+    <th>Officer</th>
+    <th>Feedback</th>
+  </tr>
+
+<% count = 0 %>
+<% for event in @events %>
+  <tr<%= " style=\"background:#eee;\"" if (count % 2 == 0) %>>
+    <td><%=h event.time.strftime("%b %d, %Y, %I:%M:%S%p %Z") %></td>
+    <td><%=h event.company %></td>
+    <td><%=h event.food %></td>
+    <td><%=h event.contact %></td>
+    <td><%=h event.turnout %></td>
+    <td rowspan="2"><%=h event.comments %></td>
+    <td><%= link_to 'Show', event %></td>
+    <td><%= link_to 'Edit', edit_indrel_event_path(event) %></td>
+  </tr>
+  <tr<%= " style=\"background:#eee;\"" if (count % 2 == 0) %>>
+    <td><%=h event.location %></td>
+    <td><%=h event.indrel_event_type %></td>
+    <td><%=h event.prizes %></td>
+    <td><%=h event.officer %></td>
+    <td><%=h event.feedback %></td>
+    <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+  <% count = count + 1 %>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New event', new_indrel_event_path %>

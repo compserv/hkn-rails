@@ -11,7 +11,7 @@ class Committeeship < ActiveRecord::Base
   # =======================
 
   Committees = %w(president vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring)	#This generates a constant which is an array of possible committees.
-  Semester = /(fa|sp)\d{2,2}/	#A regex which validates the semester
+  Semester = /^(fa|sp)\d{2,2}$/	#A regex which validates the semester
   Positions = %w(officer cmember candidate)	#A list of possible positions
   validates_inclusion_of :committee, :in => Committees, :message => "Committee not recognized."
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."

@@ -2,17 +2,11 @@ class Slot < ActiveRecord::Base
 
   # === List of columns ===
   #   id         : integer 
+  #   time       : datetime 
+  #   room       : integer 
   #   created_at : datetime 
   #   updated_at : datetime 
   # =======================
-
-
-  # ==== List of columns ====
-  #   time    : Time
-  #   tutors  : Tutor[]
-  #   room    : Int
-  #   changes : slot_change[]
-  # =========================
 
   # HKN tutoring is from 11am to 5pm, Mon-Fri
   Max_Hour = 17 

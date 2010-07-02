@@ -1,0 +1,32 @@
+<p>
+  <b>Name:</b>
+  <%=h @company.name %>
+</p>
+
+<p>
+  <b>Address:</b>
+  <%=h @company.address %>
+</p>
+
+<p>
+  <b>Website:</b>
+  <%=h @company.website %>
+</p>
+
+<p>
+  <b>Comments:</b>
+  <%=h @company.comments %>
+</p>
+
+<p>
+  <b>Contacts:</b>
+  <ul>
+    <% @contacts.each do |contact| %>
+      <li><%= link_to contact.name, contact_path(contact) %></li>
+    <% end %>
+  </ul>
+</p>
+
+
+<%= link_to 'Edit', edit_company_path(@company) %> |
+<%= link_to 'Back', companies_path %>
