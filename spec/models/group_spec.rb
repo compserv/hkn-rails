@@ -10,3 +10,9 @@ describe Group do
     group.should be_valid
   end
 end
+
+describe Group, "when created with blank parameters" do
+  before(:each) do
+    @group = Group.create
+  end
+end
