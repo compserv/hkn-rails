@@ -19,4 +19,8 @@ describe Group, "when created with blank parameters" do
     @group.should_not be_valid
     @group.errors[:name].should include("can't be blank")
   end
+  it "should require a description" do
+    @group.should_not be_valid
+    @group.errors[:description].should include("can't be blank")
+  end
 end
