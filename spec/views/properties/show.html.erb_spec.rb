@@ -9,9 +9,8 @@ describe "properties/show.html.erb" do
   end
 
   it "renders attributes in <p>" do
-    pending("fix or remove")
     render
-   rendered.should contain(1)
-   rendered.should contain('fa10')
+    rendered.should contain('1')
+    rendered.should contain('fa10')
   end
 end
