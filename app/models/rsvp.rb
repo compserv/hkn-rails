@@ -12,7 +12,7 @@ class Rsvp < ActiveRecord::Base
   #   updated_at      : datetime 
   # =======================
 
-  has_one :person
+  belongs_to :person
   belongs_to :event
   belongs_to :block
 

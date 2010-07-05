@@ -22,6 +22,7 @@ class Person < ActiveRecord::Base
 
   has_one :candidate
   has_many :committeeships
+  has_many :rsvps
   
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true

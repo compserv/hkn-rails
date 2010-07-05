@@ -7,6 +7,7 @@ class Group < ActiveRecord::Base
   #   created_at  : datetime 
   #   updated_at  : datetime 
   # =======================
+
   validates :name, :presence => true
   validates :description, :presence => true
 
