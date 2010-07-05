@@ -11,9 +11,10 @@ class Tutor < ActiveRecord::Base
 
   belongs_to :person
 
-  validates :person, :presence => true
-
-  has_many :courses
-  has_many :slots
+  has_and_belongs_to_many :courses
+  has_and_belongs_to_many :slots
   has_one :availability
+
+  validates :person, :presence => true
+  validates :availability, :presence => true
 end

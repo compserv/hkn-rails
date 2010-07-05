@@ -9,30 +9,24 @@ describe Tutor, "when created with blank parameters" do
     @tutor.should_not be_valid
     @tutor.errors[:person].should include("can't be blank")
   end
+
+  it "should require availability" do
+    @tutor.should_not be_valid
+    @tutor.errors[:availability].should include("can't be blank")
+  end
 end
 
 describe Tutor do
   before(:each) do
-    @person = mock_model(Person)
-    @tutor = Tutor.create(:person => @person)
+    @good_opts = {
+      :person => mock_model(Person),
+      :availability => Availability.create,
+      :languages => "C"
+    }
   end
 
-  it "should be valid when supplying a candidate" do
-    @tutor.should be_valid
-  end
-
-  describe "with courses" do
-    it "should have reference to its courses" do
-      @course = Course.create(:tutor => @tutor, :number => "1")
-      @tutor.courses.should include (@course)
-    end
-  end
-
-  describe "with slots" do
-    it "should have a reference to its slots" do
-      @slot = Slot.create(:tutor => @tutor, :number => "1")
-
-      @tutor.slot.should include(@slot)
-    end
+  it "should accept valid parameters" do
+    tutor = Tutor.create(@good_opts)
+    tutor.should be_valid
   end
 end

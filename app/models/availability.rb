@@ -8,32 +8,23 @@ class Availability < ActiveRecord::Base
   #   updated_at     : datetime 
   # =======================
 
-  # HKN tutoring is from 11am to 5pm, Monday to Friday
-  Max_Hour = 17
-  Min_Hour = 11
-  Max_Day = 5
-  Min_Day = 1
-
   has_many :Time
   has_one :tutor
 
-  validate :valid_times
+  validate :valid_room
+  validates :tutor, :presence => true
 
   def get_preferred_room()
     if preferred_room == 0 then
       "Cory"
     elsif preferred_room == 1 then
       "Soda"
-    else
-      "Undefined"
-    end
-  end 
+    end 
+  end
 
-  def valid_times
-    if !times.blank
-      times.length.times do |i|
-        errors[:base] << "Time must be within 11 to 5, Monday to Friday" unless ((time.hour <= Max_Hour and time.hour >= Min_Hour) and (time.wday <= Max_Day and time.wday >= Min_Day))
-      end    
+  def valid_room
+    if !preferred_room.blank?
+      errors[:preferred_room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (preferred_room == 1 or preferred_room == 0)
     end
   end
 end
