@@ -14,11 +14,13 @@ HknRails::Application.routes.draw do |map|
 
   # Indrel site
   scope "indrel" do
-    match "db" => "static#indrel_db"
+    match "" => "static#indrel"
+    match "career-fair" => "static#career_fair", :as => "career_fair"
     scope "db" do
+      match "" => "static#indrel_db"
       resources :companies
       resources :contacts
-      resources :events, :controller => "indrel_events", :as => "indrel_events"
+      resources :events,      :controller => "indrel_events",      :as => "indrel_events"
       resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
       resources :locations
     end
