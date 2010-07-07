@@ -8,7 +8,7 @@ class Availability < ActiveRecord::Base
   #   updated_at     : datetime 
   # =======================
 
-  has_many :Time
+  has_and_belongs_to_many :slots
   has_one :tutor
 
   validate :valid_room
