@@ -8,6 +8,7 @@ class Group < ActiveRecord::Base
   #   updated_at  : datetime 
   # =======================
 
+  has_and_belongs_to_many :people
   validates :name, :presence => true
   validates :description, :presence => true
 
