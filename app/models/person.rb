@@ -21,6 +21,7 @@ class Person < ActiveRecord::Base
   # =======================
 
   has_one :candidate
+  has_one :tutor
   has_many :committeeships
   has_and_belongs_to_many :groups
   has_many :rsvps
