@@ -3,6 +3,9 @@ class Admin::TutorAdminController < ApplicationController
   end
 
   def signup_slots
+    @days = %w(Monday Tuesday Wednesday Thursday Friday)
+    @hours = %w(11 12 1 2 3 4)
+    @rows = ["Hours"] + @hours
   end
 
   def signup_classes

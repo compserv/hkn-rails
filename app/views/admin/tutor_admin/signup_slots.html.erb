@@ -1,2 +1,31 @@
-<h1>Admin::TutorAdmin#signup_slots</h1>
-<p>Find me in app/views/admin/tutor_admin/signup_slots.html.erb</p>
+<% stylesheet_link_tag "tutor.css" %>
+<h1>Sign up for tutoring slots</h1>
+<form>
+<table id="signup_slots">
+<% @rows.each do |row| %>
+	<tr>
+	<% if row == "Hours" %>
+		<td>Hours</td>
+		<% @days.each do |day| %>
+			<td class="slot_table_header"><%= day %></td>
+		<% end %>
+	<% else %>
+		<td  rowspan="3"><%= row %></td>
+		<% @days.each do |day| %>
+			<td  class="slot slot_preferred"><input type="radio" name="<%= day + row %>" value="preferred" /></td>
+		<% end%>
+		</tr>
+		<tr>
+		<% @days.each do |day| %>
+			<td class="slot slot_available"><input type="radio" name="<%= day + row %>" value="available"/></td>
+		<% end%>
+		</tr>
+		<tr>
+		<% @days.each do |day| %>
+			<td class = "slot slot_unavailable"><input type="radio" name="<%= day + row %>" checked="checked" value="unavailable"/></td>
+		<% end%>
+	<% end %>
+	</tr>
+<% end %>
+<input type="submit" />
+</form>
