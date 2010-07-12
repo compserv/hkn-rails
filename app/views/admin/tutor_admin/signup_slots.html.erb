@@ -10,7 +10,7 @@
 			<td class="slot_table_header"><%= day %></td>
 		<% end %>
 	<% else %>
-		<td  rowspan="3"><%= row %></td>
+		<td  rowspan="3"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
 			<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @current_user, day, row, "preferred" %> value="preferred" /></td>
 		<% end%>
