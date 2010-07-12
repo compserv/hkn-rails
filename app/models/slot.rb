@@ -20,7 +20,7 @@ class Slot < ActiveRecord::Base
     time.strftime('%a%H')
   end
 
-  def Slot.get_time(hour, wday)
+  def Slot.get_time(wday, hour)
     base = Time.at(0)
     thetime = hour.hours + ((wday - base.wday) % 7).days
     Time.at(thetime.value)

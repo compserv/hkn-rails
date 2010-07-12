@@ -12,17 +12,17 @@
 	<% else %>
 		<td  rowspan="3"><%= row %></td>
 		<% @days.each do |day| %>
-			<td  class="slot slot_preferred"><input type="radio" name="<%= day + row %>" value="preferred" /></td>
+			<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @current_user, day, row, "preferred" %> value="preferred" /></td>
 		<% end%>
 		</tr>
 		<tr>
 		<% @days.each do |day| %>
-			<td class="slot slot_available"><input type="radio" name="<%= day + row %>" value="available"/></td>
+			<td class="slot slot_available"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @current_user, day, row, "unavailable" %> value="available"/></td>
 		<% end%>
 		</tr>
 		<tr>
 		<% @days.each do |day| %>
-			<td class = "slot slot_unavailable"><input type="radio" name="<%= day + row %>" checked="checked" value="unavailable"/></td>
+			<td class = "slot slot_unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @current_user, day, row, "unavailable" %> value="unavailable"/></td>
 		<% end%>
 	<% end %>
 	</tr>
