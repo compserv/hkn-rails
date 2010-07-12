@@ -16,6 +16,12 @@ class Slot < ActiveRecord::Base
   validates :room, :presence => true
   validates :time, :presence => true
 
+  def Slot.get_time(hour, wday)
+    base = Time.at(0)
+    thetime = hour.hours + ((wday - base.wday) % 7).days
+    Time.at(thetime.value)
+  end
+
   def get_room()
     if room == 0 then
       "Cory"

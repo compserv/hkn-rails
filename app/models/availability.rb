@@ -9,7 +9,7 @@ class Availability < ActiveRecord::Base
   # =======================
 
   has_and_belongs_to_many :slots
-  has_one :tutor
+  belongs_to :tutor
 
   validate :valid_room
   validates :tutor, :presence => true
