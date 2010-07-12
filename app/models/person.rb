@@ -44,4 +44,13 @@ class Person < ActiveRecord::Base
     a = ldap.bind( :method => :simple, :username => "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", :password => password )
     return a
   end
+  def get_tutor
+    if self.tutor.nil?
+      self.tutor = Tutor.new
+      self.tutor.availability = Availability.new
+      self.tutor.save
+      self.tutor.availability.save
+    end
+    return self.tutor
+  end
 end

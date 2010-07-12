@@ -9,13 +9,7 @@ class Admin::TutorAdminController < ApplicationController
     if @current_user.nil?
       @message = "You must log in to set your tutoring availabilities"
     end
-    if @current_user.tutor.nil?
-      @current_user.tutor = Tutor.new
-      @current_user.tutor.availability = Availability.new
-      @current_user.tutor.save
-      @current_user.tutor.availability.save
-    end
-    tutor = @current_user.tutor
+    tutor = @current_user.get_tutor
     @slots = tutor.availability.slots
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = %w(11 12 13 14 15 16)
