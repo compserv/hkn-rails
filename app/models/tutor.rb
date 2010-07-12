@@ -1,12 +1,11 @@
 class Tutor < ActiveRecord::Base
 
   # === List of columns ===
-  #   id              : integer 
-  #   person_id       : integer 
-  #   availability_id : integer 
-  #   languages       : string 
-  #   created_at      : datetime 
-  #   updated_at      : datetime 
+  #   id         : integer 
+  #   person_id  : integer 
+  #   languages  : string 
+  #   created_at : datetime 
+  #   updated_at : datetime 
   # =======================
 
   belongs_to :person
