@@ -16,6 +16,10 @@ class Slot < ActiveRecord::Base
   validates :room, :presence => true
   validates :time, :presence => true
 
+  @day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
+  @room_to_int = {"Cory"=>0, "Soda"=>1}
+  class << self; attr_reader :day_to_wday, :room_to_int; end
+
   def to_s
     time.strftime('%a%H')
   end

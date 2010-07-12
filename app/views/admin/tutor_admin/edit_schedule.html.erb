@@ -1,2 +1,38 @@
-<h1>Admin::TutorAdmin#edit_schedule</h1>
-<p>Find me in app/views/admin/tutor_admin/edit_schedule.html.erb</p>
+<% stylesheet_link_tag "tutor.css" %>
+<h1>Edit Tutoring Schedule</h1>
+<form>
+<input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
+<table id="edit_schedule" style="display:block">
+<% @rows.each do |row| %>
+	<tr>
+	<% if row == "Hours" %>
+		<td>Hours</td>
+		<% @days.each do |day| %>
+			<td class="slot_table_header"><%= day %></td>
+		<% end %>
+	<% else %>
+		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>
+		<% @days.each do |day| %>
+			<td  class="slot cory">
+				<select name="<%= formatslot day, row + "C" %>">
+					<% available_tutors_for_slot(day, row.to_i).each do |tutor| %>
+					<option><%= tutor.person.fullname %></option>
+					<% end %>
+					<option>Unassigned</option>
+				</select>
+			</td>
+		<% end%>
+		</tr>
+		<tr>
+		<% @days.each do |day| %>
+			<td  class="slot soda">
+				<select name="<%= formatslot day, row + "C" %>">
+					<option>Unassigned</option>
+				</select>
+			</td>
+		<% end%>
+	<% end %>
+	</tr>
+<% end %>
+<input type="submit" value="Submit Schedule" />
+</form>

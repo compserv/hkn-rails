@@ -30,6 +30,10 @@ class Admin::TutorAdminController < ApplicationController
   end
 
   def edit_schedule
+    @slots = Slot.all
+    @days = %w(Monday Tuesday Wednesday Thursday Friday)
+    @hours = %w(11 12 13 14 15 16)
+    @rows = ["Hours"] + @hours
   end
 
   def settings
