@@ -6,9 +6,10 @@ class Availability < ActiveRecord::Base
   #   preferred_room : integer 
   #   created_at     : datetime 
   #   updated_at     : datetime 
+  #   slot_id        : integer 
   # =======================
 
-  has_and_belongs_to_many :slots
+  belongs_to :slot
   belongs_to :tutor
 
   validate :valid_room
