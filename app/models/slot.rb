@@ -40,6 +40,14 @@ class Slot < ActiveRecord::Base
     end
   end
 
+  def hour
+    time.hour
+  end
+
+  def wday
+    time.wday
+  end
+
   def valid_room
     if !room.blank?
       errors[:room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (room == 0 or room == 1)
