@@ -12,17 +12,17 @@
 	<% else %>
 		<td  rowspan="3"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
-			<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @current_user, day, row, "preferred" %> value="preferred" /></td>
+			<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 2 %> value="preferred" /></td>
 		<% end%>
 		</tr>
 		<tr>
 		<% @days.each do |day| %>
-			<td class="slot slot_available"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @current_user, day, row, "unavailable" %> value="available"/></td>
+			<td class="slot slot_available"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 1 %> value="available"/></td>
 		<% end%>
 		</tr>
 		<tr>
 		<% @days.each do |day| %>
-			<td class = "slot slot_unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @current_user, day, row, "unavailable" %> value="unavailable"/></td>
+			<td class = "slot slot_unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, nil %> value="unavailable"/></td>
 		<% end%>
 	<% end %>
 	</tr>

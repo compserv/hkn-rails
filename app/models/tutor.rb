@@ -15,5 +15,4 @@ class Tutor < ActiveRecord::Base
   has_many :availabilities
 
   validates :person, :presence => true
-  validates :availability, :presence => true
 end

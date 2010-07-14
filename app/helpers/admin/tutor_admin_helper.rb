@@ -3,10 +3,8 @@ module Admin::TutorAdminHelper
     return day[0..2] + hour
   end
   
-  def default_radio(user, day, hour, pref)
-    slots_available = user.tutor.availability.slots.map { |x| x.to_s }
-    available_now = slots_available.include? formatslot(day, hour)
-    return 'checked="checked"' if available_now ^ (pref == "unavailable")
+  def default_radio(prefs, day, hour, pref)
+    return 'checked="checked"' if prefs[formatslot(day, hour)] == pref
   end
 
   def format_hour(hour)

@@ -48,9 +48,7 @@ class Person < ActiveRecord::Base
   def get_tutor
     if self.tutor.nil?
       self.tutor = Tutor.new
-      self.tutor.availability = Availability.new
       self.tutor.save
-      self.tutor.availability.save
     end
     return self.tutor
   end

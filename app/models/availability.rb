@@ -15,7 +15,8 @@ class Availability < ActiveRecord::Base
 
   validate :valid_room
   validates :tutor, :presence => true
-
+  validates :preference_level, :presence => true
+  
   def get_preferred_room()
     if preferred_room == 0 then
       "Cory"
