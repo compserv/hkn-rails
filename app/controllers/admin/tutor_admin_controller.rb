@@ -3,11 +3,8 @@ class Admin::TutorAdminController < ApplicationController
   end
 
   def signup_slots
-    if UserSession.find
-      @current_user = UserSession.find.person
-    end
     if @current_user.nil?
-      @message = "You must log in to set your tutoring availabilities"
+      @messages << "You must log in to set your tutoring availabilities"
     end
     tutor = @current_user.get_tutor
     @slots = tutor.availability.slots
