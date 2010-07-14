@@ -23,7 +23,7 @@ module Admin::TutorAdminHelper
 
   def tutors_for_slot(day, hour, room)
     wday = Slot.day_to_wday[day]
-    slot = Slot.find_by_time_and_room(lot.get_time(wday, hour), room)
+    slot = Slot.find_by_time_and_room(Slot.get_time(wday, hour), room)
     return slot.tutors
   end
   def available_tutors_for_slot(day, hour)
