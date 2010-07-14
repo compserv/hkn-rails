@@ -1,12 +1,13 @@
 class Availability < ActiveRecord::Base
 
   # === List of columns ===
-  #   id             : integer 
-  #   tutor_id       : integer 
-  #   preferred_room : integer 
-  #   created_at     : datetime 
-  #   updated_at     : datetime 
-  #   slot_id        : integer 
+  #   id               : integer 
+  #   tutor_id         : integer 
+  #   preferred_room   : integer 
+  #   created_at       : datetime 
+  #   updated_at       : datetime 
+  #   slot_id          : integer 
+  #   preference_level : integer 
   # =======================
 
   belongs_to :slot

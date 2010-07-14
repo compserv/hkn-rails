@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100714085548) do
+ActiveRecord::Schema.define(:version => 20100714090046) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(:version => 20100714085548) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "slot_id"
+    t.integer  "preference_level"
   end
 
   create_table "availabilities_times", :force => true do |t|
