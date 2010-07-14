@@ -8,7 +8,6 @@ class Admin::TutorAdminController < ApplicationController
     @prefs = {}
     tutor.availabilities.each {|a| @prefs[a.slot.to_s] = a.preference_level}
     @messages ||= []
-    @messages << @prefs
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = %w(11 12 13 14 15 16)
     @rows = ["Hours"] + @hours
