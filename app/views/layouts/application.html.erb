@@ -29,6 +29,15 @@
 <% end %>
 
   <div id="container">
+	<% if @messages %>
+	<div id="messages">
+		<% @messages.each do |message| %>
+		<div class="message">
+			<%= message %>
+		</div>
+		<% end %>
+	</div>
+	<% end %>
 <%= yield %>
   </div>
 </div>
