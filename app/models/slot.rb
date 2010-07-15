@@ -74,7 +74,13 @@ class Slot < ActiveRecord::Base
   def availabilities
     return Availability.where(:time=>time)
   end
-  def available_tutors
+  def get_all_tutors
     return Availability.where(:time=>time).map{|x| x.tutor}
+  end
+  def get_available_tutors
+    return Availability.where(:time=>time, :preference_level=>1).map{|x| x.tutor}
+  end
+  def get_preferred_tutors
+    return Availability.where(:time=>time, :preference_level=>2).map{|x| x.tutor}
   end
 end

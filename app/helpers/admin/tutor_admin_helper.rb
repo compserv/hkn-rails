@@ -29,6 +29,11 @@ module Admin::TutorAdminHelper
   def available_tutors_for_slot(day, hour)
     wday = Slot.day_to_wday[day]
     slot = Slot.find_by_time(Slot.get_time(wday, hour))
-    return slot.availabilities.map { |x| x.tutor}
+    return slot.get_available_tutors
+  end
+  def preferred_tutors_for_slot(day, hour)
+    wday = Slot.day_to_wday[day]
+    slot = Slot.find_by_time(Slot.get_time(wday, hour))
+    return slot.get_preferred_tutors
   end
 end
