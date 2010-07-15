@@ -56,4 +56,8 @@ class Person < ActiveRecord::Base
   def fullname
     return first_name + " " + last_name
   end
+  
+  def to_s
+    return fullname
+  end
 end

@@ -15,4 +15,8 @@ class Tutor < ActiveRecord::Base
   has_many :availabilities
 
   validates :person, :presence => true
+  
+  def to_s
+    return person.fullname
+  end
 end
