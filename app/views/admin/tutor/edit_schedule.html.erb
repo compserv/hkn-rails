@@ -16,14 +16,14 @@
 		<td  class="slot cory">
 			<select name="<%= formatslot day, row + "C" %>" multiple="multiple">
 				<% if @preferred[formatslot day, row] %>
-				<optgroup name="Preferred">Preferred
+				<optgroup label="Preferred">
 				<% @preferred[formatslot day, row].each do |tutor| %>
 				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
 				<% if @available[formatslot day, row] %>
-				<optgroup name="Available">Available
+				<optgroup label="Available">
 				<% @available[formatslot day, row].each do |tutor| %>
 				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
 				<% end %>
@@ -39,14 +39,14 @@
 		<td  class="slot soda">
 			<select name="<%= formatslot day, row + "S" %>" multiple="multiple">
 				<% if @preferred[formatslot day, row] %>
-				<optgroup name="Preferred">Preferred
+				<optgroup label="Preferred">
 				<% @preferred[formatslot day, row].each do |tutor| %>
 				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
 				<% if @available[formatslot day, row] %>
-				<optgroup name="Available">Available
+				<optgroup label="Available">
 				<% @available[formatslot day, row].each do |tutor| %>
 				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
 				<% end %>
