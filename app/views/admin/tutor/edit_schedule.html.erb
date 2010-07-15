@@ -18,14 +18,14 @@
 				<% if @preferred[formatslot day, row] %>
 				<optgroup label="Preferred">
 				<% @preferred[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
 				<% if @available[formatslot day, row] %>
 				<optgroup label="Available">
 				<% @available[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
@@ -41,14 +41,14 @@
 				<% if @preferred[formatslot day, row] %>
 				<optgroup label="Preferred">
 				<% @preferred[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
 				<% if @available[formatslot day, row] %>
 				<optgroup label="Available">
 				<% @available[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>

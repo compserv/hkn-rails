@@ -60,7 +60,6 @@ class Admin::TutorController < ApplicationController
     @preferred = Hash.new
     @available = Hash.new
     for tutor in tutors
-      @messages << tutor.person.fullname
       tutor.availabilities.each do |a|
         if a.preference_level==2
           @preferred[a.time.strftime('%a%H')] ||= []; @preferred[a.time.strftime('%a%H')] << tutor
@@ -69,7 +68,10 @@ class Admin::TutorController < ApplicationController
         end
       end
     end
-    @slots = Slot.all
+    @assignments = Hash.new
+    for slot in Slot.all
+      @assignments[slot.to_s] = slot.tutors
+    end
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = %w(11 12 13 14 15 16)
     @rows = ["Hours"] + @hours

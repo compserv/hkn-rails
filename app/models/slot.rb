@@ -44,7 +44,7 @@ class Slot < ActiveRecord::Base
   end
 
   def to_s
-    time.strftime('%a%H')
+    time.strftime('%a%H') + get_room()[0..0]
   end
 
   def get_room()

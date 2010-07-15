@@ -2,9 +2,13 @@ module Admin::TutorAdminHelper
   def formatslot(day, hour)
     return day[0..2] + hour
   end
-  
+
   def default_radio(prefs, day, hour, pref)
     return 'checked="checked"' if prefs[formatslot(day, hour)] == pref
+  end
+
+  def default_select(assignments, day, hour, tutor, room)
+    return 'selected="selected"' if assignments[formatslot(day, hour)+room].include? tutor
   end
 
   def format_hour(hour)
