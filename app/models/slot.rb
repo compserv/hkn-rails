@@ -16,17 +16,35 @@ class Slot < ActiveRecord::Base
   validates :time, :presence => true
 
   @day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
+  @shortday_to_wday = {"Mon"=>1, "Tue"=>2, "Wed"=>3, "Thu"=>4, "Fri"=>5}
   @room_to_int = {"Cory"=>0, "Soda"=>1}
-  class << self; attr_reader :day_to_wday, :room_to_int; end
+  class << self
+    attr_reader :day_to_wday, :room_to_int, :shortday_to_wday
+    def extract_day_time(str)
+      begin
+        wday = Slot.shortday_to_wday[str[0..2]]
+        hour = Integer(str[3..4])
+        return wday, hour
+      rescue
+        return nil
+      end
+    end
+
+    def get_time(wday, hour)
+      base = Time.at(0)
+      thetime = hour.hours + ((wday - base.wday) % 7).days
+      Time.at(thetime.value)
+    end
+
+    def get_time_str(wday, hour)
+      base = Time.at(0)
+      thetime = hour.hours + ((wday - base.wday) % 7).days
+      Time.at(thetime.value).strftime('%a%H')
+    end
+  end
 
   def to_s
     time.strftime('%a%H')
-  end
-
-  def Slot.get_time(wday, hour)
-    base = Time.at(0)
-    thetime = hour.hours + ((wday - base.wday) % 7).days
-    Time.at(thetime.value)
   end
 
   def get_room()

@@ -1,6 +1,7 @@
 <% stylesheet_link_tag "tutor.css" %>
 <h1>Sign up for tutoring slots</h1>
-<form>
+<form action="" method="post">
+<%= token_tag %>
 <table id="signup_slots">
 <% @rows.each do |row| %>
 	<tr>
@@ -22,7 +23,7 @@
 		</tr>
 		<tr>
 		<% @days.each do |day| %>
-			<td class = "slot slot_unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, nil %> value="unavailable"/></td>
+			<td class = "slot slot_unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 0 %> value="unavailable"/></td>
 		<% end%>
 	<% end %>
 	</tr>

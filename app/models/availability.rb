@@ -16,6 +16,11 @@ class Availability < ActiveRecord::Base
   validates :tutor, :presence => true
   validates :preference_level, :presence => true
   
+  @prefstr_to_int = {"unavailable"=>0,"available"=>1,"preferred"=>2}
+  class << self
+    attr_reader :prefstr_to_int
+  end
+  
   def get_preferred_room()
     if preferred_room == 0 then
       "Cory"

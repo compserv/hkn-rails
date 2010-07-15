@@ -4,6 +4,8 @@ HknRails::Application.routes.draw do |map|
 
   get "admin/tutor_admin/signup_slots"
 
+  post "admin/tutor_admin/signup_slots"
+
   get "admin/tutor_admin/signup_classes"
 
   get "admin/tutor_admin/generate_schedule"
