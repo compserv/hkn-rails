@@ -9,7 +9,6 @@ class Slot < ActiveRecord::Base
   # =======================
 
   has_and_belongs_to_many :tutors
-  has_many :availabilities
   has_many :slot_changes
 
   validate :valid_room
