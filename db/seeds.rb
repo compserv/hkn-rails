@@ -11,3 +11,10 @@
     Slot.find_or_create_by_time_and_room(:time=>Slot.get_time(day, hour), :room=>1)
   end
 end
+
+Committeeship.Committees.each do |c|
+  Group.find_or_create_by_name_and_description(:name=>c, :description=>"The #{c} committee")
+end
+
+Group.find_or_create_by_name_and_description(:name=>"superusers", :description=>"Superusers with unrestricted access to the site")
+Group.find_or_create_by_name_and_description(:name=>"officers", :description=>"Committee officers")
