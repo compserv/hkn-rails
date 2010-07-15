@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Admin::TutorAdminController do
+describe Admin::TutorController do
 
   describe "GET 'index'" do
     it "should be successful" do
