@@ -70,4 +70,11 @@ class Slot < ActiveRecord::Base
       errors[:room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (room == 0 or room == 1)
     end
   end
+  
+  def availabilities
+    return Availability.where(:time=>time)
+  end
+  def available_tutors
+    return Availability.where(:time=>time).map{|x| x.tutor}
+  end
 end
