@@ -7,7 +7,6 @@ class Admin::TutorController < ApplicationController
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
     tutor.availabilities.each {|a| @prefs[a.time.strftime('%a%H')] = a.preference_level}
-    @messages ||= []
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = %w(11 12 13 14 15 16)
     @rows = ["Hours"] + @hours

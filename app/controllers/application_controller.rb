@@ -12,8 +12,8 @@ class ApplicationController < ActionController::Base
   end
 
   def merge_messages
+    @messages ||= []
     if flash[:notice]
-      @messages ||= []
       @messages << flash[:notice]
     end
   end
