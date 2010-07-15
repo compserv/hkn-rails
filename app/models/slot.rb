@@ -11,6 +11,7 @@ class Slot < ActiveRecord::Base
   has_and_belongs_to_many :tutors
   has_many :slot_changes
 
+  #TODO Validate whether a tutor is assigned to both rooms of the same time.
   validate :valid_room
   validates :room, :presence => true
   validates :time, :presence => true

@@ -14,6 +14,8 @@ HknRails::Application.routes.draw do |map|
 
   get "admin/tutor/edit_schedule"
 
+  post "admin/tutor/edit_schedule"
+
   get "admin/tutor/settings"
 
 

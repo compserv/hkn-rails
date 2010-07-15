@@ -1,6 +1,6 @@
 <% stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
-<form>
+<% form_tag do %>
 <input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
 <table id="edit_schedule" style="display:block">
 <% @rows.each do |row| %>
@@ -14,7 +14,7 @@
 		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
 		<td  class="slot cory">
-			<select name="<%= formatslot day, row + "C" %>" multiple="multiple">
+			<select name="<%= formatslot day, row + "C" %>[]" multiple="multiple">
 				<% if @preferred[formatslot day, row] %>
 				<optgroup label="Preferred">
 				<% @preferred[formatslot day, row].each do |tutor| %>
@@ -29,7 +29,6 @@
 				<% end %>
 				</optgroup>
 				<% end %>
-				<option>Unassigned</option>
 			</select>
 		</td>
 		<% end%>
@@ -37,7 +36,7 @@
 	<tr>
 		<% @days.each do |day| %>
 		<td  class="slot soda">
-			<select name="<%= formatslot day, row + "S" %>" multiple="multiple">
+			<select name="<%= formatslot day, row + "S" %>[]" multiple="multiple">
 				<% if @preferred[formatslot day, row] %>
 				<optgroup label="Preferred">
 				<% @preferred[formatslot day, row].each do |tutor| %>
@@ -52,7 +51,6 @@
 				<% end %>
 				</optgroup>
 				<% end %>
-				<option>Unassigned</option>
 			</select>
 		</td>
 		<% end%>
@@ -60,4 +58,4 @@
 	</tr>
 <% end %>
 <input type="submit" value="Submit Schedule" />
-</form>
+<% end %>

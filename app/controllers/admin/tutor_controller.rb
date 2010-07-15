@@ -75,6 +75,21 @@ class Admin::TutorController < ApplicationController
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = %w(11 12 13 14 15 16)
     @rows = ["Hours"] + @hours
+    
+    if params[:authenticity_token]  #The form was submitted
+      changed=false
+      @assignments.keys.each do |x|
+        daytime = Slot.extract_day_time(x)
+        old = @assignments[x].map {|t| t.id.to_s}
+        new = params[x] || []
+        for removed in old - new
+          @messages << "Removed " + removed.to_s + " from " + x
+        end
+        for added in new - old
+          @messages << "Added " + added.to_s + " to " + x
+        end
+      end
+    end
   end
 
   def settings
