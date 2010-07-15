@@ -6,30 +6,55 @@
 <% @rows.each do |row| %>
 	<tr>
 	<% if row == "Hours" %>
-		<td>Hours</td>
+		<th>Hours</th>
 		<% @days.each do |day| %>
-			<td class="slot_table_header"><%= day %></td>
+		<th class="slot_table_header"><%= day %></th>
 		<% end %>
 	<% else %>
 		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
-			<td  class="slot cory">
-				<select name="<%= formatslot day, row + "C" %>">
-					<% available_tutors_for_slot(day, row.to_i).each do |tutor| %>
-					<option><%= tutor.person.fullname %></option>
-					<% end %>
-					<option>Unassigned</option>
-				</select>
-			</td>
+		<td  class="slot cory">
+			<select name="<%= formatslot day, row + "C" %>" multiple="multiple">
+				<% if @preferred[formatslot day, row] %>
+				<optgroup name="Preferred">Preferred
+				<% @preferred[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+				<% if @available[formatslot day, row] %>
+				<optgroup name="Available">Available
+				<% @available[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+				<option>Unassigned</option>
+			</select>
+		</td>
 		<% end%>
-		</tr>
-		<tr>
+	</tr>
+	<tr>
 		<% @days.each do |day| %>
-			<td  class="slot soda">
-				<select name="<%= formatslot day, row + "C" %>">
-					<option>Unassigned</option>
-				</select>
-			</td>
+		<td  class="slot soda">
+			<select name="<%= formatslot day, row + "S" %>" multiple="multiple">
+				<% if @preferred[formatslot day, row] %>
+				<optgroup name="Preferred">Preferred
+				<% @preferred[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+				<% if @available[formatslot day, row] %>
+				<optgroup name="Available">Available
+				<% @available[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>"><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+				<option>Unassigned</option>
+			</select>
+		</td>
 		<% end%>
 	<% end %>
 	</tr>

@@ -56,6 +56,19 @@ class Admin::TutorController < ApplicationController
   end
 
   def edit_schedule
+    tutors = Tutor.all
+    @preferred = Hash.new
+    @available = Hash.new
+    for tutor in tutors
+      @messages << tutor.person.fullname
+      tutor.availabilities.each do |a|
+        if a.preference_level==2
+          @preferred[a.time.strftime('%a%H')] ||= []; @preferred[a.time.strftime('%a%H')] << tutor
+        else
+          @available[a.time.strftime('%a%H')] ||= []; @available[a.time.strftime('%a%H')] << tutor
+        end
+      end
+    end
     @slots = Slot.all
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = %w(11 12 13 14 15 16)
