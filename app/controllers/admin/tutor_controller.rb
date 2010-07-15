@@ -1,4 +1,4 @@
-class Admin::TutorAdminController < ApplicationController
+class Admin::TutorController < ApplicationController
   before_filter {|controller| controller.send(:authorize, "tutoring")}
   def index
   end
@@ -37,7 +37,7 @@ class Admin::TutorAdminController < ApplicationController
         end
       end
       if changed
-        redirect_to :admin_tutor_admin_signup_slots, :notice=>"Successfully updated your tutoring preferences"
+        redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
       end
     end
 
