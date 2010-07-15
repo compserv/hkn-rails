@@ -1,4 +1,6 @@
-td.slot_table_header {width: 80px; text-align: center}
+table#slot_table{}
+
+table#slot_table th {width: 80px; text-align: center}
 
 td.slot_preferred {background-color: #00FF00;}
 
