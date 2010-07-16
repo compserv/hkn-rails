@@ -69,8 +69,10 @@ class Admin::TutorController < ApplicationController
       end
     end
     @assignments = Hash.new
+    slots = Hash.new
     for slot in Slot.all
       @assignments[slot.to_s] = slot.tutors
+      slots[slot.to_s] = slot
     end
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = %w(11 12 13 14 15 16)
@@ -83,10 +85,12 @@ class Admin::TutorController < ApplicationController
         old = @assignments[x].map {|t| t.id.to_s}
         new = params[x] || []
         for removed in old - new
-          @messages << "Removed " + removed.to_s + " from " + x
+          slots[x].tutors.delete Tutor.find(Integer(removed))
+          @messages << "Removed " + removed + " from " + x
         end
         for added in new - old
-          @messages << "Added " + added.to_s + " to " + x
+          slots[x].tutors << Tutor.find(Integer(added))
+          @messages << "Added " + added + " to " + x
         end
       end
     end
