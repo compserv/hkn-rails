@@ -84,11 +84,18 @@ class Admin::TutorController < ApplicationController
         old = @assignments[x].map {|t| t.id.to_s}
         new = params[x] || []
         for removed in old - new
+          changed = true
           slots[x].tutors.delete Tutor.find(Integer(removed))
         end
         for added in new - old
+          changed = true
           slots[x].tutors << Tutor.find(Integer(added))
         end
+      end
+      if changed
+        redirect_to :admin_tutor_edit_schedule, :notice => "Tutoring schedule updated."
+      else
+        redirect_to :admin_tutor_edit_schedule, :notice => "Nothing changed in the tutoring schedule."
       end
     end
   end
