@@ -9,18 +9,13 @@ describe Tutor, "when created with blank parameters" do
     @tutor.should_not be_valid
     @tutor.errors[:person].should include("can't be blank")
   end
-
-  it "should require availability" do
-    @tutor.should_not be_valid
-    @tutor.errors[:availability].should include("can't be blank")
-  end
 end
 
 describe Tutor do
   before(:each) do
     @good_opts = {
       :person => mock_model(Person),
-      :availability => Availability.create,
+      #:availabilities => [mock_model(Availability)],
       :languages => "C"
     }
   end

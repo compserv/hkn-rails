@@ -14,7 +14,8 @@ end
 describe Availability do
   before(:each) do
     @good_opts = { 
-      :tutor => Tutor.create
+      :tutor => Tutor.create,
+      :preference_level => 1
     }
   end
 
