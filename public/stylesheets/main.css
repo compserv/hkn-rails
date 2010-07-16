@@ -72,7 +72,9 @@ html #footer-right { float: right; }
 
 /* Messages */
 html #messages { display: block; font-size: 12px !important; margin: 0 0 3px; padding: 4px 25px 4px 25px; }
+html #debug { display: block; font-size: 12px !important; margin: 0 0 3px; padding: 4px 25px 4px 25px; }
 html .message { border: solid 3px #003366; padding: 10px; background: #336699; color: #FFFFFF; }
+html #debug .message { border: solid 3px #cc0000; padding: 10px; background: #ff6666; color: #FFFFFF; }
 
 /*** Specific Page Styling ***/
 /* Info Bar */
