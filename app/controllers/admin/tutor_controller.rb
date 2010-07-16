@@ -32,7 +32,6 @@ class Admin::TutorController < ApplicationController
             end
             @prefs[x] = pref
           end
-          #@messages << x +"=>"+ params[x] + " was interpreted as "+daytime.to_s + "=>"+pref.to_s
         end
       end
       if changed
@@ -86,11 +85,9 @@ class Admin::TutorController < ApplicationController
         new = params[x] || []
         for removed in old - new
           slots[x].tutors.delete Tutor.find(Integer(removed))
-          @messages << "Removed " + removed + " from " + x
         end
         for added in new - old
           slots[x].tutors << Tutor.find(Integer(added))
-          @messages << "Added " + added + " to " + x
         end
       end
     end
