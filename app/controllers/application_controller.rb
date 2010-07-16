@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
 
   def merge_messages
     @messages ||= []
+    @debug ||= []
     if flash[:notice]
       @messages << flash[:notice]
     end

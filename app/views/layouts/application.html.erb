@@ -38,6 +38,15 @@
 		<% end %>
 	</div>
 	<% end %>
+	<% if Rails.env=="development" and @debug %>
+	<div id="debug">
+		<% @debug.each do |message| %>
+		<div class="message">Debug:
+			<%= message %>
+		</div>
+		<% end %>
+	</div>
+	<% end %>
 <%= yield %>
   </div>
 </div>
