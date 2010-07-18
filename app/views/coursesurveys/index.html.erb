@@ -1,0 +1,114 @@
+<h1>Course Surveys</h1>
+
+<p>
+  Course survey data for all undergraduate and graduate level EECS courses are available here.
+</p>
+
+<p>
+  There are hundreds of thousands of pages, so, although most aspects work fine, there may be errors of which we are unaware.  If you spot an error, especially a missing class or professor, or have a suggestion for the site, please email <%= link_to "www-coursesurvey@hkn.eecs.berkeley.edu", "mailto:www-coursesurvey@hkn.eecs.berkeley.edu" %>.
+</p>
+
+<h2>Search For an Instructor or Course</h2>
+<form action="/student/CourseSurvey/search" method="get">
+  <div>
+    <input type="text" name="n" size="40" />
+    <input type="submit" name="sb" value=" Search " />
+  </div>
+</form>
+
+Example queries:
+
+<ul>
+  <li><code>hilfinger</code> (matches Paul Hilfinger)</li>
+  <li><code>hilf*</code> (matches Paul Hilfinger)</li>
+  <li><code>m* blum</code> (matches Manuel Blum)</li>
+  <li><code>cs61a</code></li>
+  <li><code>cs61*</code></li>
+  <li><code>cs61a 2004 spring</code></li>
+  <li><code>cs61a sp2004</code></li>
+  <li><code>structure and interpretation</code> (matches EE20, CS61A)</li>
+</ul>
+
+<h2>Browse EE Data</h2>
+<ul>
+  <li><a href="instructors/EE/Profesor/?recent=1">Electrical Engineering Professors</a></li>
+  <li><a href="/student/CourseSurvey/instructors/EE/TA/?recent=1">Electrical Engineering Teaching Assistants</a></li>
+  <li><a href="/student/CourseSurvey/courses/EE/?recent=1">Electrical Engineering Courses</a></li>
+</ul>
+  (Or, click a course on the map below)
+	<!-- Charts/maps updated 4-11-2009 by ibrahima -->
+	<map id="eemap09" name="eemap09">
+		<area coords="428, 114, 29"       href="/student/CourseSurvey/courses/EE/40/"   shape="circle" alt="EE40" />
+		<area coords="569, 111, 29"       href="/student/CourseSurvey/courses/EE/20N/"  shape="circle" alt="EE20N" />
+		<area coords="711, 194, 27"       href="/student/CourseSurvey/courses/EE/126/"  shape="circle" alt="EE126" />
+		<area coords="789, 199, 27"       href="/student/CourseSurvey/courses/EE/122/"  shape="circle" alt="EE122" />
+		<area coords="97, 134, 179, 160"  href="/student/CourseSurvey/courses/EE/20N/"  shape="rect" alt="EE20N" />
+		<area coords="73, 232, 27"        href="/student/CourseSurvey/courses/EE/119/"  shape="circle" alt="EE119" />
+		<area coords="139, 232, 26"       href="/student/CourseSurvey/courses/EE/118/"  shape="circle" alt="EE118" />
+		<area coords="386, 249, 29"       href="/student/CourseSurvey/courses/EE/117/"  shape="circle" alt="EE117" />
+		<area coords="482, 235, 30"       href="/student/CourseSurvey/courses/EE/105/"  shape="circle" alt="EE105" />
+		<area coords="554, 229, 28"       href="/student/CourseSurvey/courses/CS/150/"  shape="circle" alt="CS150" />
+		<area coords="633, 239, 28"       href="/student/CourseSurvey/courses/EE/120/"  shape="circle" alt="EE120" />
+		<area coords="41, 340, 26"        href="/student/CourseSurvey/courses/EE/133/"  shape="circle" alt="EE133" />
+		<area coords="117, 339, 26"       href="/student/CourseSurvey/courses/EE/130/"  shape="circle" alt="EE130" />
+		<area coords="26, 427, 26"        href="/student/CourseSurvey/courses/EE/131/"  shape="circle" alt="EE131" />
+		<area coords="500, 138, 554, 160" href="/student/CourseSurvey/courses/CS/61C/"  shape="rect" alt="CS61C" />
+		<area coords="752, 108, 807, 130" href="/student/CourseSurvey/courses/CS/61B/"  shape="rect" alt="CS61B" />
+		<area coords="581, 425, 27"       href="/student/CourseSurvey/courses/EE/123/"  shape="circle" alt="EE123" />
+		<area coords="656, 428, 26"       href="/student/CourseSurvey/courses/EE/128/"  shape="circle" alt="EE128" />
+		<area coords="751, 426, 27"       href="/student/CourseSurvey/courses/EE/121/"  shape="circle" alt="EE121" />
+		<area coords="439, 531, 27"       href="/student/CourseSurvey/courses/EE/192/"  shape="circle" alt="EE192" />
+		<area coords="568, 531, 27"       href="/student/CourseSurvey/courses/EE/125/"  shape="circle" alt="EE125" />
+		<area coords="655, 530, 26"       href="/student/CourseSurvey/courses/EE/129/"  shape="circle" alt="EE129" />
+		<area coords="83, 428, 27"        href="/student/CourseSurvey/courses/EE/143/"  shape="circle" alt="EE143" />
+		<area coords="139, 428, 27"       href="/student/CourseSurvey/courses/EE/141/"  shape="circle" alt="EE141" />
+		<area coords="196, 428, 26"       href="/student/CourseSurvey/courses/EE/140/"  shape="circle" alt="EE140" />
+		<area coords="253, 426, 27"       href="/student/CourseSurvey/courses/EE/142/"  shape="circle" alt="EE142" />
+		<area coords="320, 428, 27"       href="/student/CourseSurvey/courses/EE/144/"  shape="circle" alt="EE144" />
+		<area coords="107, 531, 26"       href="/student/CourseSurvey/courses/EE/145M/" shape="circle" alt="EE145M" />
+		<area coords="181, 529, 27"       href="/student/CourseSurvey/courses/EE/145L/" shape="circle" alt="EE145L" />
+		<area coords="272, 527, 27"       href="/student/CourseSurvey/courses/EE/145B/" shape="circle" alt="EE145B" />
+		<area coords="15, 495, 70, 517"   href="/student/CourseSurvey/courses/CS/61B/"  shape="rect" alt="CS61B" />
+		<area coords="294, 366, 349, 388" href="/student/CourseSurvey/courses/CS/70/"   shape="rect" alt="CS70" />
+		<area coords="479, 495, 534, 517" href="/student/CourseSurvey/courses/CS/61B/"  shape="rect" alt="CS61B" />
+	</map>
+  <%= image_tag "site/ee-prereq-chart-09.png", :alt => "Electrical Engineering Courses", :usemap => "#eemap09" %>
+
+	<h2>Browse CS Data</h2>
+
+	<ul>
+	<li><a href="/student/CourseSurvey/instructors/CS/Professor/?recent=1">Computer Science Professors</a></li>
+	<li><a href="/student/CourseSurvey/instructors/CS/TA/?recent=1">Computer Science Teaching Assistants</a></li>
+	<li><a href="/student/CourseSurvey/courses/CS/?recent=1">Computer Science Courses</a></li>
+	</ul>
+	(Or, click a course on the map below)
+	<map id="csmap09" name="csmap09">
+		<area coords="239, 86, 38"  href="/student/CourseSurvey/courses/CS/61A/" shape="circle" alt="CS61A" />
+		<area coords="626, 138, 40" href="/student/CourseSurvey/courses/CS/70/"  shape="circle" alt="CS70" />
+		<area coords="450, 211, 39" href="/student/CourseSurvey/courses/CS/61C/" shape="circle" alt="CS61C" />
+		<area coords="240, 210, 39" href="/student/CourseSurvey/courses/CS/61B/" shape="circle" alt="CS61B" />
+		<area coords="37, 215, 37"  href="/student/CourseSurvey/courses/EE/40/"  shape="circle" alt="EE40" />
+		<area coords="38, 355, 38"  href="/student/CourseSurvey/courses/CS/150/" shape="circle" alt="CS150" />
+		<area coords="135, 355, 26" href="/student/CourseSurvey/courses/CS/152/" shape="circle" alt="CS152" />
+		<area coords="631, 355, 38" href="/student/CourseSurvey/courses/CS/170/" shape="circle" alt="CS170" />
+		<area coords="64, 506, 26"  href="/student/CourseSurvey/courses/CS/160/" shape="circle" alt="CS160" />
+		<area coords="122, 506, 27" href="/student/CourseSurvey/courses/CS/161/" shape="circle" alt="CS161" />
+		<area coords="176, 505, 26" href="/student/CourseSurvey/courses/CS/162/" shape="circle" alt="CS162" />
+		<area coords="233, 504, 25" href="/student/CourseSurvey/courses/CS/164/" shape="circle" alt="CS164" />
+		<area coords="291, 505, 27" href="/student/CourseSurvey/courses/CS/169/" shape="circle" alt="CS169" />
+		<area coords="410, 505, 27" href="/student/CourseSurvey/courses/CS/184/" shape="circle" alt="CS184" />
+		<area coords="466, 505, 26" href="/student/CourseSurvey/courses/CS/186/" shape="circle" alt="CS186" />
+		<area coords="523, 505, 27" href="/student/CourseSurvey/courses/CS/188/" shape="circle" alt="CS188" />
+		<area coords="605, 505, 27" href="/student/CourseSurvey/courses/CS/172/" shape="circle" alt="CS172" />
+		<area coords="661, 504, 26" href="/student/CourseSurvey/courses/CS/174/" shape="circle" alt="CS174" />
+	</map>
+  <%= image_tag "site/cs-prereq-chart-09.png", :alt => "Computer Science Courses", :usemap => "#csmap09" %>
+
+<h2>More Information</h2>
+<ul>
+  <li><a href="/student/CourseSurvey/doc/howtouse.shtml"><b>How to use the course survey system</b></a></li>
+  <li><a href="/student/CourseSurvey/doc/info_profs.shtml">Information for professors and TAs</a></li>
+  <li><a href="/student/CourseSurvey/doc/ferpa.shtml">Information about hidden GSI ratings</a></li>
+  <li><a href="/student/CourseSurvey/stats/">Aggregate statistics</a></li>
+  <li><a href="/student/CourseSurvey/doc/about_software.shtml">About the GoodProfOrNot software</a></li>
+</ul>
