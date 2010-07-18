@@ -18,7 +18,7 @@ class Committeeship < ActiveRecord::Base
   validates_inclusion_of :title, :in => Positions, :message => "Not a valid title." 
   
   belongs_to :person
-  class<< self
+  class << self
     attr_reader :Committees, :Positions
   end
 end

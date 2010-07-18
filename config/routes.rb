@@ -1,24 +1,12 @@
 HknRails::Application.routes.draw do |map|
 
-  get "admin/tutor/index"
-
-  get "admin/tutor/signup_slots"
-
-  post "admin/tutor/signup_slots"
-
-  get "admin/tutor/signup_classes"
-
-  get "admin/tutor/generate_schedule"
-
-  get "admin/tutor/view_signups"
-
-  get "admin/tutor/edit_schedule"
-
-  post "admin/tutor/edit_schedule"
-
-  get "admin/tutor/settings"
-
-
+  namespace :admin do
+    scope "tutor" do
+      match "signup_slots" => "tutor#signup_slots"
+      match "edit_schedule" => "tutor#edit_schedule"
+    end
+  end
+  
   get "home/index"
 
   root :to => "home#index"
