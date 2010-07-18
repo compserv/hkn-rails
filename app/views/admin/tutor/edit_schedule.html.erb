@@ -1,6 +1,6 @@
 <% stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
-<% form_tag do %>
+<%= form_tag do %>
 <input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
 <table id="edit_schedule" style="display:block">
 <% @rows.each do |row| %>

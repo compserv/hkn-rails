@@ -2,7 +2,29 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :get_current_user, :merge_messages
   layout 'application'
-  
+
+  #This is a bit of dynamic code that allows you to use methods like
+  #authorize_foo to call authorize with a group as an argument. It might be
+  #good to clean it up a little and put the matching in a separate class.
+  # The idea comes from rails' dynamic finders.
+  def respond_to?(method_id, include_private = false)
+    case method_id.to_s
+      when /^authorize_([_a-zA-Z]\w*)$/
+        return true
+      else
+        super
+    end
+  end
+
+  def method_missing(method_id, *arguments, &block)
+    case method_id.to_s
+      when /^authorize_([_a-zA-Z]\w*)$/
+        group = $1
+        self.send :authorize, group
+      else
+        super
+    end
+  end  
   private
   
   def get_current_user

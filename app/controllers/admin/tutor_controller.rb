@@ -1,5 +1,6 @@
 class Admin::TutorController < ApplicationController
-  before_filter {|controller| controller.send(:authorize, "tutoring")}
+  before_filter :authorize_tutoring, :except=>[:signup_slots]
+  
   def index
   end
 
@@ -36,13 +37,10 @@ class Admin::TutorController < ApplicationController
       end
       if changed
         redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
+      else
+        redirect_to :admin_tutor_signup_slots, :notice=>"You haven't changed anything in your tutoring preferences."
       end
     end
-
-  end
-
-  def post_slots
-    p params
   end
   
   def signup_classes
