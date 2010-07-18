@@ -13,6 +13,7 @@ class Course < ActiveRecord::Base
   # =======================
 
   has_and_belongs_to_many :tutors
+  has_many :klasses
   validates :department, :presence => true
   validates :course_number, :presence => true
 

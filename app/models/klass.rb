@@ -13,4 +13,6 @@ class Klass < ActiveRecord::Base
   #   updated_at   : datetime 
   # =======================
 
+  belongs_to :course
+
 end
