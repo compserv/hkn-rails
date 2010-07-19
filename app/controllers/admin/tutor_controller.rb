@@ -1,4 +1,4 @@
-class Admin::TutorController < ApplicationController
+class Admin::TutorController < Admin::AdminController
   before_filter :authorize_tutoring, :except=>[:signup_slots]
   
   def index
