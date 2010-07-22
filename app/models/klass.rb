@@ -14,5 +14,9 @@ class Klass < ActiveRecord::Base
   # =======================
 
   belongs_to :course
+  has_many :coursesurveys
+  has_and_belongs_to_many :instructors
+  # tas = TAs
+  has_and_belongs_to_many :tas, { :class_name => "Instructor", :join_table => "klasses_tas" }
 
 end
