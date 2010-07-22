@@ -23,7 +23,6 @@ HknRails::Application.routes.draw do |map|
   end
 
   resources :events
-  resources :properties
 
   # Indrel site
   scope "indrel" do
