@@ -9,7 +9,7 @@
   </tr>
 <% for hour in @hours %>
   <tr>
-    <td><%= hour %></td>
+    <td><%= format_hour_slot hour %></td>
 	<td><%= render Slot.get_from_string(@day + hour.to_s + "C") %></td>
 	<td><%= render Slot.get_from_string(@day + hour.to_s + "S") %></td>
   </tr>
