@@ -1,4 +1,4 @@
-<% if slot.tutors %>
+<% if slot.tutors.any? %>
 <% slot.tutors.each do |tutor| %>
 <div title="<%= tutor.person.fullname %>" rel="#tutor-<%= tutor.id %>" class="infobox person"><%= tutor.person.abbr_name %></div>
 <% end %>
