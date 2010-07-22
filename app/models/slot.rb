@@ -30,7 +30,12 @@ class Slot < ActiveRecord::Base
         return nil
       end
     end
-
+    def get_from_string(str)
+      daytime = extract_day_time(str)
+      time = get_time(daytime[0], daytime[1])
+      room = room_to_int[str[5..8]] || {"C"=>0, "S"=>1}[str[5..5]]
+      return find_by_time_and_room(time, room)
+    end
     def get_time(wday, hour)
       base = Time.at(0)
       thetime = hour.hours + ((wday - base.wday) % 7).days

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100722055110) do
+ActiveRecord::Schema.define(:version => 20100715111452) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -225,10 +225,13 @@ ActiveRecord::Schema.define(:version => 20100722055110) do
   end
 
   create_table "properties", :force => true do |t|
-    t.integer  "tutor_version"
-    t.string   "semester"
+    t.string   "semester",         :default => "fa10"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "tutoring_enabled", :default => false
+    t.text     "tutoring_message", :default => ""
+    t.integer  "tutoring_start",   :default => 11
+    t.integer  "tutoring_end",     :default => 16
   end
 
   create_table "quiz_responses", :force => true do |t|
