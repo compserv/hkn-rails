@@ -1,10 +1,11 @@
 class HomeController < ApplicationController
   def index
     @show_searcharea = true
-    @tutoring_enabled = Property.tutoring_enabled
-    @hours = Property.tutoring_start .. Property.tutoring_end
+    prop = Property.get_or_create
+    @tutoring_enabled = prop.tutoring_enabled
+    @hours = prop.tutoring_start .. prop.tutoring_end
     @day = Time.now.strftime("%a")
-    @tutoring_message = Property.tutoring_message
+    @tutoring_message = prop.tutoring_message
   end
 
 end

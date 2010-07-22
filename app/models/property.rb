@@ -26,23 +26,23 @@ class Property < ActiveRecord::Base
     #Property.semester to get the current semester, or Property.semester= to
     #set the current semester. However, if you use this, you can't also use an
     #instance of Property.first because the fields aren't kept in sync.
-    def respond_to?(method_id, include_private = false)
-      if super: return super end
-      prop = get_or_create
-      if prop.attribute_names.include? method_id.to_s then return true end
-      return false
-    end
+    # def respond_to?(method_id, include_private = false)
+      # if super: return super end
+      # prop = get_or_create
+      # if prop.attribute_names.include? method_id.to_s then return true end
+      # return false
+    # end
 
-    def method_missing(method_id, *arguments, &block)
-      prop = get_or_create
-      if prop.attribute_names.include?(method_id.to_s)
-        return prop.send(method_id.to_s)
-      elsif (method_id.to_s =~ /(\w*)=/ and prop.attribute_names.include? $1)
-        set_property($1, arguments.first)
-      else
-        super
-      end
-    end
+    # def method_missing(method_id, *arguments, &block)
+      # prop = get_or_create
+      # if prop.attribute_names.include?(method_id.to_s)
+        # return prop.send(method_id.to_s)
+      # elsif (method_id.to_s =~ /(\w*)=/ and prop.attribute_names.include? $1)
+        # set_property($1, arguments.first)
+      # else
+        # super
+      # end
+    # end
 
     def set_property(variable, value)
       prop = get_or_create
