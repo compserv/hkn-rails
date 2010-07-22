@@ -1,3 +1,29 @@
+<div id="infobar">
+  <h1>Quicklinks</h1>
+  <h3>Browse EE Data</h3>
+  <ul class="plain">
+    <li><a href="instructors/EE/Profesor/?recent=1">Electrical Engineering Professors</a></li>
+    <li><a href="/student/CourseSurvey/instructors/EE/TA/?recent=1">Electrical Engineering Teaching Assistants</a></li>
+    <li><a href="/student/CourseSurvey/courses/EE/?recent=1">Electrical Engineering Courses</a></li>
+  </ul>
+
+  <h3>Browse CS Data</h3>
+  <ul class="plain">
+  <li><a href="/student/CourseSurvey/instructors/CS/Professor/?recent=1">Computer Science Professors</a></li>
+  <li><a href="/student/CourseSurvey/instructors/CS/TA/?recent=1">Computer Science Teaching Assistants</a></li>
+  <li><a href="/student/CourseSurvey/courses/CS/?recent=1">Computer Science Courses</a></li>
+  </ul>
+
+  <h3>More Information</h3>
+  <ul class="plain">
+    <li><a href="/student/CourseSurvey/doc/howtouse.shtml"><b>How to use the course survey system</b></a></li>
+    <li><a href="/student/CourseSurvey/doc/info_profs.shtml">Information for professors and TAs</a></li>
+    <li><a href="/student/CourseSurvey/doc/ferpa.shtml">Information about hidden GSI ratings</a></li>
+    <li><a href="/student/CourseSurvey/stats/">Aggregate statistics</a></li>
+    <li><a href="/student/CourseSurvey/doc/about_software.shtml">About the GoodProfOrNot software</a></li>
+  </ul>
+</div>
+
 <h1>Course Surveys</h1>
 
 <p>
@@ -16,26 +42,8 @@
   </div>
 </form>
 
-Example queries:
-
-<ul>
-  <li><code>hilfinger</code> (matches Paul Hilfinger)</li>
-  <li><code>hilf*</code> (matches Paul Hilfinger)</li>
-  <li><code>m* blum</code> (matches Manuel Blum)</li>
-  <li><code>cs61a</code></li>
-  <li><code>cs61*</code></li>
-  <li><code>cs61a 2004 spring</code></li>
-  <li><code>cs61a sp2004</code></li>
-  <li><code>structure and interpretation</code> (matches EE20, CS61A)</li>
-</ul>
-
-<h2>Browse EE Data</h2>
-<ul>
-  <li><a href="instructors/EE/Profesor/?recent=1">Electrical Engineering Professors</a></li>
-  <li><a href="/student/CourseSurvey/instructors/EE/TA/?recent=1">Electrical Engineering Teaching Assistants</a></li>
-  <li><a href="/student/CourseSurvey/courses/EE/?recent=1">Electrical Engineering Courses</a></li>
-</ul>
-  (Or, click a course on the map below)
+<h2>Prerequisite Charts</h2>
+<p>(Click on a course in the images below to see its ratings)</p>
 	<!-- Charts/maps updated 4-11-2009 by ibrahima -->
 	<map id="eemap09" name="eemap09">
 		<area coords="428, 114, 29"       href="/student/CourseSurvey/courses/EE/40/"   shape="circle" alt="EE40" />
@@ -72,16 +80,8 @@ Example queries:
 		<area coords="294, 366, 349, 388" href="/student/CourseSurvey/courses/CS/70/"   shape="rect" alt="CS70" />
 		<area coords="479, 495, 534, 517" href="/student/CourseSurvey/courses/CS/61B/"  shape="rect" alt="CS61B" />
 	</map>
-  <%= image_tag "site/ee-prereq-chart-09.png", :alt => "Electrical Engineering Courses", :usemap => "#eemap09" %>
+  <%= image_tag "site/ee-prereq-chart.png", :alt => "Electrical Engineering Courses", :usemap => "#eemap09" %>
 
-	<h2>Browse CS Data</h2>
-
-	<ul>
-	<li><a href="/student/CourseSurvey/instructors/CS/Professor/?recent=1">Computer Science Professors</a></li>
-	<li><a href="/student/CourseSurvey/instructors/CS/TA/?recent=1">Computer Science Teaching Assistants</a></li>
-	<li><a href="/student/CourseSurvey/courses/CS/?recent=1">Computer Science Courses</a></li>
-	</ul>
-	(Or, click a course on the map below)
 	<map id="csmap09" name="csmap09">
 		<area coords="239, 86, 38"  href="/student/CourseSurvey/courses/CS/61A/" shape="circle" alt="CS61A" />
 		<area coords="626, 138, 40" href="/student/CourseSurvey/courses/CS/70/"  shape="circle" alt="CS70" />
@@ -102,13 +102,6 @@ Example queries:
 		<area coords="605, 505, 27" href="/student/CourseSurvey/courses/CS/172/" shape="circle" alt="CS172" />
 		<area coords="661, 504, 26" href="/student/CourseSurvey/courses/CS/174/" shape="circle" alt="CS174" />
 	</map>
-  <%= image_tag "site/cs-prereq-chart-09.png", :alt => "Computer Science Courses", :usemap => "#csmap09" %>
+  <%= image_tag "site/cs-prereq-chart.png", :alt => "Computer Science Courses", :usemap => "#csmap09" %>
 
-<h2>More Information</h2>
-<ul>
-  <li><a href="/student/CourseSurvey/doc/howtouse.shtml"><b>How to use the course survey system</b></a></li>
-  <li><a href="/student/CourseSurvey/doc/info_profs.shtml">Information for professors and TAs</a></li>
-  <li><a href="/student/CourseSurvey/doc/ferpa.shtml">Information about hidden GSI ratings</a></li>
-  <li><a href="/student/CourseSurvey/stats/">Aggregate statistics</a></li>
-  <li><a href="/student/CourseSurvey/doc/about_software.shtml">About the GoodProfOrNot software</a></li>
-</ul>
+

@@ -14,7 +14,7 @@ document.observe("dom:loaded", function() {
 	current = location.pathname.replace('/','');
 	current = current.substring(0,current.indexOf('/'));
 	id = current;	
-	if (id.length != 0 && $(id).length != 0) {
+	if (id.length != 0 && id != "coursesurveys" && $(id).length != 0) {
 		$(id).addClassName("selected");
 		submenuid = current + "_submenu";
 		//$(submenuid).show();	
