@@ -1,4 +1,6 @@
 HknRails::Application.routes.draw do |map|
+  get "tutor/schedule"
+
 
   namespace :admin do
     scope "tutor" do

@@ -9,7 +9,7 @@ class Admin::TutorController < Admin::AdminController
     @prefs = Hash.new 0
     tutor.availabilities.each {|a| @prefs[a.time.strftime('%a%H')] = a.preference_level}
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
-    @hours = %w(11 12 13 14 15 16)
+    @hours = @hours = prop.tutoring_start .. prop.tutoring_end
     @rows = ["Hours"] + @hours
     
     if params[:authenticity_token]  #The form was submitted

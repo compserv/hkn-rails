@@ -1,0 +1,29 @@
+<h1>Tutoring Schedule</h1>
+<% stylesheet_link_tag "tutor.css" %>
+
+<table id="edit_schedule">
+<% @rows.each do |row| %>
+	<tr>
+	<% if row == "Hours" %>
+		<th>Hours</th>
+		<% @days.each do |day| %>
+		<th class="slot_table_header"><%= day %></th>
+		<% end %>
+	<% else %>
+		<td  rowspan="2"><%= format_hour_slot row %></td>
+		<% @days.each do |day| %>
+		<td  class="slot cory" id="<%= formatslot day, row.to_s + "C" %>">
+			<%= render Slot.get_from_string(formatslot day, row.to_s + "C") %>
+		</td>
+		<% end%>
+	</tr>
+	<tr>
+		<% @days.each do |day| %>
+		<td  class="slot soda" id="<%= formatslot day, row.to_s + "S" %>">
+			<%= render Slot.get_from_string(formatslot day, row.to_s + "S") %>
+		</td>
+		<% end%>
+	<% end %>
+	</tr>
+<% end %>
+</table>
