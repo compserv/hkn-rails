@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100715111452) do
+ActiveRecord::Schema.define(:version => 20100722055110) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(:version => 20100715111452) do
   end
 
   create_table "courses", :force => true do |t|
-    t.integer  "department"
+    t.integer  "department",    :null => false
     t.string   "course_number", :null => false
     t.string   "suffix"
     t.string   "prefix"
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(:version => 20100715111452) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "units"
+    t.string   "prereqs"
   end
 
   create_table "courses_preferred_tutors", :force => true do |t|
@@ -115,6 +117,7 @@ ActiveRecord::Schema.define(:version => 20100715111452) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "instructor_id"
+    t.integer  "klass",          :null => false
   end
 
   create_table "events", :force => true do |t|
@@ -174,6 +177,11 @@ ActiveRecord::Schema.define(:version => 20100715111452) do
     t.datetime "updated_at"
   end
 
+  create_table "instructors_klasses", :id => false, :force => true do |t|
+    t.integer "instructor_id"
+    t.integer "klass_id"
+  end
+
   create_table "klasses", :force => true do |t|
     t.integer  "course_id",    :null => false
     t.string   "semester",     :null => false
@@ -184,6 +192,11 @@ ActiveRecord::Schema.define(:version => 20100715111452) do
     t.integer  "num_students"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "klasses_tas", :id => false, :force => true do |t|
+    t.integer "instructor_id"
+    t.integer "klass_id"
   end
 
   create_table "locations", :force => true do |t|
@@ -221,7 +234,7 @@ ActiveRecord::Schema.define(:version => 20100715111452) do
   create_table "quiz_responses", :force => true do |t|
     t.string   "number",       :null => false
     t.string   "response"
-    t.integer  "candidate_id", :null => false
+    t.integer  "candidate_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

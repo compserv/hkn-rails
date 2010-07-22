@@ -28,7 +28,12 @@ HknRails::Application.routes.draw do |map|
   match "create_session" => "user_sessions#create"
   match "logout" => "user_sessions#destroy"
 
-  resources :coursesurveys
+  # Course Surveys
+  scope "coursesurveys" do
+    match "" => "coursesurveys#index"
+    match "course/:id" => "coursesurveys#course"
+  end
+
   resources :events
   resources :properties
 
