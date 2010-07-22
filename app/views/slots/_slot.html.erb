@@ -1,3 +1,7 @@
+<% if slot.tutors %>
 <% slot.tutors.each do |tutor| %>
-<span><%= tutor %></span>
+<div title="<%= tutor.person.fullname %>" rel="#tutor-<%= tutor.id %>" class="infobox person"><%= tutor.person.abbr_name %></div>
+<% end %>
+<% else %>
+<div class="infobox person">No Tutoring!</div>
 <% end %>

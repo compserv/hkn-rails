@@ -44,7 +44,9 @@ class Person < ActiveRecord::Base
     a = ldap.bind( :method => :simple, :username => "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", :password => password )
     return a
   end
-  
+
+  #Gets or creates the tutor object for a person.
+  #
   def get_tutor
     if self.tutor.nil?
       self.tutor = Tutor.new
@@ -53,10 +55,18 @@ class Person < ActiveRecord::Base
     return self.tutor
   end
   
+  #Returns the person's full name
+  #
   def fullname
     return first_name + " " + last_name
   end
-  
+
+  #Returns the person's first name and last initial
+  #
+  def abbr_name
+    return first_name + " " + last_name[0..0]
+  end
+
   def to_s
     return fullname
   end
