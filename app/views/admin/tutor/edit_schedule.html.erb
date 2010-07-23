@@ -1,0 +1,62 @@
+<% stylesheet_link_tag "tutor.css" %>
+<h1>Edit Tutoring Schedule</h1>
+<%= form_tag do %>
+<input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
+<table id="edit_schedule">
+<% @rows.each do |row| %>
+	<tr>
+	<% if row == "Hours" %>
+		<th>Hours</th>
+		<% @days.each do |day| %>
+		<th class="slot_table_header"><%= day %></th>
+		<% end %>
+	<% else %>
+		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>
+		<% @days.each do |day| %>
+		<td  class="slot cory">
+			<select name="<%= formatslot day, row + "C" %>[]" multiple="multiple">
+				<% if @preferred[formatslot day, row] %>
+				<optgroup label="Preferred">
+				<% @preferred[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+				<% if @available[formatslot day, row] %>
+				<optgroup label="Available">
+				<% @available[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+			</select>
+		</td>
+		<% end%>
+	</tr>
+	<tr>
+		<% @days.each do |day| %>
+		<td  class="slot soda">
+			<select name="<%= formatslot day, row + "S" %>[]" multiple="multiple">
+				<% if @preferred[formatslot day, row] %>
+				<optgroup label="Preferred">
+				<% @preferred[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+				<% if @available[formatslot day, row] %>
+				<optgroup label="Available">
+				<% @available[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+			</select>
+		</td>
+		<% end%>
+	<% end %>
+	</tr>
+<% end %>
+</table>
+<input type="submit" value="Submit Schedule" />
+<% end %>

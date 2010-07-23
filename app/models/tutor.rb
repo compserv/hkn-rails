@@ -1,19 +1,22 @@
 class Tutor < ActiveRecord::Base
 
   # === List of columns ===
-  #   id              : integer 
-  #   person_id       : integer 
-  #   availability_id : integer 
-  #   languages       : string 
-  #   created_at      : datetime 
-  #   updated_at      : datetime 
+  #   id         : integer 
+  #   person_id  : integer 
+  #   languages  : string 
+  #   created_at : datetime 
+  #   updated_at : datetime 
   # =======================
 
   belongs_to :person
 
-  validates :person, :presence => true
+  has_and_belongs_to_many :courses
+  has_and_belongs_to_many :slots
+  has_many :availabilities
 
-  has_many :courses
-  has_many :slots
-  has_one :availability
+  validates :person, :presence => true
+  
+  def to_s
+    return person.fullname
+  end
 end

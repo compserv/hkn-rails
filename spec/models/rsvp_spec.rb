@@ -5,20 +5,29 @@ describe Rsvp, "when created with blank parameters" do
     @rsvp = Rsvp.create
   end
 
-  it "should require a person and event to be valid" do
+  it "should require a person to be valid" do
     @rsvp.should_not be_valid
     @rsvp.errors[:person].should include("can't be blank")
+  end
+
+  it "should require an event to be valid" do
+    @rsvp.should_not be_valid
     @rsvp.errors[:event].should include("can't be blank")
+  end
+
+  it "should require a block to be valid" do
+    @rsvp.should_not be_valid
+    @rsvp.errors[:block].should include("can't be blank")
   end
 end
 
 describe Rsvp do
   before(:each) do
     @good_opts = { :event => mock_model(Event),
-      :person => mock_model(Person) }
+      :person => mock_model(Person), :block => mock_model(Block)}
   end
 
-  it "should be valid when supplied a person and event" do
+  it "should be valid when supplied a person, event, and block" do
     rsvp = Rsvp.create(@good_opts)
     rsvp.should be_valid
   end

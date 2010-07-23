@@ -9,20 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100627233326) do
+ActiveRecord::Schema.define(:version => 20100722055110) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
     t.integer  "preferred_room"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "availabilities_times", :force => true do |t|
-    t.integer  "availability_id"
+    t.integer  "preference_level"
     t.datetime "time"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "blocks", :force => true do |t|
@@ -77,7 +72,7 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
   end
 
   create_table "courses", :force => true do |t|
-    t.integer  "department",    :null => false
+    t.integer  "department"
     t.string   "course_number", :null => false
     t.string   "suffix"
     t.string   "prefix"
@@ -85,6 +80,8 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "units"
+    t.string   "prereqs"
   end
 
   create_table "courses_preferred_tutors", :force => true do |t|
@@ -108,6 +105,11 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
     t.datetime "updated_at"
   end
 
+  create_table "courses_tutors", :id => false, :force => true do |t|
+    t.integer "course_id"
+    t.integer "tutor_id"
+  end
+
   create_table "coursesurveys", :force => true do |t|
     t.integer  "max_surveyors"
     t.integer  "status"
@@ -115,6 +117,7 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "instructor_id"
+    t.integer  "klass",          :null => false
   end
 
   create_table "events", :force => true do |t|
@@ -133,6 +136,11 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "groups_people", :id => false, :force => true do |t|
+    t.integer "group_id"
+    t.integer "person_id"
   end
 
   create_table "indrel_event_types", :force => true do |t|
@@ -169,6 +177,28 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
     t.datetime "updated_at"
   end
 
+  create_table "instructors_klasses", :id => false, :force => true do |t|
+    t.integer "instructor_id"
+    t.integer "klass_id"
+  end
+
+  create_table "klasses", :force => true do |t|
+    t.integer  "course_id",    :null => false
+    t.string   "semester",     :null => false
+    t.string   "location"
+    t.string   "time"
+    t.integer  "section"
+    t.string   "notes"
+    t.integer  "num_students"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "klasses_tas", :id => false, :force => true do |t|
+    t.integer "instructor_id"
+    t.integer "klass_id"
+  end
+
   create_table "locations", :force => true do |t|
     t.string   "name"
     t.integer  "capacity"
@@ -195,16 +225,19 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
   end
 
   create_table "properties", :force => true do |t|
-    t.integer  "tutor_version"
-    t.string   "semester"
+    t.string   "semester",         :default => "fa10"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "tutoring_enabled", :default => false
+    t.text     "tutoring_message", :default => ""
+    t.integer  "tutoring_start",   :default => 11
+    t.integer  "tutoring_end",     :default => 16
   end
 
   create_table "quiz_responses", :force => true do |t|
     t.string   "number",       :null => false
     t.string   "response"
-    t.integer  "candidate_id"
+    t.integer  "candidate_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -218,6 +251,7 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
     t.integer  "transportation"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "block_id",        :null => false
   end
 
   create_table "slot_changes", :force => true do |t|
@@ -236,9 +270,13 @@ ActiveRecord::Schema.define(:version => 20100627233326) do
     t.datetime "updated_at"
   end
 
+  create_table "slots_tutors", :id => false, :force => true do |t|
+    t.integer "slot_id"
+    t.integer "tutor_id"
+  end
+
   create_table "tutors", :force => true do |t|
-    t.integer  "person_id",       :null => false
-    t.integer  "availability_id"
+    t.integer  "person_id",  :null => false
     t.string   "languages"
     t.datetime "created_at"
     t.datetime "updated_at"

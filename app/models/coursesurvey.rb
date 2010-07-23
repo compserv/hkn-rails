@@ -8,9 +8,11 @@ class Coursesurvey < ActiveRecord::Base
   #   created_at     : datetime 
   #   updated_at     : datetime 
   #   instructor_id  : integer 
+  #   klass          : integer 
   # =======================
 
   belongs_to :instructor
+  belongs_to :klass
 
   @@statusmap = { 0 => "Not Done", 1 => "Contacted", 2 => "Scheduled", 3 => "Done" }
 

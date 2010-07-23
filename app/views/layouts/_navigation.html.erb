@@ -5,7 +5,7 @@
     <a href="#">Student Services</a>
   </li>
   <li id="indrel" class="navigation_toplevel_item">
-    <a href="http://hkn.eecs.berkeley.edu/indrel/">Industry Relations</a>
+    <a href="#">Industry Relations</a>
   </li> 
   <li id="event" class="navigation_toplevel_item">
     <a href="#">Events</a>
@@ -28,71 +28,45 @@
 <div class="submenu" id ="services_submenu">
 <ul class="navigation_sublevel">
 <li>	
-	<a href="/admin/tutor/">
-
-		Tutoring
-	</a>
+	<a href="/admin/tutor/">Tutoring</a>
 </li>
 <li>	
-	<a href="/student/CourseSurvey">
-		Course Surveys
-	</a>
+	<a href="/coursesurveys/">Course Surveys</a>
 </li>
 <li>	
-	<a href="/exam/browse/">
-		Exam Archive
-	</a>
+	<a href="/exam/browse/">Exam Archive</a>
 </li>
 <li>	
-	<a href="/courseguide/">
-
-		Course Guide
-	</a>
+	<a href="/courseguide/">Course Guide</a>
 </li>
 <li>	
-	<a href="/services/more/">
-		More Services
-	</a>
+	<a href="/services/more/">More Services</a>
 </li>
 </ul>
 </div>
 
-<!--
 <div class="submenu" id ="indrel_submenu">
 <ul class="navigation_sublevel">
 <li>	
-	<a href="/indrel/">
-		Why HKN?
-	</a>
+  <%= link_to "Why HKN?", indrel_path %>
 </li>
 <li>	
-	<a href="/indrel/resume-book/register/">
-		Resume Books
-	</a>
+	<a href="/indrel/resume-book/register/">Resume Books</a>
 </li>
 <li>	
-	<a href="/indrel/infosession/register/">
-		Infosessions
-	</a>
+	<a href="/indrel/infosession/register/">Infosessions</a>
 </li>
 <li>	
-	<a href="/indrel/fair/">
-		Career Fair
-	</a>
+<%= link_to "Career Fair", career_fair_path %>
 </li>
 <li>	
-	<a href="/indrel/special/">
-		Special Events
-	</a>
+	<a href="/indrel/special/">Special Events</a>
 </li>
 <li>	
-	<a href="/indrel/contact/">
-		Contact Us
-	</a>
+	<a href="/indrel/contact/">Contact Us</a>
 </li>
 </ul>
 </div>
--->
 
 
 <div class="submenu" id ="info_submenu">

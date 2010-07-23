@@ -21,7 +21,10 @@ class Person < ActiveRecord::Base
   # =======================
 
   has_one :candidate
+  has_one :tutor
   has_many :committeeships
+  has_and_belongs_to_many :groups
+  has_many :rsvps
   
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
@@ -40,5 +43,31 @@ class Person < ActiveRecord::Base
     ldap = Net::LDAP.new( :host => LDAP_SERVER, :port => LDAP_SERVER_PORT )
     a = ldap.bind( :method => :simple, :username => "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", :password => password )
     return a
+  end
+
+  #Gets or creates the tutor object for a person.
+  #
+  def get_tutor
+    if self.tutor.nil?
+      self.tutor = Tutor.new
+      self.tutor.save
+    end
+    return self.tutor
+  end
+  
+  #Returns the person's full name
+  #
+  def fullname
+    return first_name + " " + last_name
+  end
+
+  #Returns the person's first name and last initial
+  #
+  def abbr_name
+    return first_name + " " + last_name[0..0]
+  end
+
+  def to_s
+    return fullname
   end
 end

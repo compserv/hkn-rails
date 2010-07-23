@@ -10,12 +10,14 @@ class Rsvp < ActiveRecord::Base
   #   transportation  : integer 
   #   created_at      : datetime 
   #   updated_at      : datetime 
+  #   block_id        : integer 
   # =======================
 
-  has_one :person
+  belongs_to :person
   belongs_to :event
   belongs_to :block
 
   validates :person, :presence => true
   validates :event, :presence => true
+  validates :block, :presence => true
 end

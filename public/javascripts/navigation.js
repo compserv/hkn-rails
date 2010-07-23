@@ -14,7 +14,7 @@ document.observe("dom:loaded", function() {
 	current = location.pathname.replace('/','');
 	current = current.substring(0,current.indexOf('/'));
 	id = current;	
-	if (id.length != 0 && $(id).length != 0) {
+	if (id.length != 0 && id != "coursesurveys" && $(id).length != 0) {
 		$(id).addClassName("selected");
 		submenuid = current + "_submenu";
 		//$(submenuid).show();	
@@ -25,7 +25,7 @@ document.observe("dom:loaded", function() {
 		$$(".submenu").first().setStyle({ display: 'block' });
 	}
 	$$(".navigation_toplevel_item").each(function(s) {
-    s.observe("click", 
+    s.observe("mouseover", 
       function () {
         $$(".navigation_toplevel_item").invoke("removeClassName", "selected");
         $(this).addClassName("selected");

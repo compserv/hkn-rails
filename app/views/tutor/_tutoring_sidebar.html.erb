@@ -1,0 +1,20 @@
+<h1>Tutoring</h1>
+<% if @tutoring_enabled %>
+<h3><%= @tutor_title %></h3>
+<table id="daily_tutoring_schedule" class="landing tutoring small">
+  <tr>
+    <th></th>
+    <th>290 Cory</th>
+    <th>345 Soda</th>
+  </tr>
+<% for hour in @hours %>
+  <tr>
+    <td class="time"><%= format_hour_slot hour %></td>
+    <td class="pcell"><%= render Slot.get_from_string(@day + hour.to_s + "C") %></td>
+    <td class="pcell"><%= render Slot.get_from_string(@day + hour.to_s + "S") %></td>
+  </tr>
+<% end %>
+</table>
+<% else %>
+<p><%= @tutoring_message %></p>
+<% end %>
