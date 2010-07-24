@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
     case method_id.to_s
       when /^authorize_([_a-zA-Z]\w*)$/
         return true
+      when /^check([_a-zA-Z]\w*)$/
+        return true
       else
         super
     end
@@ -21,6 +23,9 @@ class ApplicationController < ActionController::Base
       when /^authorize_([_a-zA-Z]\w*)$/
         group = $1
         self.send :authorize, group
+      when /^check([_a-zA-Z]\w*)$/
+        group = $1
+        self.send :check, group
       else
         super
     end
@@ -49,5 +54,10 @@ class ApplicationController < ActionController::Base
     unless group.nil? or @current_user.groups.include?(Group.find_by_name("superusers")) or @current_user.groups.map{|x| x.name}.include?(group)
       redirect_to :root, :notice => "Insufficient privileges to access this page."
     end
+  end
+  
+  def check(group)
+    return false if @current_user.nil? or group.nil? or @current_user.groups.include?(Group.find_by_name("superusers")) or @current_user.groups.map{|x| x.name}.include?(group)
+    return true
   end
 end
