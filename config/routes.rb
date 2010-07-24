@@ -1,7 +1,4 @@
 HknRails::Application.routes.draw do |map|
-  get "tutor/schedule"
-
-
   namespace :admin do
     scope "tutor" do
       match "signup_slots" => "tutor#signup_slots"
@@ -47,6 +44,11 @@ HknRails::Application.routes.draw do |map|
     match "slideshow" => "static#slideshow"
   end
 
+  #Tutoring pages
+  scope "tutor" do
+    match "" => "tutor#schedule"
+    match "schedule" => "tutor#schedule"
+  end
   #resources :user_session
 
   # The priority is based upon order of creation:
