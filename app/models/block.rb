@@ -7,10 +7,12 @@ class Block < ActiveRecord::Base
   #   end_time   : datetime 
   #   created_at : datetime 
   #   updated_at : datetime 
+  #   event_id   : integer 
   # =======================
 
   has_many :rsvps
-  
+  belongs_to :event
+
   validate :valid_time_range
 
   def valid_time_range

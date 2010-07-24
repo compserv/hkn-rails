@@ -12,6 +12,7 @@ class Event < ActiveRecord::Base
   #   updated_at  : datetime 
   # =======================
 
+  has_many :blocks
   validates :name, :presence => true
   validate :valid_time_range
 

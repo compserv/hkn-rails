@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100724053000) do
+ActiveRecord::Schema.define(:version => 20100724161438) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(:version => 20100724053000) do
     t.datetime "end_time"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "event_id"
   end
 
   create_table "candidates", :force => true do |t|

@@ -7,6 +7,7 @@ class Department < ActiveRecord::Base
   #   created_at : datetime 
   #   updated_at : datetime 
   # =======================
+
   validates :name, :presence => true
   validates :abbr, :presence => true
   
