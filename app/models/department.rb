@@ -7,5 +7,40 @@ class Department < ActiveRecord::Base
   #   created_at : datetime 
   #   updated_at : datetime 
   # =======================
-
+  validates :name, :presence => true
+  validates :abbr, :presence => true
+  
+  #This is a mapping of some proper abbreviations to their commonly used
+  #informal abbreviations
+  #
+  @nice_abbrs = {
+    "ASTRON" => ("ASTRO",),
+    "BIOLOGY" => ("BIO",),
+    "BIO ENG" => ("BIOE",),
+    "UGBA" => ("BA",),
+    "CHM ENG" => ("CHEME",),
+    "CIV ENG" => ("CIVE", "CEE", "CE", "CIVIL ENGINEERING",),
+    "COG SCI" => ("COGSCI",),
+    "COMPSCI" => ("CS",),
+    "EL ENG" => ("EE",),
+    "ENGIN" => ("E", "ENG", "ENGINEERING"),
+    "HISTORY" => ("HIST",), #not actually used
+    "IND ENG" => ("IEOR",),
+    "INTEGBI" => ("IB",),
+    "LINGUIS" => ("LING",), #not actually used
+    "MAT SCI" => ("MSE",),
+    "MEC ENG" => ("ME",),
+    "MCELLBI" => ("MCB",),
+    "PHYSICS" => ("PHYS",),
+    "POL SCI" => ("POLISCI",), #not actually used
+    "STAT" => ("STAT", "STATS",),
+    "ECON" => ("ECONOMICS",),
+    "UGIS" => ("IDS",),
+    "ENV SCI"  => ("ENV SCI", "ENVIR SCI"),
+    "ENVECON"  => ("ENVECON", "ENVIR ECON & POLICY"),
+    }
+    
+    class << self
+      attr_reader :nice_abbrs
+    end
 end
