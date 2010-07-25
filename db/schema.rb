@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(:version => 20100725072642) do
   end
 
   create_table "courses", :force => true do |t|
-    t.integer  "department"
+    t.integer  "department",    :null => false
     t.string   "course_number", :null => false
     t.string   "suffix"
     t.string   "prefix"
@@ -261,7 +261,7 @@ ActiveRecord::Schema.define(:version => 20100725072642) do
   create_table "quiz_responses", :force => true do |t|
     t.string   "number",       :null => false
     t.string   "response"
-    t.integer  "candidate_id", :null => false
+    t.integer  "candidate_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
