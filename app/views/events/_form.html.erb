@@ -34,7 +34,14 @@
     <%= f.label :end_time %><br />
     <%= datetime_select :event, :end_time %>
   </div>
-
+  <div class="field">
+	<%= label_tag :num_blocks, 'Number of blocks' %><br />
+    <%= number_field_tag :num_blocks, 1 %>
+  </div>
+  <div class="field">
+	<%= label_tag :max_rsvps, 'Maximum RSVPs' %><br />
+    <%= number_field_tag :max_rsvps %>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

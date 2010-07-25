@@ -42,9 +42,21 @@ class EventsController < ApplicationController
   # POST /events.xml
   def create
     @event = Event.new(params[:event])
-
+    duration = @event.end_time - @event.start_time
+    blocks = Integer(params[:num_blocks])
+    block_length = duration/blocks
+    
+    @debug << "We want " + blocks.to_s + " blocks that are " + block_length.to_s + " seconds long"
+    #For now, let's just stick to one block per event. The UI for multiple blocks is
+    #going to need javascript in order to not suck.
+    
+    @block = Block.new
+    @block.event = @event
+    @block.start_time = @event.start_time
+    @block.end_time = @event.end_time
     respond_to do |format|
       if @event.save
+        @block.save
         format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
         format.xml  { render :xml => @event, :status => :created, :location => @event }
       else
