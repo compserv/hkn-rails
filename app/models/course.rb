@@ -17,6 +17,7 @@ class Course < ActiveRecord::Base
   has_and_belongs_to_many :tutors
   has_many :klasses
   has_many :coursesurveys, :through => :klasses
+  has_many :exams
   validates :department, :presence => true
   validates :course_number, :presence => true
 
