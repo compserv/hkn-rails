@@ -14,10 +14,11 @@ class Block < ActiveRecord::Base
   belongs_to :event
 
   validate :valid_time_range
+  validates :event, :presence => true
 
   def valid_time_range
     if !start_time.blank? and !end_time.blank?
-      errors[:base] << "Start time must be less than end time" unless start_time < end_time
+      errors[:end_time] << "must be after start time" unless start_time < end_time
     end
   end
 end
