@@ -7,14 +7,14 @@ module CoursesurveysHelper
     # I appologize for forcing a span to be displayed as a block, I can't 
     # think of a better way of making it clickable with a link
     outer_html_options = { :class => "ratingbar" }
-    inner_html_options = { :class => "subbar", :style => "width: #{width}%; background-color: #{color}; display: block" }
+    inner_html_options = { :class => "subbar", :style => "width: #{width}%; background-color: #{color};" }
     if url.nil?
-      content_tag(:div, outer_html_options) do
+      content_tag(:span, outer_html_options) do
         content_tag("span", "", inner_html_options)
       end
     else
-      content_tag(:div, outer_html_options) do
-        link_to "URL" do
+      link_to url do
+        content_tag(:span, outer_html_options) do
           content_tag("span", "", inner_html_options)
         end
       end
