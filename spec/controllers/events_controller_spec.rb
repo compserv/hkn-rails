@@ -2,6 +2,14 @@ require 'spec_helper'
 
 describe EventsController do
 
+  # We should actually test the authorization before filters to ensure that 
+  # only the correct users have access, but this will do for now.
+  # Also, all comms should be able to access the Events stuff, not just act
+  before(:all) do
+    EventsController.skip_before_filter :authorize_act
+    EventsController.skip_before_filter :check_act
+  end
+
   def mock_event(stubs={})
     @mock_event ||= mock_model(Event, stubs).as_null_object
   end
@@ -41,6 +49,17 @@ describe EventsController do
   describe "POST create" do
 
     describe "with valid params" do
+      before(:each) do
+        Block.stub(:new) { 
+          mock_model(Block, {
+            :event= => nil, 
+            :start_time= => nil,
+            :end_time= => nil,
+            :save => true
+          }) 
+        }
+      end
+
       it "assigns a newly created event as @event" do
         Event.stub(:new).with({'these' => 'params'}) { mock_event(:save => true) }
         post :create, :event => {'these' => 'params'}
