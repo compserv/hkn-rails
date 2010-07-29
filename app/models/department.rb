@@ -41,7 +41,17 @@ class Department < ActiveRecord::Base
     "ENVECON"  => ["ENVECON", "ENVIR ECON & POLICY"],
     }
     
-    class << self
-      attr_reader :nice_abbrs
+  class << self
+    attr_reader :nice_abbrs
+  end
+
+  def Department.find_by_nice_abbr(abbr)
+    abbr.upcase!
+    @nice_abbrs.each_pair do |proper, informals|
+      if informals.include? abbr
+        abbr = proper
+      end
     end
+    find_by_abbr(abbr)
+  end
 end
