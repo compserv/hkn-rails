@@ -79,3 +79,7 @@ html #debug .message { border: solid 3px #cc0000; padding: 10px; background: #ff
 /*** Specific Page Styling ***/
 /* Info Bar */
 html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padding-left: 8px; margin-left: 12px; height: 100%; overflow: auto; }
+
+/* Course Surveys */
+html .ratingbar { width: 70px; height: 9px; border: 1px black solid; background-color: gray; display: block; }
+html .ratingbar .subbar { height: 100%; display: block; }
