@@ -11,6 +11,8 @@ class Instructor < ActiveRecord::Base
   #   interests    : string 
   #   created_at   : datetime 
   #   updated_at   : datetime 
+  #   private      : boolean 
+  #   office       : string 
   # =======================
 
   has_many :coursesurveys

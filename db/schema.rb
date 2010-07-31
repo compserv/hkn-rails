@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100729043837) do
+ActiveRecord::Schema.define(:version => 20100730050209) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -190,7 +190,7 @@ ActiveRecord::Schema.define(:version => 20100729043837) do
   end
 
   create_table "instructors", :force => true do |t|
-    t.string   "name",         :null => false
+    t.string   "name",                           :null => false
     t.string   "picture"
     t.string   "title"
     t.string   "phone_number"
@@ -199,6 +199,8 @@ ActiveRecord::Schema.define(:version => 20100729043837) do
     t.string   "interests"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "private",      :default => true
+    t.string   "office"
   end
 
   create_table "instructors_klasses", :id => false, :force => true do |t|
@@ -297,6 +299,24 @@ ActiveRecord::Schema.define(:version => 20100729043837) do
   create_table "slots_tutors", :id => false, :force => true do |t|
     t.integer "slot_id"
     t.integer "tutor_id"
+  end
+
+  create_table "survey_answers", :force => true do |t|
+    t.integer "survey_question_id", :null => false
+    t.integer "klass_id",           :null => false
+    t.integer "instructor_id",      :null => false
+    t.string  "frequencies",        :null => false
+    t.float   "mean"
+    t.float   "deviation"
+    t.float   "median"
+    t.integer "order"
+  end
+
+  create_table "survey_questions", :force => true do |t|
+    t.string  "text",                         :null => false
+    t.boolean "important", :default => false
+    t.boolean "inverted",  :default => false
+    t.integer "max",                          :null => false
   end
 
   create_table "tutors", :force => true do |t|
