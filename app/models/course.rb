@@ -32,12 +32,16 @@ class Course < ActiveRecord::Base
 
   def course_name
     # e.g. Electrical Engineering 20N
-    "#{dept_name} #{course_number}#{suffix}"
+    "#{dept_name} #{full_course_number}"
   end
 
   def course_abbr
     # e.g. EE20N
-    "#{dept_abbr}#{course_number}#{suffix}"
+    "#{dept_abbr}#{full_course_number}"
+  end
+
+  def full_course_number
+    "#{prefix}#{course_number}#{suffix}"
   end
 
   # E.g. ("EE", "C149")
