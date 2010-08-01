@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
-# This script will import course survey data from a tab-separated values 
-# (TSV) file into the system.
+# This script will import course information parsed from the online course 
+# catalog (http://sis.berkeley.edu/catalog/gcc_view_req?p_dept_cd=EECS)
+# into the system. It does not do anything if it finds a course that's
+# already in the system. We may want to later add a few lines of code
+# that updates information if the course already exists
 #
 # -richardxia
 
