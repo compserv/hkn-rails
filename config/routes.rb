@@ -18,7 +18,7 @@ HknRails::Application.routes.draw do |map|
   # Course Surveys
   scope "coursesurveys" do
     match "" => "coursesurveys#index"
-    match "course/:id" => "coursesurveys#course"
+    match "course/:dept_abbr/:short_name" => "coursesurveys#course"
   end
 
   resources :events

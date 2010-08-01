@@ -10,6 +10,7 @@
     <td colspan="1"><i><%= @course.name %></i></td>
     <td valign="bottom" align="right" rowspan="3"><img src="trend" alt="trend"/></td>
   </tr>
+<%- unless @instructors.blank? -%>
   <tr>
     <th >Instructor<%= @instructors.size > 1 ? "s" : "" %> in Charge</th>
     <td colspan="1">
@@ -18,6 +19,7 @@
       <% end %>
     </td>
   </tr>
+<%- end -%>
   <tr>
     <th >Units</th>
     <td colspan="1"><%= @course.units %></td>
