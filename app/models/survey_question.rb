@@ -7,6 +7,7 @@ class SurveyQuestion < ActiveRecord::Base
   #   inverted  : boolean 
   #   max       : integer 
   # =======================
+
   
   validates :text, :presence => true
   validates :max,  :presence => true

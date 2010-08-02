@@ -11,6 +11,7 @@ class SurveyAnswer < ActiveRecord::Base
   #   median             : float 
   #   order              : integer 
   # =======================
+
   
   belongs_to :klass
   belongs_to :instructor

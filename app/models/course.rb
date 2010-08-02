@@ -21,6 +21,7 @@ class Course < ActiveRecord::Base
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
+  validates :name,          :presence => true
 
   def dept_abbr
     department.nice_abbrs.first

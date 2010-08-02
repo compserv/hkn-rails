@@ -23,6 +23,7 @@ def parse_klass_info(line)
   title = title[1..-2]
   respondents = line[1]
   semester = line[11]
+  course_no.upcase!
 
   # Check and find department
   department = Department.find_by_nice_abbr(dept_abbr)
@@ -66,15 +67,31 @@ def parse_klass_info(line)
     raise "Error: Title #{title} not recognized. Should be either 'prof' or 'ta'"
   end
 
-  return 1
+  return [1, instructor, klass]
 end
 
 def parse_frequencies
   return 4
 end
 
-def parse_answers lines, i
+def get_stats frequencies
+  freq  = frequencies.reject {|key, value| key.class != Fixnum}
+  sum   = freq.map{|key,value| key*value}.reduce{|x,y| x+y}
+  count = freq.map{|key,value| value}.reduce{|x,y| x+y}
+  if count == 0
+    return [0, 0, 0]
+  end
+
+  mean = 1.0*sum/count
+  entries = freq.map{|key,value| [key]*value}.flatten.sort
+  median = (entries[count/2] + entries[-count/2])/2.0
+  stddev = Math.sqrt(freq.map{|key,value| (key-mean)**2*value}.reduce{|x,y| x+y}/(count))
+  [mean, median, stddev]
+end
+
+def parse_answers lines, i, instructor, klass, answers
   initial_line = i
+  order = 0
   until lines[i] =~ /^Data processed:/
     if lines[i] =~ /^[0-9]*\./
       qa = lines[i].split("\t")
@@ -82,6 +99,36 @@ def parse_answers lines, i
       q = SurveyQuestion.find_by_text(question)
       if q.nil?
         puts "Couldn't find survey question \"#{question}\". Please enter it into the database manually."
+      elsif SurveyAnswer.find(:first, :conditions => {:instructor_id => instructor.id, :klass_id => klass.id, :survey_question_id => q.id})
+        puts "Survey data already found. Not updating. Use the -f option to force update the values."
+        exit
+      else
+        frequencies = {}
+        1.upto(q.max) do |x|
+          if qa[x] == ""
+            value = 0
+          else
+            value = qa[x].to_i
+          end
+          frequencies[x] = value
+        end
+        frequencies["Omit"] = qa[9]
+        frequencies["N/A"]  = qa[8]
+        #puts "#{klass.course.course_abbr} #{question}"
+        #puts frequencies.to_json
+        #puts get_stats(frequencies).to_json
+        (mean, median, stddev) = get_stats(frequencies)
+        answers << {
+          :survey_question_id => q.id,
+          :klass_id           => klass.id,
+          :instructor_id      => instructor.id,
+          :frequencies        => frequencies.to_json,
+          :mean               => mean,
+          :median             => median,
+          :deviation          => stddev,
+          :order              => order,
+        }
+        order += 1
       end
     end
     i += 1
@@ -98,10 +145,18 @@ def parse_tsv filename
   i = 0
   lines = file.readlines
 
+  answers = []
   while i < lines.size
-    i += parse_klass_info(lines[i].split("\t"))
+    (lines_read, instructor, klass) = parse_klass_info(lines[i].split("\t"))
+    i += lines_read
+
     i += parse_frequencies
-    i += parse_answers(lines, i)
+
+    i += parse_answers(lines, i, instructor, klass, answers)
+  end
+  puts "Passed checks. Continuing with inserting results into database"
+  answers.each do |answer|
+    SurveyAnswer.create(answer)
   end
 end
 
