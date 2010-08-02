@@ -30,7 +30,7 @@
 <% end %>
 
   <div id="container">
-	<% if @messages %>
+	<% if !@messages.empty? %>
 	<div id="messages">
 		<% @messages.each do |message| %>
 		<div class="message">
@@ -39,7 +39,7 @@
 		<% end %>
 	</div>
 	<% end %>
-	<% if Rails.env=="development" and @debug %>
+	<% if Rails.env=="development" and !@debug.empty? %>
 	<div id="debug">
 		<% @debug.each do |message| %>
 		<div class="message">Debug:
