@@ -34,4 +34,24 @@ class CoursesurveysController < ApplicationController
       end
     end
   end
+
+  def klass
+    @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
+    if @course.blank?
+      @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
+      render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
+    end
+    (year,season) = params[:semester].match(/^([0-9]*)_([a-zA-Z]*)$/)[1..-1]
+    season = case season.downcase when "spring" then "1" when "summer" then "2" when "fall" then "3" else "" end
+    if year.blank? or season.blank?
+      @errors = "Semester #{params[:semester]} not formatted correctly."
+      render :text => "Semester #{params[:semester]} not formatted correctly."
+    end
+    semester = year+season
+    @klass = Klass.find(:first, :conditions => { :course_id => @course.id, :semester => semester })
+    if @klass.blank?
+      @errors = "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
+      render :text => "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
+    end
+  end
 end
