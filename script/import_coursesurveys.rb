@@ -49,7 +49,12 @@ def parse_klass_info(line)
   instructor = Instructor.find_by_name("#{first_name} #{last_name}")
   if instructor.nil?
     puts "No instructor named #{first_name} #{last_name} found. Creating now."
-    instructor = Instructor.create( :name => "#{first_name} #{last_name}" )
+    if title == "prof"
+      privacy = false
+    else
+      privacy = true
+    end
+    instructor = Instructor.create( :name => "#{first_name} #{last_name}", :private => privacy )
   end
 
   # Check whether klass exists
@@ -97,6 +102,7 @@ end
 def parse_answers lines, i, instructor, klass, answers
   initial_line = i
   order = 0
+  errors = false
   until lines[i] =~ /^Data processed:/
     if lines[i] =~ /^[0-9]*\./
       qa = lines[i].split("\t")
@@ -104,6 +110,7 @@ def parse_answers lines, i, instructor, klass, answers
       q = SurveyQuestion.find_by_text(question)
       if q.nil?
         puts "Couldn't find survey question \"#{question}\". Please enter it into the database manually."
+        errors = true
       elsif SurveyAnswer.find(:first, :conditions => {:instructor_id => instructor.id, :klass_id => klass.id, :survey_question_id => q.id})
         puts "Survey data already found. Not updating. Use the -f option to force update the values."
         exit
@@ -138,6 +145,7 @@ def parse_answers lines, i, instructor, klass, answers
     end
     i += 1
   end
+  exit if errors
   i += 1
   return i - initial_line
 end
