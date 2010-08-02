@@ -19,6 +19,9 @@ HknRails::Application.routes.draw do |map|
   scope "coursesurveys" do
     match "" => "coursesurveys#index"
     match "course/:dept_abbr/:short_name" => "coursesurveys#course", :as => :coursesurveys_course
+    match "how-to"     => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
+    match "info-profs" => "static#coursesurveys_info_profs", :as => :coursesurveys_info_profs
+    match "ferpa"      => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
   end
 
   resources :events

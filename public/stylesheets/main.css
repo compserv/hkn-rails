@@ -1,20 +1,21 @@
 /*** Standard Styling ***/
 html { height: 100%; }
 html body { height: 100%; font-family: "Lucida Grande",Verdana,Arial,sans-serif; line-height: 1.5em; font-size: 14px; margin: 0; padding: 0; background: #FFFFFF; }
-html ul, html ol { margin-left: 25px; margin-bottom: 12px; }
-html h1 { color: #003366; font-weight: bold; font-size: x-large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
-html h2 { font-weight: inherit; font-size: large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
-html h3 { font-weight: bold; font-size: medium; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
+html ul, html ol { margin-left: 25px; }
+html h1 { color: #003366; font-weight: bold; font-size: x-large; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 12px 0 0; }
+html h2 { font-weight: inherit; font-size: 130%; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 10px 0 0; }
+html h3 { font-weight: bold; font-size: 100%; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 8px 0 0;}
 html img { border: none; }
-html p { line-height: 1.4; font-size: small; margin-bottom: 12px; }
+html p { line-height: 1.4; font-size: small; margin: 8px 0; }
 html li { line-height: 1.8; font-size: small; }
 html a { color: #3366CC; text-decoration: none; }
 html a:link { color: #3366CC; }
 html a:visited { color: #3366CC; }
 html a:hover { text-decoration: underline; }
-html input { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+html input { border: 1px solid #003366; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 html input:focus { border: 1px solid black; }
-html input[type=submit] { background: #EEEEEE; margin: 4px; }
+html input[type=submit] { background: #EEEEEE; margin: 4px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
+html input[type=submit]:hover { -moz-box-shadow: 0px 0px 3px #000; -webkit-box-shadow: 0px 0px 3px #000; }
 html input.short { width: 100px; }
 html select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 html select:focus { border: 1px solid black; }
@@ -66,6 +67,18 @@ html #topbar {
   background-image: -moz-linear-gradient( center bottom, #ADC3DB 0%, #AADDDD 100% );
 }
 html #topbar input { background: #DCE2ED; border: 1px #003366 solid; padding: 2px 3px; margin: 4px; }
+html #topbar input[type=submit] { 
+  background-color: #DCE2ED; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #BBCCCC), color-stop(1, #DDEEEE));
+  background-image: -moz-linear-gradient( center bottom, #BBCCCC 0%, #DDEEEE 100% );
+  padding: 2px 3px; 
+  margin: 4px; 
+}
+html #topbar input[type=submit]:active { 
+  background-color: #DCE2ED; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #DDEEEE), color-stop(1, #BBCCCC));
+  background-image: -moz-linear-gradient( center bottom, #DDEEEE 0%, #BBCCCC 100% );
+}
 html #topbar input.text { width: 200px; }
 html #topbar .searchhelp { margin-left: 5px; }
 html #userbar { float: left; padding: 5px 8px 5px 8px; }
@@ -95,9 +108,15 @@ html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padd
 /* Course Surveys */
 html .ratingbar { width: 70px; height: 9px; border: 1px black solid; display: inline-block; }
 html .ratingbar .subbar { height: 100%; display: block; }
-html #course_info { border: 1px black solid; border-radius: 20px; -moz-border-radius: 20px; -webkit-border-radius: 20px; background-color: #BBCCEE; }
+html #course_info { 
+  border: 1px black solid; 
+  border-radius: 20px; 
+  -moz-border-radius: 20px; 
+  -webkit-border-radius: 20px; 
+  background-color: #BBCCEE; 
+}
 html #course_info th { text-align: right; }
 html #trend { float: right; }
-html #ratings { border: 1px solid black; border-collapse: collapse; margin-top: 10px; margin-left: auto; margin-right: auto; }
+html #ratings { border: 1px solid black; border-collapse: collapse; margin: 10px auto; }
 html #ratings th { border: 1px solid black; background-color: #BBCCEE; }
 html #ratings td { border: 1px dashed #AABBDD; }
