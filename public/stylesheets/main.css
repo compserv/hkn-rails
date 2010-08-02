@@ -34,7 +34,7 @@ html ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1
 /*** Main Layout ***/
 /* Header */
 html #header { text-align: center; }
-html #logo { margin: auto; background: #FFFFFF url("/images/site/watermark.png"); }
+html #logo { margin: auto; background: white; }
 html #navigation { font-family: "Trebuchet MS",Arial,tahoma,sans-serif; width: 100%; font-size: 15px; height: 54px; background: #003366; }
 html #toplevel { height: 30px; margin: 0 auto; width: 100%; text-align: center; display: inline; }
 html #toplevel ul { padding: 0; margin: 0; list-style: none; height: 30px; text-align: center; background: #336699; line-height: 30px; }
@@ -52,7 +52,19 @@ html .submenu li a:visited { text-align: center; height: 18px; text-decoration: 
 html .submenu li a:hover { background: #002244; text-decoration: none; }
 
 /* Top Bar */
-html #topbar { border-left: 1px #003366 solid; border-right: 1px #003366 solid; border-bottom: 1px #003366 solid; padding-bottom: 3px; background: #ADC3DB; }
+html #topbar { 
+  border-left: 1px #003366 solid; 
+  border-right: 1px #003366 solid; 
+  border-bottom: 1px #003366 solid; 
+  -webkit-border-bottom-left-radius: 10px; 
+  -webkit-border-bottom-right-radius: 10px; 
+  -moz-border-radius-bottomleft: 10px; 
+  -moz-border-radius-bottomright: 10px; 
+  padding-bottom: 3px; 
+  background-color: #ADC3DB; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #ADC3DB), color-stop(1, #AADDDD));
+  background-image: -moz-linear-gradient( center bottom, #ADC3DB 0%, #AADDDD 100% );
+}
 html #topbar input { background: #DCE2ED; border: 1px #003366 solid; padding: 2px 3px; margin: 4px; }
 html #topbar input.text { width: 200px; }
 html #topbar .searchhelp { margin-left: 5px; }
@@ -81,5 +93,11 @@ html #debug .message { border: solid 3px #cc0000; padding: 10px; background: #ff
 html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padding-left: 8px; margin-left: 12px; height: 100%; overflow: auto; }
 
 /* Course Surveys */
-html .ratingbar { width: 70px; height: 9px; border: 1px black solid; background-color: gray; display: block; }
+html .ratingbar { width: 70px; height: 9px; border: 1px black solid; display: inline-block; }
 html .ratingbar .subbar { height: 100%; display: block; }
+html #course_info { border: 1px black solid; border-radius: 20px; -moz-border-radius: 20px; -webkit-border-radius: 20px; background-color: #BBCCEE; }
+html #course_info th { text-align: right; }
+html #trend { float: right; }
+html #ratings { border: 1px solid black; border-collapse: collapse; margin-top: 10px; margin-left: auto; margin-right: auto; }
+html #ratings th { border: 1px solid black; background-color: #BBCCEE; }
+html #ratings td { border: 1px dashed #AABBDD; }
