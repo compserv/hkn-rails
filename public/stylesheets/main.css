@@ -63,8 +63,8 @@ html #topbar {
   -moz-border-radius-bottomright: 10px; 
   padding-bottom: 3px; 
   background-color: #ADC3DB; 
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #ADC3DB), color-stop(1, #AADDDD));
-  background-image: -moz-linear-gradient( center bottom, #ADC3DB 0%, #AADDDD 100% );
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #ADC3DB), color-stop(1, #B0E0E0));
+  background-image: -moz-linear-gradient( center bottom, #ADC3DB 0%, #B0E0E0 100% );
 }
 html #topbar input { background: #DCE2ED; border: 1px #003366 solid; padding: 2px 3px; margin: 4px; }
 html #topbar input[type=submit] { 
@@ -114,6 +114,9 @@ html #course_info {
   -moz-border-radius: 20px; 
   -webkit-border-radius: 20px; 
   background-color: #BBCCEE; 
+  background-color: #ADC3DB; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
+  background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
 }
 html #course_info th { text-align: right; }
 html #trend { float: right; }

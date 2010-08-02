@@ -25,7 +25,7 @@ document.observe("dom:loaded", function() {
 		$$(".submenu").first().setStyle({ display: 'block' });
 	}
 	$$(".navigation_toplevel_item").each(function(s) {
-    s.observe("mouseover", 
+    s.observe("mousedown", 
       function () {
         $$(".navigation_toplevel_item").invoke("removeClassName", "selected");
         $(this).addClassName("selected");
