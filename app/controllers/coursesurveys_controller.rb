@@ -28,8 +28,10 @@ class CoursesurveysController < ApplicationController
         end
       end
 
-      @total_effectiveness  = effective_sum/@results.size
-      @total_worthwhileness = worthwhile_sum/@results.size
+      unless @course.klasses.blank?
+        @total_effectiveness  = effective_sum/@results.size
+        @total_worthwhileness = worthwhile_sum/@results.size
+      end
     end
   end
 end
