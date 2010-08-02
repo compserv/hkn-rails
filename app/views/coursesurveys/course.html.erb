@@ -1,116 +1,71 @@
 <%= @errors %>
 
 <h1><%= @course.course_name %></h1>
-<a href="mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page http://hkn.eecs.berkeley.edu/student/CourseSurvey/courses/EE/40/">[Email HKN about this data]</a>
-<a href="/student/howtouse.shtml">[Info about this page]</a>
 
-<table class="info">
+<img id="trend" src="trend" alt="trend"/>
+<table id="course_info" class="info">
   <tr>
-    <th >Title</th>
-    <td colspan="1"><i><%= @course.name %></i></td>
-    <td valign="bottom" align="right" rowspan="3"><img src="trend" alt="trend"/></td>
-  </tr>
+    <th>Title</th>            <td><%= @course.name %></td> </tr>
 <%- unless @instructors.blank? -%>
   <tr>
-    <th >Instructor<%= @instructors.size > 1 ? "s" : "" %> in Charge</th>
-    <td colspan="1">
+    <th>Instructor<%= @instructors.size > 1 ? "s" : "" %> in Charge</th>
+    <td>
       <% @instructors.each do |instructor| %>
         <%= link_to instructor.name, "Not Sure Yet" %>
       <% end %>
     </td>
   </tr>
 <%- end -%>
-  <tr>
-    <th >Units</th>
-    <td colspan="1"><%= @course.units %></td>
-  </tr>
-  <tr>
-    <th >Prerequisites</th>
-    <td colspan="2"><%= @course.prereqs %></td>
-  </tr>
-  <tr>
-    <th >Description</th>
-    <td colspan="2"><%= @course.description %></td>
-  </tr>
+  <tr> <th>Units</th>         <td><%= @course.units %></td> </tr>
+<%- unless @course.prereqs.blank? -%>
+  <tr> <th>Prerequisites</th> <td><%= @course.prereqs %></td> </tr>
+<%- end -%>
+  <tr> <th>Description</th>   <td><%= @course.description %></td> </tr>
 </table>
 
-<table class="list sortable" cellspacing="0" width="100%">
-<tbody>
-<tr class="first-row sortable">
-
-<th class="first-child large sortable :sort-initial" >Sections</th>
-<th class="sortable">Instructor</th>
-<th colspan="3" class="center sortable" >Teaching Effectiveness</th>
-<th colspan="3" class="center sortable" >How worthwhile was this course?</th></tr>
-</tbody>
-<tbody class="sortable">
+<table id="ratings">
+  <tr>
+    <th>Sections</th>
+    <th>Instructor</th>
+    <th>Teaching Effectiveness</th>
+    <th>How worthwhile was this course?</th>
+  </tr>
+<%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
   <tr>
     <td>
-      <a href="2010_Spring/"><span class="col-klass" >Spring 2010</span></a>
+      <a href="2010_Spring/"><%= klass.proper_semester %></a>
     </td>
     <td>
-      <a href="../../../instructors/EE/Professor/Boser,Bernhard/">Boser</a>
+      <a href="FAKE_URL"><%= instructor.name %></a>
     </td>
-    <td class="rating1">5.1</td>
-    <td class="rating2">/ 7 &plusmn; 0.4</td>
-    <td class="rating3">
-      <table class="bar" cellspacing="0">
-        <tr>
-          <td class="left orange"><a href="../../../rating/=142350/"><img alt=""  src="/images/trans.gif" width="51" height="9"/></a>
-          </td>
-          <td class="right bg"><a href="../../../rating/=142350/"><img alt=""  src="/images/trans.gif" width="19" height="9"/></a>
-          </td>
-        </tr>
-      </table>
+    <td>
+      <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
+      <%= rating_bar(effectiveness.mean/7.0) %>
     </td>
-    <td class="rating1">5.4</td>
-    <td class="rating2">/ 7 &plusmn; 0.4</td>
-    <td class="rating3">
-      <table class="bar" cellspacing="0">
-        <tr>
-          <td class="left darkgreen"><a href="../../../rating/=142351/"><img alt=""  src="/images/trans.gif" width="54" height="9"/></a>
-          </td>
-          <td class="right bg"><a href="../../../rating/=142351/"><img alt=""  src="/images/trans.gif" width="16" height="9"/></a>
-          </td>
-        </tr>
-      </table>
+    <td>
+      <%= sprintf "%.1f", worthwhileness.mean %> / <%= worthwhileness.survey_question.max.to_f %>
+      <%= rating_bar(worthwhileness.mean/7.0) %>
     </td>
   </tr>
-
-<tr><td  ><a href="2009_Fall/"><span class="col-klass" >Fall 2009</span></a></td><td><a href="../../../instructors/EE/Professor/Cheung,Nathan_W./">Cheung</a></td><td  class="rating1">3.8</td><td  class="rating2">/ 7 &plusmn; 0.4</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=140439/"><img alt=""  src="/images/trans.gif" width="38" height="9"/></a></td><td class="right bg"><a href="../../../rating/=140439/"><img alt=""  src="/images/trans.gif" width="32" height="9"/></a></td></tr></table></td><td  class="rating1">4.8</td><td  class="rating2">/ 7 &plusmn; 0.4</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=140440/"><img alt=""  src="/images/trans.gif" width="48" height="9"/></a></td><td class="right bg"><a href="../../../rating/=140440/"><img alt=""  src="/images/trans.gif" width="22" height="9"/></a></td></tr></table></td></tr>
-<tr><td  ><a href="2009_Spring/"><span class="col-klass" >Spring 2009</span></a></td><td><a href="../../../instructors/EE/Professor/Boser,Bernhard/">Boser</a></td><td  class="rating1">4.8</td><td  class="rating2">/ 7 &plusmn; 0.3</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=130795/"><img alt=""  src="/images/trans.gif" width="48" height="9"/></a></td><td class="right bg"><a href="../../../rating/=130795/"><img alt=""  src="/images/trans.gif" width="22" height="9"/></a></td></tr></table></td><td  class="rating1">5.1</td><td  class="rating2">/ 7 &plusmn; 0.3</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=130796/"><img alt=""  src="/images/trans.gif" width="51" height="9"/></a></td><td class="right bg"><a href="../../../rating/=130796/"><img alt=""  src="/images/trans.gif" width="19" height="9"/></a></td></tr></table></td></tr>
-
-<tr><td  ><a href="2008_Fall/"><span class="col-klass" >Fall 2008</span></a></td><td><a href="../../../instructors/EE/Professor/Chang-Hasnain,Constance/">Chang-Hasnain</a></td><td  class="rating1">4.5</td><td  class="rating2">/ 7 &plusmn; 0.3</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=128069/"><img alt=""  src="/images/trans.gif" width="45" height="9"/></a></td><td class="right bg"><a href="../../../rating/=128069/"><img alt=""  src="/images/trans.gif" width="25" height="9"/></a></td></tr></table></td><td  class="rating1">5.3</td><td  class="rating2">/ 7 &plusmn; 0.3</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left darkgreen"><a href="../../../rating/=128070/"><img alt=""  src="/images/trans.gif" width="53" height="9"/></a></td><td class="right bg"><a href="../../../rating/=128070/"><img alt=""  src="/images/trans.gif" width="17" height="9"/></a></td></tr></table></td></tr>
-
-<tr><td  ><a href="2008_Spring/"><span class="col-klass" >Spring 2008</span></a></td><td><a href="../../../instructors/EE/Professor/Anantharam,Venkat/">Anantharam</a></td><td  class="rating1">4.6</td><td  class="rating2">/ 7 &plusmn; 0.4</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=126889/"><img alt=""  src="/images/trans.gif" width="46" height="9"/></a></td><td class="right bg"><a href="../../../rating/=126889/"><img alt=""  src="/images/trans.gif" width="24" height="9"/></a></td></tr></table></td><td  class="rating1">5.1</td><td  class="rating2">/ 7 &plusmn; 0.4</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=126890/"><img alt=""  src="/images/trans.gif" width="51" height="9"/></a></td><td class="right bg"><a href="../../../rating/=126890/"><img alt=""  src="/images/trans.gif" width="19" height="9"/></a></td></tr></table></td></tr>
-
-<tr><td  ><a href="1999_Fall/"><span class="col-klass" >Fall 1999</span></a></td><td><a href="../../../instructors/EE/Professor/Oldham,William_G./">Oldham</a>&nbsp;<small>(1/2)</small></td><td  class="rating1">5.5</td><td  class="rating2">/ 7 &plusmn; 0.2</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left darkgreen"><a href="../../../rating/=8912/"><img alt=""  src="/images/trans.gif" width="55" height="9"/></a></td><td class="right bg"><a href="../../../rating/=8912/"><img alt=""  src="/images/trans.gif" width="15" height="9"/></a></td></tr></table></td><td  class="rating1">5.4</td><td  class="rating2">/ 7 &plusmn; 0.2</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left darkgreen"><a href="../../../rating/=8913/"><img alt=""  src="/images/trans.gif" width="54" height="9"/></a></td><td class="right bg"><a href="../../../rating/=8913/"><img alt=""  src="/images/trans.gif" width="16" height="9"/></a></td></tr></table></td></tr>
-
-<tr><td  ><a href="1999_Fall/"><span class="col-klass" >Fall 1999</span></a></td><td><a href="../../../instructors/EE/Professor/Sylvester,D./">Sylvester</a>&nbsp;<small>(2/2)</small></td><td  class="rating1">5.0</td><td  class="rating2">/ 7 &plusmn; 0.0</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=8931/"><img alt=""  src="/images/trans.gif" width="50" height="9"/></a></td><td class="right bg"><a href="../../../rating/=8931/"><img alt=""  src="/images/trans.gif" width="20" height="9"/></a></td></tr></table></td><td  class="rating1">3.7</td><td  class="rating2">/ 7 &plusmn; 5.7</td><td  class="rating3"><table class="bar" cellspacing="0"><tr><td class="left orange"><a href="../../../rating/=8932/"><img alt=""  src="/images/trans.gif" width="37" height="9"/></a></td><td class="right bg"><a href="../../../rating/=8932/"><img alt=""  src="/images/trans.gif" width="33" height="9"/></a></td></tr></table></td></tr>
-
-</tbody>
-
-<tbody>
+<%- end -%>
   <tr>
-    <th colspan="2" class="large">Overall Rating</th>
-    <th colspan="3" class="center">Teaching Effectiveness</th>
-    <th colspan="3" class="center">How worthwhile was this course?</th>
+    <th colspan="2">Overall Rating</th>
+    <th>Teaching Effectiveness</th>
+    <th>How worthwhile was this course?</th>
   </tr>
   <tr>
-    <td colspan="2" class="bold">Electrical Engineering 40</td>
-    <td class="rating1big">4.8</td>
-    <td  class="rating2">/ 7 &plusmn; 0.0</td>
-    <td  class="rating3">
-      <%= rating_bar(68.0/70.0, "url") %>
+    <td colspan="2"></td>
+    <td>
+      <%= sprintf "%.1f", @total_effectiveness %> / 7.0
+      <%= rating_bar(@total_effectiveness/7.0, "url") %>
     </td>
-    <td class="rating1big">5.1</td>
-    <td class="rating2">/ 7 &plusmn; 0.0</td>
-    <td class="rating3">
-      <%= rating_bar(51.0/70.0) %>
+    <td>
+      <%= sprintf "%.1f", @total_worthwhileness %> / 7.0
+      <%= rating_bar(@total_worthwhileness/7.0) %>
     </td>
-
   </tr>
-</tbody>
 </table>
 
 <p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
+<a href="mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page http://hkn.eecs.berkeley.edu/student/CourseSurvey/courses/EE/40/">[Email HKN about this data]</a>
+<a href="/student/howtouse.shtml">[Info about this page]</a>

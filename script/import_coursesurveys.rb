@@ -16,14 +16,18 @@ end
 
 def parse_klass_info(line)
   (dept_abbr, klass_section, instructor, title) = line[0].gsub(/^"(.*)"$/,'\1').split
-  (course_no, section) = klass_section.split("-")
+  (full_course_number, section) = klass_section.split("-")
+  if instructor.index(",").nil?
+    puts "Could not parse instructor name #{instructor} correctly. Please check source file."
+    exit
+  end
   (last_name, first_name) = instructor.split(",")
   first_name.capitalize!
   last_name.capitalize!
   title = title[1..-2]
   respondents = line[1]
   semester = line[11]
-  course_no.upcase!
+  full_course_number.upcase!
 
   # Check and find department
   department = Department.find_by_nice_abbr(dept_abbr)
@@ -33,9 +37,10 @@ def parse_klass_info(line)
   end
 
   # Check whether course exists
-  course = Course.find_by_short_name(dept_abbr, course_no)
+  (course_number, suffix) = full_course_number.match(/^([0-9]*)([A-Z]*)$/)[1..-1]
+  course = Course.find(:first, :conditions => {:department_id => department.id, :course_number => course_number, :suffix => suffix})
   if course.nil?
-    puts "Could not find course #{dept_abbr} #{course_no}. Please enter it into the database before rerunning this script" 
+    puts "Could not find course #{dept_abbr} #{full_course_number}. Please enter it into the database before rerunning this script" 
     exit
   end
 
