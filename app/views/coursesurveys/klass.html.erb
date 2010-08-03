@@ -2,18 +2,20 @@
 
 <h1><%= link_to @course.course_name, coursesurveys_course_path(@course.dept_abbr, @course.full_course_number) %> - <%= @klass.proper_semester %></h1>
 
-Instructor<%= "s" if @klass.instructors.size > 1 %>
-<ul>
-  <% @klass.instructors.each do |instructor| %>
-    <li><%= link_to instructor.name, "Not Sure Yet" %></li>
-  <% end %>
-</ul>
-TA<%= "s" if @klass.tas.size > 1 %>
-<ul>
-  <% @klass.tas.each do |instructor| %>
-    <li><%= link_to instructor.name, "Not Sure Yet" %></li>
-  <% end %>
-</ul>
+<div id="instructorbox" class="infobox">
+  <h3>Instructor<%= "s" if @klass.instructors.size > 1 %></h3>
+  <ul>
+    <% @klass.instructors.each do |instructor| %>
+      <li><%= link_to instructor.name, "Not Sure Yet" %></li>
+    <% end %>
+  </ul>
+  <h3>TA<%= "s" if @klass.tas.size > 1 %></h3>
+  <ul>
+    <% @klass.tas.each do |instructor| %>
+      <li><%= link_to instructor.name, "Not Sure Yet" %></li>
+    <% end %>
+  </ul>
+</div>
 
 <table id="ratings">
 <%- @results.each do |instructor, answers| -%>
@@ -33,7 +35,11 @@ TA<%= "s" if @klass.tas.size > 1 %>
   </tr>
     <%- answers.each do |answer| -%>
   <tr>
-    <td><%= answer.survey_question.text %></td>
+    <td>
+      <%- if answer.survey_question.important -%><strong><%- end -%>
+      <%= answer.survey_question.text %>
+      <%- if answer.survey_question.important -%></strong><%- end -%>
+    </td>
     <td>
       <%= sprintf "%.1f", answer.mean %> / <%= answer.survey_question.max.to_f %>
       <%= rating_bar(answer.mean/answer.survey_question.max.to_f) %>
