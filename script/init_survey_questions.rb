@@ -37,7 +37,7 @@ questions = [
   {"inverted"=>false,"text"=>"Encourages questions and/or class discussion","max"=>5,"important"=>false},
   {"inverted"=>false,"text"=>"Is aware when students are having difficulty","max"=>5,"important"=>false},
   {"inverted"=>false,"text"=>"Is accessible during office hours","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Rate the T.A.'s overall teaching effectiveness","max"=>5,"important"=>false}
+  {"inverted"=>false,"text"=>"Rate the T.A.'s overall teaching effectiveness","max"=>5,"important"=>true}
 ]
 
 questions.each do|question|
