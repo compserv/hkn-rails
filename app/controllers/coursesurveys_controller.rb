@@ -42,16 +42,28 @@ class CoursesurveysController < ApplicationController
       render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
     end
     (year,season) = params[:semester].match(/^([0-9]*)_([a-zA-Z]*)$/)[1..-1]
-    season = case season.downcase when "spring" then "1" when "summer" then "2" when "fall" then "3" else "" end
+    season_no = case season.downcase when "spring" then "1" when "summer" then "2" when "fall" then "3" else "" end
     if year.blank? or season.blank?
       @errors = "Semester #{params[:semester]} not formatted correctly."
       render :text => "Semester #{params[:semester]} not formatted correctly."
     end
-    semester = year+season
+    semester = year+season_no
     @klass = Klass.find(:first, :conditions => { :course_id => @course.id, :semester => semester })
     if @klass.blank?
       @errors = "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
       render :text => "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
+      return
+    end
+
+    @results = []
+    klass_id = @klass.id
+    (@klass.instructors + @klass.tas).each do |instructor|
+      if instructor.private
+        answers = nil
+      else
+        answers = SurveyAnswer.find(:all, :conditions => { :klass_id => klass_id, :instructor_id => instructor.id}, :order => '"order"')
+      end
+      @results << [instructor, answers]
     end
   end
 end

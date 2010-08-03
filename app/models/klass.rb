@@ -24,4 +24,12 @@ class Klass < ActiveRecord::Base
   def proper_semester
     "#{SEMESTER_MAP[semester[-1..-1].to_i]} #{semester[0..3]}"
   end
+
+  def url_semester
+    "#{semester[0..3]}_#{SEMESTER_MAP[semester[-1..-1].to_i]}"
+  end
+
+  def instructor_type(instructor)
+    instructor_ids.include?(instructor.id) ? "Instructor" : "TA"
+  end
 end

@@ -36,7 +36,7 @@
 <%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
   <tr>
     <td>
-      <a href="2010_Spring/"><%= klass.proper_semester %></a>
+      <%= link_to klass.proper_semester, coursesurveys_klass_path(params[:dept_abbr], params[:short_name], klass.url_semester) %>
     </td>
     <td>
       <a href="FAKE_URL"><%= instructor.name %></a>
