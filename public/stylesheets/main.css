@@ -1,20 +1,21 @@
 /*** Standard Styling ***/
 html { height: 100%; }
 html body { height: 100%; font-family: "Lucida Grande",Verdana,Arial,sans-serif; line-height: 1.5em; font-size: 14px; margin: 0; padding: 0; background: #FFFFFF; }
-html ul, html ol { margin-left: 25px; margin-bottom: 12px; }
-html h1 { color: #003366; font-weight: bold; font-size: x-large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
-html h2 { font-weight: inherit; font-size: large; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
-html h3 { font-weight: bold; font-size: medium; font-family: arial, helvetica, sans-serif; margin: 0 0 12px 0; }
+html ul, html ol { margin-left: 25px; }
+html h1 { color: #003366; font-weight: bold; font-size: x-large; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 12px 0 0; }
+html h2 { font-weight: inherit; font-size: 130%; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 10px 0 0; }
+html h3 { font-weight: bold; font-size: 100%; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 8px 0 0;}
 html img { border: none; }
-html p { line-height: 1.4; font-size: small; margin-bottom: 12px; }
+html p { line-height: 1.4; font-size: small; margin: 8px 0; }
 html li { line-height: 1.8; font-size: small; }
 html a { color: #3366CC; text-decoration: none; }
 html a:link { color: #3366CC; }
 html a:visited { color: #3366CC; }
 html a:hover { text-decoration: underline; }
-html input { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+html input { border: 1px solid #003366; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 html input:focus { border: 1px solid black; }
-html input[type=submit] { background: #EEEEEE; margin: 4px; }
+html input[type=submit] { background: #EEEEEE; margin: 4px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
+html input[type=submit]:hover { -moz-box-shadow: 0px 0px 3px #000; -webkit-box-shadow: 0px 0px 3px #000; }
 html input.short { width: 100px; }
 html select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 html select:focus { border: 1px solid black; }
@@ -34,7 +35,7 @@ html ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1
 /*** Main Layout ***/
 /* Header */
 html #header { text-align: center; }
-html #logo { margin: auto; background: #FFFFFF url("/images/site/watermark.png"); }
+html #logo { margin: auto; background: white; }
 html #navigation { font-family: "Trebuchet MS",Arial,tahoma,sans-serif; width: 100%; font-size: 15px; height: 54px; background: #003366; }
 html #toplevel { height: 30px; margin: 0 auto; width: 100%; text-align: center; display: inline; }
 html #toplevel ul { padding: 0; margin: 0; list-style: none; height: 30px; text-align: center; background: #336699; line-height: 30px; }
@@ -52,8 +53,32 @@ html .submenu li a:visited { text-align: center; height: 18px; text-decoration: 
 html .submenu li a:hover { background: #002244; text-decoration: none; }
 
 /* Top Bar */
-html #topbar { border-left: 1px #003366 solid; border-right: 1px #003366 solid; border-bottom: 1px #003366 solid; padding-bottom: 3px; background: #ADC3DB; }
+html #topbar { 
+  border-left: 1px #003366 solid; 
+  border-right: 1px #003366 solid; 
+  border-bottom: 1px #003366 solid; 
+  -webkit-border-bottom-left-radius: 10px; 
+  -webkit-border-bottom-right-radius: 10px; 
+  -moz-border-radius-bottomleft: 10px; 
+  -moz-border-radius-bottomright: 10px; 
+  padding-bottom: 3px; 
+  background-color: #ADC3DB; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #ADC3DB), color-stop(1, #B0E0E0));
+  background-image: -moz-linear-gradient( center bottom, #ADC3DB 0%, #B0E0E0 100% );
+}
 html #topbar input { background: #DCE2ED; border: 1px #003366 solid; padding: 2px 3px; margin: 4px; }
+html #topbar input[type=submit] { 
+  background-color: #DCE2ED; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #BBCCCC), color-stop(1, #DDEEEE));
+  background-image: -moz-linear-gradient( center bottom, #BBCCCC 0%, #DDEEEE 100% );
+  padding: 2px 3px; 
+  margin: 4px; 
+}
+html #topbar input[type=submit]:active { 
+  background-color: #DCE2ED; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #DDEEEE), color-stop(1, #BBCCCC));
+  background-image: -moz-linear-gradient( center bottom, #DDEEEE 0%, #BBCCCC 100% );
+}
 html #topbar input.text { width: 200px; }
 html #topbar .searchhelp { margin-left: 5px; }
 html #userbar { float: left; padding: 5px 8px 5px 8px; }
@@ -81,5 +106,29 @@ html #debug .message { border: solid 3px #cc0000; padding: 10px; background: #ff
 html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padding-left: 8px; margin-left: 12px; height: 100%; overflow: auto; }
 
 /* Course Surveys */
-html .ratingbar { width: 70px; height: 9px; border: 1px black solid; background-color: gray; display: block; }
+html .ratingbar { width: 70px; height: 9px; border: 1px black solid; display: inline-block; }
 html .ratingbar .subbar { height: 100%; display: block; }
+html #course_info { }
+html #course_info th { text-align: right; }
+html #trend { float: right; }
+html #ratings { border: 1px solid black; border-collapse: collapse; margin: 10px auto; font-size: 90%; }
+html #ratings th { border: 1px solid black; background-color: #BBCCEE; 
+  background-color: #ADC3DB; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
+  background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
+}
+html #ratings td { border: 1px dashed #AABBDD; padding: 2px 4px; }
+html #ratings tr:nth-child(even) { background-color: #E8F0FF; }
+html #ratings tr:nth-child(odd)  { background-color: #D8E0EE; }
+html #instructorbox { padding: 10px; float: left; margin: 10px auto; }
+html #instructorbox ul { list-style: none }
+html .infobox {
+  border: 1px black solid; 
+  border-radius: 20px; 
+  -moz-border-radius: 20px; 
+  -webkit-border-radius: 20px; 
+  background-color: #ADC3DB; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
+  background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
+}
+html #instructor_picture { float: left; }

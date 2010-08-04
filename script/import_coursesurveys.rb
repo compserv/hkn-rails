@@ -16,14 +16,18 @@ end
 
 def parse_klass_info(line)
   (dept_abbr, klass_section, instructor, title) = line[0].gsub(/^"(.*)"$/,'\1').split
-  (course_no, section) = klass_section.split("-")
+  (full_course_number, section) = klass_section.split("-")
+  if instructor.index(",").nil?
+    puts "Could not parse instructor name #{instructor} correctly. Please check source file."
+    exit
+  end
   (last_name, first_name) = instructor.split(",")
   first_name.capitalize!
   last_name.capitalize!
   title = title[1..-2]
   respondents = line[1]
   semester = line[11]
-  course_no.upcase!
+  full_course_number.upcase!
 
   # Check and find department
   department = Department.find_by_nice_abbr(dept_abbr)
@@ -33,9 +37,10 @@ def parse_klass_info(line)
   end
 
   # Check whether course exists
-  course = Course.find_by_short_name(dept_abbr, course_no)
+  (course_number, suffix) = full_course_number.match(/^([0-9]*)([A-Z]*)$/)[1..-1]
+  course = Course.find(:first, :conditions => {:department_id => department.id, :course_number => course_number, :suffix => suffix})
   if course.nil?
-    puts "Could not find course #{dept_abbr} #{course_no}. Please enter it into the database before rerunning this script" 
+    puts "Could not find course #{dept_abbr} #{full_course_number}. Please enter it into the database before rerunning this script" 
     exit
   end
 
@@ -44,7 +49,12 @@ def parse_klass_info(line)
   instructor = Instructor.find_by_name("#{first_name} #{last_name}")
   if instructor.nil?
     puts "No instructor named #{first_name} #{last_name} found. Creating now."
-    instructor = Instructor.create( :name => "#{first_name} #{last_name}" )
+    if title == "prof"
+      privacy = false
+    else
+      privacy = true
+    end
+    instructor = Instructor.create( :name => "#{first_name} #{last_name}", :private => privacy )
   end
 
   # Check whether klass exists
@@ -92,6 +102,7 @@ end
 def parse_answers lines, i, instructor, klass, answers
   initial_line = i
   order = 0
+  errors = false
   until lines[i] =~ /^Data processed:/
     if lines[i] =~ /^[0-9]*\./
       qa = lines[i].split("\t")
@@ -99,6 +110,7 @@ def parse_answers lines, i, instructor, klass, answers
       q = SurveyQuestion.find_by_text(question)
       if q.nil?
         puts "Couldn't find survey question \"#{question}\". Please enter it into the database manually."
+        errors = true
       elsif SurveyAnswer.find(:first, :conditions => {:instructor_id => instructor.id, :klass_id => klass.id, :survey_question_id => q.id})
         puts "Survey data already found. Not updating. Use the -f option to force update the values."
         exit
@@ -133,6 +145,7 @@ def parse_answers lines, i, instructor, klass, answers
     end
     i += 1
   end
+  exit if errors
   i += 1
   return i - initial_line
 end
