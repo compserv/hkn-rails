@@ -9,7 +9,7 @@ class CoursesurveysController < ApplicationController
       render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
     else
       @latest_klass = @course.klasses.find(:first, {:order => "created_at DESC"})
-      @instructors = @latest_klass.instructors unless @lastest_klass.nil?
+      @instructors = @latest_klass.instructors unless @latest_klass.nil?
       @results = []
       effective_sum = 0.0
       worthwhile_sum = 0.0
@@ -69,6 +69,31 @@ class CoursesurveysController < ApplicationController
 
   def instructor
     @instructor = Instructor.find_by_name(params[:name].gsub(/_/, ' '))
-    @results = []
+    @instructed_klasses = []
+    @tad_klasses = []
+    effective_sum = 0.0
+    worthwhile_sum = 0.0
+    @instructor.klasses.each do |klass|
+      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 1}).first
+      worthwhileness = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 2}).first
+      @instructed_klasses << [
+        klass, 
+        @instructor, 
+        effectiveness,
+        worthwhileness,
+      ]
+      effective_sum  += effectiveness.mean
+      worthwhile_sum += worthwhileness.mean
+    end
+
+    @instructor.tad_klasses.each do |klass|
+      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 27}).first
+      @tad_klasses << [
+        klass, 
+        @instructor, 
+        effectiveness,
+      ]
+      effective_sum  += effectiveness.mean
+    end
   end
 end

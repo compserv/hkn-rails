@@ -108,7 +108,6 @@ html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padd
 /* Course Surveys */
 html .ratingbar { width: 70px; height: 9px; border: 1px black solid; display: inline-block; }
 html .ratingbar .subbar { height: 100%; display: block; }
-html #course_info { }
 html #course_info th { text-align: right; }
 html #trend { float: right; }
 html #ratings { border: 1px solid black; border-collapse: collapse; margin: 10px auto; font-size: 90%; }
@@ -132,3 +131,5 @@ html .infobox {
   background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
 }
 html #instructor_picture { float: left; }
+html #instructor_info { margin: auto; }
+html #instructor_info { text-align: right; }

@@ -1,31 +1,27 @@
-<%= @errors %>
-
 <h1><%= @instructor.name %></h1>
 
 <%= image_tag @instructor.picture, :id => "instructor_picture" unless @instructor.picture.blank? %>
-<img id="trend" src="/trend" alt="trend"/>
-<table id="course_info" class="infobox">
-  <tr> <th>Title</th>         <td><%= @instructor.title %></td> </tr>
-  <tr> <th>Office</th>        <td><%= @instructor.office %></td> </tr>
-  <tr> <th>Phone Number</th>  <td><%= @instructor.phone_number %></td> </tr>
+<table id="instructor_info" class="infobox">
+  <tr> <th>Title</th>             <td><%= @instructor.title.blank? ? "Teaching Assistant" : @instructor.title %></td> </tr>
+  <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
+  <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
+  <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
+  <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
+  <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
 </table>
 
-<%- if @instructor.klasses.blank? -%>
-<p>No survey data available for this instructor.</p>
-<%- else -%>
+<%- unless @instructed_klasses.blank? -%>
+<h3>Classes Taught</h3>
 <table id="ratings">
   <tr>
     <th>Sections</th>
     <th>Teaching Effectiveness</th>
     <th>How worthwhile was this course?</th>
   </tr>
-<%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
+  <%- @instructed_klasses.each do |klass, instructor, effectiveness, worthwhileness| -%>
   <tr>
     <td>
-      <%= link_to klass.proper_semester, coursesurveys_klass_path(params[:dept_abbr], params[:short_name], klass.url_semester) %>
-    </td>
-    <td>
-      <a href="FAKE_URL"><%= instructor.name %></a>
+      <%= link_to "#{klass.course.course_abbr} #{klass.proper_semester}", surveys_klass_path(klass) %>
     </td>
     <td>
       <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
@@ -36,9 +32,45 @@
       <%= rating_bar(worthwhileness.mean/7.0) %>
     </td>
   </tr>
-<%- end -%>
+  <%- end -%>
 </table>
+<%- end -%>
 
+<%- unless @tad_klasses.blank? -%>
+  <%- if @instructor.private -%>
+      <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in.", coursesurveys_ferpa_path %></p>
+  <%- end -%>
+<h3>Classes TA'd</h3>
+<table id="ratings">
+  <tr>
+    <th>Sections</th>
+    <%- unless @instructor.private -%><th>Teaching Effectiveness</th><%- end -%>
+    <th>Instructors</th>
+  </tr>
+  <%- @tad_klasses.each do |klass, instructor, effectiveness| -%>
+  <tr>
+    <td>
+      <%= link_to "#{klass.course.course_abbr} #{klass.proper_semester}", surveys_klass_path(klass) %>
+    </td>
+    <%- unless @instructor.private -%>
+    <td>
+      <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
+      <%= rating_bar(effectiveness.mean/5.0) %>
+    </td>
+    <%- end -%>
+    <td>
+    <%- klass.instructors.each do |instructor| -%>
+      <%= link_to instructor.name, surveys_instructor_path(instructor) %>
+    <%- end -%>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>
+
+<%- if @instructed_klasses.empty? and @tad_klasses.empty? -%>
+<p>No data available for this instructor.</p>
+<%- else -%>
 <p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
 <%- end -%>
 

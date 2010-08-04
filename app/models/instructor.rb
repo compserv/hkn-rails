@@ -17,6 +17,6 @@ class Instructor < ActiveRecord::Base
 
   has_many :coursesurveys
   has_and_belongs_to_many :klasses
-  has_and_belongs_to_many :ta_klasses, { :class_name => "Klass", :join_table => "klasses_tas" }
+  has_and_belongs_to_many :tad_klasses, { :class_name => "Klass", :join_table => "klasses_tas" }
 
 end

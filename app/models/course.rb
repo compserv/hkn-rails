@@ -38,7 +38,7 @@ class Course < ActiveRecord::Base
 
   def course_abbr
     # e.g. EE20N
-    "#{dept_abbr}#{full_course_number}"
+    "#{dept_abbr} #{full_course_number}"
   end
 
   def full_course_number
