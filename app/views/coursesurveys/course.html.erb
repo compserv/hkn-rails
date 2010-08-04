@@ -4,14 +4,13 @@
 
 <img id="trend" src="/trend" alt="trend"/>
 <table id="course_info" class="infobox">
-  <tr>
-    <th>Title</th>            <td><%= @course.name %></td> </tr>
+  <tr> <th>Title</th>            <td><%= @course.name %></td> </tr>
 <%- unless @instructors.blank? -%>
   <tr>
     <th>Instructor<%= @instructors.size > 1 ? "s" : "" %> in Charge</th>
     <td>
       <% @instructors.each do |instructor| %>
-        <%= link_to instructor.name, "Not Sure Yet" %>
+        <%= link_to instructor.name, surveys_instructor_path(instructor) %>
       <% end %>
     </td>
   </tr>
@@ -24,7 +23,7 @@
 </table>
 
 <%- if @course.klasses.blank? -%>
-<p>No data available for this course.</p>
+<p>No survey data available for this course.</p>
 <%- else -%>
 <table id="ratings">
   <tr>
@@ -36,10 +35,10 @@
 <%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
   <tr>
     <td>
-      <%= link_to klass.proper_semester, coursesurveys_klass_path(params[:dept_abbr], params[:short_name], klass.url_semester) %>
+      <%= link_to klass.proper_semester, surveys_klass_path(klass) %>
     </td>
     <td>
-      <a href="FAKE_URL"><%= instructor.name %></a>
+      <%= link_to instructor.name, coursesurveys_instructor_path(instructor.name) %>
     </td>
     <td>
       <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>

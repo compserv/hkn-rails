@@ -1,0 +1,46 @@
+<%= @errors %>
+
+<h1><%= @instructor.name %></h1>
+
+<%= image_tag @instructor.picture, :id => "instructor_picture" unless @instructor.picture.blank? %>
+<img id="trend" src="/trend" alt="trend"/>
+<table id="course_info" class="infobox">
+  <tr> <th>Title</th>         <td><%= @instructor.title %></td> </tr>
+  <tr> <th>Office</th>        <td><%= @instructor.office %></td> </tr>
+  <tr> <th>Phone Number</th>  <td><%= @instructor.phone_number %></td> </tr>
+</table>
+
+<%- if @instructor.klasses.blank? -%>
+<p>No survey data available for this instructor.</p>
+<%- else -%>
+<table id="ratings">
+  <tr>
+    <th>Sections</th>
+    <th>Teaching Effectiveness</th>
+    <th>How worthwhile was this course?</th>
+  </tr>
+<%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
+  <tr>
+    <td>
+      <%= link_to klass.proper_semester, coursesurveys_klass_path(params[:dept_abbr], params[:short_name], klass.url_semester) %>
+    </td>
+    <td>
+      <a href="FAKE_URL"><%= instructor.name %></a>
+    </td>
+    <td>
+      <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
+      <%= rating_bar(effectiveness.mean/7.0) %>
+    </td>
+    <td>
+      <%= sprintf "%.1f", worthwhileness.mean %> / <%= worthwhileness.survey_question.max.to_f %>
+      <%= rating_bar(worthwhileness.mean/7.0) %>
+    </td>
+  </tr>
+<%- end -%>
+</table>
+
+<p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
+<%- end -%>
+
+<a href="mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page http://hkn.eecs.berkeley.edu/student/CourseSurvey/courses/EE/40/">[Email HKN about this data]</a>
+<a href="/student/howtouse.shtml">[Info about this page]</a>

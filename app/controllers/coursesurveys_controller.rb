@@ -66,4 +66,9 @@ class CoursesurveysController < ApplicationController
       @results << [instructor, answers]
     end
   end
+
+  def instructor
+    @instructor = Instructor.find_by_name(params[:name].gsub(/_/, ' '))
+    @results = []
+  end
 end

@@ -131,3 +131,4 @@ html .infobox {
   background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
   background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
 }
+html #instructor_picture { float: left; }

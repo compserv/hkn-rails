@@ -1,18 +1,18 @@
 <%= @errors %>
 
-<h1><%= link_to @course.course_name, coursesurveys_course_path(@course.dept_abbr, @course.full_course_number) %> - <%= @klass.proper_semester %></h1>
+<h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
 
 <div id="instructorbox" class="infobox">
   <h3>Instructor<%= "s" if @klass.instructors.size > 1 %></h3>
   <ul>
     <% @klass.instructors.each do |instructor| %>
-      <li><%= link_to instructor.name, "Not Sure Yet" %></li>
+      <li><%= link_to instructor.name, surveys_instructor_path(instructor) %></li>
     <% end %>
   </ul>
   <h3>TA<%= "s" if @klass.tas.size > 1 %></h3>
   <ul>
     <% @klass.tas.each do |instructor| %>
-      <li><%= link_to instructor.name, "Not Sure Yet" %></li>
+      <li><%= link_to instructor.name, surveys_instructor_path(instructor) %></li>
     <% end %>
   </ul>
 </div>
@@ -22,14 +22,14 @@
   <%- if answers.nil? -%>
   <tr>
     <th colspan="2">
-      <%= link_to @klass.instructor_type(instructor)+" "+instructor.name, "FAKEURL" %>
+      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.name, surveys_instructor_path(instructor) %>
     </th>
   </tr>
   <tr><td colspan="2">This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>.</td></tr>
   <%- else -%>
   <tr>
     <th>
-      <%= link_to @klass.instructor_type(instructor)+" "+instructor.name, "FAKEURL" %>
+      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.name, surveys_instructor_path(instructor) %>
     </th>
     <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.reduce{|x,y| x.to_i+y.to_i} %> respondents</th>
   </tr>
