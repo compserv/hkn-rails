@@ -107,8 +107,19 @@ html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padd
 
 /* Course Surveys */
 html .ratingbar { width: 70px; height: 9px; border: 1px black solid; display: inline-block; }
-html .ratingbar .subbar { height: 100%; display: block; }
-html #course_info th { text-align: right; }
+html .ratingbar .subbar { height: 100%; display: block; background-color: blue; }
+html .infobox {
+  border: 1px black solid; 
+  border-radius: 20px; 
+  -moz-border-radius: 20px; 
+  -webkit-border-radius: 20px; 
+  background-color: #ADC3DB; 
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
+  background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
+}
+html .infobox th { text-align: right; }
+html #instructor_info { margin: auto; }
+html #rating_info { margin: auto; }
 html #trend { float: right; }
 html #ratings { border: 1px solid black; border-collapse: collapse; margin: 10px auto; font-size: 90%; }
 html #ratings th { border: 1px solid black; background-color: #BBCCEE; 
@@ -119,17 +130,6 @@ html #ratings th { border: 1px solid black; background-color: #BBCCEE;
 html #ratings td { border: 1px dashed #AABBDD; padding: 2px 4px; }
 html #ratings tr:nth-child(even) { background-color: #E8F0FF; }
 html #ratings tr:nth-child(odd)  { background-color: #D8E0EE; }
+html #instructor_picture { float: left; }
 html #instructorbox { padding: 10px; float: left; margin: 10px auto; }
 html #instructorbox ul { list-style: none }
-html .infobox {
-  border: 1px black solid; 
-  border-radius: 20px; 
-  -moz-border-radius: 20px; 
-  -webkit-border-radius: 20px; 
-  background-color: #ADC3DB; 
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
-  background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
-}
-html #instructor_picture { float: left; }
-html #instructor_info { margin: auto; }
-html #instructor_info th { text-align: right; }

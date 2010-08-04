@@ -23,6 +23,16 @@ module CoursesurveysHelper
     end
   end
 
+  def bar(rating)
+    width = (rating*100).to_int
+
+    outer_html_options = { :class => "ratingbar", :style => "width: 100px" }
+    inner_html_options = { :class => "subbar", :style => "width: #{width}%;" }
+    content_tag(:span, outer_html_options) do
+      content_tag("span", "", inner_html_options)
+    end
+  end
+
   def surveys_klass_path(klass)
     coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
   end
@@ -33,5 +43,9 @@ module CoursesurveysHelper
 
   def surveys_instructor_path(instructor)
     coursesurveys_instructor_path(instructor.name.gsub(/\s/, '_'))
+  end
+
+  def surveys_rating_path(rating)
+    coursesurveys_rating_path(rating.id)
   end
 end

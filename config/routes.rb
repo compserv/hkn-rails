@@ -21,6 +21,7 @@ HknRails::Application.routes.draw do |map|
     match "course/:dept_abbr/:short_name"           => "coursesurveys#course",     :as => :coursesurveys_course
     match "course/:dept_abbr/:short_name/:semester" => "coursesurveys#klass",      :as => :coursesurveys_klass
     match "instructor/:name"                        => "coursesurveys#instructor", :as => :coursesurveys_instructor
+    match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
     match "how-to"     => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
     match "info-profs" => "static#coursesurveys_info_profs", :as => :coursesurveys_info_profs
     match "ferpa"      => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa

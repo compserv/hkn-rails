@@ -1,19 +1,22 @@
 <h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
 
-<div id="instructorbox" class="infobox">
-  <h3>Instructor<%= "s" if @klass.instructors.size > 1 %></h3>
-  <ul>
-    <% @klass.instructors.each do |instructor| %>
-      <li><%= link_to instructor.name, surveys_instructor_path(instructor) %></li>
-    <% end %>
-  </ul>
-  <h3>TA<%= "s" if @klass.tas.size > 1 %></h3>
-  <ul>
-    <% @klass.tas.each do |instructor| %>
-      <li><%= link_to instructor.name, surveys_instructor_path(instructor) %></li>
-    <% end %>
-  </ul>
-</div>
+<table id="rating_info" class="infobox">
+  <tr> <th>Number of Respondents</th>   <td><%= @total_responses %></td> </tr>
+  <tr> <th>Mean</th>                    <td><%= sprintf "%.1f", @answer.mean %></td> </tr>
+  <tr> <th>Standard Deviation</th>      <td><%= sprintf "%.1f", @answer.deviation %></td> </tr>
+  <tr> <th>Median</th>                  <td><%= sprintf "%.1f", @answer.median %></td> </tr>
+  <tr> <th>95% Confidence Interval</th> <td>I need to read up on stats again...</td> </tr>
+  <tr>
+    <th>Frequency Distribution</th>  
+    <td>
+      <ul>
+      <%- @frequencies.keys.sort.each do |key| -%>
+        <li><%= key %>: <%= bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %></li>
+      <%- end -%>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 <table id="ratings">
 <%- @results.each do |instructor, answers| -%>
@@ -40,14 +43,12 @@
     </td>
     <td>
       <%= sprintf "%.1f", answer.mean %> / <%= answer.survey_question.max.to_f %>
-      <%= rating_bar(answer.mean/answer.survey_question.max.to_f, surveys_rating_path(answer), answer.survey_question.inverted) %>
+      <%= rating_bar(answer.mean/answer.survey_question.max.to_f, nil, answer.survey_question.inverted) %>
     </td>
   </tr>
     <%- end -%>
   <%- end -%>
 <%- end -%>
 </table>
-
-<p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
 
 <a href="mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page http://hkn.eecs.berkeley.edu/student/CourseSurvey/courses/EE/40/">[Email HKN about this data]</a>

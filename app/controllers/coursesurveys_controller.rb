@@ -96,4 +96,14 @@ class CoursesurveysController < ApplicationController
       effective_sum  += effectiveness.mean
     end
   end
+
+  def rating
+    @answer = SurveyAnswer.find(params[:id])
+    @klass  = @answer.klass
+    @course = @klass.course
+    @results = []
+    @frequencies = ActiveSupport::JSON.decode(@answer.frequencies)
+    @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
+    @mode = @frequencies.values.max
+  end
 end

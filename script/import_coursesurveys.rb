@@ -124,8 +124,8 @@ def parse_answers lines, i, instructor, klass, answers
           end
           frequencies[x] = value
         end
-        frequencies["Omit"] = qa[9]
-        frequencies["N/A"]  = qa[8]
+        frequencies["Omit"] = qa[9].blank? ? 0 : qa[9].to_i
+        frequencies["N/A"]  = qa[8].blank? ? 0 : qa[8].to_i
         #puts "#{klass.course.course_abbr} #{question}"
         #puts frequencies.to_json
         #puts get_stats(frequencies).to_json
