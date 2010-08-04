@@ -8,7 +8,7 @@ class Instructor < ActiveRecord::Base
   #   phone_number : string 
   #   email        : string 
   #   home_page    : string 
-  #   interests    : string 
+  #   interests    : text 
   #   created_at   : datetime 
   #   updated_at   : datetime 
   #   private      : boolean 

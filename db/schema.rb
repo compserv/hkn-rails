@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100801233324) do
+ActiveRecord::Schema.define(:version => 20100804061620) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -196,7 +196,7 @@ ActiveRecord::Schema.define(:version => 20100801233324) do
     t.string   "phone_number"
     t.string   "email"
     t.string   "home_page"
-    t.string   "interests"
+    t.text     "interests"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "private",      :default => true
@@ -263,7 +263,7 @@ ActiveRecord::Schema.define(:version => 20100801233324) do
   create_table "quiz_responses", :force => true do |t|
     t.string   "number",       :null => false
     t.string   "response"
-    t.integer  "candidate_id", :null => false
+    t.integer  "candidate_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
