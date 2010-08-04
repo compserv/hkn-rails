@@ -40,7 +40,7 @@
     </td>
     <td>
       <%= sprintf "%.1f", answer.mean %> / <%= answer.survey_question.max.to_f %>
-      <%= rating_bar(answer.mean/answer.survey_question.max.to_f) %>
+      <%= rating_bar(answer.mean/answer.survey_question.max.to_f, nil, answer.survey_question.inverted) %>
     </td>
   </tr>
     <%- end -%>

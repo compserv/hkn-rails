@@ -17,6 +17,7 @@
     <th>Sections</th>
     <th>Teaching Effectiveness</th>
     <th>How worthwhile was this course?</th>
+    <th>Other Instructors</th>
   </tr>
   <%- @instructed_klasses.each do |klass, instructor, effectiveness, worthwhileness| -%>
   <tr>
@@ -30,6 +31,11 @@
     <td>
       <%= sprintf "%.1f", worthwhileness.mean %> / <%= worthwhileness.survey_question.max.to_f %>
       <%= rating_bar(worthwhileness.mean/7.0) %>
+    </td>
+    <td>
+    <%- klass.instructors.each do |instructor| -%>
+      <%= link_to instructor.name, surveys_instructor_path(instructor) unless instructor == @instructor %>
+    <%- end -%>
     </td>
   </tr>
   <%- end -%>
