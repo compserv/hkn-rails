@@ -14,17 +14,24 @@ def parse_xsl filename
   puts "Not implemented yet"
 end
 
+# Expects line to be an array of ["String containing klass, section, and instructor", number of respondents, semester]
 def parse_klass_info(line)
-  (dept_abbr, klass_section, instructor, title) = line[0].gsub(/^"(.*)"$/,'\1').split
+  #(dept_abbr, klass_section, instructor, title) = line[0].gsub(/^"(.*)"$/,'\1').split
+  (dept_abbr, klass_section, instructor, title) = line[0].scan(
+    /^"*(\w*)\s+([^\s]*)\s+(.*[^\s])\s*\((\w*)\)"*$/ ).first
   (full_course_number, section) = klass_section.split("-")
   if instructor.index(",").nil?
     puts "Could not parse instructor name #{instructor} correctly. Please check source file."
     exit
   end
   (last_name, first_name) = instructor.split(",")
-  first_name.capitalize!
-  last_name.capitalize!
-  title = title[1..-2]
+
+  # Handles cases where an instructor has multiple parts to their name
+  # i.e. El Ghaoui, Laurent
+  # i.e. Chang-Hasnain, C.
+  first_name = first_name.scan(/(\W+|\w+)/).map{|x| x.first.capitalize}.join
+  last_name = last_name.scan(/(\W+|\w+)/).map{|x| x.first.capitalize}.join
+
   respondents = line[1]
   semester = line[11]
   full_course_number.upcase!
@@ -112,7 +119,7 @@ def parse_answers lines, i, instructor, klass, answers
         puts "Couldn't find survey question \"#{question}\". Please enter it into the database manually."
         errors = true
       elsif SurveyAnswer.find(:first, :conditions => {:instructor_id => instructor.id, :klass_id => klass.id, :survey_question_id => q.id})
-        puts "Survey data already found. Not updating. Use the -f option to force update the values."
+        puts "Survey data already found. Not updating."
         exit
       else
         frequencies = {}
@@ -126,9 +133,7 @@ def parse_answers lines, i, instructor, klass, answers
         end
         frequencies["Omit"] = qa[9].blank? ? 0 : qa[9].to_i
         frequencies["N/A"]  = qa[8].blank? ? 0 : qa[8].to_i
-        #puts "#{klass.course.course_abbr} #{question}"
-        #puts frequencies.to_json
-        #puts get_stats(frequencies).to_json
+
         (mean, median, stddev) = get_stats(frequencies)
         answers << {
           :survey_question_id => q.id,
@@ -147,13 +152,17 @@ def parse_answers lines, i, instructor, klass, answers
   end
   exit if errors
   i += 1
+  until (!lines[i].blank? and lines[i][0].chr == '"') or i >= lines.size
+    i += 1
+  end
   return i - initial_line
 end
 
 def parse_tsv filename
-  # First we parse it into a form we can deal with easily
-  # klass->instructor->answers
+  # First we scan over the entire document to ensure that the data is formatted correctly
   # During this, we check whether each klass, professor, and question has been created already
+  # We create hashes for each survey answer and store them in answers. After passing checks,
+  # we save the answers into the database.
   file = File.open(filename, "r")
   i = 0
   lines = file.readlines

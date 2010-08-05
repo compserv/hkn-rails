@@ -32,7 +32,7 @@ rows.each do |row|
       detail_page = "http://www.eecs.berkeley.edu" + tds[1].at_css('a').attr('href')
       anchor = Nokogiri::HTML(open(detail_page)).css('#leftcoltext').at_css('a')
       prof[:picture] = "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/"+detail_page.match(/\/([^\/]*).html$/)[1]
-      prof[:home_page] = anchor.attr('href') unless anchor.blank?
+      prof[:home_page] = anchor.attr('href') unless anchor.blank? or anchor.inner_text != "Personal Homepage"
       mode = :info
     when :info
       office_phone_email = tds[2].children[0].inner_text.strip
