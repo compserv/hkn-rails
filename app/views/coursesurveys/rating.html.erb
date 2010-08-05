@@ -1,22 +1,42 @@
-<h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
+<h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> - <%= link_to @instructor.name, surveys_instructor_path(@instructor) %></h1>
 
-<table id="rating_info" class="infobox">
-  <tr> <th>Number of Respondents</th>   <td><%= @total_responses %></td> </tr>
-  <tr> <th>Mean</th>                    <td><%= sprintf "%.1f", @answer.mean %></td> </tr>
-  <tr> <th>Standard Deviation</th>      <td><%= sprintf "%.1f", @answer.deviation %></td> </tr>
-  <tr> <th>Median</th>                  <td><%= sprintf "%.1f", @answer.median %></td> </tr>
-  <tr> <th>95% Confidence Interval</th> <td>I need to read up on stats again...</td> </tr>
-  <tr>
-    <th>Frequency Distribution</th>  
-    <td>
-      <ul>
-      <%- @frequencies.keys.sort.each do |key| -%>
-        <li><%= key %>: <%= bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %></li>
-      <%- end -%>
-      </ul>
-    </td>
-  </tr>
-</table>
+<h2><%= @answer.survey_question.text %></h2>
+
+<div id="rating-info" class="infobox">
+  <div class="info-row">
+    <span class="info-label">Number of Respondents</span>   
+    <div class="info-item"><%= @total_responses %></div>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Mean</span>                    
+    <div class="info-item"><%= sprintf "%.1f", @answer.mean %></div>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Standard Deviation</span>      
+    <div class="info-item"><%= sprintf "%.1f", @answer.deviation %></div>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Median</span>                  
+    <div class="info-item"><%= sprintf "%.1f", @answer.median %></div>
+  </div>
+  <div class="info-row">
+    <span class="info-label">95% Confidence Interval</span> 
+    <div class="info-item">I need to read up on stats again...</div>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Frequency Distribution</span>
+    <div class="info-item">
+      <table>
+        <%- @frequencies.keys.sort.each do |key| -%>
+          <tr>
+            <th><%= key %></th>
+            <td><%= frequency_bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %> (<%= sprintf "%.1f", 100.0*@frequencies[key]/@total_responses %>%)</td>
+          </tr>
+        <%- end -%>
+      </table>
+    </div>
+  </div>
+</div>
 
 <table id="ratings">
 <%- @results.each do |instructor, answers| -%>

@@ -23,10 +23,10 @@ module CoursesurveysHelper
     end
   end
 
-  def bar(rating)
+  def frequency_bar(rating)
     width = (rating*100).to_int
 
-    outer_html_options = { :class => "ratingbar", :style => "width: 100px" }
+    outer_html_options = { :class => "frequencybar" }
     inner_html_options = { :class => "subbar", :style => "width: #{width}%;" }
     content_tag(:span, outer_html_options) do
       content_tag("span", "", inner_html_options)
