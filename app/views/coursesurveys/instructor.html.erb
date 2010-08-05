@@ -11,7 +11,7 @@
 </table>
 
 <%- unless @instructed_klasses.blank? -%>
-<h3>Classes Taught</h3>
+<h3 class="center">Classes Taught</h3>
 <table id="ratings">
   <tr>
     <th>Sections</th>
@@ -26,16 +26,35 @@
     </td>
     <td>
       <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
-      <%= rating_bar(effectiveness.mean/7.0) %>
+      <%= rating_bar(effectiveness.mean/effectiveness.survey_question.max.to_f) %>
     </td>
     <td>
       <%= sprintf "%.1f", worthwhileness.mean %> / <%= worthwhileness.survey_question.max.to_f %>
-      <%= rating_bar(worthwhileness.mean/7.0) %>
+      <%= rating_bar(worthwhileness.mean/worthwhileness.survey_question.max.to_f) %>
     </td>
     <td>
     <%- klass.instructors.each do |instructor| -%>
       <%= link_to instructor.name, surveys_instructor_path(instructor) unless instructor == @instructor %>
     <%- end -%>
+    </td>
+  </tr>
+  <%- end -%>
+  <tr><th>Totals</th></tr>
+  <%- @undergrad_totals.each do |course,tuple| -%>
+    <%- (effectiveness, worthwhileness) = tuple -%>
+  <tr>
+    <td>
+      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %>
+    </td>
+    <td>
+      <%= sprintf "%.1f", effectiveness %> / 7
+      <%= rating_bar(effectiveness/7.0) %>
+    </td>
+    <td>
+      <%= sprintf "%.1f", worthwhileness %> / 7
+      <%= rating_bar(worthwhileness/7.0) %>
+    </td>
+    <td>
     </td>
   </tr>
   <%- end -%>
@@ -75,7 +94,7 @@
 <%- end -%>
 
 <%- if @instructed_klasses.empty? and @tad_klasses.empty? -%>
-<p>No data available for this instructor.</p>
+<p>No survey data available for this instructor.</p>
 <%- else -%>
 <p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
 <%- end -%>

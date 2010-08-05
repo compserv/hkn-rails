@@ -71,8 +71,9 @@ class CoursesurveysController < ApplicationController
     @instructor = Instructor.find_by_name(params[:name].gsub(/_/, ' '))
     @instructed_klasses = []
     @tad_klasses = []
-    effective_sum = 0.0
-    worthwhile_sum = 0.0
+    @undergrad_totals = {}
+    @grad_totals = {}
+
     @instructor.klasses.each do |klass|
       effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 1}).first
       worthwhileness = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 2}).first
@@ -82,8 +83,33 @@ class CoursesurveysController < ApplicationController
         effectiveness,
         worthwhileness,
       ]
-      effective_sum  += effectiveness.mean
-      worthwhile_sum += worthwhileness.mean
+
+      if klass.course.course_number.to_i < 200 
+        totals = @undergrad_totals
+      else
+        totals = @grad_totals
+      end
+
+      if totals.has_key? klass.course
+        totals[klass.course] << [effectiveness.mean, worthwhileness.mean]
+      else
+        totals[klass.course] = [[effectiveness.mean, worthwhileness.mean]]
+      end
+    end
+
+    # Aggregate totals
+    puts @grad_totals
+    @undergrad_totals.keys.each do |course|
+      scores = @undergrad_totals[course]
+      count = scores.size
+      total = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
+      @undergrad_totals[course] = total.map{|score| score/count}
+    end
+    @grad_totals.keys.each do |key|
+      scores = @grad_totals[key]
+      count = scores.size
+      total = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
+      total.map!{|effectiveness, worthwhileness| [effectiveness/total, worthwhileness/total]}
     end
 
     @instructor.tad_klasses.each do |klass|
@@ -101,6 +127,7 @@ class CoursesurveysController < ApplicationController
     @answer = SurveyAnswer.find(params[:id])
     @klass  = @answer.klass
     @course = @klass.course
+    @instructor = @answer.instructor
     @results = []
     @frequencies = ActiveSupport::JSON.decode(@answer.frequencies)
     @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
