@@ -149,5 +149,7 @@ class CoursesurveysController < ApplicationController
     @frequencies = ActiveSupport::JSON.decode(@answer.frequencies)
     @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
     @mode = @frequencies.values.max
+    # Someone who understands statistics, please make sure the following line is correct
+    @conf_intrvl = 1.96*@answer.deviation/Math.sqrt(@total_responses)
   end
 end

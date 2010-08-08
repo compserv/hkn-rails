@@ -21,7 +21,7 @@
   </div>
   <div class="info-row">
     <span class="info-label">95% Confidence Interval</span> 
-    <div class="info-item">I need to read up on stats again...</div>
+    <div class="info-item"><%= sprintf "%.1f", @answer.mean %> &plusmn; <%= sprintf "%.1f", @conf_intrvl %></div>
   </div>
   <div class="info-row">
     <span class="info-label">Frequency Distribution</span>
