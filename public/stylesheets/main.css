@@ -109,6 +109,7 @@ html #infobar { float: right; width: 300px; border-left: 1px solid #003366; padd
 /* Course Surveys */
 html .ratingbar { width: 70px; height: 9px; border: 1px black solid; display: inline-block; }
 html .ratingbar .subbar { height: 100%; display: block; }
+html .histogram th, html .histogram td { padding: 0 4px; }
 html .frequencybar { width: 200px; height: 20px; display: inline-block; }
 html .frequencybar .subbar { 
   height: 100%; 
