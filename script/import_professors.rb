@@ -19,6 +19,7 @@ doc = Nokogiri::HTML(open("http://www.eecs.berkeley.edu/Faculty/Lists/list.shtml
 table = doc.css("div#content table").first
 rows = table.children
 mode = :name
+regular_name = nil
 
 prof = {}
 rows.each do |row|
@@ -26,8 +27,11 @@ rows.each do |row|
   if tds.size > 1
     case mode
     when :name
-      prof[:name] = tds[1].at_css('a').inner_text.strip
-      prof[:name] = "#{prof[:name].split(' ').first} #{prof[:name].split(' ').last}"
+      name = tds[1].at_css('a').inner_text.strip
+      prof[:first_name] = name.split(' ').first
+      prof[:last_name]  = name.split(' ').last
+      regular_name = name.match(/^([\w-]*)\s+(\w\.\s+)*(\w[^\s]*)$/)
+      #(prof[:first_name], prof[:last_name]) = name.match(/^([\w-]*)\s+(?:\w\.\s*)*(\w.*)$/)[1..-1]
       prof[:title] =  tds[1].children[3].inner_text.strip
       detail_page = "http://www.eecs.berkeley.edu" + tds[1].at_css('a').attr('href')
       anchor = Nokogiri::HTML(open(detail_page)).css('#leftcoltext').at_css('a')
@@ -60,12 +64,15 @@ rows.each do |row|
         end
       end
       prof[:interests] = interests.join.strip
+      prof[:private] = false
 
-      if inst = Instructor.find_by_name(prof[:name])
-        puts "Found existing entry for #{prof[:name]}. Updating information."
+      if inst = Instructor.find(:first, :conditions => { :last_name => prof[:last_name], :first_name => prof[:first_name] })
+        puts "Found existing entry for #{prof[:first_name]} #{prof[:last_name]}. Updating information."
         inst.update_attributes! prof
       else
-        puts "Creating new entry for #{prof[:name]}."
+        puts "Creating new entry for #{prof[:first_name]} #{prof[:last_name]}."
+        puts "Warning: name has irregular format due to non-abbreviated middle string. Please update this entry's first and last names in the database manually." unless regular_name
+        puts "Warning: Last name contains non-ASCII characters. Please manually update with ASCII characters." unless prof[:last_name].match(/^[a-zA-Z'-]*$/)
         Instructor.create!(prof)
       end
       prof = {}

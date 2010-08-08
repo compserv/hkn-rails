@@ -68,7 +68,8 @@ class CoursesurveysController < ApplicationController
   end
 
   def instructor
-    @instructor = Instructor.find_by_name(params[:name].gsub(/_/, ' '))
+    (last_name, first_name) = params[:name].split(',')
+    @instructor = Instructor.find_by_name(first_name, last_name)
     @instructed_klasses = []
     @tad_klasses = []
     @undergrad_totals = {}
@@ -98,18 +99,34 @@ class CoursesurveysController < ApplicationController
     end
 
     # Aggregate totals
-    puts @grad_totals
     @undergrad_totals.keys.each do |course|
       scores = @undergrad_totals[course]
       count = scores.size
       total = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
-      @undergrad_totals[course] = total.map{|score| score/count}
+      @undergrad_totals[course] = total.map{|score| score/count}.push count
     end
-    @grad_totals.keys.each do |key|
-      scores = @grad_totals[key]
-      count = scores.size
-      total = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
-      total.map!{|effectiveness, worthwhileness| [effectiveness/total, worthwhileness/total]}
+    @undergrad_total = @undergrad_totals.keys.reduce([0, 0, 0]) do |sum, new| 
+      (sum_eff, sum_wth, sum_count) = sum
+      (new_eff, new_wth, new_count) = @undergrad_totals[new]
+      [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
+    end
+    (eff, wth, count) = @undergrad_total
+    @undergrad_total = [eff/count, wth/count, count]
+
+    unless @grad_totals.empty?
+      @grad_totals.keys.each do |course|
+        scores = @grad_totals[course]
+        count = scores.size
+        total = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
+        @grad_totals[course] = total.map{|score| score/count}.push count
+      end
+      @grad_total = @grad_totals.keys.reduce([0, 0, 0]) do |sum, new| 
+        (sum_eff, sum_wth, sum_count) = sum
+        (new_eff, new_wth, new_count) = @grad_totals[new]
+        [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
+      end
+      (eff, wth, count) = @grad_total
+      @grad_total = [eff/count, wth/count, count]
     end
 
     @instructor.tad_klasses.each do |klass|

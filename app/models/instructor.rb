@@ -2,7 +2,7 @@ class Instructor < ActiveRecord::Base
 
   # === List of columns ===
   #   id           : integer 
-  #   name         : string 
+  #   last_name    : string 
   #   picture      : string 
   #   title        : string 
   #   phone_number : string 
@@ -13,10 +13,19 @@ class Instructor < ActiveRecord::Base
   #   updated_at   : datetime 
   #   private      : boolean 
   #   office       : string 
+  #   first_name   : string 
   # =======================
 
   has_many :coursesurveys
   has_and_belongs_to_many :klasses
   has_and_belongs_to_many :tad_klasses, { :class_name => "Klass", :join_table => "klasses_tas" }
+
+  def full_name
+    first_name + " " + last_name
+  end
+
+  def Instructor.find_by_name(first_name, last_name)
+    Instructor.find(:first, :conditions => { :first_name => first_name, :last_name => last_name} )
+  end
 
 end

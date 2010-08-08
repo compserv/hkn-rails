@@ -4,13 +4,13 @@
   <h3>Instructor<%= "s" if @klass.instructors.size > 1 %></h3>
   <ul>
     <% @klass.instructors.each do |instructor| %>
-      <li><%= link_to instructor.name, surveys_instructor_path(instructor) %></li>
+      <li><%= link_to instructor.full_name, surveys_instructor_path(instructor) %></li>
     <% end %>
   </ul>
   <h3>TA<%= "s" if @klass.tas.size > 1 %></h3>
   <ul>
     <% @klass.tas.each do |instructor| %>
-      <li><%= link_to instructor.name, surveys_instructor_path(instructor) %></li>
+      <li><%= link_to instructor.full_name, surveys_instructor_path(instructor) %></li>
     <% end %>
   </ul>
 </div>
@@ -20,14 +20,14 @@
   <%- if answers.nil? -%>
   <tr>
     <th colspan="2">
-      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.name, surveys_instructor_path(instructor) %>
+      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     </th>
   </tr>
   <tr><td colspan="2">This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>.</td></tr>
   <%- else -%>
   <tr>
     <th>
-      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.name, surveys_instructor_path(instructor) %>
+      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     </th>
     <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.reduce{|x,y| x.to_i+y.to_i} %> respondents</th>
   </tr>

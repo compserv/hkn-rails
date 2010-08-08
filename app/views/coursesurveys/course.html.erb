@@ -8,7 +8,7 @@
     <th>Instructor<%= @instructors.size > 1 ? "s" : "" %> in Charge</th>
     <td>
       <% @instructors.each do |instructor| %>
-        <%= link_to instructor.name, surveys_instructor_path(instructor) %>
+        <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
       <% end %>
     </td>
   </tr>
@@ -36,7 +36,7 @@
       <%= link_to klass.proper_semester, surveys_klass_path(klass) %>
     </td>
     <td>
-      <%= link_to instructor.name, coursesurveys_instructor_path(instructor.name) %>
+      <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     </td>
     <td>
       <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>

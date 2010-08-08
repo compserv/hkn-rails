@@ -1,4 +1,4 @@
-<h1><%= @instructor.name %></h1>
+<h1><%= @instructor.full_name %></h1>
 
 <%= image_tag @instructor.picture, :id => "instructor_picture" unless @instructor.picture.blank? %>
 <table id="instructor_info" class="infobox">
@@ -34,24 +34,78 @@
     </td>
     <td>
     <%- klass.instructors.each do |instructor| -%>
-      <%= link_to instructor.name, surveys_instructor_path(instructor) unless instructor == @instructor %>
+      <%= link_to instructor.full_name, surveys_instructor_path(instructor) unless instructor == @instructor %>
     <%- end -%>
     </td>
   </tr>
   <%- end -%>
-  <tr><th>Totals</th></tr>
-  <%- @undergrad_totals.each do |course,tuple| -%>
-    <%- (effectiveness, worthwhileness) = tuple -%>
+  <tr><th>Totals</th><th>Teaching Effectiveness</th><th>How worthwhile was this course?</th><th></th></tr>
+  <%- unless @undergrad_totals.empty? -%>
+    <%- @undergrad_totals.each do |course,tuple| -%>
+      <%- (effectiveness, worthwhileness, count) = tuple -%>
   <tr>
     <td>
-      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %>
+      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
     </td>
     <td>
-      <%= sprintf "%.1f", effectiveness %> / 7
+      <%= sprintf "%.1f", effectiveness %> / 7.0
       <%= rating_bar(effectiveness/7.0) %>
     </td>
     <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7
+      <%= sprintf "%.1f", worthwhileness %> / 7.0
+      <%= rating_bar(worthwhileness/7.0) %>
+    </td>
+    <td>
+    </td>
+  </tr>
+    <%- end -%>
+    <%- (effectiveness, worthwhileness, count) = @undergrad_total -%>
+  <tr>
+    <td>
+      <strong>Undergraduate Courses (<%= count %>)</strong>
+    </td>
+    <td>
+      <%= sprintf "%.1f", effectiveness %> / 7.0
+      <%= rating_bar(effectiveness/7.0) %>
+    </td>
+    <td>
+      <%= sprintf "%.1f", worthwhileness %> / 7.0
+      <%= rating_bar(worthwhileness/7.0) %>
+    </td>
+    <td>
+    </td>
+  </tr>
+  <%- end -%>
+  <%- unless @grad_totals.empty? -%>
+    <%- @grad_totals.each do |course,tuple| -%>
+      <%- (effectiveness, worthwhileness, count) = tuple -%>
+  <tr>
+    <td>
+      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
+    </td>
+    <td>
+      <%= sprintf "%.1f", effectiveness %> / 7.0
+      <%= rating_bar(effectiveness/7.0) %>
+    </td>
+    <td>
+      <%= sprintf "%.1f", worthwhileness %> / 7.0
+      <%= rating_bar(worthwhileness/7.0) %>
+    </td>
+    <td>
+    </td>
+  </tr>
+    <%- end -%>
+    <%- (effectiveness, worthwhileness, count) = @grad_total -%>
+  <tr>
+    <td>
+      <strong>Graduate Courses (<%= count %>)</strong>
+    </td>
+    <td>
+      <%= sprintf "%.1f", effectiveness %> / 7.0
+      <%= rating_bar(effectiveness/7.0) %>
+    </td>
+    <td>
+      <%= sprintf "%.1f", worthwhileness %> / 7.0
       <%= rating_bar(worthwhileness/7.0) %>
     </td>
     <td>
@@ -63,7 +117,7 @@
 
 <%- unless @tad_klasses.blank? -%>
   <%- if @instructor.private -%>
-      <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in.", coursesurveys_ferpa_path %></p>
+      <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in.", coursesurveys_ferpa_path %></p>
   <%- end -%>
 <h3>Classes TA'd</h3>
 <table id="ratings">
@@ -85,7 +139,7 @@
     <%- end -%>
     <td>
     <%- klass.instructors.each do |instructor| -%>
-      <%= link_to instructor.name, surveys_instructor_path(instructor) %>
+      <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     <%- end -%>
     </td>
   </tr>

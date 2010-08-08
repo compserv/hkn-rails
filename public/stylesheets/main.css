@@ -146,7 +146,7 @@ html #ratings th { border: 1px solid black; background-color: #BBCCEE;
 html #ratings td { border: 1px dashed #AABBDD; padding: 2px 4px; }
 html #ratings tr:nth-child(even) { background-color: #E8F0F5; }
 html #ratings tr:nth-child(odd)  { background-color: #D8E0EE; }
-html #instructor_picture { float: left; }
+html #instructor_picture { float: left; margin-right: 10px; }
 html #instructorbox { padding: 10px; float: left; margin: 10px auto; }
 html #instructorbox ul { list-style: none }
 

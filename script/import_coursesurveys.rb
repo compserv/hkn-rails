@@ -53,15 +53,18 @@ def parse_klass_info(line)
 
   # Check whether instructor exists
   # I have no idea what we should do about duplicates. I'll probably want to see what the old script did
-  instructor = Instructor.find_by_name("#{first_name} #{last_name}")
+  # So many bad things can happen here if the survey does not format the instructor name properly
+  instructor = Instructor.find(:first, :conditions => { :first_name => first_name, :last_name =>  last_name })
+  
   if instructor.nil?
     puts "No instructor named #{first_name} #{last_name} found. Creating now."
+    puts "If this is in error, please merge the instructor entries in the database."
     if title == "prof"
       privacy = false
     else
       privacy = true
     end
-    instructor = Instructor.create( :name => "#{first_name} #{last_name}", :private => privacy )
+    instructor = Instructor.create( :first_name => first_name, :last_name => last_name, :private => privacy )
   end
 
   # Check whether klass exists
@@ -72,7 +75,7 @@ def parse_klass_info(line)
     klass = Klass.create( :course_id => course.id, :semester => formatted_semester, :section => section )
   end
 
-  # Check whether instructor is an instructor for the klass
+  # Check whether instructor is an instructor or a TA for the klass
   case title
   when "prof"
     klass.instructors << instructor unless klass.instructors.include? instructor
@@ -184,7 +187,7 @@ end
 
 if ARGV.size == 0
   puts "You must specify a target course survey data file"
-  puts "(Supported file formats: .xsl, .tsv)"
+  puts "(Supported file formats: .xsl, /*.tsv*/)"
   exit
 end
 

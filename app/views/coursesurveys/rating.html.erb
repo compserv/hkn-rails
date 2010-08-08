@@ -1,4 +1,4 @@
-<h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> - <%= link_to @instructor.name, surveys_instructor_path(@instructor) %></h1>
+<h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> - <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %></h1>
 
 <h2><%= @answer.survey_question.text %></h2>
 
@@ -43,14 +43,14 @@
   <%- if answers.nil? -%>
   <tr>
     <th colspan="2">
-      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.name, surveys_instructor_path(instructor) %>
+      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     </th>
   </tr>
   <tr><td colspan="2">This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>.</td></tr>
   <%- else -%>
   <tr>
     <th>
-      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.name, surveys_instructor_path(instructor) %>
+      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     </th>
     <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.reduce{|x,y| x.to_i+y.to_i} %> respondents</th>
   </tr>
