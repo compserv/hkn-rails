@@ -53,4 +53,14 @@ class Course < ActiveRecord::Base
 
     Course.find( :first, :conditions => { :department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix } )
   end
+
+  def Course.find_all_by_department_abbr(dept_abbr)
+    department = Department.find_by_nice_abbr(dept_abbr)
+    Course.find_all_by_department_id(department.id)
+  end
+
+  def Course.find_all_with_exams_by_department_abbr(dept_abbr)
+    @department = Department.find_by_nice_abbr(dept_abbr)
+    Course.find(:all, :include => :department, :conditions => ['department_id = ?', @department.id], :joins => :exams)
+  end
 end

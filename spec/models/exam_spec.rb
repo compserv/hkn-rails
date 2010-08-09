@@ -20,9 +20,9 @@ describe Exam, "when created with blank parameters" do
     @exam.errors[:filename].should include("can't be blank")
   end
 
-  it "should require a type to be valid" do
+  it "should require an exam_type to be valid" do
     @exam.should_not be_valid
-    @exam.errors[:type].should include("can't be blank")
+    @exam.errors[:exam_type].should include("can't be blank")
   end
 
   it "should require a is_solution to be valid" do
@@ -37,7 +37,7 @@ describe Exam do
       :course => mock_model(Course),
       :filename => 'CS3_sp10_mt3.pdf',
       :is_solution => true )
-    @exam.type = 1
+    @exam.exam_type = 1
   end
 
   it "should be valid when supplied appropriate arguments" do

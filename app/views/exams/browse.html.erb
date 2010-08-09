@@ -1,0 +1,17 @@
+<h1>Browse Exams by Department</h1>
+
+<table>
+  <tr>
+    <th>Computer Science</th>
+    <th>Electrical Engineering</th>
+  </tr>
+<% max_length = get_max_length(@cs_courses, @ee_courses) %>
+<% (0...max_length).each do |i| %>
+  <tr>
+    <td><%= print_course_exams(@cs_courses[i]) %></td>
+    <td><%= print_course_exams(@ee_courses[i]) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
