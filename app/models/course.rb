@@ -38,7 +38,7 @@ class Course < ActiveRecord::Base
 
   def course_abbr
     # e.g. EE20N
-    "#{dept_abbr} #{full_course_number}"
+    "#{dept_abbr}#{full_course_number}"
   end
 
   def full_course_number
@@ -61,6 +61,8 @@ class Course < ActiveRecord::Base
 
   def Course.find_all_with_exams_by_department_abbr(dept_abbr)
     @department = Department.find_by_nice_abbr(dept_abbr)
-    Course.find(:all, :include => :department, :conditions => ['department_id = ?', @department.id], :joins => :exams)
+    if !@department.nil?
+      Course.find(:all, :include => :department, :conditions => ['department_id = ?', @department.id], :joins => :exams)
+    end
   end
 end

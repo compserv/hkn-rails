@@ -4,6 +4,10 @@ module ExamsHelper
   end
 
   def get_max_length(array1, array2) #TODO there's got to be a method for this...
-    array1.length > array2.length ? array1.length : array2.length
+    if array1.nil? || array2.nil?
+      0
+    else
+      array1.length > array2.length ? array1.length : array2.length
+    end
   end
 end

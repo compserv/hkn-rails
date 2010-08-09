@@ -55,6 +55,12 @@ HknRails::Application.routes.draw do |map|
     match "" => "tutor#schedule"
     match "schedule" => "tutor#schedule"
   end
+  
+  scope "exam" do
+    resources :exams
+    match "browse" => "exams#browse"
+  end
+  
   #resources :user_session
 
   # The priority is based upon order of creation:
