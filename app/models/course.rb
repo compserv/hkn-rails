@@ -16,7 +16,7 @@ class Course < ActiveRecord::Base
 
   belongs_to :department
   has_and_belongs_to_many :tutors
-  has_many :klasses
+  has_many :klasses, :order => "semester DESC"
   has_many :coursesurveys, :through => :klasses
   has_many :exams
   validates :department_id, :presence => true

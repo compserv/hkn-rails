@@ -1,9 +1,15 @@
 class CoursesurveysController < ApplicationController
+  # Note: We should change all the database queries to be more Rails 3.0-like.
   def index
   end
 
   def course
     @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
+    effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
+    worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
+    @effective_max  = effective_q.max.to_f
+    @worthwhile_max = worthwhile_q.max.to_f
+
     if @course.blank?
       @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
       render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
@@ -15,15 +21,21 @@ class CoursesurveysController < ApplicationController
       worthwhile_sum = 0.0
       @course.klasses.each do |klass|
         klass.instructors.each do |instructor|
-          effectiveness  = SurveyAnswer.find_by_instructor_klass(instructor, klass, {:survey_question_id => 1}).first
-          worthwhileness = SurveyAnswer.find_by_instructor_klass(instructor, klass, {:survey_question_id => 2}).first
+          prof_eff = SurveyAnswer.find(:first, :conditions => {
+            :instructor_id => instructor.id,
+            :klass_id => klass.id,
+            :survey_question_id => effective_q.id} )
+          worthwhileness = SurveyAnswer.find(:first, :conditions => {
+            :instructor_id => instructor.id,
+            :klass_id => klass.id,
+            :survey_question_id => worthwhile_q.id} )
           @results << [
             klass, 
             instructor, 
-            effectiveness,
+            prof_eff,
             worthwhileness,
           ]
-          effective_sum  += effectiveness.mean
+          effective_sum  += prof_eff.mean
           worthwhile_sum += worthwhileness.mean
         end
       end
@@ -72,29 +84,37 @@ class CoursesurveysController < ApplicationController
     @instructor = Instructor.find_by_name(first_name, last_name)
     @instructed_klasses = []
     @tad_klasses = []
+
     @undergrad_totals = {}
     @grad_totals = {}
 
+    prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
+    worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
+    ta_eff_q  = SurveyQuestion.find_by_keyword(:ta_eff)
+
     @instructor.klasses.each do |klass|
-      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 1}).first
-      worthwhileness = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 2}).first
-      @instructed_klasses << [
-        klass, 
-        @instructor, 
-        effectiveness,
-        worthwhileness,
-      ]
+      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => prof_eff_q.id}).first
+      worthwhileness = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => worthwhile_q.id}).first
 
-      if klass.course.course_number.to_i < 200 
-        totals = @undergrad_totals
-      else
-        totals = @grad_totals
-      end
+      unless effectiveness.blank? or worthwhileness.blank?
+        @instructed_klasses << [
+          klass, 
+          @instructor, 
+          effectiveness,
+          worthwhileness,
+        ]
 
-      if totals.has_key? klass.course
-        totals[klass.course] << [effectiveness.mean, worthwhileness.mean]
-      else
-        totals[klass.course] = [[effectiveness.mean, worthwhileness.mean]]
+        if klass.course.course_number.to_i < 200 
+          totals = @undergrad_totals
+        else
+          totals = @grad_totals
+        end
+
+        if totals.has_key? klass.course
+          totals[klass.course] << [effectiveness.mean, worthwhileness.mean]
+        else
+          totals[klass.course] = [[effectiveness.mean, worthwhileness.mean]]
+        end
       end
     end
 
@@ -111,7 +131,7 @@ class CoursesurveysController < ApplicationController
       [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
     end
     (eff, wth, count) = @undergrad_total
-    @undergrad_total = [eff/count, wth/count, count]
+    @undergrad_total = [eff/count, wth/count, count] unless count == 0
 
     unless @grad_totals.empty?
       @grad_totals.keys.each do |course|
@@ -126,17 +146,18 @@ class CoursesurveysController < ApplicationController
         [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
       end
       (eff, wth, count) = @grad_total
-      @grad_total = [eff/count, wth/count, count]
+      @grad_total = [eff/count, wth/count, count] unless count == 0
     end
 
     @instructor.tad_klasses.each do |klass|
-      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => 27}).first
-      @tad_klasses << [
-        klass, 
-        @instructor, 
-        effectiveness,
-      ]
-      effective_sum  += effectiveness.mean
+      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => ta_eff_q.id}).first
+      unless effectiveness.blank?
+        @tad_klasses << [
+          klass, 
+          @instructor, 
+          effectiveness,
+        ]
+      end
     end
   end
 
@@ -152,4 +173,21 @@ class CoursesurveysController < ApplicationController
     # Someone who understands statistics, please make sure the following line is correct
     @conf_intrvl = 1.96*@answer.deviation/Math.sqrt(@total_responses)
   end
+
+  #def aggregate_totals_by_course(totals)
+  #  # totals is a hash of courses to tuples of (ratings...)
+  #  totals.keys.each do |course|
+  #    scores = totals[course]
+  #    count = scores.size
+  #    total = scores.reduce{|tuple0, tuple1| tuple0.zip(tuple1).map{|x,y|x+y}}
+  #    totals[course] = total.map{|score| score/count} + [count]
+  #  end
+  #  total = totals.keys.reduce([0, 0, 0]) do |sum, new| 
+  #    (sum_eff, sum_wth, sum_count) = sum
+  #    (new_eff, new_wth, new_count) = totals[new]
+  #    [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
+  #  end
+  #  (eff, wth, count) = total
+  #  _total = [eff/count, wth/count, count] unless count == 0
+  #end
 end

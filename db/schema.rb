@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100809065444) do
+ActiveRecord::Schema.define(:version => 20100810070825) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -318,6 +318,7 @@ ActiveRecord::Schema.define(:version => 20100809065444) do
     t.boolean "important", :default => false
     t.boolean "inverted",  :default => false
     t.integer "max",                          :null => false
+    t.integer "keyword",   :default => 0
   end
 
   create_table "tutors", :force => true do |t|

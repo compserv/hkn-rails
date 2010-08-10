@@ -39,12 +39,12 @@
       <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     </td>
     <td>
-      <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
-      <%= rating_bar(effectiveness.mean/7.0) %>
+      <%= sprintf "%.1f", effectiveness.mean %> / <%= @effective_max %>
+      <%= rating_bar(effectiveness.mean/@effective_max) %>
     </td>
     <td>
-      <%= sprintf "%.1f", worthwhileness.mean %> / <%= worthwhileness.survey_question.max.to_f %>
-      <%= rating_bar(worthwhileness.mean/7.0) %>
+      <%= sprintf "%.1f", worthwhileness.mean %> / <%= @worthwhile_max %>
+      <%= rating_bar(worthwhileness.mean/@worthwhile_max) %>
     </td>
   </tr>
 <%- end -%>
@@ -56,12 +56,12 @@
   <tr>
     <td colspan="2"></td>
     <td>
-      <%= sprintf "%.1f", @total_effectiveness %> / 7.0
-      <%= rating_bar(@total_effectiveness/7.0, "url") %>
+      <%= sprintf "%.1f", @total_effectiveness %> / <%= @effective_max %>
+      <%= rating_bar(@total_effectiveness/@effective_max, "url") %>
     </td>
     <td>
-      <%= sprintf "%.1f", @total_worthwhileness %> / 7.0
-      <%= rating_bar(@total_worthwhileness/7.0) %>
+      <%= sprintf "%.1f", @total_worthwhileness %> / <%= @worthwhile_max %>
+      <%= rating_bar(@total_worthwhileness/@worthwhile_max) %>
     </td>
   </tr>
 </table>

@@ -11,38 +11,39 @@
 require File.expand_path('../../config/environment', __FILE__)
 
 questions = [
-  {"inverted"=>false,"text"=>"Rate the overall teaching effectiveness of this instructor","max"=>7,"important"=>true},
-  {"inverted"=>false,"text"=>"How worthwhile was this course compared with others at U.C.?","max"=>7,"important"=>true},
-  {"inverted"=>false,"text"=>"Gives lectures that are well organized","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Is enthusiastic about the subject matter","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Identifies what he/she considers important","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Has an interesting style of presentation","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Uses visual aids and blackboards effectively","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Encourages questions from students","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Is careful and precise in answering questions","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Relates to students as individuals","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Is accessible to students outside of class","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Is amicable and helpful to students during office hours","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Gives interesting and stimulation assignments","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Gives exams that permit students to show their understanding","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Uses a grading system that is clearly defined and equitable","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Required course material is sufficiently covered in lecture","max"=>5,"important"=>false},
-  {"inverted"=>true,"text"=>"Pace of the course is too fast","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"The required text/notes is beneficial","max"=>5,"important"=>false},
-  {"inverted"=>true,"text"=>"Workload is heavier than for courses of comparable credit","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Is well prepared","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Communicates ideas effectively","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Appears to have a good knowledge of the subject matter","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Answers questions accurately","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Encourages questions and/or class discussion","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Is aware when students are having difficulty","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Is accessible during office hours","max"=>5,"important"=>false},
-  {"inverted"=>false,"text"=>"Rate the T.A.'s overall teaching effectiveness","max"=>5,"important"=>true}
+  {"keyword"=>:prof_eff,"inverted"=>false,"text"=>"Rate the overall teaching effectiveness of this instructor","max"=>7,"important"=>true},
+  {"keyword"=>:worthwhile,"inverted"=>false,"text"=>"How worthwhile was this course compared with others at U.C.?","max"=>7,"important"=>true},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Gives lectures that are well organized","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Is enthusiastic about the subject matter","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Identifies what he/she considers important","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Has an interesting style of presentation","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Uses visual aids and blackboards effectively","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Encourages questions from students","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Is careful and precise in answering questions","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Relates to students as individuals","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Is accessible to students outside of class","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Is amicable and helpful to students during office hours","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Gives interesting and stimulation assignments","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Gives exams that permit students to show their understanding","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Uses a grading system that is clearly defined and equitable","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Required course material is sufficiently covered in lecture","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>true,"text"=>"Pace of the course is too fast","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"The required text/notes is beneficial","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>true,"text"=>"Workload is heavier than for courses of comparable credit","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Helpful in understanding material","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Is well prepared","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Communicates ideas effectively","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Appears to have a good knowledge of the subject matter","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Answers questions accurately","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Encourages questions and/or class discussion","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Is aware when students are having difficulty","max"=>5,"important"=>false},
+  {"keyword"=>:none,"inverted"=>false,"text"=>"Is accessible during office hours","max"=>5,"important"=>false},
+  {"keyword"=>:ta_eff,"inverted"=>false,"text"=>"Rate the T.A.'s overall teaching effectiveness","max"=>5,"important"=>true}
 ]
 
 questions.each do|question|
   unless SurveyQuestion.find_by_text(question["text"])
-    puts "Did not find #{question[:text]}. Creating now."
+    puts "Did not find \"#{question["text"]}\". Creating now."
     SurveyQuestion.create(question)
   end
 end

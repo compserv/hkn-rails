@@ -91,7 +91,7 @@ def parse_klass_info(line)
 end
 
 def parse_frequencies
-  return 4
+  return 3
 end
 
 def get_stats frequencies
