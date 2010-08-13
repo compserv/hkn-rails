@@ -3,6 +3,60 @@ class CoursesurveysController < ApplicationController
   def index
   end
 
+  def department
+    @department = Department.find_by_nice_abbr(params[:dept_abbr])
+    @lower_div = []
+    @upper_div = []
+    @grad      = []
+    @prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
+    current_semester = (Time.now.year*10 + (Time.now.month/3)).to_s
+    start_semester   = (4.years.ago.year*10 + (4.years.ago.month/3)).to_s
+
+    #Course.find(:all, :conditions => { :department_id => @department.id }).each do |course|
+    #Course.find(:all, 
+    #            :select => "courses.*, s.effectiveness",
+    #            :joins => "INNER JOIN (SELECT course_id, AVG(survey_answers.mean) AS effectiveness, ARRAY_AGG(survey_answers.instructor_id) AS instructors FROM klasses, survey_answers WHERE klass_id = klasses.id AND survey_question_id = #{@prof_eff_q.id} GROUP BY course_id) AS s ON courses.id = s.course_id",
+    #            :conditions => { :department_id => @department.id },
+    #            :order => "courses.course_number, courses.suffix"
+    #           ).each do |course|
+    #  if course.course_number.to_i < 100
+    #    @lower_div << course
+    #  elsif course.course_number.to_i < 200
+    #    @upper_div << course
+    #  else
+    #    @grad << course
+    #  end
+    #end
+
+    Course.where(:department_id => @department.id).each do |course|
+      instructors = []
+      ratings = []
+      klasses = course.klasses.where({ :semester => start_semester.to_s..current_semester.to_s }).order(:semester)
+      klasses.each do |klass|
+        SurveyAnswer.find(:all, :conditions => { :klass_id => klass.id, :survey_question_id => @prof_eff_q.id }).each do |answer|
+          instructors << answer.instructor_id
+          ratings << answer.mean
+        end
+      end
+
+      instructors = instructors.uniq[0..3]
+
+      unless ratings.empty?
+        count = ratings.size
+        rating = ratings.reduce{|x,y|x+y}/count
+        tuple = [course, instructors, rating, klasses.last]
+        if course.course_number.to_i < 100
+          @lower_div << tuple
+        elsif course.course_number.to_i < 200
+          @upper_div << tuple
+        else
+          @grad << tuple
+        end
+      end
+    end
+
+  end
+
   def course
     @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
