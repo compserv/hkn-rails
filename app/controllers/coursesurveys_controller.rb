@@ -31,7 +31,11 @@ class CoursesurveysController < ApplicationController
     Course.where(:department_id => @department.id).each do |course|
       instructors = []
       ratings = []
-      klasses = course.klasses.where({ :semester => start_semester.to_s..current_semester.to_s }).order(:semester)
+      if params[:full_list].blank?
+        klasses = course.klasses.where({ :semester => start_semester.to_s..current_semester.to_s }).order(:semester)
+      else
+        klasses = course.klasses.order(:semester)
+      end
       klasses.each do |klass|
         SurveyAnswer.find(:all, :conditions => { :klass_id => klass.id, :survey_question_id => @prof_eff_q.id }).each do |answer|
           instructors << answer.instructor_id
@@ -44,7 +48,7 @@ class CoursesurveysController < ApplicationController
       unless ratings.empty?
         count = ratings.size
         rating = ratings.reduce{|x,y|x+y}/count
-        tuple = [course, instructors, rating, klasses.last]
+        tuple = [course, instructors, rating, klasses.first]
         if course.course_number.to_i < 100
           @lower_div << tuple
         elsif course.course_number.to_i < 200
