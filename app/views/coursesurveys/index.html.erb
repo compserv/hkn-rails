@@ -1,16 +1,10 @@
 <div id="infobar">
   <h1>Quicklinks</h1>
-  <h3>Browse EE Data</h3>
+  <h3>Browse Instructors and Courses</h3>
   <ul class="plain">
-    <li><a href="instructors/EE/Profesor/?recent=1">Electrical Engineering Professors</a></li>
-    <li><a href="/student/CourseSurvey/instructors/EE/TA/?recent=1">Electrical Engineering Teaching Assistants</a></li>
+    <li><%= link_to "Instructors", coursesurveys_instructors_path("instructors") %></li>
+    <li><%= link_to "Teaching Assistants", coursesurveys_instructors_path("tas") %></li>
     <li><%= link_to "Electrical Engineering Courses", coursesurveys_department_path("EE") %></li>
-  </ul>
-
-  <h3>Browse CS Data</h3>
-  <ul class="plain">
-    <li><a href="/student/CourseSurvey/instructors/CS/Professor/?recent=1">Computer Science Professors</a></li>
-    <li><a href="/student/CourseSurvey/instructors/CS/TA/?recent=1">Computer Science Teaching Assistants</a></li>
     <li><%= link_to "Computer Science Courses", coursesurveys_department_path("CS") %></li>
   </ul>
 
@@ -19,7 +13,7 @@
     <li><%= link_to "How to use the course survey system", coursesurveys_how_to_path %></li>
     <li><%= link_to "Information for professors and TAs", coursesurveys_info_profs_path %></li>
     <li><%= link_to "Information about hidden GSI ratings", coursesurveys_ferpa_path %></li>
-    <li><a href="/student/CourseSurvey/stats/">Aggregate statistics</a></li>
+    <li><s><a href="/student/CourseSurvey/stats/">Aggregate statistics</a></s> Low priority to add this</li>
   </ul>
 </div>
 

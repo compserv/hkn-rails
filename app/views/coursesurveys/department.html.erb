@@ -3,6 +3,7 @@
 <%- if params[:full_list].blank? -%>
   This list contains only courses which have been taught within the past 4 years. See also <%= link_to "all courses", "?full_list=true" %>.
 <%- end -%>
+
 <table id="ratings">
   <tr><th>Lower-Division Courses</th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
   <%= render :partial => "department_row", :locals => { :courses => @lower_div } %>

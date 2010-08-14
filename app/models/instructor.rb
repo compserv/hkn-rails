@@ -24,6 +24,11 @@ class Instructor < ActiveRecord::Base
     first_name + " " + last_name
   end
 
+  # Reverse order
+  def full_name_r
+    last_name + ", " + first_name
+  end
+
   def Instructor.find_by_name(first_name, last_name)
     Instructor.find(:first, :conditions => { :first_name => first_name, :last_name => last_name} )
   end

@@ -137,6 +137,35 @@ class CoursesurveysController < ApplicationController
     end
   end
 
+  def instructors
+    @category   = (params[:category] == "tas") ? "Teaching Assistants" : "Instructors"
+    @eff_q       = SurveyQuestion.find_by_keyword((params[:category] == "tas") ? :ta_eff : :prof_eff)
+
+    @results = []
+    Instructor.order(:last_name).each do |instructor|
+      ratings = []
+      SurveyAnswer.find(:all, 
+                        :conditions => { :survey_question_id => @eff_q, :instructor_id => instructor.id }
+                       ).each do |answer|
+        ratings << answer.mean
+      end
+      courses = Course.find(:all,
+                   :select => "courses.id",
+                   :group =>  "courses.id",
+                   :conditions => "instructors_klasses.instructor_id = #{instructor.id}",
+                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
+                  )
+      unless ratings.empty?
+        if instructor.private
+          rating = "private"
+        else
+          rating = 1.0/ratings.size*ratings.reduce{|x,y| x+y}
+        end
+        @results << [instructor, courses, rating]
+      end
+    end
+  end
+
   def instructor
     (last_name, first_name) = params[:name].split(',')
     @instructor = Instructor.find_by_name(first_name, last_name)
@@ -232,20 +261,4 @@ class CoursesurveysController < ApplicationController
     @conf_intrvl = 1.96*@answer.deviation/Math.sqrt(@total_responses)
   end
 
-  #def aggregate_totals_by_course(totals)
-  #  # totals is a hash of courses to tuples of (ratings...)
-  #  totals.keys.each do |course|
-  #    scores = totals[course]
-  #    count = scores.size
-  #    total = scores.reduce{|tuple0, tuple1| tuple0.zip(tuple1).map{|x,y|x+y}}
-  #    totals[course] = total.map{|score| score/count} + [count]
-  #  end
-  #  total = totals.keys.reduce([0, 0, 0]) do |sum, new| 
-  #    (sum_eff, sum_wth, sum_count) = sum
-  #    (new_eff, new_wth, new_count) = totals[new]
-  #    [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
-  #  end
-  #  (eff, wth, count) = total
-  #  _total = [eff/count, wth/count, count] unless count == 0
-  #end
 end

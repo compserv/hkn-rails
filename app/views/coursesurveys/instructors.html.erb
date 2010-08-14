@@ -1,0 +1,27 @@
+<h1><%= @category %></h1>
+
+<table id="ratings">
+  <tr><th><%= @category %></th><th>Recent Courses</th><th>Rating</th></tr>
+  <%- @results.each do |tuple| -%>
+    <%- (instructor, courses, rating) = tuple -%>
+  <tr>
+    <td>
+      <%= link_to instructor.full_name_r, surveys_instructor_path(instructor) %>
+    </td>
+    <td>
+      <%- courses.each do |course_id| -%>
+        <%- course = Course.find(course_id) -%>
+        <%= link_to course.course_abbr, surveys_course_path(course) -%><%= ", " unless course == courses.last %>
+      <%- end -%>
+    </td>
+    <td>
+      <%- if rating == "private" -%>
+      [private]
+      <%- else -%>
+      <%= sprintf "%.1f", rating %> / <%= @eff_q.max.to_f %> 
+      <%= rating_bar(rating/@eff_q.max) %>
+      <%- end -%>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
