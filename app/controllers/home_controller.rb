@@ -12,6 +12,7 @@ class HomeController < ApplicationController
         @day = "Mon"
         @tutor_title = "Monday's tutoring schedule"
       end
+    else
       @tutoring_message = prop.tutoring_message
     end
   end
