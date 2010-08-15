@@ -1,4 +1,11 @@
 HknRails::Application.routes.draw do |map|
+
+  #Department tours
+  scope "dept_tour" do
+    match "" => "dept_tour#signup", :as => :dept_tour_signup
+	match "success" => "dept_tour#success"
+  end
+
   namespace :admin do
     scope "tutor" do
       match "signup_slots" => "tutor#signup_slots"

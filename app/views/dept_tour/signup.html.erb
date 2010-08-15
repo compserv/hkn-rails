@@ -1,0 +1,20 @@
+<h1>Sign up for a Department tour!</h1>
+<p>HKN provides tours of the Berkeley EECS department. Sign up here.</p>
+<%= form_tag("", :method => :post) do%>
+  <%= label_tag :name, "Name:" %>
+  <%= text_field_tag :name %>
+  <br />
+  <%= label_tag :date, "Date:" %>
+  <%= select_date Date.today, :prefix => :date %>
+  <br />
+  <%= label_tag :email, "Contact email address:" %>
+  <%= text_field_tag :email %>
+  <br />
+  <%= label_tag :phone, "Contact phone number (optional):" %>
+  <%= text_field_tag :phone %>
+  <br />
+  <%= label_tag :comments, "Additional comments:" %>
+  <%= text_area_tag :comments %>
+  <br />
+  <%= submit_tag "Submit" %>
+<% end %>
