@@ -28,12 +28,10 @@
 </p>
 
 <h2>Search For an Instructor or Course</h2>
-<form action="/student/CourseSurvey/search" method="get">
-  <div>
-    <input type="text" name="n" size="40" />
-    <input type="submit" name="sb" value=" Search " />
-  </div>
-</form>
+<%= form_tag(coursesurveys_search_path, :method => "post") do %>
+  <%= text_field_tag(:query, "", {:size => 40}) %>
+  <%= submit_tag("Search") %>
+<%- end -%>
 
 <h2>Prerequisite Charts</h2>
 <p>(Click on a course in the images below to see its ratings)</p>

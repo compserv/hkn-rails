@@ -1,5 +1,6 @@
 class CoursesurveysController < ApplicationController
-  # Note: We should change all the database queries to be more Rails 3.0-like.
+  before_filter :show_searcharea
+
   def index
   end
 
@@ -149,12 +150,21 @@ class CoursesurveysController < ApplicationController
                        ).each do |answer|
         ratings << answer.mean
       end
-      courses = Course.find(:all,
+      if params[:category] == "tas"
+        courses = Course.find(:all,
+                   :select => "courses.id",
+                   :group =>  "courses.id",
+                   :conditions => "klasses_tas.instructor_id = #{instructor.id}",
+                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN klasses_tas ON klasses_tas.klass_id = klasses.id"
+                  )
+      else
+        courses = Course.find(:all,
                    :select => "courses.id",
                    :group =>  "courses.id",
                    :conditions => "instructors_klasses.instructor_id = #{instructor.id}",
                    :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
                   )
+      end
       unless ratings.empty?
         if instructor.private
           rating = "private"
@@ -259,6 +269,65 @@ class CoursesurveysController < ApplicationController
     @mode = @frequencies.values.max
     # Someone who understands statistics, please make sure the following line is correct
     @conf_intrvl = 1.96*@answer.deviation/Math.sqrt(@total_responses)
+  end
+
+  def search
+    @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
+    @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
+    @eff_q = @prof_eff_q
+    query = params[:query] || ""
+
+    # If course abbr format:
+    if %w[CS EE].include? query[0..1].upcase
+      (dept_abbr, prefix, number, suffix) = params[:query].match(
+        /((?:CS)|(?:EE))\s*([a-zA-Z]*)([0-9]*)([a-zA-Z]*)/)[1..-1]
+      dept = Department.find_by_nice_abbr(dept_abbr)
+      course = Course.find(:first, :conditions => {:department_id => dept.id, :prefix => prefix, :course_number => number, :suffix => suffix})
+      redirect_to :action => :course, :dept_abbr => course.dept_abbr, :short_name => course.full_course_number
+    end
+
+    # Else try finding instructor
+    @results = []
+    name_query = params[:query].gsub(/\*/, '%').downcase
+    instructors = Instructor.find(:all, :conditions => ["(lower(last_name) LIKE ?) OR (lower(first_name) LIKE ?)", name_query, name_query]
+                   )
+    if instructors.size == 1
+      instructor = instructors.first
+      redirect_to :action => :instructor, :name => instructor.last_name+","+instructor.first_name
+    end
+
+    instructors.each do |instructor|
+      ratings = []
+      SurveyAnswer.find(:all, 
+                        :conditions => { :survey_question_id => [@prof_eff_q,@ta_eff_q], :instructor_id => instructor.id }
+                       ).each do |answer|
+        ratings << answer.mean
+      end
+      courses = Course.find(:all,
+                   :select => "courses.id",
+                   :group =>  "courses.id",
+                   :conditions => "klasses_tas.instructor_id = #{instructor.id}",
+                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN klasses_tas ON klasses_tas.klass_id = klasses.id"
+                  ) + 
+                  Course.find(:all,
+                   :select => "courses.id",
+                   :group =>  "courses.id",
+                   :conditions => "instructors_klasses.instructor_id = #{instructor.id}",
+                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
+                  )
+      unless ratings.empty?
+        if instructor.private
+          rating = "private"
+        else
+          rating = 1.0/ratings.size*ratings.reduce{|x,y| x+y}
+        end
+        @results << [instructor, courses, rating]
+      end
+    end
+  end
+
+  def show_searcharea
+    @show_searcharea = true
   end
 
 end

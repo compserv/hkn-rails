@@ -11,18 +11,10 @@
     </div>
   </div>
   <div id="coursesurvey" class="searchcontrol">
-    <form action ="/student/CourseSurvey/search" method="get">
-      <div>
-        <input class="autoclear text" type="text" name="n" value="Search Course Surveys" />
-        <input type="hidden" value="l1" name="sb"/>
-        <input type="hidden" value="1" name="recent"/>
-        <input type="hidden" value="1" name="sip"/>
-        <input type="hidden" value="1" name="sit"/>
-        <input type="hidden" value="1" name="sc"/>
-        <input type="hidden" value="1" name="sct"/>
-        <input class="button" type="submit" value="Search" />
-      </div>
-    </form>
+    <%= form_tag(coursesurveys_search_path, :method => "post") do %>
+      <%= text_field_tag(:query, "Search Course Surveys", :class => "text") %>
+      <%= submit_tag("Search") %>
+    <%- end -%>
     <div class="small searchhelp">
       example: Hilfinger, hilf*, cs 61a
     </div>
