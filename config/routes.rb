@@ -11,6 +11,8 @@ HknRails::Application.routes.draw do |map|
       match "signup_slots" => "tutor#signup_slots"
       match "signup_courses" => "tutor#signup_courses"
       match "edit_schedule" => "tutor#edit_schedule"
+      match "" => "tutor#settings"
+      match "settings" => "tutor#settings"
     end
   end
   

@@ -1,2 +1,10 @@
-<h1>Admin::TutorAdmin#settings</h1>
-<p>Find me in app/views/admin/tutor_admin/settings.html.erb</p>
+<h1>Tutoring Settings</h1>
+<%= form_tag("", :method => :post) do %>
+	<%= label_tag :enabled, "Tutoring Enabled:" %>
+	<%= select_tag :enabled, options_for_select([ ["Enabled",true], ["Disabled", false]], @enabled) %>
+	<br />
+	<%= label_tag :message, "Message to show when tutoring is disabled:" %>
+	<%= text_field_tag :message, @message, :size => 100 %>
+	<br />
+	<%= submit_tag %>
+<% end %>

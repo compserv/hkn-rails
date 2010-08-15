@@ -1,9 +1,6 @@
 class Admin::TutorController < Admin::AdminController
   before_filter :authorize_tutoring, :except=>[:signup_slots]
   
-  def index
-  end
-
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
@@ -113,6 +110,17 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def settings
+    prop = Property.get_or_create
+    @enabled = prop.tutoring_enabled
+    @message = prop.tutoring_message
+    @start = prop.tutoring_start
+    @end = prop.tutoring_end
+    
+    if params[:authenticity_token]
+      prop.tutoring_enabled = params[:enabled] === "true"
+      prop.tutoring_message = params[:message]
+      prop.save
+    end
   end
 
 end
