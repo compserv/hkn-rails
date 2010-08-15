@@ -1,0 +1,36 @@
+<h1>Sign up for classes</h1>
+<%= form_tag("", :method => :post) do %>
+<div style="height: 30em;">
+		
+		<div style="margin: 0px auto;">
+        Choose a class to add:
+        <%= select_tag(:class, options_for_select(@course_options)) %>
+        <!--
+			Search for class (like "cs61", "cs61c", "ee", or "cheme"):
+			<input id="course_query" onkeypress="return updateonenter(event);"/> 
+			<a href="javascript:void(0);" onclick="update_courses();">Search</a> 
+		</div> 
+		<br /> 
+		<div id="results_container" style="border: 1px solid gray; width: 40%; float: left; height: 25em; overflow: hidden;"> 
+			<h2>Search Results: </h2> 
+			<div id="results" style="height: 20em; overflow: scroll"> 
+				<hr /> 
+				None yet, search above!
+			</div> 
+		</div> 
+        -->
+		<div id="classes_container" style="border: 1px solid gray; width: 40%; margin-right: 10%; float: right; height: 25em; overflow: hidden;">
+			<h2>Courses Added:</h2>
+            <hr />
+			<div id="classes" style="height: 20em; overflow: scroll">
+                <% @courses_added.each do |course| %>
+                <div>
+                    <%= course.course_abbr %>
+                <hr />
+                </div>
+                <% end %>
+			</div>
+		</div> 
+    </div>
+	<%= submit_tag %>
+<% end %>

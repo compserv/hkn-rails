@@ -44,7 +44,20 @@ class Admin::TutorController < Admin::AdminController
     end
   end
   
-  def signup_classes
+  def signup_courses
+    @course_options = Course.all.map {|x| [x.course_abbr, x.id]}
+    tutor = @current_user.get_tutor
+    @courses_added = tutor.courses
+    if params[:authenticity_token]  #The form was submitted
+      course = Course.find(params[:class].to_i)
+      @debug << course
+      if not tutor.courses.include? course
+        tutor.courses << course
+        redirect_to :admin_tutor_signup_courses, :notice=>"Successfully added #{course}"
+      else
+        redirect_to :admin_tutor_signup_courses, :notice=>"You were already signed up for #{course}."
+      end
+    end
   end
 
   def generate_schedule
