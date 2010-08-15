@@ -9,13 +9,6 @@ describe DeptTourController do
     end
   end
 
-  describe "GET 'process'" do
-    it "should be successful" do
-      get 'process'
-      response.should be_success
-    end
-  end
-
   describe "GET 'success'" do
     it "should be successful" do
       get 'success'
