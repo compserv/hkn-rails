@@ -41,6 +41,10 @@ class Course < ActiveRecord::Base
     "#{dept_abbr}#{full_course_number}"
   end
 
+  def to_s
+    course_abbr
+  end
+
   def full_course_number
     "#{prefix}#{course_number}#{suffix}"
   end

@@ -49,6 +49,10 @@ class Department < ActiveRecord::Base
     Department.nice_abbrs[abbr]
   end
 
+  def to_s
+    name
+  end
+
   def Department.find_by_nice_abbr(abbr)
     abbr.upcase!
     @nice_abbrs.each_pair do |proper, informals|
