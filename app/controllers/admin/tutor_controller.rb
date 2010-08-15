@@ -1,5 +1,5 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses]
   
   def signup_slots
     tutor = @current_user.get_tutor
