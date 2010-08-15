@@ -7,7 +7,6 @@ class DeptTourMailer < ActionMailer::Base
 	@email_address = email_address
 	@phone = phone
 	@comments = comments
-	mail :to => 'ibrahima@hkn.eecs.berkeley.edu', :subject => 'Department Tour Request',
-      :from => email_address
+	mail :to => 'comms@hkn.eecs.berkeley.edu', :subject => "Department Tour Request on #{date}"
   end
 end

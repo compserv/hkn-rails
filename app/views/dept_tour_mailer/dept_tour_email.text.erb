@@ -1,7 +1,9 @@
-Hello committeepersons, a department tour has been requested by <%= @name %>.
+Hello committeepersons, a department tour has been requested by <%= @name %> on <%= date %>.
+<% if not @comments.empty? %>
 
 They had the following special comments:
 
 <%= @comments %>.
+<% end %>
 
-You can reach them at <%= @phone %>
+You can reach them at <a href="mailto:<%= @email_address %>"><%= @email_address %></a> <% if not @phone.empty? %> or call them at <%= @phone %><% end %>.

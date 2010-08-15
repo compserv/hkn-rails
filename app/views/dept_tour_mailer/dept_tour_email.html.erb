@@ -4,15 +4,18 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1>Department Tour Requested by <%= @name %></h1>
+    <h1>Department Tour Request by <%= @name %></h1>
     <p>
-      Hello committeepersons, a department tour has been requested by <%= @name %>.
+      Hello committeepersons, a department tour has been requested by <%= @name %> on <%= date %>.
 
     </p>
+	<% if not @comments.empty? %>
 	<p>They had the following special comments:</p>
     <p>
-      <%= @comments %>.
+      <%= @comments %>
     </p>
-	<p>You can reach them at <%= @phone %></p>
+	<% end %>
+	
+	<p>You can reach them at <a href="mailto:<%= @email_address %>"><%= @email_address %></a> <% if not @phone.empty? %> or call them at <%= @phone %><% end %>.</p>
   </body>
 </html>
