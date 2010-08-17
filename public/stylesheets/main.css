@@ -21,7 +21,7 @@ html select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; f
 html select:focus { border: 1px solid black; }
 html textarea { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 html textarea:focus { border: 1px solid black; }
-html label { font-weight: bold; padding-right: 3px; color: #444444; text-align: left; }
+html label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right; }
 html .small { font-size: x-small; line-height: 1.3em; }
 html .aside { font-size: x-small; line-height: 1.3em; color: #444444; }
 html .warning { color: red; }
@@ -151,3 +151,6 @@ html #instructor_picture { float: left; margin-right: 10px; }
 html #instructorbox { padding: 10px; float: left; margin: 10px auto; }
 html #instructorbox ul { list-style: none }
 
+/* Forms */
+html .field label { float: left; width: 12em; margin-right: 5px; }
+html .field input { clear: left; }

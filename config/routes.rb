@@ -25,6 +25,15 @@ HknRails::Application.routes.draw do |map|
   match "create_session" => "user_sessions#create"
   match "logout" => "user_sessions#destroy"
 
+  # Registration
+  get  "register" => "people#new"
+  post "register" => "people#create"
+
+  # People
+  scope "people" do
+    match "list(/:category)" => "people#list", :as => :people_list
+  end
+
   # Course Surveys
   scope "coursesurveys" do
     match "" => "coursesurveys#index"
@@ -34,7 +43,7 @@ HknRails::Application.routes.draw do |map|
     # This is a hack to allow periods in the parameter. Otherwise, Rails automatically splits on periods
     match "instructor/:name"                        => "coursesurveys#instructor", :as => :coursesurveys_instructor, :constraints => {:name => /.+/}
     match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
-    match "search(/:query)"                           => "coursesurveys#search",     :as => :coursesurveys_search
+    match "search(/:query)"                         => "coursesurveys#search",     :as => :coursesurveys_search
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
 
     match "how-to"     => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to

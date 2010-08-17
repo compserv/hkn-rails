@@ -10,7 +10,7 @@
   <li id="event" class="navigation_toplevel_item">
     <a href="#">Events</a>
   </li> 
-  <li id="info" class="navigation_toplevel_item">
+  <li id="people" class="navigation_toplevel_item">
     <a href="#">People</a>
   </li> 
   <li id="alumni" class="navigation_toplevel_item">
@@ -30,15 +30,11 @@
 <li>	
 	<a href="/tutor/">Tutoring</a>
 </li>
-<li>	
-	<a href="/coursesurveys/">Course Surveys</a>
-</li>
+<li><%= link_to "Course Surveys", coursesurveys_path %></li>
 <li>	
 	<a href="/exam/browse/">Exam Archive</a>
 </li>
-<li>	
-	<a href="/courseguide/">Course Guide</a>
-</li>
+<li><a href="/courseguide/">Course Guide</a></li>
 <li>	
 	<a href="/services/more/">More Services</a>
 </li>
@@ -47,18 +43,14 @@
 
 <div class="submenu" id ="indrel_submenu">
 <ul class="navigation_sublevel">
-<li>	
-  <%= link_to "Why HKN?", indrel_path %>
-</li>
+<li><%= link_to "Why HKN?", indrel_path %></li>
 <li>	
 	<a href="/indrel/resume-book/register/">Resume Books</a>
 </li>
 <li>	
 	<a href="/indrel/infosession/register/">Infosessions</a>
 </li>
-<li>	
-<%= link_to "Career Fair", career_fair_path %>
-</li>
+<li><%= link_to "Career Fair", career_fair_path %></li>
 <li>	
 	<a href="/indrel/special/">Special Events</a>
 </li>
@@ -69,25 +61,11 @@
 </div>
 
 
-<div class="submenu" id ="info_submenu">
-
+<div class="submenu" id="people_submenu">
 <ul class="navigation_sublevel">
-<li>	
-	<a href="/info/list/officers/" class="navigation_sublevel_item">
-        Officers
-	</a>
-</li>
-<li>	
-	<a href="/info/list/members/" class="navigation_sublevel_item">
-        Members
-	</a>
-</li>
-<li>	
-	<a href="/info/list/candidates/" class="navigation_sublevel_item">
-        Candidates
-	</a>
-
-</li>
+  <li><%= link_to "Officers",   people_list_path("officers") %></li>
+  <li><%= link_to "Members",    people_list_path("members") %></li>
+  <li><%= link_to "Candidates", people_list_path("candidates") %></li>
 </ul>
 </div>
 
