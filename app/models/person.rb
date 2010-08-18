@@ -18,6 +18,7 @@ class Person < ActiveRecord::Base
   #   date_of_birth       : date 
   #   created_at          : datetime 
   #   updated_at          : datetime 
+  #   picture             : string 
   # =======================
 
   has_one :candidate

@@ -1,0 +1,25 @@
+<%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
+<div id="results">
+<%= will_paginate @people, :class => "pagination ajax" %>
+
+<table class="table pagination">
+  <tr>
+    <th>Image</th>
+    <th>Name (<%= sort_link 'First', 'first_name' %> <%= sort_link 'Last', 'last_name' %>)</th>
+    <th><%= sort_link 'Email', 'email' %></th>
+    <th>Phone</th></tr>
+<%- @people.each do |person| -%>
+  <tr>
+    <td>
+    </td>
+    <td>
+      <%= link_to person.fullname, "FAKE URL" %>
+      Member
+    </td>
+    <td><%= raw html_obfuscate person.email %></td>
+    <td><%= person.phone_number %></td>
+  </tr>
+<%- end -%>
+</table>
+
+</div>

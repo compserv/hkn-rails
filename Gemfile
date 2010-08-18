@@ -13,6 +13,7 @@ gem 'autotest-rails'
 gem 'authlogic', :git => 'git://github.com/odorcicd/authlogic.git', :branch => 'rails3' 
 gem 'net-ldap'
 gem 'nokogiri'
+gem 'will_paginate', "~> 3.0.pre2"
 
 # Use unicorn as the web server
 # gem 'unicorn'

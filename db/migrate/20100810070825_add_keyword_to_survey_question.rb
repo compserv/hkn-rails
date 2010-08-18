@@ -4,6 +4,6 @@ class AddKeywordToSurveyQuestion < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :survey_questions, :keyword
+    remove_column :survey_questions, :keyword
   end
 end

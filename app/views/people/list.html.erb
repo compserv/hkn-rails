@@ -1,10 +1,20 @@
-<table>
-<%- @people.each do |person| -%>
-  <tr>
-    <td>
-      <%= person.first_name %>
-      <%= person.last_name %>
-    </td>
-  </tr>
-<%- end -%>
-</table>
+<%= render :partial => 'list_results' %>
+
+<script type="text/javascript">
+document.observe("dom:loaded", function() {
+  // the element in which we will observe all clicks and capture
+  // ones originating from pagination links
+  var container = $(document.body)
+
+  if (container) {
+
+    container.observe('click', function(e) {
+      var el = e.element()
+      if (el.match('.pagination a')) {
+        new Ajax.Request(el.href, { method: 'get' })
+        e.stop()
+      }
+    })
+  }
+})
+</script>
