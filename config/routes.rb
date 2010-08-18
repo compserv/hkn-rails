@@ -36,6 +36,9 @@ HknRails::Application.routes.draw do |map|
   match "account-settings" => "people#edit", :as => :account_settings
   resources :people, :except => [:new, :create, :index]
 
+  # Resumes, this is kind of just a prototype test right now
+  match "resumes" => "resumes#show"
+
   # Course Surveys
   scope "coursesurveys" do
     match "" => "coursesurveys#index"
