@@ -39,4 +39,6 @@ HknRails::Application.configure do
 
   # Enable threaded mode
   # config.threadsafe!
+
+  config.active_support.deprecation = :notify
 end
