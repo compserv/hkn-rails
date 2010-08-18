@@ -139,14 +139,14 @@ html .info-item { display: table-cell; text-align: left; padding: 5px; }
 html .clear { clear: both; }
 html #trend { float: right; }
 html #ratings { border: 1px solid black; border-collapse: collapse; margin: 10px auto; font-size: 90%; }
-html #ratings th { border: 1px solid black; background-color: #BBCCEE; 
+html .table th { border: 1px solid black; background-color: #BBCCEE; 
   background-color: #ADC3DB; 
   background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
   background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
 }
-html #ratings td { border: 1px dashed #AABBDD; padding: 2px 4px; }
-html #ratings tr:nth-child(even) { background-color: #E8F0F5; }
-html #ratings tr:nth-child(odd)  { background-color: #D8E0EE; }
+html .table td { border: 1px dashed #AABBDD; padding: 2px 4px; }
+html .table tr:nth-child(even) { background-color: #E8F0F5; }
+html .table tr:nth-child(odd)  { background-color: #D8E0EE; }
 html #instructor_picture { float: left; margin-right: 10px; }
 html #instructorbox { padding: 10px; float: left; margin: 10px auto; }
 html #instructorbox ul { list-style: none }
@@ -154,3 +154,5 @@ html #instructorbox ul { list-style: none }
 /* Forms */
 html .field label { float: left; width: 12em; margin-right: 5px; }
 html .field input { clear: left; }
+
+html #results table { border: 1px solid black; border-collapse: collapse; width: 100%; }

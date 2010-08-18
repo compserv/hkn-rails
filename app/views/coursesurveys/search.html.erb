@@ -1,6 +1,6 @@
 <h1>Search results for <%= params[:query] %></h1>
 
-<table id="ratings">
+<table id="ratings" class="table">
   <tr><th>Instructor</th><th>Recent Courses</th><th>Rating</th></tr>
   <%- @results.each do |tuple| -%>
     <%- (instructor, courses, rating) = tuple -%>

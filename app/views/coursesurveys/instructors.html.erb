@@ -1,6 +1,6 @@
 <h1><%= @category %></h1>
 
-<table id="ratings">
+<table id="ratings" class="table">
   <tr><th><%= @category %></th><th>Recent Courses</th><th>Rating</th></tr>
   <%- @results.each do |tuple| -%>
     <%- (instructor, courses, rating) = tuple -%>

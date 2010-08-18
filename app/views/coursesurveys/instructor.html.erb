@@ -12,7 +12,7 @@
 
 <%- unless @instructed_klasses.blank? -%>
 <h3 class="center">Classes Taught</h3>
-<table id="ratings">
+<table id="ratings" class="table">
   <tr>
     <th>Sections</th>
     <th>Teaching Effectiveness</th>
@@ -120,7 +120,7 @@
       <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in.", coursesurveys_ferpa_path %></p>
   <%- end -%>
 <h3>Classes TA'd</h3>
-<table id="ratings">
+<table id="ratings" class="table">
   <tr>
     <th>Sections</th>
     <%- unless @instructor.private -%><th>Teaching Effectiveness</th><%- end -%>
