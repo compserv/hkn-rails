@@ -1,0 +1,15 @@
+<h1><%= @person.fullname %>'s Profile</h1>
+
+<div id="infobar">
+  <h1><%= @person.fullname %>'s RSVPs</h1>
+</div>
+
+<div>
+  <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
+  <table id="person_info" class="infobox">
+    <%- unless @person.email.blank? -%>       <tr> <th>Email</th>             <td><%= @person.email %></td> </tr><%- end -%>
+    <%- unless @person.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @person.phone_number %></td> </tr><%- end -%>
+    <tr> <th>Status</th><td><%= @person.status %></td> </tr>
+  </table>
+  <h2>Additional Membership Information</h2>
+</div>

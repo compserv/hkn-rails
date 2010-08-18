@@ -33,6 +33,7 @@ HknRails::Application.routes.draw do |map|
   scope "people" do
     match "list(/:category)" => "people#list", :as => :people_list
   end
+  resources :people, :except => [:new, :create, :index]
 
   # Course Surveys
   scope "coursesurveys" do

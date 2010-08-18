@@ -1,11 +1,12 @@
 class PeopleController < ApplicationController
-  before_filter :authorize, :only => [:list]
+  before_filter :authorize, :only => [:list, :show]
+  before_filter :authorize_superuser, :only => [:update, :destroy]
 
   def list
     @category = params[:category] || "all"
 
     # Prevent people from seeing members of any group
-    unless %w[officers members candidates all].include? @category
+    unless %w[officers cmembers members candidates all].include? @category
       @messages << "No category named #{@category}. Displaying all people."
       @category = "all"
     end
@@ -20,7 +21,9 @@ class PeopleController < ApplicationController
 
     @search_opts = {'sort' => "first_name"}.merge params
     opts = { :page => params[:page], :per_page => 10, :order => "people.#{order} #{sort_direction}" }
-    unless @category == "all"
+    if %w[officers cmembers].include? @category
+      opts.merge!( { :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title = ?", Property.semester, @category[0..-2]] } )
+    elsif @category != "all"
       @group = Group.find_by_name(@category)
       opts.merge!( { :joins => "JOIN groups_people ON groups_people.person_id = people.id", :conditions => ["groups_people.group_id = ?", @group.id] } )
     end
@@ -55,5 +58,15 @@ class PeopleController < ApplicationController
     else
       render :action => "new"
     end
+  end
+
+  def show
+    @person = Person.find(params[:id])
+  end
+
+  def update
+  end
+
+  def destroy
   end
 end

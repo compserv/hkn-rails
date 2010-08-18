@@ -2,8 +2,8 @@
 <div id="results">
 <%= will_paginate @people, :class => "pagination ajax" %>
 
-<table class="table pagination">
-  <tr>
+<table class="table">
+  <tr class="pagination">
     <th>Image</th>
     <th>Name (<%= sort_link 'First', 'first_name' %> <%= sort_link 'Last', 'last_name' %>)</th>
     <th><%= sort_link 'Email', 'email' %></th>
@@ -11,10 +11,11 @@
 <%- @people.each do |person| -%>
   <tr>
     <td>
+      <%= image_tag person.picture unless person.picture.blank? %>
     </td>
     <td>
-      <%= link_to person.fullname, "FAKE URL" %>
-      Member
+      <%= link_to person.fullname, person %>
+      <div class="small"><%= person.status %></div>
     </td>
     <td><%= raw html_obfuscate person.email %></td>
     <td><%= person.phone_number %></td>

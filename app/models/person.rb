@@ -83,4 +83,19 @@ class Person < ActiveRecord::Base
   def in_groups?(groups)
     groups.map{|group| in_group?(group)}.reduce{|x,y| x||y}
   end
+
+  def status
+    current_committeeship = committeeships.find_by_semester(Property.semester)
+    if current_committeeship.nil?
+      if groups.include? Group.find_by_name("members")
+        "Member"
+      elsif groups.include? Group.find_by_name("candidates")
+        "Candidate"
+      else
+        "Person"
+      end
+    else
+      current_committeeship.nice_position
+    end
+  end
 end

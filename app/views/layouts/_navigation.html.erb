@@ -73,9 +73,10 @@
 <%- if @current_user -%>
 <div class="submenu" id="people_submenu">
 <ul class="navigation_sublevel">
-  <li><%= link_to "Officers",   people_list_path("officers") %></li>
-  <li><%= link_to "Members",    people_list_path("members") %></li>
-  <li><%= link_to "Candidates", people_list_path("candidates") %></li>
+  <li><%= link_to "Officers",          people_list_path("officers") %></li>
+  <li><%= link_to "Committee Members", people_list_path("cmembers") %></li>
+  <li><%= link_to "Members",           people_list_path("members") %></li>
+  <li><%= link_to "Candidates",        people_list_path("candidates") %></li>
 </ul>
 </div>
 <%- end -%>
