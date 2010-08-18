@@ -32,7 +32,7 @@ class Person < ActiveRecord::Base
 
   acts_as_authentic do |c|
     # Options go here if you have any
-    c.validates_length_of_password_field_options :minimum => 8
+    c.merge_validates_length_of_password_field_options :minimum => 8
   end
 
   def valid_ldap_or_password?(password)
@@ -69,5 +69,17 @@ class Person < ActiveRecord::Base
 
   def to_s
     return fullname
+  end
+
+  def in_group?(group)
+    if group.class == String
+      group = Group.find_by_name(group)
+    end
+    groups.include?(group)
+  end
+
+  # If person is in ANY group in the list, this returns true
+  def in_groups?(groups)
+    groups.map{|group| in_group?(group)}.reduce{|x,y| x||y}
   end
 end

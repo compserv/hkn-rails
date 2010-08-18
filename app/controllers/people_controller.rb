@@ -1,4 +1,5 @@
 class PeopleController < ApplicationController
+  before_filter :authorize, :only => [:list]
 
   def list
     @category = params[:category] || "all"

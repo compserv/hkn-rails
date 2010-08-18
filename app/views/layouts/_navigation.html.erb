@@ -4,24 +4,34 @@
   <li id="services" class="navigation_toplevel_item">
     <a href="#">Student Services</a>
   </li>
+
   <li id="indrel" class="navigation_toplevel_item">
     <a href="#">Industry Relations</a>
   </li> 
+
   <li id="event" class="navigation_toplevel_item">
     <a href="#">Events</a>
   </li> 
+
+  <%- if @current_user -%>
   <li id="people" class="navigation_toplevel_item">
     <a href="#">People</a>
   </li> 
+  <%- end -%>
+
   <li id="alumni" class="navigation_toplevel_item">
     <a href="#">Alumni Network</a>
   </li> 
+
   <li id="about" class="navigation_toplevel_item">
     <a href="#">About HKN</a>
   </li> 
+
+  <%- if @current_user && @current_user.in_group?("comms") -%>
   <li id="admin" class="navigation_toplevel_item">
     <a href="#">Administration</a>
   </li> 
+  <%- end -%>
 </ul>
 </div><!-- toplevel -->
 
@@ -60,7 +70,7 @@
 </ul>
 </div>
 
-
+<%- if @current_user -%>
 <div class="submenu" id="people_submenu">
 <ul class="navigation_sublevel">
   <li><%= link_to "Officers",   people_list_path("officers") %></li>
@@ -68,7 +78,7 @@
   <li><%= link_to "Candidates", people_list_path("candidates") %></li>
 </ul>
 </div>
-
+<%- end -%>
 
 <div class="submenu" id ="event_submenu">
 <ul class="navigation_sublevel">
@@ -146,6 +156,7 @@
 </div>
 
 
+<%- if @current_user && @current_user.in_group?("comms") -%>
 <div class="submenu" id ="admin_submenu">
 <ul class="navigation_sublevel">
 <li>	
@@ -179,6 +190,7 @@
 
 </ul>
 </div>
+<%- end -%>
 
 
 

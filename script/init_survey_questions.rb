@@ -44,6 +44,6 @@ questions = [
 questions.each do|question|
   unless SurveyQuestion.find_by_text(question["text"])
     puts "Did not find \"#{question["text"]}\". Creating now."
-    SurveyQuestion.create(question)
+    SurveyQuestion.create!(question)
   end
 end
