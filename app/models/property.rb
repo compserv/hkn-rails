@@ -11,7 +11,7 @@ class Property < ActiveRecord::Base
   #   tutoring_end     : integer 
   # =======================
 
-  Semester = /^(fa|sp)\d{2,2}$/	#A regex which validates the semester
+  Semester = /^\d{4}[0-5]$/	#A regex which validates the semester
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validate :there_is_only_one, :on => :create
 
@@ -55,7 +55,20 @@ class Property < ActiveRecord::Base
       prop.send(variable)
     end
     protected :set_property, :get_property, :new, :create
+
+    def method_missing(m, *args, &block)
+      m = m.to_s
+      set = false
+      if m[-1..-1] == '='
+        m = m[0..-2]
+        set = true
+      end
+      if column_names.include? m
+        (set) ? set_property(m, *args) : get_property(m)
+      end
+    end
   end
+
 
   def there_is_only_one
     if Property.count > 0
