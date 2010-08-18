@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
-  before_filter :authorize, :only => [:list, :show]
-  before_filter :authorize_superuser, :only => [:update, :destroy]
+  before_filter :authorize, :only => [:list, :show, :edit, :update]
+  before_filter :authorize_superuser, :only => [:destroy]
 
   def list
     @category = params[:category] || "all"
@@ -64,7 +64,32 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id])
   end
 
+  def edit
+    if !params[:id].nil? and @current_user.in_group?("superusers")
+      @person = Person.find(params[:id])
+    else
+      @person = @current_user
+    end
+  end
+
   def update
+    @person = Person.find(params[:id])
+    if @person.id != @current_user.id and !@current_user.in_group?("superusers")
+      flash[:notice] = "Could not update settings."
+      redirect_to account_settings_path
+    end
+
+    if @current_user.in_group?("superusers")
+      path = edit_person_path(@person)
+    else
+      path = account_settings_path
+    end
+
+    if @person.update_attributes(params[:person])
+      redirect_to(path, :notice => 'Settings successfully updated.')
+    else
+      redirect_to(path, :notice => 'Settings could not be updated.')
+    end
   end
 
   def destroy

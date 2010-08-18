@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  before_filter :get_current_user, :merge_messages
+  before_filter :get_current_user, :merge_messages, :check_authorizations
   layout 'application'
 
   #This is a bit of dynamic code that allows you to use methods like
@@ -10,8 +10,6 @@ class ApplicationController < ActionController::Base
   def respond_to?(method_id, include_private = false)
     case method_id.to_s
       when /^authorize_([_a-zA-Z]\w*)$/
-        return true
-      when /^check([_a-zA-Z]\w*)$/
         return true
       else
         super
@@ -23,9 +21,6 @@ class ApplicationController < ActionController::Base
       when /^authorize_([_a-zA-Z]\w*)$/
         group = $1
         self.send :authorize, group
-      when /^check_([_a-zA-Z]\w*)$/
-        group = $1
-        self.send :check, group
       else
         super
     end
@@ -56,13 +51,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def check(group)
-    @authorizations ||= {}
-    if @current_user.nil? or group.nil? or (not @current_user.groups.include?(Group.find_by_name("superusers")) and not @current_user.groups.map{|x| x.name}.include?(group))
-      @authorizations[group] = false 
-    else
-      @authorizations[group] = true
+  def check_authorizations
+    @auth ||= {}
+    unless @current_user.nil?
+      if @current_user.in_group?("superusers")
+        @auth.default = true
+      else
+        @current_user.groups.each do |group|
+          @auth[group.name] = true
+        end
+      end
     end
-    return @authorizations[group]
   end
 end

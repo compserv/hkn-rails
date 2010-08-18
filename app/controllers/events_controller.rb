@@ -1,6 +1,5 @@
 class EventsController < ApplicationController
   before_filter :authorize_act, :except => [:index, :show]
-  before_filter :check_act
   # GET /events
   # GET /events.xml
   def index

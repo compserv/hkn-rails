@@ -5,6 +5,12 @@
 </div>
 
 <div>
+  <div class="admin">
+    <% if @auth["superusers"] %>
+      <%= link_to "Edit", edit_person_path(@person) %>
+      <%= link_to "Delete", person_path(@person) %>
+    <% end %>
+  </div>
   <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
   <table id="person_info" class="infobox">
     <%- unless @person.email.blank? -%>       <tr> <th>Email</th>             <td><%= @person.email %></td> </tr><%- end -%>

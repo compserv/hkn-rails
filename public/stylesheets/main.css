@@ -24,6 +24,7 @@ html textarea:focus { border: 1px solid black; }
 html label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right; }
 html .small { font-size: x-small; line-height: 1.3em; }
 html .aside { font-size: x-small; line-height: 1.3em; color: #444444; }
+html .super { font-size: 75%; vertical-align: super; }
 html .warning { color: red; }
 html th, html td { padding: 4px; vertical-align: top; text-align: left; }
 html th { font-weight: bold; }

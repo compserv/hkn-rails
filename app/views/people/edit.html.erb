@@ -1,0 +1,27 @@
+<h1>Account Settings <%= "for #{@person.fullname}" if @person.id != @current_user.id %></h1>
+
+<%= form_for @person do |f| %>
+  <% if @person.errors.any? %>
+  <div id="errorExplanation">
+    <h2><%= pluralize(@person.errors.count, "error") %> prohibited this person from being saved:</h2>
+    <ul>
+    <% @person.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <%- end -%>
+
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :phone_number %>
+    <%= f.text_field :phone_number %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Update" %>
+  </div>
+<%- end -%>
