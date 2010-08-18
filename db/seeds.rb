@@ -16,5 +16,30 @@ Committeeship.Committees.each do |c|
   Group.find_or_create_by_name_and_description(:name=>c, :description=>"The #{c} committee")
 end
 
-Group.find_or_create_by_name_and_description(:name=>"superusers", :description=>"Superusers with unrestricted access to the site")
-Group.find_or_create_by_name_and_description(:name=>"officers", :description=>"Committee officers")
+groups = [
+  {"name"=>"superusers","description"=>"Admin"},
+  {"name"=>"members",   "description"=>"Members"},
+  {"name"=>"candidates","description"=>"Candidates"},
+  {"name"=>"officers",  "description"=>"Officers"},
+  {"name"=>"comms",     "description"=>"Committee Members and Officers"},
+  {"name"=>"pres",      "description"=>"President"},
+  {"name"=>"vp",        "description"=>"Vice President"},
+  {"name"=>"rsec",      "description"=>"Recording Secretary"},
+  {"name"=>"csec",      "description"=>"Corresponding Secretary"},
+  {"name"=>"treas",     "description"=>"Treasury"},
+  {"name"=>"deprel",    "description"=>"Department Relations"},
+  {"name"=>"serv",      "description"=>"Service"},
+  {"name"=>"indrel",    "description"=>"Industrial Relations"},
+  {"name"=>"bridge",    "description"=>"Bridge"},
+  {"name"=>"act",       "description"=>"Activities"},
+  {"name"=>"compserv",  "description"=>"Computer Services"},
+  {"name"=>"studrel",   "description"=>"Student Relations"},
+  {"name"=>"tutoring",  "description"=>"Tutoring"},
+  {"name"=>"alumrel",   "description"=>"Alumni Relations"},
+  {"name"=>"alumadv",   "description"=>"Alumni Advisor"},
+  {"name"=>"facadv",    "description"=>"Faculty Advisor"},
+]
+
+groups.each do |group|
+  Group.find_or_create_by_name_and_description(group)
+end
