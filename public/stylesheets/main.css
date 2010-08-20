@@ -162,8 +162,16 @@ html #results table { border: 1px solid black; border-collapse: collapse; width:
 html #calendar { border-collapse: collapse; table-layout: fixed; width: 100%; }
 html #calendar th { border: 1px solid #BBBBBB; background-color: #EEEEEE; }
 html #calendar td { border: 1px solid #BBBBBB; background-color: white; padding: 0; }
+html #calendar td.today { background-color: #FFBB88; }
+html #calendar .today .date-field { background-color: #FFDDBB; }
 html #calendar td.inactive { background-color: #F8F8F8; }
 html #calendar .date-field { background-color: #F5F9FF; text-align: right; font-size: 80%; line-height: 1.5em; }
-html #calendar .date-cell { min-height: 3em; font-size: 80%; }
-html #calendar .event { background-color: #8888FF; -moz-border-radius: 0.8em; margin: 2px 0; padding: 0 3px; }
+html #calendar .date-cell { min-height: 3em; }
 html #calendar .event a { color: white; }
+html .calendar .event { background-color: #8888FF; -moz-border-radius: 0.8em; margin: 2px 0; padding: 0 3px; font-size: 80%; }
+html .calendar .event { color: white; background-color: #8888FF; }
+html .calendar .fun-event { background-color: #8888FF; }
+html .calendar .big-fun-event { background-color: #88DD88; }
+html .calendar .mandatory-for-candidates { background-color: #CC88FF; }
+html .calendar .infosession { background-color: #CCCC44; }
+html .calendar li { display: inline; }

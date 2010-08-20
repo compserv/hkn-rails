@@ -28,4 +28,28 @@ module ApplicationHelper
     arrow = (sort_variable == @search_opts['sort']) ? (@search_opts['sort_direction'] == 'down') ? image_tag('site/arrow_desc.gif') : image_tag('site/arrow_asc.gif') : ''
     link_to(inner_text, @search_opts.merge('sort' => sort_variable, 'sort_direction' => sort_direction).merge(opts)) + arrow
   end
+
+  # http://wiki.github.com/mislav/will_paginate/ajax-pagination
+  # Embedding this in a view will automatically make links which are descendants
+  # of an element with the class 'class_name' into AJAX links
+  # Note: We should add a loading animation like they do in the example in the
+  # link above
+  def ajaxify_links(class_name)
+    javascript_tag "document.observe('dom:loaded', function() {
+  // the element in which we will observe all clicks and capture
+  // ones originating from pagination links
+  var container = $(document.body)
+
+  if (container) {
+
+    container.observe('click', function(e) {
+      var el = e.element()
+      if (el.match('.#{class_name} a')) {
+        new Ajax.Request(el.href, { method: 'get' })
+        e.stop()
+      }
+    })
+  }
+})"
+  end
 end

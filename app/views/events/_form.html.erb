@@ -27,6 +27,10 @@
     <%= f.text_area :description %>
   </div>
   <div class="field">
+    <%= f.label :event_type %><br />
+    <%= f.select :event_type_id, EventType.all.map{|x| [x.name, x.id]} %>
+  </div>
+  <div class="field">
     <%= f.label :start_time %><br />
     <%= datetime_select :event, :start_time %>
   </div>

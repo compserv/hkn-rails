@@ -1,0 +1,50 @@
+<div id="calendar-wrapper">
+  <h2 class="center"><%= @start_date.strftime('%B %Y') %></h2>
+
+  <ul class="plain calendar">
+    <% EventType.order(:name).each do |event_type| %>
+    <li class="event <%= event_type.classify %>"><%= event_type.name %></li>
+    <% end %>
+  </ul>
+
+  <div class="calendar-controls">
+    <%= link_to "Prev Month", {:month => @start_date.prev_month.month, :year => @start_date.prev_month.year} %>
+    <%= link_to "Next Month", {:month => @start_date.next_month.month, :year => @start_date.next_month.year} %>
+  </div>
+
+  <table id="calendar" class="calendar">
+    <tr>
+      <th>Sunday</th>
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+      <th>Saturday</th>
+    </tr>
+    <% event_idx = 0 %>
+    <% (@calendar_start_date.to_date..@calendar_end_date.to_date).each do |date| %>
+      <% if date.wday == 0 %><tr><% end %>
+        <% if (@start_date.to_date..@end_date.to_date).include? date %>
+          <% if date == Time.now.to_date %>
+          <td class="today">
+          <% else %>
+          <td>
+          <% end %>
+            <div class="date-field"><%= date.day %></div>
+            <div class="date-cell">
+            <% while @events[event_idx] && @events[event_idx].start_time.to_date == date %>
+              <div class="event <%= @events[event_idx].event_type.classify %>">
+                <%= link_to "#{@events[event_idx].short_start_time} #{@events[event_idx].name}", @events[event_idx] %>
+              </div>
+              <% event_idx += 1 %>
+            <% end %>
+          </div>
+          </td>
+        <% else %>
+          <td class="inactive"></td>
+        <% end %>
+      <% if date.wday == 6 %></tr><% end %>
+    <% end %>
+  </table>
+</div>

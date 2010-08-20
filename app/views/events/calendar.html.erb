@@ -1,37 +1,9 @@
 <h1>HKN Events Calendar</h1>
 
-<h2 class="center"><%= @start_date.strftime('%B %Y') %></h2>
+<%= render :partial => 'calendar' %>
 
-<table id="calendar">
-  <tr>
-    <th>Sunday</th>
-    <th>Monday</th>
-    <th>Tuesday</th>
-    <th>Wednesday</th>
-    <th>Thursday</th>
-    <th>Friday</th>
-    <th>Saturday</th>
-  </tr>
-  <% event_idx = 0 %>
-  <% (@calendar_start_date.to_date..@calendar_end_date.to_date).each do |date| %>
-    <% if date.wday == 0 %><tr><% end %>
-      <% if (@start_date.to_date..@end_date.to_date).include? date %>
-        <td>
-          <div class="date-field"><%= date.day %></div>
-          <div class="date-cell">
-          <% while @events[event_idx] && @events[event_idx].start_time.to_date == date %>
-            <div class="event">
-              <%= link_to "#{@events[event_idx].short_start_time} #{@events[event_idx].name}", @events[event_idx] %>
-            </div>
-            <% event_idx += 1 %>
-          <% end %>
-        </div>
-        </td>
-      <% else %>
-        <td class="inactive"></td>
-      <% end %>
-    <% if date.wday == 6 %></tr><% end %>
-  <% end %>
-</table>
+<%= ajaxify_links 'calendar-controls' %>
 
-<%= link_to 'New Event', new_event_path %>
+<% if @auth["officers"] || @auth["cmembers"] %>
+  <%= link_to 'New Event', new_event_path %>
+<% end %>

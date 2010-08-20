@@ -8,16 +8,14 @@
     <th>Event Type</th>
     <th></th>
     <th></th>
-    <th></th>
   </tr>
 
 <% @events.each do |event| %>
   <tr>
-    <td><%= event.name %></td>
+    <td><%= link_to event.name, event %></td>
     <td><%= event.location %></td>
     <td><%= event.start_time %></td>
     <td><%= event.event_type.name %></td>
-    <td><%= link_to 'Show', event %></td>
     <td><%= link_to 'Edit', edit_event_path(event) %></td>
     <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
