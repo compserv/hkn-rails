@@ -10,6 +10,7 @@
   <div class="calendar-controls">
     <%= link_to "Prev Month", {:month => @start_date.prev_month.month, :year => @start_date.prev_month.year} %>
     <%= link_to "Next Month", {:month => @start_date.next_month.month, :year => @start_date.next_month.year} %>
+    <div id="spinner" style="display:inline"></div>
   </div>
 
   <table id="calendar" class="calendar">

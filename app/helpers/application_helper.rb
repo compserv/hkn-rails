@@ -32,8 +32,9 @@ module ApplicationHelper
   # http://wiki.github.com/mislav/will_paginate/ajax-pagination
   # Embedding this in a view will automatically make links which are descendants
   # of an element with the class 'class_name' into AJAX links
-  # Note: We should add a loading animation like they do in the example in the
-  # link above
+  # Note: You need to have an element with the id "spinner" for for spinner
+  # graphic. If you don't, then the script will error out and won't perform an
+  # AJAX request.
   def ajaxify_links(class_name)
     javascript_tag "document.observe('dom:loaded', function() {
   // the element in which we will observe all clicks and capture
@@ -42,9 +43,17 @@ module ApplicationHelper
 
   if (container) {
 
+    var img = new Image
+    img.src = '/images/site/spinner.gif'
+
+    function createSpinner() {
+      return new Element('img', { src: img.src, 'class': 'spinner' })
+    }
+
     container.observe('click', function(e) {
       var el = e.element()
       if (el.match('.#{class_name} a')) {
+        $('spinner').insert(createSpinner())
         new Ajax.Request(el.href, { method: 'get' })
         e.stop()
       }

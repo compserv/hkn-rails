@@ -1,5 +1,6 @@
 <%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <div id="results">
+<div id="spinner">&nbsp;</div>
 <%= will_paginate @people, :class => "pagination ajax" %>
 
 <table class="table">
