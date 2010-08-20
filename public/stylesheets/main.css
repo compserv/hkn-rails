@@ -157,3 +157,13 @@ html .field label { float: left; width: 12em; margin-right: 5px; }
 html .field input { clear: left; }
 
 html #results table { border: 1px solid black; border-collapse: collapse; width: 100%; }
+
+/* Calendar */
+html #calendar { border-collapse: collapse; table-layout: fixed; width: 100%; }
+html #calendar th { border: 1px solid #BBBBBB; background-color: #EEEEEE; }
+html #calendar td { border: 1px solid #BBBBBB; background-color: white; padding: 0; }
+html #calendar td.inactive { background-color: #F8F8F8; }
+html #calendar .date-field { background-color: #F5F9FF; text-align: right; font-size: 80%; line-height: 1.5em; }
+html #calendar .date-cell { min-height: 3em; font-size: 80%; }
+html #calendar .event { background-color: #8888FF; -moz-border-radius: 0.8em; margin: 2px 0; padding: 0 3px; }
+html #calendar .event a { color: white; }

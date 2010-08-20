@@ -1,14 +1,29 @@
 class EventsController < ApplicationController
-  before_filter :authorize_act, :except => [:index, :show]
+  before_filter :authorize_act, :except => [:index, :calendar, :show]
   # GET /events
   # GET /events.xml
   def index
-    @events = Event.all
+    category = params[:category] || 'all'
+    # We should paginate this
+    @events = Event.includes(:event_type).order(:start_time)
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
     end
+  end
+
+  def calendar
+    month = params[:month] || Time.now.month
+    year = params[:year] || Time.now.year
+    @start_date = Date.civil(year, month).beginning_of_month
+    @end_date = Date.civil(year, month).end_of_month
+    @events = Event.find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
+    # Really convoluted way of getting the first Sunday of the calendar, 
+    # which usually lies in the previous month
+    @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
+    # Ditto for last Saturday
+    @calendar_end_date = (@end_date == 0) ? @end_date.since(6.days) : @end_date.next_week.ago(2.days)
   end
 
   # GET /events/1

@@ -9,7 +9,7 @@
     <a href="#">Industry Relations</a>
   </li> 
 
-  <li id="event" class="navigation_toplevel_item">
+  <li id="events" class="navigation_toplevel_item">
     <a href="#">Events</a>
   </li> 
 
@@ -81,25 +81,11 @@
 </div>
 <%- end -%>
 
-<div class="submenu" id ="event_submenu">
+<div class="submenu" id ="events_submenu">
 <ul class="navigation_sublevel">
-<li>	
-	<a href="/event/calendar/" class="navigation_sublevel_item">
-		Events Calendar
-	</a>
-</li>
-<li>	
-	<a href="/event/list/future/" class="navigation_sublevel_item">
-		Upcoming Events
-	</a>
-
-</li>
-<li>
-	<a href="/event/list/past/" class="navigation_sublevel_item">
-		Past Events
-	</a>	
-</li>
-
+  <li><%= link_to "Events Calendar", events_calendar_path %></li>
+  <li><%= link_to "Upcoming Events", events_category_path('future') %></li>
+  <li><%= link_to "Past Events", events_category_path('past') %></li>
 <li>
 	<a href="/event/rsvp/mine/" class="navigation_sublevel_item">
         My RSVPs
