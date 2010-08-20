@@ -1,34 +1,24 @@
 <p class="notice"><%= notice %></p>
 
-  <p>
-    <b>Name</b>
-    <%= @event.name %>
-  </p>
-  <p>
-    <b>Slug</b>
-    <%= @event.slug %>
-  </p>
-  <p>
-    <b>Location</b>
-    <%= @event.location %>
-  </p>
-  <p>
-    <b>Description</b>
-    <%= @event.description %>
-  </p>
-  <p>
-    <b>Event type</b>
-    <%= @event.event_type.name %>
-  </p>
-  <p>
-    <b>Start_time</b>
-    <%= @event.start_time %>
-  </p>
-  <p>
-    <b>End_time</b>
-    <%= @event.end_time %>
-  </p>
+<h1><%= @event.name %></h1>
+
+<table id="event_info" class="infobox">
+  <tr>
+    <th class="label">Date</th>
+    <td class="something">
+      <% if @event.start_time.to_date == @event.end_time.to_date %>
+        <%= @event.start_time.strftime('%a %m/%d %I:%M%p') %>-<%= @event.end_time.strftime('%I:%M%p') %>
+      <% else %>
+        <%= @event.start_time %>-<%= @event.end_time %>
+      <% end %>
+    </td>
+  </tr>
+  <tr><th>Location</th><td><%= @event.location %></td></tr>
+  <tr><th>Event type</th><td><%= @event.event_type.name %></td></tr>
+  <tr><th>Description</th><td><%= @event.description %></td></tr>
+</table>
+
 <% if @auth["act"] %>
 <%= link_to 'Edit', edit_event_path(@event) %> |
 <% end %>
-<%= link_to 'Back', events_path %>
+<%= link_to 'Back to Calendar', events_calendar_path(:year => @event.start_time.year, :month => @event.start_time.month) %>
