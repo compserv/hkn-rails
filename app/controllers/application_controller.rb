@@ -41,12 +41,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authorize(group=nil)
+  def authorize(group_or_groups=nil)
+    # group_or_groups must be either a single Group name or an array of Group names
+    # If user is in any of the groups, then he has access
+    groups = (group_or_groups.class == String) ? [group_or_groups] : group_or_groups
     if @current_user.nil?
       redirect_to :login, :notice => "Please log in to access this page."
       return
     end
-    unless group.nil? or @current_user.groups.include?(Group.find_by_name("superusers")) or @current_user.groups.map{|x| x.name}.include?(group)
+    unless groups.nil? or @current_user.groups.include?(Group.find_by_name("superusers")) or @current_user.groups.map{|x| groups.include? x.name}.reduce{|x,y| x || y}
       redirect_to :root, :notice => "Insufficient privileges to access this page."
     end
   end
