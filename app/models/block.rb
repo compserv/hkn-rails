@@ -10,7 +10,7 @@ class Block < ActiveRecord::Base
   #   event_id   : integer 
   # =======================
 
-  has_many :rsvps
+  has_many :rsvps, :dependent => :destroy
   belongs_to :event
 
   validate :valid_time_range

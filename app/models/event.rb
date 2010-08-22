@@ -1,19 +1,21 @@
 class Event < ActiveRecord::Base
 
   # === List of columns ===
-  #   id            : integer 
-  #   name          : string 
-  #   slug          : string 
-  #   location      : string 
-  #   description   : text 
-  #   start_time    : datetime 
-  #   end_time      : datetime 
-  #   created_at    : datetime 
-  #   updated_at    : datetime 
-  #   event_type_id : integer 
+  #   id                  : integer 
+  #   name                : string 
+  #   slug                : string 
+  #   location            : string 
+  #   description         : text 
+  #   start_time          : datetime 
+  #   end_time            : datetime 
+  #   created_at          : datetime 
+  #   updated_at          : datetime 
+  #   event_type_id       : integer 
+  #   need_transportation : boolean 
   # =======================
 
-  has_many :blocks
+  has_many :blocks, :dependent => :destroy
+  has_many :rsvps, :through => :blocks
   belongs_to :event_type
   validates :name, :presence => true
   validates :location, :presence => true
