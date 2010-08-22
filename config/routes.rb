@@ -63,6 +63,7 @@ HknRails::Application.routes.draw do |map|
       resources :rsvps
     end
   end
+  match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
 
   resources :event_types
 

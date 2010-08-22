@@ -1,0 +1,25 @@
+<h1>My RSVPs</h1>
+
+<table>
+  <tr>
+    <th>Event</th>
+    <th></th>
+    <% if @auth['comms'] %>
+    <th></th>
+    <th></th>
+    <% end %>
+  </tr>
+
+<% @rsvps.each do |rsvp| %>
+  <tr>
+    <td><%= rsvp.event.name %></td>
+    <td><%= link_to 'Show', event_block_rsvp_path(rsvp.event, rsvp.block, rsvp) %></td>
+    <% if @auth['comms'] %>
+    <td class='admin'><%= link_to 'Edit', edit_event_block_rsvp_path(rsvp.event, rsvp.block, rsvp) %></td>
+    <td class='admin'><%= link_to 'Destroy', event_block_rsvp_path(rsvp.event, rsvp.block, rsvp), :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<br />

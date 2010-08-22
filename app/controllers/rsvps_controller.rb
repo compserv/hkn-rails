@@ -83,8 +83,12 @@ class RsvpsController < ApplicationController
     end
   end
 
+  def my_rsvps
+    @rsvps = @current_user.rsvps
+  end
+
   def get_event_block
-    @event = Event.find params[:event_id]
-    @block = Block.find params[:block_id]
+    @event = Event.find params[:event_id] unless params[:event_id].blank?
+    @block = Block.find params[:block_id] unless params[:block_id].blank?
   end
 end

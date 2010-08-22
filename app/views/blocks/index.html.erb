@@ -2,7 +2,7 @@
 
 <% @event.blocks.each do |block| %>
   <% unless @event.blocks.size == 1 %>
-    <h3><%= block.start_time %> - <%= block.end_time %></h3>
+    <h3><%= block.start_time.strftime('%a %m/%d %I:%M%p') %> - <%= block.end_time.strftime('%a %m/%d %I:%M%p') %></h3>
   <% end %>
   <ul>
   <% block.rsvps.each do |rsvp| %>
@@ -16,4 +16,5 @@
   <% end %>
 <% end %>
 
+<br />
 <%= link_to 'Back to event description', @event %>

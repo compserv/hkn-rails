@@ -3,8 +3,8 @@
 
 <div id="infobar">
   <h1>Who's coming?</h1>
-  <% @event.rsvps.each do |rsvp| %>
-    <%= link_to rsvp.person.fullname, rsvp.person %>
+  <% @event.rsvps.map{|x|x.person}.uniq.each do |person| %>
+    <%= link_to person.fullname, person %>
   <% end %>
 </div>
 
@@ -17,7 +17,7 @@
       <% if @event.start_time.to_date == @event.end_time.to_date %>
         <%= @event.start_time.strftime('%a %m/%d %I:%M%p') %>-<%= @event.end_time.strftime('%I:%M%p') %>
       <% else %>
-        <%= @event.start_time %>-<%= @event.end_time %>
+        <%= @event.start_time.strftime('%a %m/%d %I:%M%p') %>-<%= @event.end_time.strftime('%a %m/%d %I:%M%p') %>
       <% end %>
     </td>
   </tr>
@@ -30,9 +30,6 @@
   <%= link_to 'Edit', edit_event_path(@event) %> |
 <% end %>
 <% if @auth["members"] or @auth["candidates"] %>
-  <% if @event.blocks.size == 1 %>
   <%= link_to 'RSVP', event_blocks_path(@event) %> |
-  <% else %>
-  <% end %>
 <% end %>
 <%= link_to 'Back to Calendar', events_calendar_path(:year => @event.start_time.year, :month => @event.start_time.month) %>
