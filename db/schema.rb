@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100820073213) do
+ActiveRecord::Schema.define(:version => 20100821073846) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -139,15 +139,16 @@ ActiveRecord::Schema.define(:version => 20100820073213) do
   end
 
   create_table "events", :force => true do |t|
-    t.string   "name",          :null => false
+    t.string   "name",                                   :null => false
     t.string   "slug"
     t.string   "location"
     t.text     "description"
-    t.datetime "start_time",    :null => false
-    t.datetime "end_time",      :null => false
+    t.datetime "start_time",                             :null => false
+    t.datetime "end_time",                               :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "event_type_id"
+    t.boolean  "need_transportation", :default => false
   end
 
   create_table "exams", :force => true do |t|
