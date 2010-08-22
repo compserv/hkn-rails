@@ -5,7 +5,13 @@ class EventsController < ApplicationController
   def index
     category = params[:category] || 'all'
     # We should paginate this
-    @events = Event.includes(:event_type).order(:start_time)
+    if category == 'past'
+      @events = Event.includes(:event_type).order(:start_time).where(['start_time < ?', Time.now])
+    elsif category == 'future'
+      @events = Event.includes(:event_type).order(:start_time).where(['start_time > ?', Time.now])
+    else
+      @events = Event.includes(:event_type).order(:start_time)
+    end
 
     respond_to do |format|
       format.html # index.html.erb
