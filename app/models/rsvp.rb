@@ -20,4 +20,15 @@ class Rsvp < ActiveRecord::Base
   validates :person, :presence => true
   validates :event, :presence => true
   validates :block, :presence => true
+
+  validates_uniqueness_of :block_id, :scope => :person_id, :message => "has already been signed up for."
+
+  TRANSPORT_ENUM = [
+    [ 'I need a ride', -1 ],
+    [ "Don't worry about me", 0 ],
+    [ 'I have a small sedan (4 seats)', 3 ],
+    [ 'I have a sedan (5 seats)', 4 ],
+    [ 'I have a minivan (7 seats)', 6 ],
+  ]
+
 end

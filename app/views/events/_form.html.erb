@@ -39,12 +39,16 @@
     <%= datetime_select :event, :end_time %>
   </div>
   <div class="field">
-	<%= label_tag :num_blocks, 'Number of blocks' %><br />
+    <%= label_tag :num_blocks, 'Number of blocks' %><br />
     <%= number_field_tag :num_blocks, 1 %>
   </div>
   <div class="field">
-	<%= label_tag :max_rsvps, 'Maximum RSVPs' %><br />
+    <%= label_tag :max_rsvps, 'Maximum RSVPs' %><br />
     <%= number_field_tag :max_rsvps %>
+  </div>
+  <div class="field">
+    <%= f.label :need_transportation %><br />
+    <%= f.check_box :need_transportation %>
   </div>
   <div class="actions">
     <%= f.submit %>

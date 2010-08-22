@@ -1,0 +1,19 @@
+<h1>RSVPs for <%= @event.name %></h1>
+
+<% @event.blocks.each do |block| %>
+  <% unless @event.blocks.size == 1 %>
+    <h3><%= block.start_time %> - <%= block.end_time %></h3>
+  <% end %>
+  <ul>
+  <% block.rsvps.each do |rsvp| %>
+    <li><%= link_to rsvp.person.fullname, rsvp.person %></li>
+  <% end %>
+  </ul>
+  <% if block.rsvps.map{|x|x.person}.include? @current_user %>
+    You have already RSVP'd.
+  <% else %>
+    <%= link_to "RSVP for this time slot", new_event_block_rsvp_path(@event, block) %>
+  <% end %>
+<% end %>
+
+<%= link_to 'Back to event description', @event %>

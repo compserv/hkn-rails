@@ -1,5 +1,13 @@
 <p class="notice"><%= notice %></p>
 
+
+<div id="infobar">
+  <h1>Who's coming?</h1>
+  <% @event.rsvps.each do |rsvp| %>
+    <%= link_to rsvp.person.fullname, rsvp.person %>
+  <% end %>
+</div>
+
 <h1><%= @event.name %></h1>
 
 <table id="event_info" class="infobox">
@@ -19,6 +27,12 @@
 </table>
 
 <% if @auth["act"] %>
-<%= link_to 'Edit', edit_event_path(@event) %> |
+  <%= link_to 'Edit', edit_event_path(@event) %> |
+<% end %>
+<% if @auth["members"] or @auth["candidates"] %>
+  <% if @event.blocks.size == 1 %>
+  <%= link_to 'RSVP', event_blocks_path(@event) %> |
+  <% else %>
+  <% end %>
 <% end %>
 <%= link_to 'Back to Calendar', events_calendar_path(:year => @event.start_time.year, :month => @event.start_time.month) %>
