@@ -21,4 +21,12 @@ class Block < ActiveRecord::Base
       errors[:end_time] << "must be after start time" unless start_time < end_time
     end
   end
+
+  def nice_time_range
+    if start_time.to_date == end_time.to_date 
+      "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%I:%M%p')}"
+    else 
+      "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%a %m/%d %I:%M%p')}"
+    end 
+  end
 end

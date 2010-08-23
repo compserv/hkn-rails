@@ -1,5 +1,36 @@
 <p id="notice"><%= notice %></p>
 
+<p>
+  <b>Person:</b>
+  <%= link_to @rsvp.person.fullname, @rsvp.person %>
+</p>
 
+<p>
+  <b>Event:</b>
+  <%= link_to @rsvp.event.name, @rsvp.event %>
+</p>
+
+<p>
+  <b>Comment:</b>
+  <%= @rsvp.comment %>
+</p>
+
+<% if @event.need_transportation %>
+<p>
+  <b>Transportation:</b>
+  <%= @rsvp.transportation %>
+</p>
+<% end %>
+
+<p>
+  <b>Time slots:</b>
+  <% @rsvp.blocks.each do |block| %>
+    <%= block.nice_time_range %><%= ", " unless block == @rsvp.blocks.last %>
+  <% end %>
+</p>
+
+<% if @rsvp.person == @current_user || @auth['superuser'] %>
 <%= link_to 'Edit', edit_event_rsvp_path(@rsvp) %> |
-<%= link_to 'Back', event_rsvps_path %>
+<% end %>
+<%= link_to 'RSVPs Index', event_rsvps_path %> |
+<%= link_to 'Event Details', event_path %>

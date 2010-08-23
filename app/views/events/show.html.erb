@@ -1,26 +1,31 @@
 <p class="notice"><%= notice %></p>
 
-
 <div id="infobar">
   <h1>Who's coming?</h1>
-  <% @event.rsvps.map{|x|x.person}.uniq.each do |person| %>
+  <% @event.rsvps.map{|x|x.person}.each do |person| %>
     <%= link_to person.fullname, person %>
+  <% end %>
+  <% if @event.blocks.size > 1 %>
+    <h1>Time Slots</h1>
+    <% @event.blocks.each do |block| %>
+      <h3><%= block.nice_time_range %></h3>
+      <% if block.rsvps.empty? %>
+        <p>None signed up</p>
+      <% else %>
+        <ul>
+        <% block.rsvps.each do |rsvp| %>
+          <li><%= rsvp.person.fullname %></li>
+        <% end %>
+        </ul>
+      <% end %>
+    <% end %>
   <% end %>
 </div>
 
 <h1><%= @event.name %></h1>
 
 <table id="event_info" class="infobox">
-  <tr>
-    <th class="label">Date</th>
-    <td class="something">
-      <% if @event.start_time.to_date == @event.end_time.to_date %>
-        <%= @event.start_time.strftime('%a %m/%d %I:%M%p') %>-<%= @event.end_time.strftime('%I:%M%p') %>
-      <% else %>
-        <%= @event.start_time.strftime('%a %m/%d %I:%M%p') %>-<%= @event.end_time.strftime('%a %m/%d %I:%M%p') %>
-      <% end %>
-    </td>
-  </tr>
+  <tr><th>Date</th><td><%= @event.nice_time_range %></td></tr>
   <tr><th>Location</th><td><%= @event.location %></td></tr>
   <tr><th>Event type</th><td><%= @event.event_type.name %></td></tr>
   <tr><th>Description</th><td><%= @event.description %></td></tr>

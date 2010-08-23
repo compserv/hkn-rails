@@ -37,6 +37,7 @@ class RsvpsController < ApplicationController
   # GET /rsvps/1/edit
   def edit
     @rsvp = Rsvp.find(params[:id])
+    validate_owner!(@rsvp)
   end
 
   # POST /rsvps
@@ -60,6 +61,7 @@ class RsvpsController < ApplicationController
   # PUT /rsvps/1.xml
   def update
     @rsvp = Rsvp.find(params[:id])
+    validate_owner!(@rsvp)
     assign_blocks
 
     respond_to do |format|
@@ -77,6 +79,7 @@ class RsvpsController < ApplicationController
   # DELETE /rsvps/1.xml
   def destroy
     @rsvp = Rsvp.find(params[:id])
+    validate_owner!(@rsvp)
     @rsvp.destroy
 
     respond_to do |format|
@@ -87,6 +90,13 @@ class RsvpsController < ApplicationController
 
   def my_rsvps
     @rsvps = @current_user.rsvps
+  end
+
+
+  def validate_owner!(rsvp)
+    unless @current_user == rsvp || @auth['superusers']
+      raise 'You do not have permission to modify this RSVP'
+    end
   end
 
   def get_event

@@ -15,7 +15,7 @@ class Event < ActiveRecord::Base
   # =======================
 
   has_many :blocks, :dependent => :destroy
-  has_many :rsvps
+  has_many :rsvps, :dependent => :destroy
   belongs_to :event_type
   validates :name, :presence => true
   validates :location, :presence => true
@@ -41,5 +41,13 @@ class Event < ActiveRecord::Base
       hour = 12
     end
     "#{hour}#{min}p"
+  end
+
+  def nice_time_range
+    if start_time.to_date == end_time.to_date 
+      "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%I:%M%p')}"
+    else 
+      "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%a %m/%d %I:%M%p')}"
+    end 
   end
 end

@@ -15,13 +15,13 @@
   <%= hidden_field_tag 'rsvp[event_id]', @event.id %>
 
   <div class="field">
-    <label>Event</label><br />
-    <%= link_to @event.name, @event %>
+    <label>Event</label>
+    <div><%= link_to @event.name, @event %></div>
   </div>
 
   <div class="field">
-    <label>Person</label><br />
-    <%= link_to @current_user.fullname, @current_user %>
+    <label>Person</label>
+    <div><%= link_to @current_user.fullname, @current_user %></div>
   </div>
 
   <% if @event.need_transportation %>
@@ -39,9 +39,13 @@
   <% if @event.blocks.size > 1 %>
   <div class="field">
     <%= f.label :blocks, 'Time slots' %>
+    <div>
+      <ul class="plain" style="display: table">
     <% @event.blocks.each do |block| %>
-      <%= check_box_tag "block[#{block.id}]", true, @rsvp.blocks.include?(block) %> <%= block.start_time %> - <%= block.end_time %><br />
+      <li><%= check_box_tag "block[#{block.id}]", true, @rsvp.blocks.include?(block) %> <%= block.nice_time_range %></li>
     <% end %>
+      </ul>
+    </div>
   </div>
   <% end %>
 
