@@ -1,10 +1,10 @@
 class RsvpsController < ApplicationController
-  before_filter :get_event_block
+  before_filter :get_event
 
   # GET /rsvps
   # GET /rsvps.xml
   def index
-    @rsvps = @block.rsvps
+    @rsvps = @event.rsvps
 
     respond_to do |format|
       format.html # index.html.erb
@@ -43,6 +43,7 @@ class RsvpsController < ApplicationController
   # POST /rsvps.xml
   def create
     @rsvp = Rsvp.new(params[:rsvp])
+    assign_blocks
 
     respond_to do |format|
       if @rsvp.save
@@ -59,10 +60,11 @@ class RsvpsController < ApplicationController
   # PUT /rsvps/1.xml
   def update
     @rsvp = Rsvp.find(params[:id])
+    assign_blocks
 
     respond_to do |format|
       if @rsvp.update_attributes(params[:rsvp])
-        format.html { redirect_to(@rsvp, :notice => 'Rsvp was successfully updated.') }
+        format.html { redirect_to(event_rsvp_path(@event, @rsvp), :notice => 'Rsvp was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -78,7 +80,7 @@ class RsvpsController < ApplicationController
     @rsvp.destroy
 
     respond_to do |format|
-      format.html { redirect_to(event_block_rsvps_url(@event, @block)) }
+      format.html { redirect_to(event_rsvps_url(@event)) }
       format.xml  { head :ok }
     end
   end
@@ -87,8 +89,15 @@ class RsvpsController < ApplicationController
     @rsvps = @current_user.rsvps
   end
 
-  def get_event_block
+  def get_event
     @event = Event.find params[:event_id] unless params[:event_id].blank?
-    @block = Block.find params[:block_id] unless params[:block_id].blank?
+  end
+
+  def assign_blocks
+    if @event.blocks.size > 1
+      @rsvp.block_ids = params[:block] && params[:block].keys || []
+    else
+      @rsvp.blocks = @event.blocks
+    end
   end
 end

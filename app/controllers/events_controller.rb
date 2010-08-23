@@ -46,6 +46,7 @@ class EventsController < ApplicationController
   def show
     @event = Event.find(params[:id])
     @blocks = @event.blocks
+    @current_user_rsvp = @event.rsvps.find_by_person_id(@current_user.id)
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @event }

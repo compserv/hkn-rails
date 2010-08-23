@@ -30,6 +30,10 @@
   <%= link_to 'Edit', edit_event_path(@event) %> |
 <% end %>
 <% if @auth["members"] or @auth["candidates"] %>
-  <%= link_to 'RSVP', event_blocks_path(@event) %> |
+  <% if @current_user_rsvp %>
+    <%= link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp) %> |
+  <% else %>
+    <%= link_to 'RSVP', event_rsvps_path(@event) %> |
+  <% end %>
 <% end %>
 <%= link_to 'Back to Calendar', events_calendar_path(:year => @event.start_time.year, :month => @event.start_time.month) %>

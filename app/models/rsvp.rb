@@ -10,18 +10,17 @@ class Rsvp < ActiveRecord::Base
   #   transportation  : integer 
   #   created_at      : datetime 
   #   updated_at      : datetime 
-  #   block_id        : integer 
   # =======================
 
   belongs_to :person
   belongs_to :event
-  belongs_to :block
+  has_and_belongs_to_many :blocks
 
   validates :person, :presence => true
   validates :event, :presence => true
-  validates :block, :presence => true
+  validate :at_least_one_block
 
-  validates_uniqueness_of :block_id, :scope => :person_id, :message => "has already been signed up for."
+  validates_uniqueness_of :event_id, :scope => :person_id, :message => "has already been signed up for."
 
   TRANSPORT_ENUM = [
     [ 'I need a ride', -1 ],
@@ -30,5 +29,11 @@ class Rsvp < ActiveRecord::Base
     [ 'I have a sedan (5 seats)', 4 ],
     [ 'I have a minivan (7 seats)', 6 ],
   ]
+
+  def at_least_one_block
+    unless blocks.size >= 1
+      errors[:blocks] << "must include at least one block"
+    end
+  end
 
 end

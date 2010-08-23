@@ -59,9 +59,8 @@ HknRails::Application.routes.draw do |map|
   match "events/calendar" => "events#calendar", :as => :events_calendar
   match "events/:category" => "events#index", :as => :events_category, :constraints => {:category => /(future|past)/}
   resources :events do
-    resources :blocks do
-      resources :rsvps
-    end
+    resources :rsvps
+    resources :blocks
   end
   match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
 

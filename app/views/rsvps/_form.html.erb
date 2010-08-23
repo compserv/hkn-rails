@@ -1,4 +1,4 @@
-<%= form_for([@event, @block, @rsvp]) do |f| %>
+<%= form_for([@event, @rsvp]) do |f| %>
   <% if @rsvp.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@rsvp.errors.count, "error") %> prohibited this rsvp from being saved:</h2>
@@ -13,7 +13,6 @@
 
   <%= hidden_field_tag 'rsvp[person_id]', @current_user.id %>
   <%= hidden_field_tag 'rsvp[event_id]', @event.id %>
-  <%= hidden_field_tag 'rsvp[block_id]', @block.id %>
 
   <div class="field">
     <label>Event</label><br />
@@ -36,6 +35,15 @@
     <%= f.label :comment, 'Anything we should know?' %><br />
     <%= f.text_area :comment %>
   </div>
+
+  <% if @event.blocks.size > 1 %>
+  <div class="field">
+    <%= f.label :blocks, 'Time slots' %>
+    <% @event.blocks.each do |block| %>
+      <%= check_box_tag "block[#{block.id}]", true, @rsvp.blocks.include?(block) %> <%= block.start_time %> - <%= block.end_time %><br />
+    <% end %>
+  </div>
+  <% end %>
 
   <div class="actions">
     <%= f.submit 'RSVP!' %>

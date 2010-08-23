@@ -15,7 +15,7 @@ class Event < ActiveRecord::Base
   # =======================
 
   has_many :blocks, :dependent => :destroy
-  has_many :rsvps, :through => :blocks
+  has_many :rsvps
   belongs_to :event_type
   validates :name, :presence => true
   validates :location, :presence => true
