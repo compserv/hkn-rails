@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Committeeship do
   before(:each) do
     @good_opts = {:committee => 'compserv',
-      :semester => 'fa10',
+      :semester => '20103',
       :title => 'officer'
     }
     end
@@ -12,7 +12,7 @@ describe Committeeship do
     committeeship.should be_valid
   end
   it "should require a valid semester" do
-    committeeship = Committeeship.create(@good_opts.merge(:semester => 'fa9000'))
+    committeeship = Committeeship.create(@good_opts.merge(:semester => '20105'))
     committeeship.should_not be_valid
   end
   it "should require a valid committee" do

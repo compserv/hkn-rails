@@ -17,14 +17,14 @@ describe Rsvp, "when created with blank parameters" do
 
   it "should require a block to be valid" do
     @rsvp.should_not be_valid
-    @rsvp.errors[:block].should include("can't be blank")
+    @rsvp.errors[:blocks].should include("must include at least one block")
   end
 end
 
 describe Rsvp do
   before(:each) do
     @good_opts = { :event => mock_model(Event),
-      :person => mock_model(Person), :block => mock_model(Block)}
+      :person => mock_model(Person), :blocks => [mock_model(Block)]}
   end
 
   it "should be valid when supplied a person, event, and block" do
