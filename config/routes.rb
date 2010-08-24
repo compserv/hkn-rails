@@ -68,13 +68,13 @@ HknRails::Application.routes.draw do |map|
 
   # Indrel site
   scope "indrel" do
-    match "" => "static#indrel"
-    match "career-fair" => "static#career_fair", :as => "career_fair"
-    match "infosessions" => "static#infosessions", :as => "infosessions"
+    match "" => "indrel#index"
+    match "career-fair" => "indrel#career_fair", :as => "career_fair"
+    match "infosessions" => "indrel#infosessions", :as => "infosessions"
     get "infosessions/registration" => "indrel#infosessions_registration", :as => "infosessions_registration"
     post "infosessions/registration" => "indrel#infosessions_registration_post", :as => "infosessions_registration_post"
     scope "db" do
-      match "" => "static#indrel_db"
+      match "" => "indrel#indrel_db"
       resources :companies
       resources :contacts
       resources :events,      :controller => "indrel_events",      :as => "indrel_events"
