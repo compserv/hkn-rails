@@ -7,4 +7,13 @@ class IndrelMailer < ActionMailer::Base
       :subject => "Infosession registration from #{fields['company_name']}"
     )
   end
+
+  def resume_book_order(fields, hostname)
+    @fields = fields
+    mail(
+      :from => "resume-book-order@hkn.eecs.berkeley.edu",
+      :to => "indrel@#{hostname}",
+      :subject => "Resume book order from #{fields['company_name']}"
+    )
+  end
 end

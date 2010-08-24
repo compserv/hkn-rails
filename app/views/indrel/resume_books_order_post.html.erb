@@ -1,0 +1,34 @@
+<p>Thank you for ordering from us! We will contact you shortly regarding your order. Please print this statement for your records.</p>
+
+<p>
+<b>Eta Kappa Nu</b><br />
+EECS Department<br />
+University of California, Berkeley<br />
+Berkeley, CA 94720<br />
+(510) 642-7346<br />
+<a href="mailto:indrel@hkn.eecs.berkeley.edu">indrel@hkn.eecs.berkeley.edu</a><br />
+Non-profit tax ID: 94-6102609
+</p>
+
+<h2>Order Information</h2>
+<h3>Company</h3>
+<p>
+Company Name: <%= @fields["company_name"] %><br />
+Address 1: <%= @fields["address1"] %><br />
+Address 2: <%= @fields["address2"] %><br />
+City: <%= @fields["city"] %><br />
+State: <%= @fields["state"] %><br />
+Zip Code: <%= @fields["zip_code"] %>
+</p>
+
+<h3>Contact Person</h3>
+<p>
+Name: <%= @fields["name"] %><br />
+Title: <%= @fields["title"] %><br />
+Phone: <%= @fields["phone"] %><br />
+Email: <%= @fields["email"] %>
+</p>
+
+<h3>Comments:</h3>
+<p><%= @fields["comments"] %></p>
+

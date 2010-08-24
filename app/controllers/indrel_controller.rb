@@ -40,4 +40,38 @@ class IndrelController < ApplicationController
 
     IndrelMailer.infosession_registration(@fields, request.host).deliver
   end
+
+  def resume_books_order
+    @fields = {}
+  end
+
+  def resume_books_order_post
+    @fields = params
+    required_fields = %w[
+      company_name
+      address1
+      city
+      state
+      zip_code
+      name
+      phone
+      email
+    ]
+
+    @errors = []
+    required_fields.each do |field|
+      if params[field].blank?
+        @errors << "#{field.capitalize.gsub(/_/, ' ')} cannot be blank."
+      end
+    end
+
+    @errors << "Phone is not well-formatted." if params['phone'].match(/[a-zA-Z]/)
+    @errors << "Email is not well-formatted." unless params['email'].match(/.*@.*\..*/)
+
+    unless @errors.empty?
+      render :action => :resume_books_order and return
+    end
+
+    IndrelMailer.resume_book_order(@fields, request.host).deliver
+  end
 end
