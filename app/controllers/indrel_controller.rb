@@ -1,4 +1,12 @@
 class IndrelController < ApplicationController
+  def index
+    @indrel_officers = Committeeship.current.committee("indrel").officers.map{|x|x.person}
+  end
+
+  def contact_us
+    @indrel_officers = Committeeship.current.committee("indrel").officers.map{|x|x.person}
+  end
+
   def infosessions_registration
     @fields = {}
   end

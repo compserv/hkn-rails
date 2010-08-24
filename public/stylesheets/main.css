@@ -188,3 +188,4 @@ html #col2 { float: right; width: 48%; }
 
 /* Indrel Site */
 html #indrel-head { text-align: center; }
+html .indrel-officer-photo { float: left; }

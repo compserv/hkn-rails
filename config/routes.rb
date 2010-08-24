@@ -70,6 +70,7 @@ HknRails::Application.routes.draw do |map|
   scope "indrel" do
     match "" => "indrel#index"
     match "career-fair" => "indrel#career_fair", :as => "career_fair"
+    match "contact-us" => "indrel#contact_us", :as => "indrel_contact_us"
     match "infosessions" => "indrel#infosessions", :as => "infosessions"
     get "infosessions/registration" => "indrel#infosessions_registration", :as => "infosessions_registration"
     post "infosessions/registration" => "indrel#infosessions_registration_post", :as => "infosessions_registration_post"
