@@ -185,3 +185,6 @@ html .calendar li { display: inline; }
 html #columns-wrapper { width: 800px; margin: auto; }
 html #col1 { float: left; width: 48%; }
 html #col2 { float: right; width: 48%; }
+
+/* Indrel Site */
+html #indrel-head { text-align: center; }
