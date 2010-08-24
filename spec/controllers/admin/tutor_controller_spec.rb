@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Admin::TutorController do
-
+describe Admin::TutorController, "when admin user is logged in" do
+  before { login }
   pending "GET 'index'" do
     it "should be successful" do
       get 'index'
@@ -50,5 +50,11 @@ describe Admin::TutorController do
       response.should be_success
     end
   end
+end
 
+describe Admin::TutorController, "when no user is logged in" do
+  it "should redirect to the login page" do
+    get 'settings'
+    response.should redirect_to(:login)
+  end
 end
