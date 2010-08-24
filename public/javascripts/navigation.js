@@ -12,7 +12,8 @@
  */
 document.observe("dom:loaded", function() {
 	current = location.pathname.replace('/','');
-	current = current.substring(0,current.indexOf('/'));
+  if (current.indexOf('/') != -1)
+    current = current.substring(0,current.indexOf('/'));
 	id = current;	
 	if (id.length != 0 && id != "coursesurveys" && $(id).length != 0) {
 		$(id).addClassName("selected");
