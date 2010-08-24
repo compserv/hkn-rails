@@ -1,5 +1,4 @@
 require 'net/ldap'
-require 'DjangoSha1' # Located in lib/
 
 class Person < ActiveRecord::Base
 
