@@ -1,4 +1,5 @@
 require 'net/ldap'
+require 'DjangoSha1' # Located in lib/
 
 class Person < ActiveRecord::Base
 
@@ -34,6 +35,9 @@ class Person < ActiveRecord::Base
   acts_as_authentic do |c|
     # Options go here if you have any
     c.merge_validates_length_of_password_field_options :minimum => 8
+    # Allows us to use the old password hashes. Upon successfully logging in,
+    # the password hash will be automatically converted to SHA512
+    c.transition_from_crypto_providers = DjangoSha1
   end
 
   def valid_ldap_or_password?(password)
