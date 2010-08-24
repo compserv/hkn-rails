@@ -25,12 +25,10 @@
     <p>HKN is committed to serving the EECS community building on more than 10 years of experience. We look forward to working with you in the future.</p>
 
     <p>Sincerely,</p>
-    <h1>Reminder to automate this later, when officers are implemented</h1>
     <ul class="plain">
-      <li><a href="mailto:hjiang@hkn.eecs.berkeley.edu">Harry Jiang</a></li>
-      <li><a href="mailto:ryanmak@hkn.eecs.berkeley.edu">Ryan Mak</a></li>
-      <li><a href="mailto:ronagesh@hkn.eecs.berkeley.edu">Rohan Nagesh</a></li>
-      <li><a href="mailto:rniwa@hkn.eecs.berkeley.edu">Ryosuke Niwa</a></li>
+      <% Committeeship.current.committee("indrel").officers.map{|x|x.person}.each do |person| %>
+        <li><%= mail_to "#{person.username}@hkn.eecs.berkeley.edu", person.fullname, :encode => :hex %></li>
+      <% end %>
     </ul>
   </div>
 </div>
