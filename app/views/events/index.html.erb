@@ -1,4 +1,4 @@
-<h1>Listing events</h1>
+<h1><%= @heading %></h1>
 
 <table>
   <tr>
@@ -14,7 +14,7 @@
   <tr>
     <td><%= link_to event.name, event %></td>
     <td><%= event.location %></td>
-    <td><%= event.start_time %></td>
+    <td><%= event.start_time.strftime('%a %m/%d %I:%M%p') %></td>
     <td><%= event.event_type.name %></td>
     <td><%= link_to 'Edit', edit_event_path(event) %></td>
     <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
