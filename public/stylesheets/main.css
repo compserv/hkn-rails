@@ -17,6 +17,8 @@ html input:focus { border: 1px solid black; }
 html input[type=submit] { background: #EEEEEE; margin: 4px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
 html input[type=submit]:hover { -moz-box-shadow: 0px 0px 3px #000; -webkit-box-shadow: 0px 0px 3px #000; }
 html input.short { width: 100px; }
+html input.long  { width: 200px; }
+html textarea  { width: 400px; height: 100px; }
 html select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 html select:focus { border: 1px solid black; }
 html textarea { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
@@ -178,3 +180,12 @@ html .calendar .big-fun-event { background-color: #44CC44; }
 html .calendar .mandatory-for-candidates { background-color: #AA66DD; }
 html .calendar .infosession { background-color: #BBBB22; }
 html .calendar li { display: inline; }
+
+/* Two-column Layout */
+html #columns-wrapper { width: 800px; margin: auto; }
+html #col1 { float: left; width: 48%; }
+html #col2 { float: right; width: 48%; }
+
+/* Indrel Site */
+html #indrel-head { text-align: center; }
+html .indrel-officer-photo { float: left; }

@@ -1,0 +1,34 @@
+<div id="indrel-head"><%= image_tag "site/indrel_head.jpg", :size => "625x250" %></div>
+<div id="columns-wrapper">
+  <div id="col1">
+    <h1>Why HKN?</h1>
+    <p>Eta Kappa Nu (HKN) is the national EECS honor society. The Mu Chapter of HKN is one of the most active student groups on the <a href="http://www.berkeley.edu">UC Berkeley</a> campus, offering a variety of services to the Berkeley EECS community.</p>
+
+    <h2>Active Organization</h2>
+    <p>Membership is extended to the undergraduates in the top fourth of the junior class and the top third of the senior class in EECS, who demonstrate a commitment to serve the fellow EECS students. HKN embodies not only the prestige of academic achievement, but also the spirit of leadership and service.</p>
+
+    <h2>Department and Student Relationship</h2>
+    <p>HKN is an essential link between the EECS students, the EECS faculty, and the industry. The Berkeley <a href="http://www.eecs.berkeley.edu">EECS Department</a> has recognized HKN as an important channel of communications between the EECS students and the department.</p>
+
+    <h2>Student and Corporate Service</h2>
+    <p>HKN also hosts company <a href="infosessions.php">infosessions</a> and annual EECS <a href="careerfair.php">career fairs</a>, securing a key role in many students' search for internships and other employment ppportunities. HKN Mu Chapter has gained much respect from its peers as a source of academic mentorship and information.</p>
+  </div>
+
+  <div id="col2">
+    <h2>Extreme dedication</h2>
+    <p>With an extremely dedicated group of 35 <a href="http://hkn.eecs.berkeley.edu/info/list/officers">officers</a> and a membership of over 300 undergraduate students, the <a href="http://hkn.eecs.berkeley.edu">HKN Mu Chapter</a> specializes in executing planned activities smoothly and successfully, and has won repeated recognition as one of the most active chapters around the nation.</p>                  
+
+    <h2>Tried and Trusted</h2>
+    <p>Eta Kappa Nu has extensive experience working with industry. We have successfully helped many <a href="corporaterelations.php">companies</a> publicize and meet students at corporate infosessions and career fairs we coordinate. Additionally, our <a href="rbooks.php">resume book</a> has helped companies get in touch with some of the best and brightest <a href="http://www.eecs.berkeley.edu/EE/">EE</a> and <a href="http://www.cs.berkeley.edu/">CS</a> students in the country.</p>
+
+    <h2>Serving the EECS Community</h2>
+    <p>HKN is committed to serving the EECS community building on more than 10 years of experience. We look forward to working with you in the future.</p>
+
+    <p>Sincerely,</p>
+    <ul class="plain">
+      <% @indrel_officers.each do |person| %>
+        <li><%= mail_to "#{person.username}@hkn.eecs.berkeley.edu", person.fullname, :encode => :hex %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

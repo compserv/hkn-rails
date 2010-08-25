@@ -1,0 +1,76 @@
+<h1>Resume Book Order Form</h1>
+<h2>University of California, Berkeley</h2>
+
+<% unless @errors.blank? or @errors.empty? %>
+  <p>Could not submit form due to the following errors:
+  <ul class="plain">
+  <% @errors.each do |error| %>
+    <li><%= error %></li>
+  <% end %>
+  </ul>
+  </p>
+<% end %>
+
+<%= form_tag do %> 
+  <h3>Company</h3>
+  <div class="field">
+    <%= label_tag "company_name", "Company Name*" %>
+    <%= text_field_tag "company_name", @fields['company_name'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "address1", "Address 1*" %>
+    <%= text_field_tag "address1", @fields['address1'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "address2", "Address 2" %>
+    <%= text_field_tag "address2", @fields['address2'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "city", "City*" %>
+    <%= text_field_tag "city", @fields['city'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "state", "State*" %>
+    <%= text_field_tag "state", @fields['state'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "zip_code", "Zip Code*" %>
+    <%= text_field_tag "zip_code", @fields['zip_code'], :class => 'long' %>
+  </div>
+  <h3>Contact Person</h3>
+  <div class="field">
+    <%= label_tag "name", "Name*" %>
+    <%= text_field_tag "name", @fields['name'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "title" %>
+    <%= text_field_tag "title", @fields['title'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "phone", "Phone*" %>
+    <%= text_field_tag "phone", @fields['phone'], :class => 'long' %>
+  </div>
+  <div class="field">
+    <%= label_tag "email", "Email*" %>
+    <%= text_field_tag "email", @fields['email'], :class => 'long' %>
+  </div>
+
+  <p><span class="small">(* denotes required field)</span></p>
+
+  <div class="field">
+    <p>Any comments, special accomodations, or specific requests</p>
+    <%= text_area_tag 'comments', @fields['comments'] %>
+  </div>
+
+  <p>With our resume book, you will receieve:</p>
+  <ul>
+    <li>Resumes of EECS students who are in the top quarter of their junior class or the top third of their senior class</li>
+    <li>Most of our members have research and work experience in their fields of interest</li>
+    <li>Electronic edition is in ready-to-print Portable Document Format (.pdf)</li>
+  </ul>
+
+  <p>We ask for a tax-deductible $200 donation for each resume book.</p>
+
+  <%= submit_tag 'Submit' %>
+<% end %>
+

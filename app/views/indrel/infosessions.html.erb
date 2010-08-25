@@ -1,0 +1,37 @@
+<div id="indrel-head"><%= image_tag "site/infosessions_head.jpg" %></div>
+<div id="columns-wrapper">
+  <div id="col1">
+    <h2>What is an infosession?</h2>
+    <p>Short for information session, it is a recruiting event for students to meet with employers. It is a great opportunity to give potential employees an up-close and personal insight into your company, establish a <em>campus presence</em>, and <em>collect resumes</em> from interested students.</p>
+
+    <h2>What kind of turnout can we expect?</h2>
+    <p>It can vary depending on how well-known your company is among students. If your company has a strong presence and reputation, it can expect 50 to 80 students. An up and coming company can expect 20 to 30 students.</p>
+
+    <h2>What dates would you recommend?</h2>
+    <p>The best days of the week are either Tuesday, Wednesday or Thursday after 6pm. Mondays is also an option or holding the event after 5pm, although either is less optimal. We will help you schedule the most optimal time.</p>
+
+    <h2>What location will be used to host the event?</h2>
+    <p>Infosessions are held in the EECS sector of campus, most often in Soda Hall, the Computer Science building. The rooms vary from lounges, auditoriums, or classrooms, depending on availability. We will try to accommodate any room requests you may have.</p>
+
+    <h2>What if extra equipment is required?</h2>
+    <p>We can accomodate almost any equipment given enough notice. Common equipment that we have provided include a LCD projector, laptop or whiteboard.</p>
+  </div>
+
+  <div id="col2">
+    <h2>How does your group advertise the event?</h2>
+    <p>We typically post flyers among the campus buildings that will target the majors that your company is seeking. We also send an e-mail advertising your event to all our members. We will also make announcements to targeted classes on the day of the event if we feel it will help generate a stronger turnout.</p>
+
+    <h2>How much would it cost to hold it with HKN and what does it include?</h2>
+    <%# Interestingly enough, we don't seem to be listed as a campus student group on the Campus Life & Leadership site: http://students.berkeley.edu/osl/studentgroups/public/index.asp %>
+    <p>We typically ask for a standard <em>tax-deductible donation of $600</em>, not including food or equipment rental expenses, but more generosity is welcomed. We are a <%= link_to '501(c)3 tax-exempt non-profit', 'http://www.irs.gov/charities/charitable/' %>, <%= link_to 'university-affiliated', 'http://www.eecs.berkeley.edu/Students/organizations.shtml#hkn' %> organization and we use this money to help improve our services to the EECS community.</p>
+
+    <h2>What kind of food can you provide?</h2>
+    <p>The choice is really up to you and your budget. We can help you decide or you can leave it to us to choose. Our selections help distinguish our infosessions from the typical pizza infosession and provide a better experience for students.</p>
+
+    <h2>Can you co-sponsor an infosession?</h2>
+    <p>Yes, we can work with other organizations to coordinate and setup your infosession. We require that your company is part of the EECS Indutrial Liason Program (ILP) before we are able to coordinate an infosession for your company. You can determine if your company is a member by checking the <%= link_to 'list here', 'http://www.eecs.berkeley.edu/IPRO/members.html#1' %>. Acting as co-sponsor, we ask for a separate gift towards our organization.</p>
+
+    <h2>Sounds good, who should I contact?</h2>
+    <p><%= link_to 'Register', infosessions_registration_path %> on our site and we'll reply quickly. Feel free to e-mail <%= mail_to 'indrel@hkn.eecs.berkeley.edu', nil, :encode => :hex %> if you have any questions that will help you decide if working with us is right for you. </p>
+  </div>
+</div>
