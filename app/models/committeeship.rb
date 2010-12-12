@@ -19,11 +19,11 @@ class Committeeship < ActiveRecord::Base
   
   belongs_to :person
 
-  named_scope :current, :conditions => { :semester => Property.semester }
-  named_scope :committee, lambda{|x| { :conditions => { :committee => x } } }
-  named_scope :officers, :conditions => { :title => "officer" }
-  named_scope :cmembers, :conditions => { :title => "cmember" }
-  named_scope :candidates, :conditions => { :title => "candidate" }
+  scope :current, :conditions => { :semester => Property.semester }
+  scope :committee, lambda{|x| { :conditions => { :committee => x } } }
+  scope :officers, :conditions => { :title => "officer" }
+  scope :cmembers, :conditions => { :title => "cmember" }
+  scope :candidates, :conditions => { :title => "candidate" }
 
   class << self
     attr_reader :Committees, :Positions

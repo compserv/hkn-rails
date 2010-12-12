@@ -1,4 +1,4 @@
-HknRails::Application.routes.draw do |map|
+HknRails::Application.routes.draw do
 
   #Department tours
   scope "dept_tour" do
