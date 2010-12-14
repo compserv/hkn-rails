@@ -7,7 +7,9 @@ gem 'rails'
 
 gem 'pg'
 
-gem 'rspec-rails', '>= 2.0.0.beta.14'
+gem 'rspec-rails'
+# webrat is needed to make some specs pass
+gem 'webrat'
 gem 'ZenTest'
 gem 'autotest-rails'
 gem 'authlogic', :git => 'git://github.com/odorcicd/authlogic.git', :branch => 'rails3' 

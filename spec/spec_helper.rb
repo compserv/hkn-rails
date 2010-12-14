@@ -41,3 +41,10 @@ end
 def logout
   @user_session = nil
 end
+
+def login_as(user, auth={})
+  controller.current_user = user
+  user.stub(:in_group?) { |group| auth.include? group }
+  user.stub(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k)}.reject }
+end
+
