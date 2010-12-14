@@ -38,6 +38,10 @@ groups = [
   {"name"=>"alumrel",   "description"=>"Alumni Relations"},
   {"name"=>"alumadv",   "description"=>"Alumni Advisor"},
   {"name"=>"facadv",    "description"=>"Faculty Advisor"},
+  # Dissolved committees
+  {"name"=>"pub",       "description"=>"Publicity"},
+  {"name"=>"examfiles", "description"=>"Exam Files"},
+  {"name"=>"ejc",       "description"=>"EJC Representative"},
 ]
 
 groups.each do |group|

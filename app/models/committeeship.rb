@@ -10,12 +10,13 @@ class Committeeship < ActiveRecord::Base
   #   person_id  : integer 
   # =======================
 
-  @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring)	#This generates a constant which is an array of possible committees.
+  @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring pub examfiles ejc)	#This generates a constant which is an array of possible committees.
   Semester = /^\d{4}[0-4]$/	#A regex which validates the semester
   Positions = %w(officer cmember candidate)	#A list of possible positions
   validates_inclusion_of :committee, :in => @Committees, :message => "Committee not recognized."
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validates_inclusion_of :title, :in => Positions, :message => "Not a valid title." 
+  validates_uniqueness_of :committee, :scope => [:person_id, :semester]
   
   belongs_to :person
 
