@@ -12,6 +12,8 @@ class HomeController < ApplicationController
         @day = "Mon"
         @tutor_title = "Monday's tutoring schedule"
       end
+      @course_mapping = {}
+      @slots = Slot.find_by_wday(Time.now.wday)
     else
       @tutoring_message = prop.tutoring_message
     end

@@ -47,6 +47,14 @@ class Slot < ActiveRecord::Base
       thetime = hour.hours + ((wday - base.wday) % 7).days
       Time.at(thetime.value).strftime('%a%H')
     end
+    def find_by_wday(wday)
+      slots = all
+      slots.select {|slot| slot.wday == wday}
+    end
+    def find_by_wday_and_room(wday, room)
+      slots = find_by_wday(wday)
+      slots.select {|slot| slot.room == room}
+    end
   end
 
   def to_s
