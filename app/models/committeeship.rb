@@ -30,6 +30,12 @@ class Committeeship < ActiveRecord::Base
     attr_reader :Committees, :Positions
   end
 
+  SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
+
+  def nice_semester
+    "#{SEMESTER_MAP[semester[-1..-1].to_i]} #{semester[0..3]}"
+  end
+
   def nice_position
     execs = %w[pres vp rsec treas csec]
     if execs.include? committee
@@ -57,13 +63,15 @@ class Committeeship < ActiveRecord::Base
       "treas"    => "Treasurer",
       "deprel"   => "Department Relations",
       "act"      => "Activities",
-      "alumnrel" => "Alumni Relations",
+      "alumrel"  => "Alumni Relations",
       "bridge"   => "Bridge",
       "compserv" => "Computing Services",
       "indrel"   => "Industrial Relations",
       "serv"     => "Service",
       "studrel"  => "Student Relations",
       "tutoring" => "Tutoring",
+      "pub"      => "Publicity",
+      "examfiles"=> "Exam Files",
     }
     nice_committees[committee]
   end

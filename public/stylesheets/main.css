@@ -175,10 +175,13 @@ html .calendar .event { background-color: #8888FF; -moz-border-radius: 0.8em; ma
 html .calendar .event { color: white; background-color: #8888FF; }
 html .calendar .event:hover { color: white; background-color: #444488; }
 
-html .calendar .fun-event { background-color: #FF6666; }
-html .calendar .big-fun-event { background-color: #44CC44; }
+html .calendar .fun { background-color: #FF6666; }
+html .calendar .big-fun { background-color: #44CC44; }
 html .calendar .mandatory-for-candidates { background-color: #AA66DD; }
-html .calendar .infosession { background-color: #BBBB22; }
+html .calendar .industry { background-color: #BBBB22; }
+html .calendar .community-service { background-color: #EEBB22; }
+html .calendar .department-service { background-color: #22BBBB; }
+html .calendar .misc { background-color: #BBBB22; }
 html .calendar li { display: inline; }
 
 /* Two-column Layout */

@@ -31,6 +31,7 @@ people.each do |id, person|
   new_person['email']            = user['email']
   new_person['phone_number']     = person['phone']
   new_person['aim']              = info['aim_sn']
+  new_person['private']          = true
   #new_person['date_of_birth']    = 
 
   # Temporary password to let authlogic do its magic

@@ -13,9 +13,12 @@
   </div>
   <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
   <table id="person_info" class="infobox">
-    <%- unless @person.email.blank? -%>       <tr> <th>Email</th>             <td><%= @person.email %></td> </tr><%- end -%>
-    <%- unless @person.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @person.phone_number %></td> </tr><%- end -%>
+    <%- unless @person.email.blank? or @person.private -%>       <tr> <th>Email</th>             <td><%= @person.email %></td> </tr><%- end -%>
+    <%- unless @person.phone_number.blank? or @person.private -%><tr> <th>Phone Number</th>      <td><%= @person.phone_number %></td> </tr><%- end -%>
     <tr> <th>Status</th><td><%= @person.status %></td> </tr>
   </table>
   <h2>Additional Membership Information</h2>
+  <% @person.committeeships.order(:semester).each do |committeeship| %>
+    <p><%=@person.first_name%> had the position of <%=committeeship.nice_position%> in <%=committeeship.nice_semester%>.</p>
+  <% end %>
 </div>
