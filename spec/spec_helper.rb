@@ -24,10 +24,16 @@ RSpec.configure do |config|
   # examples within a transaction, comment the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+  load "#{Rails.root}/db/seeds.rb"
+end
+
+def admin_user(stubs = {})
+  @current_user = mock_model(Person, stubs.merge({
+    :admin? =>true}))
 end
 
 def current_user(stubs = {})
-  @current_user ||= mock_model(User, stubs)
+  @current_user ||= mock_model(Person, stubs)
 end
 
 def user_session(stubs = {}, user_stubs = {})
