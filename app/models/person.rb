@@ -87,6 +87,10 @@ class Person < ActiveRecord::Base
     groups.map{|group| in_group?(group)}.reduce{|x,y| x||y}
   end
 
+  def admin?
+    in_group? "superusers"
+  end
+
   def status
     current_committeeship = committeeships.find_by_semester(Property.semester)
     if current_committeeship.nil?
