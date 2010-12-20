@@ -23,8 +23,11 @@ end
 
 describe Rsvp do
   before(:each) do
+    block = mock_model(Block)
+    # Hack to make many to many associations work. Rspec has a bug here
+    block.stub(:record_timestamps, false)
     @good_opts = { :event => mock_model(Event),
-      :person => mock_model(Person), :blocks => [mock_model(Block)]}
+      :person => mock_model(Person), :blocks => [block]}
   end
 
   it "should be valid when supplied a person, event, and block" do

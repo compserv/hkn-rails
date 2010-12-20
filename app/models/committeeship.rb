@@ -11,7 +11,7 @@ class Committeeship < ActiveRecord::Base
   # =======================
 
   @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring)	#This generates a constant which is an array of possible committees.
-  Semester = /^\d{4}[0-5]$/	#A regex which validates the semester
+  Semester = /^\d{4}[0-4]$/	#A regex which validates the semester
   Positions = %w(officer cmember candidate)	#A list of possible positions
   validates_inclusion_of :committee, :in => @Committees, :message => "Committee not recognized."
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
@@ -19,11 +19,11 @@ class Committeeship < ActiveRecord::Base
   
   belongs_to :person
 
-  named_scope :current, :conditions => { :semester => Property.semester }
-  named_scope :committee, lambda{|x| { :conditions => { :committee => x } } }
-  named_scope :officers, :conditions => { :title => "officer" }
-  named_scope :cmembers, :conditions => { :title => "cmember" }
-  named_scope :candidates, :conditions => { :title => "candidate" }
+  scope :current, :conditions => { :semester => Property.semester }
+  scope :committee, lambda{|x| { :conditions => { :committee => x } } }
+  scope :officers, :conditions => { :title => "officer" }
+  scope :cmembers, :conditions => { :title => "cmember" }
+  scope :candidates, :conditions => { :title => "candidate" }
 
   class << self
     attr_reader :Committees, :Positions

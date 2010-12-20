@@ -6,11 +6,15 @@ class EventsController < ApplicationController
     category = params[:category] || 'all'
     # We should paginate this
     if category == 'past'
-      @events = Event.includes(:event_type).order(:start_time).where(['start_time < ?', Time.now])
+      @events = Event.past
+      @heading = "Past Events"
     elsif category == 'future'
-      @events = Event.includes(:event_type).order(:start_time).where(['start_time > ?', Time.now])
+      @events = Event.upcoming
+      @heading = "Upcoming Events"
     else
-      @events = Event.includes(:event_type).order(:start_time)
+      #@events = Event.includes(:event_type).order(:start_time)
+      @events = Event.all
+      @heading = "All Events"
     end
 
     respond_to do |format|

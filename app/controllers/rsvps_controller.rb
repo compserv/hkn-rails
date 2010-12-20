@@ -88,13 +88,13 @@ class RsvpsController < ApplicationController
     end
   end
 
+
   def my_rsvps
     @rsvps = @current_user.rsvps
   end
 
-
   def validate_owner!(rsvp)
-    unless @current_user == rsvp || @auth['superusers']
+    unless @current_user == rsvp.person || @auth['superusers']
       raise 'You do not have permission to modify this RSVP'
     end
   end

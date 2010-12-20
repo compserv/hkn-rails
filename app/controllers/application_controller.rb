@@ -25,11 +25,23 @@ class ApplicationController < ActionController::Base
         super
     end
   end  
+
+  def current_user=(user)
+    @current_user = user
+  end
+
+  def auth=(auth)
+    @auth = auth
+  end
+
+  #-----------------------------------------------------------------------
+  # Private Methods
+  #-----------------------------------------------------------------------
   private
   
   def get_current_user
     if UserSession.find
-      @current_user = UserSession.find.person
+      @current_user ||= UserSession.find.person
     end
   end
 

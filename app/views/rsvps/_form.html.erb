@@ -26,13 +26,13 @@
 
   <% if @event.need_transportation %>
   <div class="field">
-    <%= f.label :transportation %><br />
+    <%= f.label :transportation %>
     <%= f.select :transportation, Rsvp::TRANSPORT_ENUM %>
   </div>
   <% end %>
 
   <div class="field">
-    <%= f.label :comment, 'Anything we should know?' %><br />
+    <%= f.label :comment, 'Anything we should know?' %>
     <%= f.text_area :comment %>
   </div>
 

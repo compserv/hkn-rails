@@ -1,9 +1,9 @@
-HknRails::Application.routes.draw do |map|
+HknRails::Application.routes.draw do
 
   #Department tours
   scope "dept_tour" do
-    match "" => "dept_tour#signup", :as => :dept_tour_signup
-	match "success" => "dept_tour#success"
+    match "/" => "dept_tour#signup", :as => :dept_tour_signup
+    match "success" => "dept_tour#success"
   end
 
   namespace :admin do
@@ -11,7 +11,7 @@ HknRails::Application.routes.draw do |map|
       match "signup_slots" => "tutor#signup_slots"
       match "signup_courses" => "tutor#signup_courses"
       match "edit_schedule" => "tutor#edit_schedule"
-      match "" => "tutor#settings"
+      match "/" => "tutor#settings"
       match "settings" => "tutor#settings"
     end
   end
@@ -41,7 +41,7 @@ HknRails::Application.routes.draw do |map|
 
   # Course Surveys
   scope "coursesurveys" do
-    match "" => "coursesurveys#index"
+    match "/"                                       => "coursesurveys#index",      :as => :coursesurveys
     match "course/:dept_abbr"                       => "coursesurveys#department", :as => :coursesurveys_department
     match "course/:dept_abbr/:short_name"           => "coursesurveys#course",     :as => :coursesurveys_course
     match "course/:dept_abbr/:short_name/:semester" => "coursesurveys#klass",      :as => :coursesurveys_klass
@@ -51,9 +51,9 @@ HknRails::Application.routes.draw do |map|
     match "search(/:query)"                         => "coursesurveys#search",     :as => :coursesurveys_search
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
 
-    match "how-to"     => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
-    match "info-profs" => "static#coursesurveys_info_profs", :as => :coursesurveys_info_profs
-    match "ferpa"      => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
+    match "how-to"                                  => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
+    match "info-profs"                              => "static#coursesurveys_info_profs", :as => :coursesurveys_info_profs
+    match "ferpa"                                   => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
   end
 
   match "events/calendar" => "events#calendar", :as => :events_calendar
@@ -68,17 +68,17 @@ HknRails::Application.routes.draw do |map|
 
   # Indrel site
   scope "indrel" do
-    match "" => "indrel#index"
-    match "career-fair" => "indrel#career_fair", :as => "career_fair"
-    match "contact-us" => "indrel#contact_us", :as => "indrel_contact_us"
-    match "infosessions" => "indrel#infosessions", :as => "infosessions"
-    get   "infosessions/registration" => "indrel#infosessions_registration", :as => "infosessions_registration"
+    match "/"                         => "indrel#index",                          :as => "indrel"
+    match "career-fair"               => "indrel#career_fair",                    :as => "career_fair"
+    match "contact-us"                => "indrel#contact_us",                     :as => "indrel_contact_us"
+    match "infosessions"              => "indrel#infosessions",                   :as => "infosessions"
+    get   "infosessions/registration" => "indrel#infosessions_registration",      :as => "infosessions_registration"
     post  "infosessions/registration" => "indrel#infosessions_registration_post", :as => "infosessions_registration_post"
-    match "resume-books" => "indrel#resume_books", :as => "resume_books"
-    get   "resume-books/order" => "indrel#resume_books_order", :as => "resume_books_order"
-    post  "resume-books/order" => "indrel#resume_books_order_post", :as => "resume_books_order_post"
+    match "resume-books"              => "indrel#resume_books",                   :as => "resume_books"
+    get   "resume-books/order"        => "indrel#resume_books_order",             :as => "resume_books_order"
+    post  "resume-books/order"        => "indrel#resume_books_order_post",        :as => "resume_books_order_post"
     scope "db" do
-      match "" => "indrel#indrel_db"
+      match "/" => "indrel#indrel_db", :as => "indrel_db"
       resources :companies
       resources :contacts
       resources :events,      :controller => "indrel_events",      :as => "indrel_events"
@@ -96,7 +96,7 @@ HknRails::Application.routes.draw do |map|
 
   #Tutoring pages
   scope "tutor" do
-    match "" => "tutor#schedule"
+    match "/" => "tutor#schedule"
     match "schedule" => "tutor#schedule"
   end
   

@@ -23,6 +23,10 @@ class Event < ActiveRecord::Base
   validates :event_type, :presence => true
   validate :valid_time_range
 
+  scope :past,     joins(:event_type).order(:start_time).where(['start_time < ?', Time.now])
+  scope :upcoming, joins(:event_type).order(:start_time).where(['start_time > ?', Time.now])
+  scope :all,      joins(:event_type).order(:start_time)
+
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
 
   def valid_time_range
