@@ -10,6 +10,7 @@
   <!-- navigation.js should be rewritten at some point -->
   <%= javascript_include_tag "navigation.js" %>
   <%= csrf_meta_tag %>
+  <%= yield(:header) %>
 </head>
 <body>
 

@@ -27,7 +27,8 @@ class Person < ActiveRecord::Base
   has_many :committeeships
   has_and_belongs_to_many :groups
   has_many :rsvps, :dependent => :destroy
-  
+  has_many :challenges
+
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
   # Username, password, and email validation is done by AuthLogic

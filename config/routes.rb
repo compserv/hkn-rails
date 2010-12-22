@@ -1,5 +1,4 @@
 HknRails::Application.routes.draw do
-
   #Department tours
   scope "dept_tour" do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup
@@ -104,7 +103,13 @@ HknRails::Application.routes.draw do
     resources :exams
     match "browse" => "exams#browse"
   end
-  
+
+  #Candidates
+  scope "cand" do
+    match "portal" => "candidates#portal"
+    match "quiz" => "candidates#quiz"
+    match "application" => "candidates#application"
+  end
   #resources :user_session
 
   # The priority is based upon order of creation:

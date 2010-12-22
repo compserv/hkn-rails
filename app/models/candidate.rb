@@ -9,6 +9,7 @@ class Candidate < ActiveRecord::Base
 
   belongs_to :person
   has_many :quiz_responses
+  has_many :challenges
   has_many :committee_preferences
 
   validates :person, :presence => true
