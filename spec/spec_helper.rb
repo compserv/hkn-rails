@@ -54,3 +54,7 @@ def login_as(user, auth={})
   user.stub(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k)}.reject }
 end
 
+def login_as_officer(auth={})
+	@current_user = stub_model(Person)
+	login_as @current_user, auth.merge({'officers'=>true})
+end
