@@ -1,4 +1,6 @@
 class CompaniesController < ApplicationController
+  before_filter :authorize_indrel
+
   # GET /companies
   # GET /companies.xml
   def index
@@ -44,7 +46,8 @@ class CompaniesController < ApplicationController
     @company = Company.new(params[:company])
 
     respond_to do |format|
-      if @company.save
+      # Save without logging in as the company
+      if @company.save_without_session_maintenance
         flash[:notice] = 'Company was successfully created.'
         format.html { redirect_to(@company) }
         format.xml  { render :xml => @company, :status => :created, :location => @company }

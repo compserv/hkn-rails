@@ -1,4 +1,6 @@
 class LocationsController < ApplicationController
+  before_filter :authorize_indrel
+
   # GET /locations
   # GET /locations.xml
   def index
