@@ -58,7 +58,7 @@ class Slot < ActiveRecord::Base
   end
 
   def to_s
-    time.strftime('%a%H') + get_room()[0..0]
+    time.utc.strftime('%a%H') + get_room()[0..0]
   end
 
   def get_room()
@@ -72,11 +72,11 @@ class Slot < ActiveRecord::Base
   end
 
   def hour
-    time.hour
+    time.utc.hour
   end
 
   def wday
-    time.wday
+    time.utc.wday
   end
 
   def valid_room
