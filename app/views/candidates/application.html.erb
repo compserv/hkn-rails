@@ -1,6 +1,11 @@
 <% content_for :header do %>
   <%= javascript_include_tag "jquery-sortable.min" %>
   <%= stylesheet_link_tag "jquery-sortable" %>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#sortable").sortable();
+    });
+  </script>
 <% end %>
 
 <h1>Candidate Application</h1>
