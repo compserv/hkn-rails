@@ -15,7 +15,9 @@ class CandidatesController < ApplicationController
 
   def portal
     @announcements = Announcement.order("created_at desc").limit(10)
-    @requirements = @current_user.candidate.requirements_status
+    requirements = @current_user.candidate.requirements_status
+    @status = requirements[:status]
+    @rsvps = requirements[:rsvps]
   end
 
   def application
