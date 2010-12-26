@@ -109,7 +109,7 @@ HknRails::Application.routes.draw do
     match "portal" => "candidates#portal"
     match "quiz" => "candidates#quiz"
     match "application" => "candidates#application"
-    match "quiz_responses" => "candidates#quiz_responses"
+    match "submit_quiz" => "candidates#submit_quiz"
   end
   #resources :user_session
 

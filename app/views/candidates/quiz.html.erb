@@ -1,57 +1,58 @@
 <h1>Candidates Quiz</h1>
-<p>Feel free to discuss your answers with other candidates and officers. Your score on this examination will factor into your application for canndidacy. (Not curved!) Be as specific as you can. Your answers are autograded - make sure they are complete and <b>spelled correctly</b>. Also please provide numerical answers when appropriate. Your form answers will be saved if you submit, so feel free to partially fill out the quiz! Only your final submission will be scored.</p>
+<p>Your score on this examination will factor into your application for candidacy (not curved!). Feel free to discuss your answers with other candidates and officers. Be as specific as you can - your answers are auto-graded so make sure they are complete and <b>spelled correctly</b>. Also please provide numerical answers when appropriate. Your form answers will be saved if you submit, so feel free to partially fill out the quiz! Only your final submission will be scored.</p>
+
 <p>Some good answer sources: hkn.eecs.berkeley.edu and hkn.org</p>
 
-<%= form_tag "quiz_responses" do %>
-<ol>
-  <li>
-    Eta Kappa Nu was founded at <%= text_field_tag(:q1) %> (include the full name of the university).
-  </li>
-  <li>
-    Eta Kappa Nu was founded in the year <%= text_field_tag(:q2) %>.
-  </li>
-  <li>
-    The Berkeley Chapter is known as the <%= text_field_tag(:q3) %> chapter.
-  </li>
-  <li>
-    The Berkeley Chapter was established in the year <%= text_field_tag(:q4) %>.
-  </li>
-  <li>
-    The colors of the organization are <%= text_field_tag(:q5_1) %> and <%= text_field_tag(:q5_2) %>.
-  </li>
-  <li>
-    The emblem of the organization is <%= text_field_tag(:q6) %>.
-  </li>
-  <li>
-    What are the six officer positions mandated by the nationals constitution for each chapter?
-    <ol>
-      <li><%= text_field_tag(:q7_1) %></li>
-      <li><%= text_field_tag(:q7_2) %></li>
-      <li><%= text_field_tag(:q7_3) %></li>
-      <li><%= text_field_tag(:q7_4) %></li>
-      <li><%= text_field_tag(:q7_5) %></li>
-      <li><%= text_field_tag(:q7_6) %></li>
-    </ol>
-  </li>
-  <li>
-    Name four student services carried out by the Berkeley Chapter.
-    <ol>
-      <li><%= text_field_tag(:q8_1) %></li>
-      <li><%= text_field_tag(:q8_2) %></li>
-      <li><%= text_field_tag(:q8_3) %></li>
-      <li><%= text_field_tag(:q8_4) %></li>
-    </ol>
-  </li>
-  <li>
-    Name any current Berkeley EECS faculty who is a member of HKN. <%= text_field_tag(:q9) %>
-  </li>
-  <li>
-    What are the locations of the two HKN offices?
+<%= form_tag "submit_quiz" do %>
+  <ol>
+    <li>
+      Eta Kappa Nu was founded at <%= text_field_tag(:q1, @quiz_resp[:q1]) %> (include the full name of the university).
+    </li>
+    <li>
+      Eta Kappa Nu was founded in the year <%= text_field_tag(:q2, @quiz_resp[:q2]) %>.
+    </li>
+    <li>
+      The Berkeley Chapter is known as the <%= text_field_tag(:q3, @quiz_resp[:q3]) %> chapter.
+    </li>
+    <li>
+      The Berkeley Chapter was established in the year <%= text_field_tag(:q4, @quiz_resp[:q4]) %>.
+    </li>
+    <li>
+      The colors of the organization are <%= text_field_tag(:q5_1, @quiz_resp[:q5_1]) %> and <%= text_field_tag(:q5_2, @quiz_resp[:q5_2]) %>.
+    </li>
+    <li>
+      The emblem of the organization is <%= text_field_tag(:q6, @quiz_resp[:q6]) %>.
+    </li>
+    <li>
+      What are the six officer positions mandated by the nationals constitution for each chapter? (In alphabetical order)
       <ol>
-        <li><%= text_field_tag(:q10_1) %></li>
-        <li><%= text_field_tag(:q10_2) %></li>
+        <li><%= text_field_tag(:q7_1, @quiz_resp[:q7_1]) %></li>
+        <li><%= text_field_tag(:q7_2, @quiz_resp[:q7_2]) %></li>
+        <li><%= text_field_tag(:q7_3, @quiz_resp[:q7_3]) %></li>
+        <li><%= text_field_tag(:q7_4, @quiz_resp[:q7_4]) %></li>
+        <li><%= text_field_tag(:q7_5, @quiz_resp[:q7_5]) %></li>
+        <li><%= text_field_tag(:q7_6, @quiz_resp[:q7_6]) %></li>
       </ol>
-  </li>
-</ol>
-<%= submit_tag "Submit" %>
+    </li>
+    <li>
+      Name four student services carried out by the Berkeley Chapter. (In alphabetical order)
+      <ol>
+        <li><%= text_field_tag(:q8_1, @quiz_resp[:q8_1]) %></li>
+        <li><%= text_field_tag(:q8_2, @quiz_resp[:q8_2]) %></li>
+        <li><%= text_field_tag(:q8_3, @quiz_resp[:q8_3]) %></li>
+        <li><%= text_field_tag(:q8_4, @quiz_resp[:q8_4]) %></li>
+      </ol>
+    </li>
+    <li>
+      Name any current Berkeley EECS faculty who is a member of HKN. <%= text_field_tag(:q9, @quiz_resp[:q9]) %>
+    </li>
+    <li>
+      What are the locations of the two HKN offices? (In alphabetical order)
+        <ol>
+          <li><%= text_field_tag(:q10_1, @quiz_resp[:q10_1]) %></li>
+          <li><%= text_field_tag(:q10_2, @quiz_resp[:q10_2]) %></li>
+        </ol>
+    </li>
+  </ol>
+<%= submit_tag "Save Responses" %>
 <% end %>

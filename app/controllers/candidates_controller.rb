@@ -24,10 +24,32 @@ class CandidatesController < ApplicationController
   end
 
   def quiz
+    quiz_resp = @current_user.candidate.quiz_responses
+    @quiz_resp = Hash.new("")
+    if !quiz_resp.empty? #Fill hash with default blanks
+      for resp in quiz_resp
+        @quiz_resp[resp.number.to_sym] = resp.response
+      end
+    end
+      
   end
 
-  def quiz_responses
-    flash[:notice] = "Your quiz scores have been recorded."
+  def submit_quiz
+    params.each do |key, value|
+      if key.match(/^q/) #Starts with "q", is a quiz response
+        quiz_resp = @current_user.candidate.quiz_responses
+        q = nil
+        if quiz_resp.empty? #No quiz responses for this candidate, create
+          q = QuizResponse.new(:number => key.to_s)
+          q.candidate = @current_user.candidate
+        else #Update existing quiz responses
+          q = quiz_resp.select {|x| x.number == key.to_s}.first      
+        end
+          q.response = value.to_s
+          q.save
+      end
+    end
+    flash[:notice] = "Your quiz responses have been recorded."
     redirect_to :back
   end
 end

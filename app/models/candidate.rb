@@ -40,4 +40,43 @@ class Candidate < ActiveRecord::Base
     end
     return {:status => status, :rsvps => sorted_rsvps}
   end
+  
+  def grade_quiz
+    answers = { 
+      :q1 => "University of Illinois, Urbana-Champaign",
+      :q2 => "1904",
+      :q3 => "Mu",
+      :q4 => "1915",
+      :q5_1 => "Navy Blue",
+      :q5_2 => "Scarlet",
+      :q6 => "wheatstone bridge",
+      :q7_1 => "BRIDGE Correspondent",
+      :q7_2 => "Corresponding Secretary",
+      :q7_3 => "President",
+      :q7_4 => "Recording Secretary",
+      :q7_5 => "Vice President",
+      :q7_6 => "Treasurer",
+      :q8_1 => "Course Surveys",
+      :q8_2 => "Exam Preparation",
+      :q8_3 => "Peer Advising",
+      :q8_4 => "Tutoring",
+      :q9 => "Dan Garcia", #More answers?
+      :q10_1 => "290 Cory",
+      :q10_2 => "345 Soda"    
+    }
+    
+    score = 0
+    results = Hash.new(false)
+    quiz_resp = self.quiz_responses
+    if !quiz_resp.empty? #Fill hash with default blanks
+      for resp in quiz_resp
+        if answers[resp.number.to_sym] == resp.response
+          results[resp.number.to_sym] = true
+          score += 1
+        end
+      end
+    else
+      flash[:notice] = "You haven't submitted any quiz answers yet!"
+    end
+  end
 end

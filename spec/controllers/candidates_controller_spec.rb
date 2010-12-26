@@ -29,6 +29,7 @@ describe CandidatesController do
 
   describe "GET 'quiz'" do
     it "should be successful" do
+      @cand.stub!(:quiz_responses).and_return(Hash.new)
       get 'quiz'
       response.should be_success
     end
