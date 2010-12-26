@@ -9,9 +9,13 @@
   <%= javascript_include_tag "jquery-1.4.4.min" %>
   <%= javascript_include_tag "navigation.js" %>
   <%= csrf_meta_tag %>
-  <% filename = controller.controller_name + ".css" %>
-  <% if FileTest.exist?  RAILS_ROOT + "/public/stylesheets/" + filename %>
+  <%= yield(:header) %>
+  <% filename = controller.controller_name %>
+  <% if FileTest.exist?  RAILS_ROOT + "/public/stylesheets/" + filename + ".css" %>
     <%= stylesheet_link_tag "#{filename}" %>
+  <% end %>
+  <% if FileTest.exist?  RAILS_ROOT + "/public/javascripts/" + filename + ".js" %>
+    <%= javascript_include_tag "#{filename}" %>
   <% end %>
 </head>
 <body>

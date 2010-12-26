@@ -21,6 +21,14 @@ class CandidatesController < ApplicationController
   end
 
   def application
+    @app_details = {
+      :aim => @current_user.aim, 
+      :phone => @current_user.phone_number,
+      :local_address => "",
+      :perm_address => "",
+      :grad_sem => "",
+      :suggestions => ""
+    }
   end
 
   def quiz
@@ -50,6 +58,15 @@ class CandidatesController < ApplicationController
       end
     end
     flash[:notice] = "Your quiz responses have been recorded."
+    redirect_to :back
+  end
+  
+  def submit_app
+    @current_user.update_attributes({
+      :aim => params[:aim],
+      :phone_number => params[:phone]
+    })
+    flash[:notice] = "Your application has been saved."
     redirect_to :back
   end
 end

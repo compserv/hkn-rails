@@ -1,2 +1,54 @@
-<h1>Candidates#application</h1>
-<p>Find me in app/views/candidates/application.html.erb</p>
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-sortable.min" %>
+  <%= stylesheet_link_tag "jquery-sortable" %>
+<% end %>
+
+<h1>Candidate Application</h1>
+
+<%= form_tag "/cand/submit_app" do %> 
+  <p>
+    <%= label_tag "AIM Screen name" %>
+    <%= text_field_tag(:aim, @app_details[:aim]) %>
+  </p>
+  
+  <p>
+    <%= label_tag "Your Local (Berkeley) Address" %>
+    <%= text_field_tag(:local_address, @app_details[:local_address]) %>
+  </p>
+  
+  <p>
+    <%= label_tag "Your Permanent Address" %>
+    <%= text_field_tag(:perm_address, @app_details[:perm_address]) %>
+  </p>
+  
+  <p>
+    <%= label_tag "Phone" %>
+    <%= text_field_tag(:phone, @app_details[:phone]) %>
+  </p>
+  
+  <p>
+    <%= label_tag "Graduation Semester" %>
+    <%= text_field_tag(:grad_sem, @app_details[:grad_sem]) %>
+  </p>
+  
+  <p>
+    <%= label_tag "Release information to other candidates" %>
+    <%= radio_button_tag(:release, @app_details[:release]) %>
+  </p>
+  
+  <p>
+    <%= label_tag "Committee Preferences" %>
+    <ul id="sortable">
+      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>CompServ</li>
+      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Act</li>
+      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Serv</li>
+      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Bridge</li>
+    </ul>
+  </p>
+  
+  <p>
+    <%= label_tag "What activities would you like to see HKN do this semester?" %>
+    <%= text_area_tag(:suggestions, @app_details[:suggestions]) %>
+  </p>
+<%= submit_tag "Save Application" %>
+<% end %>

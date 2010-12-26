@@ -22,6 +22,8 @@ describe CandidatesController do
 
   describe "GET 'application'" do
     it "should be successful" do
+      @person.stub!(:aim).and_return("")
+      @person.stub!(:phone_number).and_return("")
       get 'application'
       response.should be_success
     end
