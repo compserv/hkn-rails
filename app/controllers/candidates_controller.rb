@@ -26,4 +26,8 @@ class CandidatesController < ApplicationController
   def quiz
   end
 
+  def quiz_responses
+    flash[:notice] = "Your quiz scores have been recorded."
+    redirect_to :back
+  end
 end
