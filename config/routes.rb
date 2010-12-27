@@ -7,7 +7,7 @@ HknRails::Application.routes.draw do
 
   namespace :admin do
     scope "tutor" do
-      match "signup_slots" => "tutor#signup_slots"
+      match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
       match "signup_courses" => "tutor#signup_courses"
       match "edit_schedule" => "tutor#edit_schedule"
       match "/" => "tutor#settings"

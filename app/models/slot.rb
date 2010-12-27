@@ -37,7 +37,7 @@ class Slot < ActiveRecord::Base
       return find_by_time_and_room(time, room)
     end
     def get_time(wday, hour)
-      base = Time.at(0)
+      base = Time.at(0).utc
       thetime = hour.hours + ((wday - base.wday) % 7).days
       Time.at(thetime.value)
     end
