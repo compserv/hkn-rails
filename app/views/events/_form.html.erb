@@ -38,10 +38,38 @@
     <%= f.label :end_time %><br />
     <%= datetime_select :event, :end_time %>
   </div>
-  <div class="field">
-    <%= label_tag :num_blocks, 'Number of blocks' %><br />
-    <%= number_field_tag :num_blocks, 1 %>
+  <div>
+    <%= label_tag(:blocktype_single, "Single block") %>
+    <%= radio_button_tag(:blocktype, "single", true, {:onclick => "blocks(1);"}) %>
+    <%= label_tag(:blocktype_uniform, "Multiple uniform blocks") %>
+    <%= radio_button_tag(:blocktype, "uniform", false, {:onclick => "blocks(2);"}) %>
   </div>
+  <div class="field" id="numblocks">
+    <%= label_tag :num_blocks, 'Number of blocks' %><br />
+    <%= number_field_tag :num_blocks, 1, :onkeypress => "return numeric(event);" %>
+  </div>
+  <script>
+    var blockfield = document.getElementById('numblocks');
+    var num_blocks = document.getElementById('num_blocks');
+    blockfield.style.display = 'none';
+    
+    function blocks(selectID) {
+      if (selectID == 1) {
+        num_blocks.value = "1";
+        blockfield.style.display = 'none';
+      }
+      else if (selectID == 2)
+        blockfield.style.display = 'block';
+    }
+
+    function numeric(evt) {
+      evt = (evt) ? evt : window.event;
+      var charcode = (evt.which) ? evt.which : evt.keyCode;
+      if (charcode > 31 && (charcode < 48 || charcode > 57))
+        return false;
+      return true;
+    }
+  </script>
   <div class="field">
     <%= label_tag :max_rsvps, 'Maximum RSVPs' %><br />
     <%= number_field_tag :max_rsvps %>
