@@ -12,7 +12,7 @@ gem 'rspec-rails'
 gem 'webrat'
 gem 'ZenTest'
 gem 'autotest-rails'
-gem 'authlogic', :git => 'git://github.com/odorcicd/authlogic.git', :branch => 'rails3' 
+gem 'authlogic', :git => 'git://github.com/binarylogic/authlogic.git'
 gem 'net-ldap'
 gem 'nokogiri'
 gem 'will_paginate', "~> 3.0.pre2"

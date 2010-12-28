@@ -32,6 +32,12 @@
     <a href="#">Administration</a>
   </li> 
   <%- end -%>
+
+  <%- if @current_user && @current_user.in_group?("candidates") -%>
+  <li id="cand" class="navigation_toplevel_item">
+    <a href="#">Candidate Portal</a>
+  </li>
+  <%- end -%>
 </ul>
 </div><!-- toplevel -->
 

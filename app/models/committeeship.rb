@@ -10,12 +10,13 @@ class Committeeship < ActiveRecord::Base
   #   person_id  : integer 
   # =======================
 
-  @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring)	#This generates a constant which is an array of possible committees.
+  @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring pub examfiles ejc)	#This generates a constant which is an array of possible committees.
   Semester = /^\d{4}[0-4]$/	#A regex which validates the semester
   Positions = %w(officer cmember candidate)	#A list of possible positions
   validates_inclusion_of :committee, :in => @Committees, :message => "Committee not recognized."
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validates_inclusion_of :title, :in => Positions, :message => "Not a valid title." 
+  validates_uniqueness_of :committee, :scope => [:person_id, :semester]
   
   belongs_to :person
 
@@ -27,6 +28,12 @@ class Committeeship < ActiveRecord::Base
 
   class << self
     attr_reader :Committees, :Positions
+  end
+
+  SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
+
+  def nice_semester
+    "#{SEMESTER_MAP[semester[-1..-1].to_i]} #{semester[0..3]}"
   end
 
   def nice_position
@@ -56,13 +63,15 @@ class Committeeship < ActiveRecord::Base
       "treas"    => "Treasurer",
       "deprel"   => "Department Relations",
       "act"      => "Activities",
-      "alumnrel" => "Alumni Relations",
+      "alumrel"  => "Alumni Relations",
       "bridge"   => "Bridge",
       "compserv" => "Computing Services",
       "indrel"   => "Industrial Relations",
       "serv"     => "Service",
       "studrel"  => "Student Relations",
       "tutoring" => "Tutoring",
+      "pub"      => "Publicity",
+      "examfiles"=> "Exam Files",
     }
     nice_committees[committee]
   end

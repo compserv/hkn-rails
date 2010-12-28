@@ -12,6 +12,14 @@
 
 ActiveRecord::Schema.define(:version => 20101228035445) do
 
+  create_table "announcements", :force => true do |t|
+    t.string   "title"
+    t.string   "body"
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
     t.integer  "preferred_room"
@@ -41,6 +49,16 @@ ActiveRecord::Schema.define(:version => 20101228035445) do
     t.datetime "updated_at"
   end
 
+  create_table "challenges", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.boolean  "status"
+    t.integer  "candidate_id"
+    t.integer  "officer_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "committee_preferences", :force => true do |t|
     t.integer  "group_id",     :null => false
     t.integer  "candidate_id", :null => false
@@ -65,6 +83,8 @@ ActiveRecord::Schema.define(:version => 20101228035445) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "comments"
+    t.string   "persistence_token",   :default => "", :null => false
+    t.string   "single_access_token", :default => "", :null => false
   end
 
   create_table "contacts", :force => true do |t|
@@ -258,21 +278,22 @@ ActiveRecord::Schema.define(:version => 20101228035445) do
   end
 
   create_table "people", :force => true do |t|
-    t.string   "first_name",          :null => false
-    t.string   "last_name",           :null => false
-    t.string   "username",            :null => false
-    t.string   "email",               :null => false
-    t.string   "crypted_password",    :null => false
-    t.string   "password_salt",       :null => false
-    t.string   "persistence_token",   :null => false
-    t.string   "single_access_token", :null => false
-    t.string   "perishable_token",    :null => false
+    t.string   "first_name",                            :null => false
+    t.string   "last_name",                             :null => false
+    t.string   "username",                              :null => false
+    t.string   "email",                                 :null => false
+    t.string   "crypted_password",                      :null => false
+    t.string   "password_salt",                         :null => false
+    t.string   "persistence_token",                     :null => false
+    t.string   "single_access_token",                   :null => false
+    t.string   "perishable_token",                      :null => false
     t.string   "phone_number"
     t.string   "aim"
     t.date     "date_of_birth"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "picture"
+    t.boolean  "private",             :default => true, :null => false
   end
 
   create_table "properties", :force => true do |t|

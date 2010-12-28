@@ -6,37 +6,33 @@
  * It will then look to see if there is a toplevel menu that has that name. If so,
  * it will make it selected. If not it will pick the first one it finds and make that 
  * selected. Might be deprecated soon.  
+ */ 
+/** 
+  amber: ported this to jQuery
+  richardxia: ported this to Prototype
  */
-/** richardxia:
- * Ported this to Prototype
- */
-document.observe("dom:loaded", function() {
+$(document).ready(function() {
 	current = location.pathname.replace('/','');
   if (current.indexOf('/') != -1)
     current = current.substring(0,current.indexOf('/'));
 	id = current;	
-	if (id.length != 0 && id != "coursesurveys" && $(id).length != 0) {
-		$(id).addClassName("selected");
-		submenuid = current + "_submenu";
-		//$(submenuid).show();	
-		$(submenuid).setStyle({ display: 'block' });
+	if (id.length != 0 && id != "coursesurveys" && $("#" + id).length != 0) {
+		$("#" + id).addClass("selected");
+		$("#" + current + "_submenu").show();
 	}
 	else {
-		$$(".navigation_toplevel_item:first-child").first().addClassName("selected");	
-		$$(".submenu").first().setStyle({ display: 'block' });
+		$(".navigation_toplevel_item:first-child").first().addClass("selected");	
+		$(".submenu").first().show();
 	}
-	$$(".navigation_toplevel_item").each(function(s) {
-    s.observe("mousedown", 
+	$(".navigation_toplevel_item").click(
       function () {
-        $$(".navigation_toplevel_item").invoke("removeClassName", "selected");
-        $(this).addClassName("selected");
+        $(".navigation_toplevel_item").removeClass("selected");
+        $(this).addClass("selected");
         $(this).blur();
-        $$(".submenu").invoke("hide");
-        id = $(this).readAttribute("id") + "_submenu";
+        $(".submenu").hide();
+        id = $(this).attr("id") + "_submenu";
         //$(id).fade({ duration: 0.2 });		
-		    $(id).setStyle({ display:  'block' });
-      }	
-    );
-  });
+		    $("#" + id).show();
+      });
 });
 

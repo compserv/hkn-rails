@@ -44,7 +44,7 @@ class Event < ActiveRecord::Base
     elsif hour == 0
       hour = 12
     end
-    "#{hour}#{min}p"
+    "#{hour}#{min}#{ampm}"
   end
 
   def nice_time_range

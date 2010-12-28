@@ -1,0 +1,4 @@
+# author: richardxia
+
+You need to run these scripts on the server with the Django codebase. They will
+output JSON encoded files which will serve as the inputs to the import scripts.

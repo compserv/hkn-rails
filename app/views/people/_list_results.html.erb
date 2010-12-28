@@ -18,8 +18,8 @@
       <%= link_to person.fullname, person %>
       <div class="small"><%= person.status %></div>
     </td>
-    <td><%= raw html_obfuscate person.email %></td>
-    <td><%= person.phone_number %></td>
+    <td><%= raw html_obfuscate person.email unless person.private %></td>
+    <td><%= person.phone_number unless person.private %></td>
   </tr>
 <%- end -%>
 </table>

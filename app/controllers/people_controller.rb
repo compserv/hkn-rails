@@ -48,6 +48,11 @@ class PeopleController < ApplicationController
     @person = Person.new(params[:person])
     if params[:candidate] == "true"
       @person.groups << Group.find_by_name("candidates")
+      
+      #Create new candidate corresponding to this person
+      @candidate = Candidate.new
+      @candidate.person = @person
+      @candidate.save
     else
       @person.groups << Group.find_by_name("members")
     end

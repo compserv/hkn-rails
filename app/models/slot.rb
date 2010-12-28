@@ -37,7 +37,7 @@ class Slot < ActiveRecord::Base
       return find_by_time_and_room(time, room)
     end
     def get_time(wday, hour)
-      base = Time.at(0)
+      base = Time.at(0).utc
       thetime = hour.hours + ((wday - base.wday) % 7).days
       Time.at(thetime.value)
     end
@@ -47,10 +47,18 @@ class Slot < ActiveRecord::Base
       thetime = hour.hours + ((wday - base.wday) % 7).days
       Time.at(thetime.value).strftime('%a%H')
     end
+    def find_by_wday(wday)
+      slots = all
+      slots.select {|slot| slot.wday == wday}
+    end
+    def find_by_wday_and_room(wday, room)
+      slots = find_by_wday(wday)
+      slots.select {|slot| slot.room == room}
+    end
   end
 
   def to_s
-    time.strftime('%a%H') + get_room()[0..0]
+    time.utc.strftime('%a%H') + get_room()[0..0]
   end
 
   def get_room()
@@ -64,11 +72,11 @@ class Slot < ActiveRecord::Base
   end
 
   def hour
-    time.hour
+    time.utc.hour
   end
 
   def wday
-    time.wday
+    time.utc.wday
   end
 
   def valid_room

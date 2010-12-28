@@ -19,6 +19,7 @@ class Person < ActiveRecord::Base
   #   created_at          : datetime 
   #   updated_at          : datetime 
   #   picture             : string 
+  #   private             : boolean 
   # =======================
 
   has_one :candidate
@@ -26,7 +27,8 @@ class Person < ActiveRecord::Base
   has_many :committeeships
   has_and_belongs_to_many :groups
   has_many :rsvps, :dependent => :destroy
-  
+  has_many :challenges
+
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
   # Username, password, and email validation is done by AuthLogic
@@ -85,6 +87,10 @@ class Person < ActiveRecord::Base
   # If person is in ANY group in the list, this returns true
   def in_groups?(groups)
     groups.map{|group| in_group?(group)}.reduce{|x,y| x||y}
+  end
+
+  def admin?
+    in_group? "superusers"
   end
 
   def status

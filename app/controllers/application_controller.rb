@@ -58,10 +58,10 @@ class ApplicationController < ActionController::Base
     # If user is in any of the groups, then he has access
     groups = (group_or_groups.class == String) ? [group_or_groups] : group_or_groups
     if @current_user.nil?
-      redirect_to :login, :notice => "Please log in to access this page."
+      redirect_to :login, :notice => "Please log in to access this page.", :flash => {:referer => request.fullpath}
       return
     end
-    unless groups.nil? or @current_user.groups.include?(Group.find_by_name("superusers")) or @current_user.groups.map{|x| groups.include? x.name}.reduce{|x,y| x || y}
+    unless groups.nil? or @current_user.admin? or @current_user.groups.map{|x| groups.include? x.name}.reduce{|x,y| x || y}
       redirect_to :root, :notice => "Insufficient privileges to access this page."
     end
   end
@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
   def check_authorizations
     @auth ||= {}
     unless @current_user.nil?
-      if @current_user.in_group?("superusers")
+      if @current_user.admin?
         @auth.default = true
       else
         @current_user.groups.each do |group|
