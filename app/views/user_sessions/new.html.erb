@@ -10,6 +10,7 @@
   <br />
   <%= f.label :remember_me %><%= f.check_box :remember_me %><br />
   <br />
+  <%= hidden_field_tag(:referer, @referer) %>
   <%= f.submit "Login" %>
 <% end %>
 

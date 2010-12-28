@@ -5,6 +5,23 @@
   <h2>Checklist</h2>
 
   <h3>Events</h3>
+  <% @status.each do |req, status| %>
+  <h4>
+    <%=h req.to_s + ": " %>
+    <% if status == true %>
+    <span class="status_done">Done</span>
+    <% else %>
+    <span class="status_notdone">Not Done</span>
+    <% end %>
+  </h4>
+  <ul>
+    <% for rsvp in @rsvps[req] %>
+    <%= rsvp.event.name %> <%= rsvp.event.confirmed == true ? "Confirmed" : "Not Confirmed" %>
+    <% end %>
+  </ul>
+  <% end %>
+ 
+ 
 
   <h3>Challenges</h3>
 

@@ -9,13 +9,18 @@ class UserSessionsController < ApplicationController
   def new
     @hide_topbar = true
     @user_session = UserSession.new
+    @referer = flash[:referer]
   end
 
   def create
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       flash[:notice] = "Login successful!"
-      redirect_to root_url
+      if params[:referer]
+        redirect_to params[:referer]
+      else
+        redirect_to root_url
+      end
     else
       render :action => :new
     end

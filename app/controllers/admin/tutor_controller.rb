@@ -4,12 +4,11 @@ class Admin::TutorController < Admin::AdminController
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
-    tutor.availabilities.each {|a| @prefs[a.time.strftime('%a%H')] = a.preference_level}
+    tutor.availabilities.each {|a| @prefs[a.time.utc.strftime('%a%H')] = a.preference_level}
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     prop = Property.get_or_create
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
     @rows = ["Hours"] + @hours
-    
     if params[:authenticity_token]  #The form was submitted
       changed=false
       params.keys.each do |x|
@@ -70,9 +69,9 @@ class Admin::TutorController < Admin::AdminController
     for tutor in tutors
       tutor.availabilities.each do |a|
         if a.preference_level==2
-          @preferred[a.time.strftime('%a%H')] ||= []; @preferred[a.time.strftime('%a%H')] << tutor
+          @preferred[a.time.utc.strftime('%a%H')] ||= []; @preferred[a.time.utc.strftime('%a%H')] << tutor
         else
-          @available[a.time.strftime('%a%H')] ||= []; @available[a.time.strftime('%a%H')] << tutor
+          @available[a.time.utc.strftime('%a%H')] ||= []; @available[a.time.utc.strftime('%a%H')] << tutor
         end
       end
     end
