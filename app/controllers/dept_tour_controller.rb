@@ -14,7 +14,15 @@ class DeptTourController < ApplicationController
         mail = DeptTourMailer.dept_tour_email params[:name], date, params[:email],
           params[:phone], params[:comments]
         mail.deliver
-        redirect_to :dept_tour_success
+        DeptTourRequest.create!({
+          :name => params[:name],
+          :date => date,
+          :submitted => Time.now,
+          :contact => params[:email],
+          :phone => params[:phone],
+          :comments => params[:comments]
+        })
+        redirect_to :success
       end
     end
   end

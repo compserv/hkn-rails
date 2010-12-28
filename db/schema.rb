@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100822062605) do
+ActiveRecord::Schema.define(:version => 20101228035445) do
 
   create_table "availabilities", :force => true do |t|
     t.integer  "tutor_id"
@@ -135,6 +135,17 @@ ActiveRecord::Schema.define(:version => 20100822062605) do
   create_table "departments", :force => true do |t|
     t.string   "name"
     t.string   "abbr"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "dept_tour_requests", :force => true do |t|
+    t.string   "name"
+    t.date     "date"
+    t.date     "submitted"
+    t.string   "contact"
+    t.string   "phone"
+    t.string   "comments"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
