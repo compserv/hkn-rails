@@ -13,7 +13,11 @@ HknRails::Application.routes.draw do
       match "/" => "tutor#settings"
       match "settings" => "tutor#settings", :as=>:tutor_settings
     end
+    scope "deprel" do
+    end
   end
+  
+  resources :dept_tour_requests
   
   get "home/index"
 

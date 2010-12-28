@@ -1,0 +1,84 @@
+class DeptTourRequestsController < ApplicationController
+  before_filter :authorize_deprel
+  # GET /dept_tour_requests
+  # GET /dept_tour_requests.xml
+  def index
+    @dept_tour_requests = DeptTourRequest.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @dept_tour_requests }
+    end
+  end
+
+  # GET /dept_tour_requests/1
+  # GET /dept_tour_requests/1.xml
+  def show
+    @dept_tour_request = DeptTourRequest.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @dept_tour_request }
+    end
+  end
+
+  # GET /dept_tour_requests/new
+  # GET /dept_tour_requests/new.xml
+  def new
+    @dept_tour_request = DeptTourRequest.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @dept_tour_request }
+    end
+  end
+
+  # GET /dept_tour_requests/1/edit
+  def edit
+    @dept_tour_request = DeptTourRequest.find(params[:id])
+  end
+
+  # POST /dept_tour_requests
+  # POST /dept_tour_requests.xml
+  def create
+    @dept_tour_request = DeptTourRequest.new(params[:dept_tour_request])
+
+    respond_to do |format|
+      if @dept_tour_request.save
+        format.html { redirect_to(@dept_tour_request, :notice => 'Dept tour request was successfully created.') }
+        format.xml  { render :xml => @dept_tour_request, :status => :created, :location => @dept_tour_request }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @dept_tour_request.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # PUT /dept_tour_requests/1
+  # PUT /dept_tour_requests/1.xml
+  def update
+    @dept_tour_request = DeptTourRequest.find(params[:id])
+
+    respond_to do |format|
+      if @dept_tour_request.update_attributes(params[:dept_tour_request])
+        format.html { redirect_to(@dept_tour_request, :notice => 'Dept tour request was successfully updated.') }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @dept_tour_request.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /dept_tour_requests/1
+  # DELETE /dept_tour_requests/1.xml
+  def destroy
+    @dept_tour_request = DeptTourRequest.find(params[:id])
+    @dept_tour_request.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(dept_tour_requests_url) }
+      format.xml  { head :ok }
+    end
+  end
+end
