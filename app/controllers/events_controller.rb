@@ -71,6 +71,7 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     @event = Event.find(params[:id])
+    @blocks = @event.blocks
   end
 
   # POST /events
@@ -78,20 +79,21 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(params[:event])
     duration = @event.end_time - @event.start_time
-    blocks = Integer(params[:num_blocks])
-    block_length = duration/blocks
+    num_blocks = Integer(params[:num_blocks])
+    block_length = duration/num_blocks
     
-    @debug << "We want " + blocks.to_s + " blocks that are " + block_length.to_s + " seconds long"
-    #For now, let's just stick to one block per event. The UI for multiple blocks is
-    #going to need javascript in order to not suck.
+    @debug << "We want " + num_blocks.to_s + " blocks that are " + block_length.to_s + " seconds long"
     
-    @block = Block.new
-    @block.event = @event
-    @block.start_time = @event.start_time
-    @block.end_time = @event.end_time
+    @blocks = Array.new(num_blocks)
+    0.upto(num_blocks - 1) do |i|
+      @blocks[i] = Block.new
+      @blocks[i].event = @event
+      @blocks[i].start_time = @event.start_time + (block_length * i)
+      @blocks[i].end_time = @blocks[i].start_time + block_length
+    end
     respond_to do |format|
       if @event.save
-        @block.save
+        0.upto(num_blocks - 1) { |i| @blocks[i].save }
         format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
         format.xml  { render :xml => @event, :status => :created, :location => @event }
       else
@@ -105,9 +107,25 @@ class EventsController < ApplicationController
   # PUT /events/1.xml
   def update
     @event = Event.find(params[:id])
+    @blocks = @event.blocks
+    original_start = @event.start_time
+    original_end = @event.end_time
 
     respond_to do |format|
       if @event.update_attributes(params[:event])
+        num_blocks = Integer(params[:num_blocks]) 
+        if num_blocks != @blocks.length || original_start != @event.start_time || original_end != @event.end_time
+          @blocks.clear
+          duration = @event.end_time - @event.start_time
+          block_length = duration/num_blocks
+          0.upto(num_blocks - 1) do |i|
+            @blocks[i] = Block.new
+            @blocks[i].event = @event
+            @blocks[i].start_time = @event.start_time + (block_length * i)
+            @blocks[i].end_time = @blocks[i].start_time + block_length
+            @blocks[i].save
+          end
+        end
         format.html { redirect_to(@event, :notice => 'Event was successfully updated.') }
         format.xml  { head :ok }
       else
