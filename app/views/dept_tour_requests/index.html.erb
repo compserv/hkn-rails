@@ -1,8 +1,46 @@
 <h1>
 	There <%= if @dept_tour_requests.length == 1 then 'is' else 'are' end %> 
-	<%= @dept_tour_requests.length %> outstanding department tour 
-	request<%= if @dept_tour_requests.length == 1 then '' else 's' end%> pending.
+	<%= @dept_tour_requests.length %> outstanding or pending department tour 
+	request<%= if @dept_tour_requests.length == 1 then '' else 's' end%>.
 </h1>
+
+<h2>
+  <%= pluralize(@dept_tour_requests_unresponded.count,'request') %> must be responded to:
+</h2>
+<table>
+  <tr>
+    <th>Requestee&nbsp;Name</th>
+    <th>Requested&nbsp;Date</th>
+    <th>Date&nbsp;Submitted</th>
+    <th>Contact&nbsp;e-mail</th>
+    <th>Contact&nbsp;phone</th>
+    <th>Additional&nbsp;Comments</th>
+  </tr>
+
+<% @dept_tour_requests_unresponded.each do |dept_tour_request| %>
+  <tr>
+    <td><%= dept_tour_request.name %> </td>
+    <td><%= dept_tour_request.date %> </td>
+    <td><%= dept_tour_request.submitted %></td>
+    <td><%= dept_tour_request.contact %></td>
+    <td><%= dept_tour_request.phone %></td>
+    <td><%= dept_tour_request.comments %></td>
+    <td><%= link_to 'Show and Respond', dept_tour_request %></td>
+    <td><%= link_to 'Edit', edit_dept_tour_request_path(dept_tour_request) %></td>
+    <!-- <td><%= link_to 'Dismiss', dept_tour_request, :confirm => 'Are you sure?', :method => :delete %></td> -->
+    <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request),:method=>:post) do %>
+      <%= submit_tag "Dismiss" %>
+    <% end %></td>
+    <td></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<h2>
+  <%= pluralize(@dept_tour_requests_pending.count,'request') %> are pending:
+</h2>
 
 <table>
   <tr>
@@ -14,7 +52,7 @@
     <th>Additional&nbsp;Comments</th>
   </tr>
 
-<% @dept_tour_requests.each do |dept_tour_request| %>
+<% @dept_tour_requests_pending.each do |dept_tour_request| %>
   <tr>
     <td><%= dept_tour_request.name %> </td>
     <td><%= dept_tour_request.date %> </td>
@@ -22,14 +60,15 @@
     <td><%= dept_tour_request.contact %></td>
     <td><%= dept_tour_request.phone %></td>
     <td><%= dept_tour_request.comments %></td>
-    <td><%= link_to 'Show and Respond', dept_tour_request %></td>
+    <td><%= link_to 'Show', dept_tour_request %></td>
     <td><%= link_to 'Edit', edit_dept_tour_request_path(dept_tour_request) %></td>
-    <td><%= link_to 'Dismiss', dept_tour_request, :confirm => 'Are you sure?', :method => :delete %></td>
+    <!-- <td><%= link_to 'Dismiss', dept_tour_request, :confirm => 'Are you sure?', :method => :delete %></td> -->
+    <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request),:method=>:post) do %>
+      <%= submit_tag "Dismiss" %>
+    <% end %></td>
     <td></td>
   </tr>
 <% end %>
 </table>
-
-<br />
 
 <!-- <%= link_to 'New Dept tour request', new_dept_tour_request_path %> -->

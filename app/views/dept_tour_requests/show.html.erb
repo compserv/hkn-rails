@@ -2,6 +2,11 @@
 
 <div id="deptTourContainer">
   <div id="deptTourInfo">
+    <% if @dept_tour_request.responded %>
+      <p>This request has been responded to.</p>
+    <% else %>
+      <p style="color:red">This request has not been responded to!</p>
+    <% end %>
     <table>
       <tr>
         <th>Requestee&nbsp;Name</th>

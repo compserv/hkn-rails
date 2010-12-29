@@ -20,7 +20,7 @@ class DeptTourController < ApplicationController
           :submitted => Time.now,
           :contact => params[:email],
           :phone => params[:phone],
-          :comments => params[:comments]
+          :comments => params[:comments],
         })
         redirect_to :success
       end

@@ -4,6 +4,8 @@ class DeptTourRequestsController < ApplicationController
   # GET /dept_tour_requests.xml
   def index
     @dept_tour_requests = DeptTourRequest.all
+    @dept_tour_requests_pending = DeptTourRequest.find_all_by_responded(true)
+    @dept_tour_requests_unresponded = DeptTourRequest.find_all_by_responded(false)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -77,13 +79,14 @@ class DeptTourRequestsController < ApplicationController
     @dept_tour_request.destroy
 
     respond_to do |format|
-      format.html { redirect_to(dept_tour_requests_url) }
+      format.html { redirect_to(dept_tour_requests_url, :notice=>"The request has been dismissed. I hope you're happy.") }
       format.xml  { head :ok }
     end
   end
   
   # POST /dept/tour/requests/1/respond
   def respond
-    #not yet, brah
+    @dept_tour_request = DeptTourRequest.find(params[:id])
+    redirect_to :dept_tour_requests, :notice=>"Your response has been sent."
   end
 end

@@ -21,6 +21,7 @@ HknRails::Application.routes.draw do
   resources :dept_tour_requests do
     member do
       post "respond"
+      post "dismiss" => "dept_tour_requests#destroy"
     end
   end
   
