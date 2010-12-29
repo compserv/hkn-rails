@@ -34,11 +34,24 @@
       </tr>
     </table>
   </div>
-  <div id="responseForm">
-    <%= form_tag(respond_dept_tour_request_url,:method=>:post) do %>
-      <%= submit_tag "Submit" %>
-    <% end %>
-  </div>
+  <br />
+  <% if not @dept_tour_request.responded %>
+    <div id="responseForm">
+      <h2>Response:</h2>
+      <%= form_tag(respond_dept_tour_request_url,:method=>:post) do %>
+        <%= label_tag :from, "From: "%> <br/>
+        <%= text_field_tag :from, @current_user.email, :size=>50 %>
+        <br/>
+        <%= label_tag :ccs, "Additional CCs (you and deprel will automatically be added):" %> <br/>
+        <%= text_field_tag :ccs, "", :size=>50 %>
+        <br/>
+        <%= label_tag :response, "Response text: " %><br/>
+        <%= text_area_tag :response , get_default_response_text(@dept_tour_request) %>
+        <br />
+        <%= submit_tag "Send Response" %>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 
 <%= link_to 'Edit', edit_dept_tour_request_path(@dept_tour_request) %> |

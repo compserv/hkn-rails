@@ -37,9 +37,12 @@
 </table>
 
 <br />
+<hr />
 
 <h2>
-  <%= pluralize(@dept_tour_requests_pending.count,'request') %> are pending:
+  <%= @dept_tour_requests_pending.count %> 
+  <%= if  @dept_tour_requests_pending.count == 1 then 'request is' else 'requests are' end %> 
+  pending:
 </h2>
 
 <table>
@@ -70,5 +73,6 @@
   </tr>
 <% end %>
 </table>
+
 
 <!-- <%= link_to 'New Dept tour request', new_dept_tour_request_path %> -->

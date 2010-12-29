@@ -87,6 +87,8 @@ class DeptTourRequestsController < ApplicationController
   # POST /dept/tour/requests/1/respond
   def respond
     @dept_tour_request = DeptTourRequest.find(params[:id])
+    @dept_tour_request.responded = true
+    @dept_tour_request.save!
     redirect_to :dept_tour_requests, :notice=>"Your response has been sent."
   end
 end
