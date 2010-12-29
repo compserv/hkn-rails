@@ -14,10 +14,15 @@ HknRails::Application.routes.draw do
       match "settings" => "tutor#settings", :as=>:tutor_settings
     end
     scope "deprel" do
+      match "/" => "deprel#overview"
     end
   end
   
-  resources :dept_tour_requests
+  resources :dept_tour_requests do
+    member do
+      post "respond"
+    end
+  end
   
   get "home/index"
 

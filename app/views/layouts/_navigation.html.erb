@@ -164,7 +164,13 @@
 	<a href="/admin/tutor/" class="navigation_sublevel_item">
 		Tutor Admin
 	</a>
-
+</li>
+<li>
+	<%- if @current_user && @current_user.in_group?("deprel") -%>
+	<a href="/admin/deprel" class="navigation_sublevel_item">
+		Deprel Admin [<%= controller.num_deprel_requests %>]
+	</a>
+	<%- end -%>
 </li>
 
 </ul>

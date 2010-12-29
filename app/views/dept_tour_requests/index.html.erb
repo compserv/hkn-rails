@@ -1,21 +1,35 @@
-<h1>Listing dept_tour_requests</h1>
+<h1>
+	There <%= if @dept_tour_requests.length == 1 then 'is' else 'are' end %> 
+	<%= @dept_tour_requests.length %> outstanding department tour 
+	request<%= if @dept_tour_requests.length == 1 then '' else 's' end%> pending.
+</h1>
 
 <table>
   <tr>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th>Requestee&nbsp;Name</th>
+    <th>Requested&nbsp;Date</th>
+    <th>Date&nbsp;Submitted</th>
+    <th>Contact&nbsp;e-mail</th>
+    <th>Contact&nbsp;phone</th>
+    <th>Additional&nbsp;Comments</th>
   </tr>
 
 <% @dept_tour_requests.each do |dept_tour_request| %>
   <tr>
-    <td><%= link_to 'Show', dept_tour_request %></td>
+    <td><%= dept_tour_request.name %> </td>
+    <td><%= dept_tour_request.date %> </td>
+    <td><%= dept_tour_request.submitted %></td>
+    <td><%= dept_tour_request.contact %></td>
+    <td><%= dept_tour_request.phone %></td>
+    <td><%= dept_tour_request.comments %></td>
+    <td><%= link_to 'Show and Respond', dept_tour_request %></td>
     <td><%= link_to 'Edit', edit_dept_tour_request_path(dept_tour_request) %></td>
-    <td><%= link_to 'Destroy', dept_tour_request, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Dismiss', dept_tour_request, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New Dept tour request', new_dept_tour_request_path %>
+<!-- <%= link_to 'New Dept tour request', new_dept_tour_request_path %> -->

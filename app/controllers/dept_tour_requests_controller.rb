@@ -81,4 +81,9 @@ class DeptTourRequestsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  # POST /dept/tour/requests/1/respond
+  def respond
+    #not yet, brah
+  end
 end

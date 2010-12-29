@@ -10,7 +10,23 @@
       </ul>
     </div>
   <% end %>
-
+  <div id="dept_tour_members">
+    <%= f.label :name, "Name: "%>
+    <%= f.text_field :name %>
+    <br/>
+    <%= f.label :date, "Date: "%>
+    <%= f.date_select :date %>
+    <br/>
+    <%= f.label :contact, "Contact Email Address: "%>
+    <%= f.text_field :contact %>
+    <br/>
+    <%= f.label :phone, "Phone Number: "%>
+    <%= f.text_field :phone %>
+    <br/>
+    <%= f.label :comments, "Additional Coments: "%>
+    <%= f.text_area :comments %>
+    <br/>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>
