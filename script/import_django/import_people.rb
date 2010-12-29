@@ -81,4 +81,8 @@ people.each do |id, person|
   if [5, 10].include? person['member_type']
     p.groups << Group.find_by_name('candidates')
   end
+
+  if !person['is_superuser'].nil?
+    p.groups << Group.find_by_name('superusers')
+  end
 end

@@ -1,4 +1,6 @@
 class ContactsController < ApplicationController
+  before_filter :authorize_indrel
+
   # GET /contacts
   # GET /contacts.xml
   def index
