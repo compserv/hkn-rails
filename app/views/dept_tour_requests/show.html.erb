@@ -38,7 +38,7 @@
   <% if not @dept_tour_request.responded %>
     <div id="responseForm">
       <h2>Response:</h2>
-      <%= form_tag(respond_dept_tour_request_url,:method=>:post) do %>
+      <%= form_tag(respond_dept_tour_request_url(@dept_tour_request),:method=>:post) do %>
         <%= label_tag :from, "From: "%> <br/>
         <%= text_field_tag :from, @current_user.email, :size=>50 %>
         <br/>
