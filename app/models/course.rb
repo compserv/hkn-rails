@@ -10,7 +10,7 @@ class Course < ActiveRecord::Base
   #   created_at    : datetime 
   #   updated_at    : datetime 
   #   units         : integer 
-  #   prereqs       : string 
+  #   prereqs       : text 
   #   department_id : integer 
   # =======================
 

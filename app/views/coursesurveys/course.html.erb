@@ -57,7 +57,7 @@
     <td colspan="2"></td>
     <td>
       <%= sprintf "%.1f", @total_effectiveness %> / <%= @effective_max %>
-      <%= rating_bar(@total_effectiveness/@effective_max, "url") %>
+      <%= rating_bar(@total_effectiveness/@effective_max) %>
     </td>
     <td>
       <%= sprintf "%.1f", @total_worthwhileness %> / <%= @worthwhile_max %>
@@ -69,5 +69,5 @@
 <p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
 <%- end -%>
 
-<a href="mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page http://hkn.eecs.berkeley.edu/student/CourseSurvey/courses/EE/40/">[Email HKN about this data]</a>
+<%= render :partial => 'emailhkn' %>
 <a href="/student/howtouse.shtml">[Info about this page]</a>

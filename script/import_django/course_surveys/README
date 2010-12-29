@@ -1,0 +1,54 @@
+
+-----------------
+- Taking a dump -
+-----------------
+Since the course survey database uses MySQL, we'll use mysqldump to dump the
+db into csv format.
+
+The command is:
+
+  mysqldump -u [mysql user] -p --tz-utc -T [output directory] --fields-terminated-by=",\t" [db name]
+  
+  Indicating:
+    --tz-utc: convert all times to UTC, for consistency (Rails can convert back
+              later, easily, if you want)
+    -T: a directory that will be filled by a bunch of dump files
+    --terminated-by: obviously this puts the CS in CSV.
+    
+
+Permissions:
+The dump file (the one specified for -r) should be writeable by the mysql
+daemon's user. I just dumped into a folder in /tmp because it was having trouble
+dumping into my home folder.
+
+  mkdir /tmp/mydump
+  chmod 777 /tmp/mydump
+  sudo mysqldump ...
+
+-------------
+- Importing -
+-------------
+ruby import_course_surveys.rb /path/to/dumpfolder
+
+or 'ruby import_course_surveys.rb -h' to see help
+
+This will attempt to load data from answer.txt, instructor.txt, klass.txt, etc.
+that you dumped from the previous step into some dumpfolder.
+Data groups that are really big (instructors, klasses, answers) are cached
+after successful population in #{table name}.cache, so that if something goes
+wrong later on, you can re-run the import script and it will use the mappings
+from last time. This mapping is necessary because the django models are linked by
+django id, which isn't necessarily the same as the rails id.
+
+Importing takes a long time. Please be patient.
+ num klasses = courses * semesters
+ num answers = klasses * 19 or 9 = a LOT
+ 
+---------
+- Notes -
+---------
+- Some courses are marked as "Not offered anymore" or something like that, and
+  have blank names, which isn't allowed, so the name becomes [ INVALID COURSE ].
+- Mostly, data is preserved. Models are found with find_or_create_by_whatever,
+  and dump data doesn't clobber imported data, except for the instructor.private
+  attribute, which is strictly replaced (see the rb for the reason).

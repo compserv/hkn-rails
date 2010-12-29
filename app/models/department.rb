@@ -14,7 +14,7 @@ class Department < ActiveRecord::Base
   #This is a mapping of some proper abbreviations to their commonly used
   #informal abbreviations
   #
-  @nice_abbrs = {
+  @@nice_abbrs = {
     "ASTRON" => ["ASTRO"],
     "BIOLOGY" => ["BIO"],
     "BIO ENG" => ["BIOE"],
@@ -41,12 +41,22 @@ class Department < ActiveRecord::Base
     "ENVECON"  => ["ENVECON", "ENVIR ECON & POLICY"],
     }
     
-  class << self
-    attr_reader :nice_abbrs
-  end
+#  class << self
+#    attr_reader :nice_abbrs
+#  end
 
   def nice_abbrs
-    Department.nice_abbrs[abbr]
+    # Sometimes abbr is like 'EE' already..
+    # We'll dynamically fix this.
+    @@nice_abbrs[abbr] || begin
+        @@nice_abbrs.each_pair do |proper, informals|
+            if informals.include? abbr then
+                update_attribute(:abbr, proper)
+                return informals
+            end
+        end # each_pair
+        return [abbr]   # fallback
+    end
   end
 
   def to_s
@@ -55,7 +65,7 @@ class Department < ActiveRecord::Base
 
   def Department.find_by_nice_abbr(abbr)
     abbr.upcase!
-    @nice_abbrs.each_pair do |proper, informals|
+    @@nice_abbrs.each_pair do |proper, informals|
       if informals.include? abbr
         abbr = proper
       end

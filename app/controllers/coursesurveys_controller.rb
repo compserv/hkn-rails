@@ -1,5 +1,15 @@
 class CoursesurveysController < ApplicationController
+  include CoursesurveysHelper
+
   before_filter :show_searcharea
+  
+  before_filter :require_admin, :only => [:editrating, :updaterating]
+  
+  def require_admin
+    return if @current_user.admin?
+    flash[:error] = "You must be an admin to do that."
+    redirect_to coursesurveys_path
+  end
 
   def index
   end
@@ -66,8 +76,8 @@ class CoursesurveysController < ApplicationController
     @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
-    @effective_max  = effective_q.max.to_f
-    @worthwhile_max = worthwhile_q.max.to_f
+    @effective_max  = effective_q.max
+    @worthwhile_max = worthwhile_q.max
 
     if @course.blank?
       @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
@@ -80,6 +90,9 @@ class CoursesurveysController < ApplicationController
       worthwhile_sum = 0.0
       @course.klasses.each do |klass|
         klass.instructors.each do |instructor|
+          # Exclude TA ratings, which are on a 1-5 scale rather than 1-7.
+          next if instructor.title =~ /TA/i or not SurveyAnswer.find_by_klass_id_and_instructor_id_and_survey_question_id(klass.id, instructor.id, SurveyQuestion.find_by_keyword(:ta_eff)).nil?
+        
           prof_eff = SurveyAnswer.find(:first, :conditions => {
             :instructor_id => instructor.id,
             :klass_id => klass.id,
@@ -88,20 +101,30 @@ class CoursesurveysController < ApplicationController
             :instructor_id => instructor.id,
             :klass_id => klass.id,
             :survey_question_id => worthwhile_q.id} )
+            
+          
+          # TODO: sometimes prof_eff or worthwhileness is missing... like if the imported data is incomplete
+          # Fail gracefully
+          if prof_eff.nil? or worthwhileness.nil? then
+            flash[:warning] = "Data on this page may be incomplete. We're currently in the process of adding more survey responses."
+            next
+          end
+            
           @results << [
             klass, 
             instructor, 
             prof_eff,
             worthwhileness,
           ]
-          effective_sum  += prof_eff.mean
-          worthwhile_sum += worthwhileness.mean
+          
+          effective_sum  += prof_eff.mean.to_f
+          worthwhile_sum += worthwhileness.mean.to_f
         end
       end
 
-      unless @course.klasses.blank?
-        @total_effectiveness  = effective_sum/@results.size
-        @total_worthwhileness = worthwhile_sum/@results.size
+      unless @course.klasses.empty?
+        @total_effectiveness  = effective_sum/@results.size.to_f
+        @total_worthwhileness = worthwhile_sum/@results.size.to_f
       end
     end
   end
@@ -266,9 +289,36 @@ class CoursesurveysController < ApplicationController
     @results = []
     @frequencies = ActiveSupport::JSON.decode(@answer.frequencies)
     @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
-    @mode = @frequencies.values.max
+    @mode = @frequencies.values.max # TODO: i think this is wrong and always returns the highest score...
     # Someone who understands statistics, please make sure the following line is correct
     @conf_intrvl = 1.96*@answer.deviation/Math.sqrt(@total_responses)
+  end
+  
+  def editrating
+    @answer = SurveyAnswer.find(params[:id])
+    @frequencies = decode_frequencies(@answer.frequencies)
+  end
+  
+  def updaterating
+    a = SurveyAnswer.find(params[:id])
+    if a.nil? then
+        flash[:error] = "Fail. updaterating##{params[:id]}"
+    else
+        # Hashify
+        new_frequencies = decode_frequencies(a.frequencies)
+        
+        # Remove any rogue values: allow only score values, N/A, and Omit       
+        params[:frequencies].each_pair do |key,value|
+            key = key.to_i if key.eql?(key.to_i.to_s)
+            new_frequencies[key] = value.to_i if ( ["N/A", "Omit"].include?(key) or (1..a.survey_question.max).include?(key) )
+        end
+        
+        # Update fields
+        a.frequencies = ActiveSupport::JSON.encode(new_frequencies)
+        a.recompute_stats!
+        a.save
+    end
+    redirect_to coursesurveys_rating_path(params[:id])
   end
 
   def search

@@ -1,6 +1,11 @@
 <h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> - <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %></h1>
 
 <h2><%= @answer.survey_question.text %></h2>
+<span class="edit">
+<%- if @current_user.admin? -%>
+  <%= link_to '[Edit]', coursesurveys_edit_rating_path(@answer) %>
+<%- end -%>
+</span>
 
 <div id="rating-info" class="infobox">
   <div class="info-row">
@@ -27,7 +32,7 @@
     <span class="info-label">Frequency Distribution</span>
     <div class="info-item">
       <table class="histogram">
-        <%- @frequencies.keys.sort.each do |key| -%>
+        <%- @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key| -%>
           <tr>
             <th><%= key %></th>
             <td><%= frequency_bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %> (<%= sprintf "%.1f", 100.0*@frequencies[key]/@total_responses %>%)</td>
@@ -71,4 +76,4 @@
 <%- end -%>
 </table>
 
-<a href="mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page http://hkn.eecs.berkeley.edu/student/CourseSurvey/courses/EE/40/">[Email HKN about this data]</a>
+<%= render :partial => 'emailhkn' %>

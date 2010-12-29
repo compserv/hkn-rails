@@ -47,6 +47,8 @@ HknRails::Application.routes.draw do
     # This is a hack to allow periods in the parameter. Otherwise, Rails automatically splits on periods
     match "instructor/:name"                        => "coursesurveys#instructor", :as => :coursesurveys_instructor, :constraints => {:name => /.+/}
     match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
+    match "rating/:id/edit"                         => "coursesurveys#editrating", :as => :coursesurveys_edit_rating
+    match "rating/:id/update"                       => "coursesurveys#updaterating", :as => :coursesurveys_update_rating
     match "search(/:query)"                         => "coursesurveys#search",     :as => :coursesurveys_search
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
 

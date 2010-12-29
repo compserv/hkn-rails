@@ -1,0 +1,6 @@
+1,	Faculty
+2,	Visiting Instructors
+3,	Cross-Departmental Faculty
+4,	Student Instructors
+5,	Teaching Assistants
+6,	Other

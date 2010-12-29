@@ -53,4 +53,18 @@ module CoursesurveysHelper
   def surveys_rating_path(rating)
     coursesurveys_rating_path(rating.id)
   end
+  
+  def decode_frequencies(f)
+    # If key is a String(Integer), make it just an integer.
+    # "5"=>17 becomes 5=>17
+    # This is needed because JSON.encode puts quotes around integer keys, and
+    # the data is easier to use with integer keys.
+    # Keys like "N/A" and "Omit" are left alone.
+    h = {}
+    ActiveSupport::JSON.decode(f).each_pair do |key,value|
+        key = key.to_i if key.eql?(key.to_i.to_s)
+        h[key] = value
+    end
+    h
+  end
 end
