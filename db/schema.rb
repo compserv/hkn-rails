@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101229065249) do
+ActiveRecord::Schema.define(:version => 20101229082531) do
 
   create_table "announcements", :force => true do |t|
     t.string   "title"
@@ -161,8 +161,8 @@ ActiveRecord::Schema.define(:version => 20101229065249) do
 
   create_table "dept_tour_requests", :force => true do |t|
     t.string   "name"
-    t.date     "date"
-    t.date     "submitted"
+    t.datetime "date"
+    t.datetime "submitted"
     t.string   "contact"
     t.string   "phone"
     t.string   "comments"

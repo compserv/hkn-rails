@@ -3,8 +3,8 @@ class DeptTourRequest < ActiveRecord::Base
   # === List of columns ===
   #   id         : integer 
   #   name       : string 
-  #   date       : date 
-  #   submitted  : date 
+  #   date       : datetime 
+  #   submitted  : datetime 
   #   contact    : string 
   #   phone      : string 
   #   comments   : string 
