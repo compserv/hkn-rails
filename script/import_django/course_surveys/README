@@ -1,3 +1,18 @@
+TL;DR:
+
+> bundle install
+> tar -C db -xf script/import_django/course_surveys/goodprofornot_dump.tar.bz2
+> export dir=goodprofornot_dump && rake db:data:load_dir
+
+
+
+
+
+
+
+
+Boring implementation details follow.
+
 
 -----------------
 - Taking a dump -
@@ -44,6 +59,17 @@ Importing takes a long time. Please be patient.
  num klasses = courses * semesters
  num answers = klasses * 19 or 9 = a LOT
  
+
+
+
+Of course, you don't have to sit through that. I've dumped all the data using
+yaml_db for you to import in about a minute. (Uses yaml_db gem)
+
+> tar -C db -xf script/import_django/course_surveys/goodprofornot_dump.tar.bz2
+> export dir=goodprofornot_dump && rake db:data:load_dir
+
+
+
 ---------
 - Notes -
 ---------

@@ -78,6 +78,8 @@ class CoursesurveysController < ApplicationController
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
     @effective_max  = effective_q.max
     @worthwhile_max = worthwhile_q.max
+    @total_effectiveness = 0
+    @total_worthwhileness = 0
 
     if @course.blank?
       @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
@@ -89,10 +91,7 @@ class CoursesurveysController < ApplicationController
       effective_sum = 0.0
       worthwhile_sum = 0.0
       @course.klasses.each do |klass|
-        klass.instructors.each do |instructor|
-          # Exclude TA ratings, which are on a 1-5 scale rather than 1-7.
-          next if instructor.title =~ /TA/i or not SurveyAnswer.find_by_klass_id_and_instructor_id_and_survey_question_id(klass.id, instructor.id, SurveyQuestion.find_by_keyword(:ta_eff)).nil?
-        
+        klass.instructors.each do |instructor|        
           prof_eff = SurveyAnswer.find(:first, :conditions => {
             :instructor_id => instructor.id,
             :klass_id => klass.id,
@@ -122,7 +121,7 @@ class CoursesurveysController < ApplicationController
         end
       end
 
-      unless @course.klasses.empty?
+      unless (@course.klasses.empty? or @results.empty?)
         @total_effectiveness  = effective_sum/@results.size.to_f
         @total_worthwhileness = worthwhile_sum/@results.size.to_f
       end

@@ -28,6 +28,10 @@ class Instructor < ActiveRecord::Base
   def full_name_r
     last_name + ", " + first_name
   end
+  
+  def ta?
+    title =~ /TA/i
+  end
 
   def Instructor.find_by_name(first_name, last_name)
     Instructor.find(:first, :conditions => { :first_name => first_name, :last_name => last_name} )

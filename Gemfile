@@ -16,6 +16,7 @@ gem 'authlogic', :git => 'git://github.com/binarylogic/authlogic.git'
 gem 'net-ldap'
 gem 'nokogiri'
 gem 'will_paginate', "~> 3.0.pre2"
+gem 'yaml_db'
 
 # Use unicorn as the web server
 # gem 'unicorn'

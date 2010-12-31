@@ -1,5 +1,4 @@
 class SurveyAnswer < ActiveRecord::Base
-  include CoursesurveysHelper
 
   # === List of columns ===
   #   id                 : integer 
@@ -13,6 +12,7 @@ class SurveyAnswer < ActiveRecord::Base
   #   order              : integer 
   # =======================
 
+  include CoursesurveysHelper
   
   belongs_to :klass
   belongs_to :instructor

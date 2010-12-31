@@ -1,35 +1,53 @@
 #!/usr/bin/env ruby
 #
 # Imports a CSV dump of the GoodProfOrNot database.
+# Tables should be stored in individual .txt files together in the same folder.
+# Data imported from:
+#    - instructors
+#    - questions
+#    - seasons
+#    - departments
+#    - courses
+#    - klasses
+#    - instructors_klasses
+#    - answers
+# For specifics on fields imported, mappings, types, etc. see the individual
+# load_whatever methods.
 #
-# mysqldump --fields-terminated-by=, goodprofornot
+# For the larger tables (klasses, instructors) we try to cache mappings in
+# .cache files, so that if the process is interrupted later, we can avoid
+# re-processing all that data. This means that if you DO want to re-process, or
+# if your tables were messed up between import sessions, you should delete the
+# .cache files (or use the no-cache switch temporarily).
 #
-# Usage: import_course_surveys <your/dump/path>
 #
-# Changelog:
-# jonathanko 12/20/10: doin it
+# Usage: ruby import_course_surveys -h
 #
-# TODO: Maybe some logging.
 #
+# Notes:
+# - Since answers is freaking huge, there's a Postgres-specific optimization run
+#   every 1000 rows (ANALYZE). This is like getting a golden mushroom with a
+#   turbo button, and gives almost a factor of 4 speed increase (5 hours =>
+#   1.25 hours for me). If you find this hard to believe, comment out the
+#   optimization and watch your database wither and die halfway through.
+# - It might help to periodically clear your terminal if you have verbose output
+#   turned on. Otherwise you end up storing like 150k rows of text, if you have
+#   unlimited scrollback.
+#
+# - TODO: Maybe some logging.
+# - TODO: Resume partial loading of tables.
+#
+#
+# - jonathanko
+#
+
 require 'optparse'          # useful for DRY options
 
-# GoodProfOrNot Schema:
-# [db: goodprofornot]
-#  [table: answer]
-#    Field            Type                   Null
-#    ============================================
-#    "id"             "int(10) unsigned"     "NO"
-#    "klassid"        "smallint(5) unsigned" "NO"
-#    "questionid"     "smallint(5) unsigned" "NO"
-#    "frequencies"    "varchar(255)"         "NO"
-#    "mean"           "float"                "YES"
-#    "deviation"      "float"                "YES"
-#    "median"         "float"                "YES"
-#    "orderinsurvey"  "smallint(5) unsigned" "NO"
-#    "instructorid"   "smallint(5) unsigned" "YES"
 
+###########
+# Helpers #
+###########
 
-# A useful helper
 class Array
 
     # Returns an array of hashes, with each line in the input file mapped to a
@@ -113,25 +131,31 @@ def initialize
     @options = {}
 end
 
-def initialize_BAD(dumpfolder)
-# Argument: /path/to/dump/
-# This importer will look for dumpfolder/[table name].txt's.
-    @dpath = dumpfolder
-    @instructors, @questions, @klasses, @seasons, @courses, @departments, @answers = {}, {}, {}, {}, {}, {}, {}
-#    @options = {:verbose => true}
-end
-
 def import!(options)
     raise "ERROR: no dump path provided!" unless @dpath = options[:from]
 
-    load_instructors
-    load_questions
-    load_seasons
-    load_departments
-    load_courses
-    load_klasses
-    load_instructorships
-    load_answers
+    puts "Welcome to import_course_surveys. This will take at least an hour, so you should go watch a movie, take a walk, etc. and check back later.\n\n"
+
+    start_time = Time.now
+
+    begin
+        load_instructors
+        load_questions
+        load_seasons
+        load_departments
+        load_courses
+        load_klasses
+        load_instructorships
+        load_answers
+        
+        # Do some cleanup for postgres
+        ActiveRecord::Base.connection.execute("VACUUM;")
+    rescue
+        puts "*"*80,"Import process interrupted!\n\n"
+    end
+    
+    dt = Time.now-start_time
+    puts "Processing time: #{dt.to_i/3600}h#{(dt.to_i%3600)/60}m#{dt.to_i%60}s"
     
     # Here's the plan:
     # Coursesurvey: Represents an administration of a course survey. Has nothing
@@ -242,7 +266,7 @@ def load_instructors
                 new_i[:private] = i[:private]
             else
                 # For all other attributes, update nil values.
-                new_i[new_attrib] ||= i[old_attrib]
+                new_i[new_attrib] ||= i[old_attrib] unless i[old_attrib].eql?("N")
             end
         end
 
@@ -438,7 +462,7 @@ def load_klasses
 
         # TODO: time? location? num_students? This info isn't available for import.
         
-        puts "Loaded klass #{new_k.course.course_abbr} #{@seasons[k[:seasonid]][:name]} #{k[:year]}\n"
+        puts "Loaded klass #{new_k.course.course_abbr} #{@seasons[k[:seasonid]][:name]} #{k[:year]}\n" if @options[:verbose]
 
         @klasses[k[:id]] = new_k
     end # klasses.each
@@ -464,12 +488,15 @@ def load_instructorships
         raise "Couldn't find klass #{i[:klassid]}!" if (the_klass=Klass.find(i[:klassid])).nil?
         raise "Couldn't find instructor #{i[:instructorid]}!" if (the_instructor=Instructor.find(i[:instructorid])).nil?
         
-        unless the_klass.instructor_ids.include?(i[:instructorid])
-            the_klass.instructor_ids << the_instructor 
-            raise "Error saving instructor-klass relationship!" unless the_klass.save
+        group = the_instructor.ta? ? :tas : :instructors
+        groupids = group.to_s.chop.concat('_ids').to_sym
+        
+        unless the_klass.send(groupids).include?(i[:instructorid])
+            the_klass.send(group) << the_instructor
+            raise "ERROR saving #{group.to_s.chop} #{the_instructor.full_name} for klass #{the_klass.to_s}" unless the_klass.save
         end
         
-        puts "Created/updated instructorship #{index}/#{instructorships.length} of #{the_instructor.full_name} for #{the_klass.to_s}" if @options[:verbose]
+        puts "Created/updated instructorship #{index}/#{instructorships.length} of #{the_instructor.full_name} (#{group.to_s.chop}) for #{the_klass.to_s}" if @options[:verbose]
     end
     
     puts "Done loading instructor-klass.\n\n"
@@ -481,11 +508,13 @@ def load_answers
     puts "Loading answers."
 
     answers_map_cache_file = "answers.cache"
+    
+    analyze_counter = 0
 
     # Cache mappings
-    return if load_cache_hash(answers_map_cache_file) do |old_id, new_id|
-        @answers[old_id] = SurveyAnswer.find(new_id)
-    end
+#    return if load_cache_hash(answers_map_cache_file) do |old_id, new_id|
+#        @answers[old_id] = SurveyAnswer.find(new_id)
+#    end
 
     answers = Array.from_csv(dumpfilename("answer"), @@answer_fields)
     answers.each_index do |index|
@@ -515,12 +544,16 @@ def load_answers
         
         raise "Couldn't save answer #{new_a.inspect} because #{new_a.errors}!" unless new_a.save
 
-        @answers[a[:id]] = new_a
+        # Hack to increase performance
+        analyze_counter += 1
+        ActiveRecord::Base.connection.execute("ANALYZE survey_answers;") if analyze_counter%1000 == 0
+
+#        @answers[a[:id]] = new_a
         puts "Created/updated answer (#{index}/#{answers.length}) ##{new_a.order} for #{new_a.instructor.full_name} for #{new_a.klass.to_s}" if @options[:verbose]
     end # answers.each
     
     # Write to cache map
-    write_cache_hash(answers_map_cache_file, @answers)
+#    write_cache_hash(answers_map_cache_file, @answers)
 
     puts "Done loading answers.\n\n"    
 end
@@ -550,9 +583,6 @@ parser = OptionParser.new do |opts|
     opts.on('-s', '--skip TABLE', 'Skip table <instructors|courses|klasses|questions|answers|instructors_klasses|seasons|departments>') do |table|
         @csi.options[:skip] << table.to_sym
     end
-#    opts.on('-c', '--clear', 'Clear tables before operating') do
-#        @csi.options[:clear] = true
-#    end
 end
 parser.parse!
 
@@ -566,6 +596,7 @@ else
     require 'active_support'    # needed for json
     require File.expand_path('../../../../config/environment', __FILE__) # needed for hkn-rails classes
 
+    puts "\n\n"
     @csi.import!(:from => ARGV.first)
 end
 puts "\nAll done.\n"
