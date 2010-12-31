@@ -89,7 +89,15 @@ class PeopleController < ApplicationController
     else
       path = account_settings_path
     end
-
+	
+	if params[:password][:current]
+	  if @current_user.valid_ldap_or_password?(params[:password][:current])
+	    params[:person][:password] = params[:password][:new]
+      params[:person][:password_confirmation] = params[:password][:confirm]
+	  else
+	    raise "Incorrect password"#Figure out how to send this message along as an error
+	  end
+	end
     if @person.update_attributes(params[:person])
       redirect_to(path, :notice => 'Settings successfully updated.')
     else

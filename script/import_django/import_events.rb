@@ -2,9 +2,6 @@
 
 require File.expand_path('../../../config/environment', __FILE__)
 
-# People must be imported before committeeships!!!
-# Note: We'll have to manually enter in the cmemberships for the past 
-# several semesters
 f = File.open('dumps/event.json', 'r')
 events = ActiveSupport::JSON::decode(f)
 

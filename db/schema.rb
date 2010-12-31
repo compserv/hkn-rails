@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101224020437) do
+ActiveRecord::Schema.define(:version => 20101229082531) do
 
   create_table "announcements", :force => true do |t|
     t.string   "title"
@@ -159,6 +159,18 @@ ActiveRecord::Schema.define(:version => 20101224020437) do
     t.datetime "updated_at"
   end
 
+  create_table "dept_tour_requests", :force => true do |t|
+    t.string   "name"
+    t.datetime "date"
+    t.datetime "submitted"
+    t.string   "contact"
+    t.string   "phone"
+    t.string   "comments"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "responded",  :default => false
+  end
+
   create_table "event_types", :force => true do |t|
     t.string "name", :null => false
   end
@@ -286,7 +298,7 @@ ActiveRecord::Schema.define(:version => 20101224020437) do
   end
 
   create_table "properties", :force => true do |t|
-    t.string   "semester",         :default => "fa10"
+    t.string   "semester",         :default => "20103"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "tutoring_enabled", :default => false

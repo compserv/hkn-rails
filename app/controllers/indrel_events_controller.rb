@@ -1,5 +1,6 @@
 class IndrelEventsController < ApplicationController
-  @timezone = 
+  before_filter :authorize_indrel
+
   # GET /events
   # GET /events.xml
   def index

@@ -33,6 +33,13 @@ class ApplicationController < ActionController::Base
   def auth=(auth)
     @auth = auth
   end
+  
+  # Needs to be accessible everywhere
+  # this is crap, we'll probably end up duplicating this many times for different req types
+  # redo with some kind of fancy schmancy reflection automagic?
+  def num_deprel_requests
+    DeptTourRequest.all.count
+  end
 
   #-----------------------------------------------------------------------
   # Private Methods

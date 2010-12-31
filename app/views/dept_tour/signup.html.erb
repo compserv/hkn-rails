@@ -7,8 +7,8 @@
   <%= label_tag :name, "Name:" %>
   <%= text_field_tag :name %>
   <br />
-  <%= label_tag :date, "Date:" %>
-  <%= select_date Date.today, :prefix => :date %>
+  <%= label_tag :date, "Date & Time:" %>
+  <%= select_datetime Time.now, :prefix => :date %>
   <br />
   <%= label_tag :email, "Contact email address:" %>
   <%= text_field_tag :email %>

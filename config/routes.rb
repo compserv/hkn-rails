@@ -13,6 +13,17 @@ HknRails::Application.routes.draw do
       match "/" => "tutor#settings"
       match "settings" => "tutor#settings", :as=>:tutor_settings
     end
+    scope "deprel" do
+      match "/" => "deprel#overview"
+    end
+  end
+  
+  resources :dept_tour_requests do
+    member do
+      post "respond"
+      #for some reason this stopped working... :(
+      post "dismiss" => "dept_tour_requests#destroy"
+    end
   end
   
   get "home/index"

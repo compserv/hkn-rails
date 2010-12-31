@@ -1,0 +1,58 @@
+<!-- <p id="notice"><%= notice %></p> -->
+
+<div id="deptTourContainer">
+  <div id="deptTourInfo">
+    <% if @dept_tour_request.responded %>
+      <p>This request has been responded to.</p>
+    <% else %>
+      <p style="color:red">This request has not been responded to!</p>
+    <% end %>
+    <table>
+      <tr>
+        <th>Requestee&nbsp;Name</th>
+        <td><%= @dept_tour_request.name %></td>
+      </tr>
+      <tr>
+        <th>Requested&nbsp;Date</th>
+        <td><%= @dept_tour_request.date %></td>
+      </tr>
+      <tr>
+        <th>Date&nbsp;Submitted</th>
+        <td><%= @dept_tour_request.submitted %></td>
+      </tr>
+      <tr>
+        <th>Contact&nbsp;e-mail</th>
+        <td><%= @dept_tour_request.contact %></td>
+      </tr>
+      <tr>
+        <th>Contact&nbsp;phone</th>
+        <td><%= @dept_tour_request.phone %></td>
+      </tr>
+      <tr>
+        <th>Additional&nbsp;Comments</th>
+        <td><%= @dept_tour_request.comments %></td>
+      </tr>
+    </table>
+  </div>
+  <br />
+  <% if not @dept_tour_request.responded %>
+    <div id="responseForm">
+      <h2>Response:</h2>
+      <%= form_tag(respond_dept_tour_request_url(@dept_tour_request),:method=>:post) do %>
+        <%= label_tag :from, "From: "%> <br/>
+        <%= text_field_tag :from, @current_user.email, :size=>50 %>
+        <br/>
+        <%= label_tag :ccs, "Additional CCs (you and deprel will automatically be added):" %> <br/>
+        <%= text_field_tag :ccs, "", :size=>50 %>
+        <br/>
+        <%= label_tag :response, "Response text: " %><br/>
+        <%= text_area_tag :response , get_default_response_text(@dept_tour_request) %>
+        <br />
+        <%= submit_tag "Send Response" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<%= link_to 'Edit', edit_dept_tour_request_path(@dept_tour_request) %> |
+<%= link_to 'Back', dept_tour_requests_path %>

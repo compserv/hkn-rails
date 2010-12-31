@@ -11,16 +11,50 @@
     </ul>
   </div>
   <%- end -%>
-
+  <div class="field">
+    <%= f.label :username %>
+	<%= f.text_field :username %>
+  </div>
   <div class="field">
     <%= f.label :email %>
     <%= f.text_field :email %>
   </div>
   <div class="field">
+    <%= f.label :picture %>
+    <%= f.url_field :picture %>
+  </div>
+  <div class="field">
+    <%= f.label :private, "Keep my profile private" %>
+    <%= f.check_box :private %>
+  </div>  
+  
+  <h4>Change Password</h4>
+  <div class="field">
+    <%= label :password, :current, "Current Password" %>
+    <%= password_field :password, :current %>
+  </div>
+  <div class="field">
+    <%= label :password, :new, "New Password" %>
+    <%= password_field :password, :new %>
+  </div>
+  <div class="field">
+    <%= label :password, :confirm, "Confirm New Password" %>
+    <%= password_field :password, :confirm %>
+  </div>
+  
+  <h4>Additional Information</h4>
+  <div class="field">
     <%= f.label :phone_number %>
     <%= f.text_field :phone_number %>
   </div>
-
+  <div class="field">
+    <%= f.label :aim, "AIM Screenname" %>
+    <%= f.text_field :aim %>
+  </div>
+  <div class="field">
+    <%= f.label :date_of_birth %>
+    <%= f.date_select :date_of_birth, :start_year=>1950, :end_year => Time.now.year %>
+  </div>
   <div class="actions">
     <%= f.submit "Update" %>
   </div>

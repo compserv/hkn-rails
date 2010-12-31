@@ -1,4 +1,6 @@
 class IndrelEventTypesController < ApplicationController
+  before_filter :authorize_indrel
+
   # GET /event_types
   # GET /event_types.xml
   def index
