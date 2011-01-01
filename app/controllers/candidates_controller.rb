@@ -18,6 +18,12 @@ class CandidatesController < ApplicationController
     requirements = @current_user.candidate.requirements_status
     @status = requirements[:status]
     @rsvps = requirements[:rsvps]
+    
+    @challenges = @current_user.candidate.challenges
+  end
+  
+  def find_officers #FIXME: what's a more efficient way to do this?
+    render :json => Person.all.select {|p| p.in_group?("officers")}.map {|p| p.first_name + " " + p.last_name}
   end
 
   def application
@@ -42,6 +48,32 @@ class CandidatesController < ApplicationController
       end
     end
       
+  end
+  
+  def request_challenge
+    officer_name = params[:officer].split
+    challenge_name = params[:name]
+    
+    #is there a better way to look up a person like this?
+    officer = Person.find(:first, :conditions => {:first_name => officer_name[0], :last_name => officer_name[1]})
+    if(!officer or !officer.in_group?("officers")) #If officer does not exist
+      render :text => "Invalid officer."
+      return
+    elsif(challenge_name == "") #challenge name is blank
+       render :text => "Challenge name is blank."
+       return
+    end
+    
+    challenge = Challenge.new(:name => challenge_name, :status => false, :officer_id => officer.id)
+    challenge.candidate = @current_user.candidate
+    saved = challenge.save
+    
+    if(!saved) #challenge didn't save for some reason
+      render :text => "Oops, something went wrong!"
+      return
+    end
+    
+    render :text => true
   end
 
   def submit_quiz

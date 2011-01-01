@@ -1,3 +1,30 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $.ajax({
+        url: '../find_officers',
+        success: function(data) {
+          $("#officer").autocomplete(data);
+        }
+      });
+      
+      $("#challenge_submit").click(function(){
+        $.post("../request_challenge",  
+          { officer: $("input[name=officer]").val(), name: $("input[name=challenge_name]").val() },
+          function(data) { 
+            console.log(data);
+            $("input[name=officer]").val("");
+            $("input[name=challenge_name]").val("");
+          }
+        );
+      });
+      
+    });
+  </script>
+<% end %>
+
 <div id="main" style="float:left">
   <h1>Candidate Portal</h1>
   <h2>Announcements</h2>
@@ -24,9 +51,26 @@
  
 
   <h3>Challenges</h3>
+  
+  <div id="challenges">
+    <% if @challenges.length > 0 %>
+      <% for challenge in @challenges %>
+        <% officer = Person.find(challenge.officer_id) %>
+        <%= challenge.name %> (<%= officer.first_name + " " + officer.last_name %>) 
+      <% end %>
+    <% else %>
+      No challenges requested
+    <% end %>
+  </div>
 
   <h4>Request Challenge Confirmation</h4>
-  [[put form here]]
+  <%= label_tag "Find Officer" %>
+  <%= text_field_tag "officer", "", :id => "officer" %>
+  
+  <%= label_tag "Challenge Name"%>
+  <%= text_field_tag "challenge_name" %>
+  
+  <%= submit_tag "Send Request", :id => "challenge_submit" %>
 
   <h3>Course Surveys</h3>
 
