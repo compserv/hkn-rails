@@ -24,10 +24,12 @@ class CandidatesController < ApplicationController
     @app_details = {
       :aim => @current_user.aim, 
       :phone => @current_user.phone_number,
-      :local_address => "",
-      :perm_address => "",
-      :grad_sem => "",
-      :suggestions => ""
+      :local_address => @current_user.local_address,
+      :perm_address => @current_user.perm_address,
+      :grad_sem => @current_user.grad_semester,
+      :release => @current_user.candidate.release,
+      :committee_prefs => !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
+      :suggestion => @current_user.suggestion ? @current_user.suggestion.suggestion : ""
     }
   end
 
@@ -64,8 +66,26 @@ class CandidatesController < ApplicationController
   def submit_app
     @current_user.update_attributes({
       :aim => params[:aim],
-      :phone_number => params[:phone]
+      :phone_number => params[:phone],
+      :local_address => params[:local_address],
+      :perm_address => params[:perm_address],
+      :grad_semester => params[:grad_sem]
     })
+    
+    @current_user.candidate.update_attributes({
+      :committee_preferences => params[:committee_prefs],
+      :release => params[:release] ? true : false
+    })
+    
+    suggestion = @current_user.suggestion
+    if(@current_user.suggestion) #already has a suggestion, edit
+      suggestion.suggestion = params[:suggestion]
+      suggestion.save
+    else #create a new one
+      suggestion = Suggestion.new(:suggestion => params[:suggestion])
+      @current_user.suggestion = suggestion
+    end
+    
     flash[:notice] = "Your application has been saved."
     redirect_to :back
   end
