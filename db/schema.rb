@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101229082531) do
+ActiveRecord::Schema.define(:version => 20101231220030) do
 
   create_table "announcements", :force => true do |t|
     t.string   "title"
@@ -47,6 +47,8 @@ ActiveRecord::Schema.define(:version => 20101229082531) do
     t.integer  "person_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "committee_preferences"
+    t.string   "release"
   end
 
   create_table "challenges", :force => true do |t|
@@ -107,7 +109,7 @@ ActiveRecord::Schema.define(:version => 20101229082531) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "units"
-    t.string   "prereqs"
+    t.text     "prereqs"
     t.integer  "department_id"
   end
 
@@ -295,6 +297,9 @@ ActiveRecord::Schema.define(:version => 20101229082531) do
     t.datetime "updated_at"
     t.string   "picture"
     t.boolean  "private",             :default => true, :null => false
+    t.string   "local_address",       :default => ""
+    t.string   "perm_address",        :default => ""
+    t.string   "grad_semester",       :default => ""
   end
 
   create_table "properties", :force => true do |t|
@@ -345,6 +350,13 @@ ActiveRecord::Schema.define(:version => 20101229082531) do
   create_table "slots_tutors", :id => false, :force => true do |t|
     t.integer "slot_id"
     t.integer "tutor_id"
+  end
+
+  create_table "suggestions", :force => true do |t|
+    t.integer  "person_id"
+    t.string   "suggestion"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "survey_answers", :force => true do |t|
