@@ -15,6 +15,8 @@ describe CandidatesController do
   describe "GET 'portal'" do
     it "should be successful" do
       @cand.stub!(:requirements_status).and_return(Hash.new)
+      @cand.stub!(:challenges).and_return([])
+      
       get 'portal'
       response.should be_success
     end
@@ -22,8 +24,18 @@ describe CandidatesController do
 
   describe "GET 'application'" do
     it "should be successful" do
+      @suggestion = mock_model(Suggestion)
+      @suggestion.stub!(:suggestion).and_return("")
+      
       @person.stub!(:aim).and_return("")
       @person.stub!(:phone_number).and_return("")
+      @person.stub!(:local_address).and_return("")
+      @person.stub!(:perm_address).and_return("")
+      @person.stub!(:grad_semester).and_return("")
+      
+      @cand.stub!(:release)
+      @person.stub!(:suggestion).and_return(@suggestion)
+      @cand.stub!(:committee_preferences).and_return([])
       get 'application'
       response.should be_success
     end

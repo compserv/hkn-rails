@@ -1,3 +1,45 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $.ajax({
+        url: '../find_officers',
+        success: function(data) {
+          $("#officer").autocomplete(data);
+        }
+      });
+      
+      $("#challenge_submit").click(function(){
+        officer_name = $("input[name=officer]").val();
+        challenge_name = $("input[name=challenge_name]").val();
+        
+        $.post("../request_challenge",  
+          { officer: officer_name, name: challenge_name},
+          function(data) { 
+            if(data == "true"){ //OK submission
+              $("input[name=officer]").val(""); //clear fields
+              $("input[name=challenge_name]").val("");
+              
+              //ajax
+              ch = $("<li></li>");
+              ch.append($("<span></span>").addClass("officer_name").html(officer_name));
+              ch.append($("<span></span>").addClass("challenge_name").html(challenge_name));
+              ch.append($("<span></span>").addClass("challenge_status").html("Pending"));
+              $("#challenges").append(ch);
+              
+            } else{
+              $("#request_challenge_errors").html(data);
+            }
+            
+          }
+        );
+      });
+      
+    });
+  </script>
+<% end %>
+
 <div id="main" style="float:left">
   <h1>Candidate Portal</h1>
   <h2>Announcements</h2>
@@ -24,9 +66,31 @@
  
 
   <h3>Challenges</h3>
+  
+    <ul id="challenges">
+    <% if @challenges.length > 0 %>
+      <% for challenge in @challenges %>
+        <li>
+          <% officer = Person.find(challenge.officer_id) %>
+          <span class="officer_name"><%= officer.first_name + " " + officer.last_name %></span>
+          <span class="challenge_name"><%= challenge.name %></span>
+          <span class="challenge_status"><%= challenge.status ? "Done" : "Pending" %></span>
+        </li>
+      <% end %>
+    <% else %>
+      No challenges requested
+    <% end %>
+    </ul>
 
   <h4>Request Challenge Confirmation</h4>
-  [[put form here]]
+  <div id="request_challenge_errors"></div>
+  <%= label_tag "Find Officer" %>
+  <%= text_field_tag "officer", "", :id => "officer" %>
+  
+  <%= label_tag "Challenge Name"%>
+  <%= text_field_tag "challenge_name" %>
+  
+  <%= submit_tag "Send Request", :id => "challenge_submit" %>
 
   <h3>Course Surveys</h3>
 

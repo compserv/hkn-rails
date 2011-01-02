@@ -4,13 +4,28 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $("#sortable").sortable();
+      $("#submit_app").click(function(e){
+        e.preventDefault();
+        prefs = $($("#sortable").toArray()[0]).children();
+        
+        prefs_string = ""
+        for(var i = 0; i < prefs.length; i++){
+          prefs_string += $($(prefs[i]).children()[1]).html() + " ";
+        };
+        
+        $("#committee_prefs").attr("value", prefs_string);
+        $("form").submit();
+      });
+      if($("input[name=release]").attr("value") == "t"){
+        $("input[name=release]").attr("checked", "checked");
+      }
     });
   </script>
 <% end %>
 
 <h1>Candidate Application</h1>
 
-<%= form_tag "/cand/submit_app" do %> 
+<%= form_tag "/cand/submit_app"  do %> 
   <p>
     <%= label_tag "AIM Screen name" %>
     <%= text_field_tag(:aim, @app_details[:aim]) %>
@@ -38,22 +53,22 @@
   
   <p>
     <%= label_tag "Release information to other candidates" %>
-    <%= radio_button_tag(:release, @app_details[:release]) %>
+    <%= check_box_tag(:release, @app_details[:release]) %>
   </p>
   
   <p>
     <%= label_tag "Committee Preferences" %>
+    <%= hidden_field_tag(:committee_prefs, "", :id=>"committee_prefs") %>
     <ul id="sortable">
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>CompServ</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Act</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Serv</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Bridge</li>
+      <% for pref in @app_details[:committee_prefs] %>
+        <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><span><%= pref %></span></li>
+      <% end %>
     </ul>
   </p>
   
   <p>
     <%= label_tag "What activities would you like to see HKN do this semester?" %>
-    <%= text_area_tag(:suggestions, @app_details[:suggestions]) %>
+    <%= text_area_tag(:suggestion, @app_details[:suggestion]) %>
   </p>
-<%= submit_tag "Save Application" %>
+<%= submit_tag "Save Application", :id=>"submit_app" %>
 <% end %>

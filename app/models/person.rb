@@ -20,6 +20,9 @@ class Person < ActiveRecord::Base
   #   updated_at          : datetime 
   #   picture             : string 
   #   private             : boolean 
+  #   local_address       : string 
+  #   perm_address        : string 
+  #   grad_semester       : string 
   # =======================
 
   has_one :candidate
@@ -28,6 +31,7 @@ class Person < ActiveRecord::Base
   has_and_belongs_to_many :groups
   has_many :rsvps, :dependent => :destroy
   has_many :challenges
+  has_one :suggestion
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true

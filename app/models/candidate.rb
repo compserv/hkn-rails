@@ -1,18 +1,26 @@
 class Candidate < ActiveRecord::Base
 
   # === List of columns ===
-  #   id         : integer 
-  #   person_id  : integer 
-  #   created_at : datetime 
-  #   updated_at : datetime 
+  #   id                    : integer 
+  #   person_id             : integer 
+  #   created_at            : datetime 
+  #   updated_at            : datetime 
+  #   committee_preferences : string 
+  #   release               : string 
   # =======================
 
   belongs_to :person
   has_many :quiz_responses
   has_many :challenges
-  has_many :committee_preferences
+  
+  serialize :committee_preferences
 
   validates :person, :presence => true
+  
+  def self.committee_defaults
+    defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "Pub", "StudRel", "Tutoring"]
+    return defaults
+  end
   
   def event_requirements
     req = Hash.new
