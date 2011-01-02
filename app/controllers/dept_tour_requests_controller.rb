@@ -89,6 +89,9 @@ class DeptTourRequestsController < ApplicationController
     @dept_tour_request = DeptTourRequest.find(params[:id])
     @dept_tour_request.responded = true
     @dept_tour_request.save!
+    
+    mail = DeptTourMailer.dept_tour_response_email(@dept_tour_request, params[:response], params[:from], params[:ccs])
+    mail.deliver
     redirect_to :dept_tour_requests, :notice=>"Your response has been sent."
   end
 end

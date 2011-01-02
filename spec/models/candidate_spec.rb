@@ -32,16 +32,4 @@ describe Candidate do
       @candidate.quiz_responses.should_not include(@qr)
     end
   end
-
-  describe "with committee preferences" do
-    it "should have a reference to its committee preferences" do
-      @cp = CommitteePreference.create(:candidate => @candidate, :group => mock_model(Group))
-      @candidate.committee_preferences.should include(@cp)
-    end
-
-    it "should not have references to other candidates' committee preferences" do
-      @cp = CommitteePreference.create(:candidate_id => (@candidate.id + 1), :group => mock_model(Group))
-      @candidate.committee_preferences.should_not include(@cp)
-    end
-  end
 end

@@ -59,8 +59,7 @@ event_types = [
   {'name'=> 'Mandatory for Candidates'},
   {'name'=> 'Fun'},
   {'name'=> 'Big Fun'},
-  {'name'=> 'Community Service'},
-  {'name'=> 'Department Service'},
+  {'name'=> 'Service'},
   {'name'=> 'Industry'},
   {'name'=> 'Miscellaneous'},
 ]

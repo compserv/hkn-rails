@@ -8,7 +8,7 @@ Please meet me, or one of our other officers, at 345 Soda Hall at that time.
 
 Looking forward to seeing you!
 
---HKN
+--#{@current_user.first_name}
 "
   end
 end
