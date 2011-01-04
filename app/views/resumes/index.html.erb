@@ -1,0 +1,12 @@
+<h1> Résumés </h1>
+
+<table class="table">
+	<tr><th>Person</th><th>Overall GPA</th><th>Upload Date</th></tr>
+<% Person.find(:all, :order => "last_name DESC").each do |person| %>
+<!-- I hope everyone capitalizes the first letters of their names. But it's not really a big deal-->
+	<tr><td> <%= "#{person.first_name} #{person.last_name}" %> </td>
+			<td> <%= @resinfo[person][:gpa] %>
+		  <td> <%= @resinfo[person][:upload] %> </td>
+	</tr>
+<% end %>
+</table>

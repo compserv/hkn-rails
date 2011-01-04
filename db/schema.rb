@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101229082531) do
+ActiveRecord::Schema.define(:version => 20110101011010) do
 
   create_table "announcements", :force => true do |t|
     t.string   "title"
@@ -99,15 +99,15 @@ ActiveRecord::Schema.define(:version => 20101229082531) do
   end
 
   create_table "courses", :force => true do |t|
-    t.string   "course_number",                 :null => false
-    t.string   "suffix",        :default => ""
-    t.string   "prefix",        :default => ""
-    t.string   "name",                          :null => false
+    t.string   "course_number",                                :null => false
+    t.string   "suffix",                       :default => ""
+    t.string   "prefix",                       :default => ""
+    t.string   "name",                                         :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "units"
-    t.string   "prereqs"
+    t.text     "prereqs",       :limit => 255
     t.integer  "department_id"
   end
 
@@ -314,6 +314,20 @@ ActiveRecord::Schema.define(:version => 20101229082531) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "resumes", :force => true do |t|
+    t.decimal  "overall_gpa"
+    t.decimal  "major_gpa"
+    t.text     "resume_text"
+    t.integer  "graduation_year"
+    t.string   "graduation_semester"
+    t.string   "file"
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "resumes", ["person_id"], :name => "index_resumes_on_person_id"
 
   create_table "rsvps", :force => true do |t|
     t.string   "confirmed"

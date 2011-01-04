@@ -1,0 +1,19 @@
+<!-- Current Resume Partials (Person#edit) -->
+<!-- See the partial in resumes/ -->
+
+<div class="field">
+	<%= @f.label "Current resume" %>
+	<table>
+		<% if @current_user.resumes.empty? : %>
+			<tr><td><%= "No resumes on file" %></td></tr>
+			<tr><td><%= link_to "Upload resume", :resumes_upload %>
+		<% else %>
+	
+		<% current_resume = @current_user.resumes.first %>
+		<% upload_time = current_resume.created_at.getlocal.to_datetime.strftime("%A %B %e, %Y %l:%M %p") %>
+			<tr><td><%= "Uploaded #{upload_time}" %></td></tr>
+			<tr><td><%= "GPA #{current_resume.overall_gpa} (overall)" %></td></tr>
+			<tr><td><%= link_to "Update resume", :resumes_upload %>
+		<% end %>
+	</table>
+</div>

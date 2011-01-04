@@ -28,6 +28,7 @@ class Person < ActiveRecord::Base
   has_and_belongs_to_many :groups
   has_many :rsvps, :dependent => :destroy
   has_many :challenges
+  has_many :resumes
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true

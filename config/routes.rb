@@ -1,4 +1,6 @@
 HknRails::Application.routes.draw do
+  get "resumes/new"
+
   #Department tours
   scope "dept_tour" do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup
@@ -47,7 +49,10 @@ HknRails::Application.routes.draw do
   resources :people, :except => [:new, :create, :index]
 
   # Resumes, this is kind of just a prototype test right now
-  match "resumes" => "resumes#show"
+  scope "resumes" do
+    match "upload" => "resumes#new", :as => :resumes_upload
+  end
+  resources :resumes
 
   # Course Surveys
   scope "coursesurveys" do
