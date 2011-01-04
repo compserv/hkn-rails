@@ -18,16 +18,24 @@ class CandidatesController < ApplicationController
     requirements = @current_user.candidate.requirements_status
     @status = requirements[:status]
     @rsvps = requirements[:rsvps]
+    
+    @challenges = @current_user.candidate.challenges
+  end
+  
+  def find_officers #FIXME: what's a more efficient way to do this?
+    render :json => Person.all.select {|p| p.in_group?("officers")}.map {|p| p.first_name + " " + p.last_name}
   end
 
   def application
     @app_details = {
       :aim => @current_user.aim, 
       :phone => @current_user.phone_number,
-      :local_address => "",
-      :perm_address => "",
-      :grad_sem => "",
-      :suggestions => ""
+      :local_address => @current_user.local_address,
+      :perm_address => @current_user.perm_address,
+      :grad_sem => @current_user.grad_semester,
+      :release => @current_user.candidate.release,
+      :committee_prefs => !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
+      :suggestion => @current_user.suggestion ? @current_user.suggestion.suggestion : ""
     }
   end
 
@@ -40,6 +48,32 @@ class CandidatesController < ApplicationController
       end
     end
       
+  end
+  
+  def request_challenge
+    officer_name = params[:officer].split
+    challenge_name = params[:name]
+    
+    #is there a better way to look up a person like this?
+    officer = Person.find(:first, :conditions => {:first_name => officer_name[0], :last_name => officer_name[1]})
+    if(!officer or !officer.in_group?("officers")) #If officer does not exist
+      render :text => "Invalid officer."
+      return
+    elsif(challenge_name == "") #challenge name is blank
+       render :text => "Challenge name is blank."
+       return
+    end
+    
+    challenge = Challenge.new(:name => challenge_name, :status => false, :officer_id => officer.id)
+    challenge.candidate = @current_user.candidate
+    saved = challenge.save
+    
+    if(!saved) #challenge didn't save for some reason
+      render :text => "Oops, something went wrong!"
+      return
+    end
+    
+    render :text => true
   end
 
   def submit_quiz
@@ -64,8 +98,26 @@ class CandidatesController < ApplicationController
   def submit_app
     @current_user.update_attributes({
       :aim => params[:aim],
-      :phone_number => params[:phone]
+      :phone_number => params[:phone],
+      :local_address => params[:local_address],
+      :perm_address => params[:perm_address],
+      :grad_semester => params[:grad_sem]
     })
+    
+    @current_user.candidate.update_attributes({
+      :committee_preferences => params[:committee_prefs],
+      :release => params[:release] ? true : false
+    })
+    
+    suggestion = @current_user.suggestion
+    if(@current_user.suggestion) #already has a suggestion, edit
+      suggestion.suggestion = params[:suggestion]
+      suggestion.save
+    else #create a new one
+      suggestion = Suggestion.new(:suggestion => params[:suggestion])
+      @current_user.suggestion = suggestion
+    end
+    
     flash[:notice] = "Your application has been saved."
     redirect_to :back
   end
