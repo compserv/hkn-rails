@@ -39,14 +39,16 @@ def importExam(file_path, success_dir=nil)
   basedir = File.dirname(file_path)
   filename = File.basename(file_path)
 
-  puts "Importing #{filename} ..."
+  puts "importing #{filename} ..."
 
   if not isValidFile?(filename)
     puts "\tinvalid file name: #{filename} - ignoring"
     return false
-  elsif not convertFile(filename, basedir)
+  elsif not file_path = convertFile(filename, basedir)
     return false
   end
+
+  filename = File.basename(file_path)
 
   # file should now be a valid pdf
   description = filename.split('.')[0]
@@ -58,21 +60,40 @@ def importExam(file_path, success_dir=nil)
   dept_abbr.upcase!
   course_number.upcase!
   course = Course.find_by_short_name(dept_abbr, course_number)
-  puts "Course: #{course}"
   if course.nil?
-    puts "\tCould not find course #{dept_abbr}#{course_number}"
-    puts "\tAdd the course and re-run the script."
+    puts "\tcould not find course #{dept_abbr}#{course_number}"
+    puts "\tadd the course and re-run the script."
     return false
   end
   klass = Klass.find_by_course_and_nice_semester(course, semester)
-  puts "Klass: #{klass}"
   if klass.nil?
-    puts "\tCould not find klass #{course} #{semester}"
-    puts "\tAdd the klass and re-run the script."
+    puts "\tcould not find klass #{course} #{semester}"
+    puts "\tadd the klass and re-run the script."
     return false
   end
-  
-  return false
+
+  exam_type_abbr = exam_abbr[/[a-z]+/]
+  exam_type = Exam.typeFromAbbr(exam_type_abbr)
+  number = exam_abbr[/\d/]
+  is_solution = !sol_flag.nil?
+
+  exam = Exam.where(:klass_id => klass.id, :course_id => course.id,
+                    :filename => filename, :exam_type => exam_type,
+                    :number => number, :is_solution => is_solution)
+  if exam.nil?
+    puts "\texam already exists."
+  else
+    puts "\texam not found. Adding to database."
+    exam = Exam.new(:klass_id => klass.id, :course_id => course.id,
+                    :filename => filename, :exam_type => exam_type,
+                    :number => number, :is_solution => is_solution)
+    success = exam.save
+    if not success
+      puts "\tproblems saving exam: #{exam.errors}"
+    end
+  end
+
+  return success
 end
 
 def isValidFile?(filename)
@@ -82,9 +103,10 @@ end
 
 def convertFile(filename, basedir)
   description, type = filename.split('.')
+  path = File.join(basedir, filename)
 
   if not VALID_EXTENSIONS.include?(type)
-    return false
+    return nil 
   end
 
   if description =~ /[A-Z]/
@@ -92,15 +114,13 @@ def convertFile(filename, basedir)
     description = description.downcase
     new_name = "#{description}.#{type}"
     new_path = File.join(basedir, new_name)
-    old_path = File.join(basedir, filename)
-    puts new_path
-    puts old_path
-    FileUtils.mv(old_path, new_path)
+    FileUtils.mv(path, new_path)
     filename = new_name
+    path = new_path
   end
   
   # TODO add conversion from other types
-  return true
+  return path
 end
 
 def checkFileType(file_path)
@@ -128,7 +148,7 @@ def importExamDirectory(dirname)
   end
 
   puts 'Done.'
-  puts "#{n_succeeded} exams successful"
+  puts "#{n_succeeded} exams successful."
   puts "#{n_failed} exams failed."
 end
 
@@ -136,7 +156,7 @@ end
 
 if ARGV.size == 0
   puts 'You must specify an exam or directory.'
-  puts 'Supported filetypes: .pdf'
+  puts 'Supported filetypes: pdf'
   exit
 end
   
