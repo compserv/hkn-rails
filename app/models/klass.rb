@@ -22,6 +22,7 @@ class Klass < ActiveRecord::Base
   has_many :exams
   
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
+  ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }
 
   def to_s
     "#{course.course_abbr} #{proper_semester}"
@@ -50,5 +51,15 @@ class Klass < ActiveRecord::Base
 
   def instructor_type(instructor)
     instructor_ids.include?(instructor.id) ? "Instructor" : "TA"
+  end
+
+  # e.g. sp05
+  def Klass.find_by_course_and_nice_semester(course, nice_semester)
+    # kind of a hacky way to convert decades, but should be fine if we
+    # replace this format/website by 2051
+    decade = nice_semester[2..3].to_i
+    year = (decade > 50 ? 1900 : 2000) + decade
+    semester = "#{year}#{ABBR_SEMESTERS[nice_semester[0..1]]}"
+    Klass.find_by_course_id_and_semester(course.id, semester)
   end
 end
