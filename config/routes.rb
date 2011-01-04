@@ -48,6 +48,12 @@ HknRails::Application.routes.draw do
   match "account-settings" => "people#edit", :as => :account_settings
   resources :people, :except => [:new, :create, :index]
 
+  # Alumni
+  resources :alumnis
+  scope "alumni" do
+    match "registration" => "alumnis#edit"
+  end
+
   # Resumes, this is kind of just a prototype test right now
   scope "resumes" do
     match "upload" => "resumes#new", :as => :resumes_upload

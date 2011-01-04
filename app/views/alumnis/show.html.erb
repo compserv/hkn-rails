@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Grad semester:</b>
+  <%= @alumni.grad_semester %>
+</p>
+
+<p>
+  <b>Grad school:</b>
+  <%= @alumni.grad_school %>
+</p>
+
+<p>
+  <b>Job title:</b>
+  <%= @alumni.job_title %>
+</p>
+
+<p>
+  <b>Company:</b>
+  <%= @alumni.company %>
+</p>
+
+<p>
+  <b>Salary:</b>
+  <%= @alumni.salary %>
+</p>
+
+<p>
+  <b>Person:</b>
+  <%= @alumni.person %>
+</p>
+
+
+<%= link_to 'Edit', edit_alumni_path(@alumni) %> |
+<%= link_to 'Back', alumnis_path %>
