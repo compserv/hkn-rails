@@ -31,7 +31,17 @@ people.each do |id, person|
   new_person['email']            = user['email']
   new_person['phone_number']     = person['phone']
   new_person['aim']              = info['aim_sn']
-  new_person['private']          = true
+
+  # Privacy level of 3 means any registered user can view it. Since we only
+  # have two privacy levels on the new site, we just set 'private' to true
+  # if their existing privacy level was greater than 3
+  privacy = false
+  if !person['privacy'].nil?
+    person['privacy'].each_value do |x|
+      privacy ||= (x > 3)
+    end
+  end
+  new_person['private']          = privacy
   #new_person['date_of_birth']    = 
 
   # Temporary password to let authlogic do its magic

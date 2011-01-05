@@ -8,6 +8,7 @@ import django
 import settings
 import nice_types
 setup_environ(settings)
+import hkn.event.models
 
 # Python 2.5 doesn't support json yet..., so import simplejson
 import simplejson
@@ -21,9 +22,11 @@ def export(klass, filename, export_dir='dumps', filter=lambda x: True):
   # By default, convert datetime objects to RfC 3339 strings
   semhandler = lambda obj: str(obj) if isinstance(obj, nice_types.semester.Semester) else None
   dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else semhandler(obj)
+  rsvphandler = lambda obj: obj.blocks if isinstance(obj, hkn.event.models.RSVPData) else dthandler(obj)
+
 
   if not os.path.isdir(export_dir):
     os.mkdir(export_dir)
   f = open('%s/%s.json' % (export_dir, filename), 'w')
-  simplejson.dump(objects, f, default=dthandler)
+  simplejson.dump(objects, f, default=rsvphandler)
   f.close()
