@@ -65,7 +65,7 @@
   </h4>
   <ul>
     <% for rsvp in @rsvps[req] %>
-    <%= rsvp.event.name %> <%= rsvp.event.confirmed == true ? "Confirmed" : "Not Confirmed" %>
+    <li><%= rsvp.event.name %> <%= rsvp.confirmed == "true" ? "Confirmed" : "Not Confirmed" %></li>
     <% end %>
   </ul>
   <% end %>
@@ -104,7 +104,7 @@
   <h3>Forms</h3>
   <ul>
     <li>
-      <%= link_to "Resume", "../../resume/upload" %>
+      <%= link_to "Resume", "../../resumes/upload" %>
     </li>
     <li>
       <%= link_to "Quiz", "../quiz" %>

@@ -33,19 +33,23 @@ class Candidate < ActiveRecord::Base
 
   def requirements_status
     rsvps = self.person.rsvps
-    sorted_rsvps = Hash.new([])
+    sorted_rsvps = Hash.new
     done = Hash.new(0)
     for rsvp in rsvps #Record finished requirements
       type = rsvp.event.event_type.name
-      done[type] = done[type] + 1
+      done[type] = done[type] + 1 if rsvp.confirmed == "true"
+      sorted_rsvps[type] = [] if sorted_rsvps[type] == nil
       sorted_rsvps[type] << rsvp
     end
+    
     status = Hash.new #Record status
     reqs = event_requirements
     reqs.each do |key, value|
+      sorted_rsvps[key] = [] if sorted_rsvps[key] == nil
       assign = done[key] ? done[key] >= value : false
       status[key] = assign #Set the status to true if requirement finished (cand has done >= the actual requirement value) 
     end
+    
     return {:status => status, :rsvps => sorted_rsvps}
   end
   
