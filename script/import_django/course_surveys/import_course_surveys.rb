@@ -131,6 +131,14 @@ def initialize
     @options = {}
 end
 
+def analyze(table)
+    ActiveRecord::Base.connection.execute("ANALYZE #{table.to_s};")
+end
+
+def load_and_analyze(table)
+    self.send(:analyze, table) unless self.send("load_#{table.to_s}".to_sym) == false
+end
+
 def import!(options)
     raise "ERROR: no dump path provided!" unless @dpath = options[:from]
 
@@ -139,19 +147,16 @@ def import!(options)
     start_time = Time.now
 
     begin
-        load_instructors
+        load_and_analyze(:instructors)
         load_questions
         load_seasons
         load_departments
-        load_courses
-        load_klasses
+        load_and_analyze(:courses)
+        load_and_analyze(:klasses)
         load_instructorships
-        load_answers
-        
-        # Do some cleanup for postgres
-        ActiveRecord::Base.connection.execute("VACUUM;")
-    rescue
-        puts "*"*80,"Import process interrupted!\n\n"
+        load_and_analyze(:answers)
+    rescue Exception => e
+        puts "*"*80,"Import process interrupted!\n  (because #{e.message})\n\n"
     end
     
     dt = Time.now-start_time
@@ -235,7 +240,7 @@ def load_instructors
     # Updates or creates new instructors. Any existing data is not overwritten,
     # except the 'private' attribute is set equal to loaded value.
     #
-    return if @options[:skip].include?(:instructors)
+    return false if @options[:skip].include?(:instructors)
     instructor_map_cache_file = "instructors.cache"
     
     puts "Loading instructors.\n"
@@ -260,7 +265,7 @@ def load_instructors
         # Update some attribs from i => new_i
         # Note: the ||= makes it UPDATE only. If any existing info is there, the
         # existing info won't be overwritten.
-        {:email => :email, :role => :title, :phone => :phone_number, :office => :office, :private => :private, :url => :home_page, :interests => :interests, :picture_url => :picture}.each_pair do |old_attrib, new_attrib|
+        {:email => :email, :title => :title, :phone => :phone_number, :office => :office, :private => :private, :url => :home_page, :interests => :interests, :picture_url => :picture}.each_pair do |old_attrib, new_attrib|
             if old_attrib == :private then
                 # Special case: private defaults to true, so ||= won't do anything.
                 new_i[:private] = i[:private]
@@ -285,7 +290,7 @@ def load_instructors
 end # load_instructors
 
 def load_questions
-    return if @options[:skip].include?(:questions)
+    return false if @options[:skip].include?(:questions)
     puts "Loading questions.\n"
     questions = Array.from_csv(dumpfilename("question"), @@question_fields)
     questions.each do |q|
@@ -327,7 +332,7 @@ def load_questions
 end # load_questions
 
 def load_courses
-    return if @options[:skip].include?(:courses)
+    return false if @options[:skip].include?(:courses)
     puts "Loading courses."
     
     courses = Array.from_csv(dumpfilename("course"), @@course_fields)
@@ -341,6 +346,11 @@ def load_courses
         
         # lol
         new_c = Course.find_or_create_by_department_id_and_prefix_and_course_number_and_suffix(@departments[c[:departmentid]].id, prefix, course_number, suffix)
+
+        # Special processing
+	c[:units] = nil if c[:units] <= 0
+	c[:prerequisites] = nil if c[:prerequisites].eql?('N')
+	c[:description] = nil if c[:description].eql?('N')
         
         # Map attribs
         {:coursename => :name, :description => :description, :units => :units, :prerequisites => :prereqs}.each_pair do |old_attrib, new_attrib|
@@ -375,7 +385,7 @@ def load_courses
 end
 
 def load_seasons
-    return if @options[:skip].include?(:seasons)
+    return false if @options[:skip].include?(:seasons)
     puts "Loading seasons."
     
     seasons = Array.from_csv(dumpfilename("season"), @@season_fields)
@@ -392,7 +402,7 @@ def load_seasons
 end
 
 def load_departments
-    return if @options[:skip].include?(:departments)
+    return false if @options[:skip].include?(:departments)
     puts "Loading departments."
     
     departments = Array.from_csv(dumpfilename("department"), @@department_fields)
@@ -414,7 +424,7 @@ def load_departments
 end
 
 def load_klasses
-    return if @options[:skip].include?(:klasses)
+    return false if @options[:skip].include?(:klasses)
     puts "Loading klasses."
 
     klasses_map_cache_file = "klasses.cache"
@@ -448,7 +458,7 @@ def load_klasses
         end
         semester = "#{k[:year]}#{sem_id}"
 
-        new_k = Klass.find_or_create_by_course_id_and_semester(@courses[k[:courseid]].id, semester)
+        new_k = Klass.find_or_create_by_course_id_and_semester_and_section(@courses[k[:courseid]].id, semester, k[:section])
 
         # Map attribs
         {:section => :section}.each_pair do |old_attrib, new_attrib|
@@ -456,7 +466,7 @@ def load_klasses
         end
 
         # Special processing
-        new_k[:notes] = "Imported url: #{k[:url]}" unless k[:url].eql?("N")
+        new_k[:notes] = "Url: #{k[:url]}" unless k[:url].eql?("N")
 
         raise "ERROR: couldn't save klass #{new_k.inspect}" unless new_k.save
 
@@ -474,7 +484,7 @@ def load_klasses
 end
 
 def load_instructorships
-    return if @options[:skip].include?(:instructors_klasses)
+    return false if @options[:skip].include?(:instructors_klasses)
 
     puts "Loading instructor-klass relationships."
     
@@ -503,7 +513,7 @@ def load_instructorships
 end
 
 def load_answers
-    return if @options[:skip].include?(:answers)
+    return false if @options[:skip].include?(:answers)
 
     puts "Loading answers."
 
@@ -566,6 +576,7 @@ end # class CourseSurveyImporter
 
 # int main(argc, char **argv) {
 @csi = CourseSurveyImporter.new #(ARGV.first)
+only = []
 
 parser = OptionParser.new do |opts|
     opts.banner = "Usage: import_course_surveys [options] /path/to/dumpfolder"
@@ -580,11 +591,18 @@ parser = OptionParser.new do |opts|
         puts opts
         exit 0
     end
+    opts.on('-o', '--only TABLE', 'Process only this/these table(s). You can specify multiple tables with multiple -o switches.') do |table|
+      only << table.to_sym
+    end
     opts.on('-s', '--skip TABLE', 'Skip table <instructors|courses|klasses|questions|answers|instructors_klasses|seasons|departments>') do |table|
         @csi.options[:skip] << table.to_sym
     end
 end
 parser.parse!
+
+unless only.empty?
+  @csi.options[:skip].concat( [:instructors, :courses, :klasses, :questions, :answers, :instructors_klasses, :seasons, :departments].reject {|t| only.include?(t)} )
+end
 
 if ARGV.empty?
     puts parser.help

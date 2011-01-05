@@ -50,7 +50,7 @@ class Course < ActiveRecord::Base
   end
 
   # E.g. ("EE", "C149")
-  def Course.find_by_short_name(dept_abbr, full_course_number)
+  def Course.find_by_short_name(dept_abbr, full_course_number, section=nil)
     (prefix, course_number, suffix) = full_course_number.scan(/^([a-zA-Z]*)([0-9]*)([a-zA-Z]*)$/).first
     department = Department.find_by_nice_abbr(dept_abbr)
     raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?

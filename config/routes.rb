@@ -48,6 +48,12 @@ HknRails::Application.routes.draw do
   match "account-settings" => "people#edit", :as => :account_settings
   resources :people, :except => [:new, :create, :index]
 
+  # Alumni
+  resources :alumnis
+  scope "alumni" do
+    match "registration" => "alumnis#edit"
+  end
+
   # Resumes, this is kind of just a prototype test right now
   scope "resumes" do
     match "upload" => "resumes#new", :as => :resumes_upload
@@ -59,7 +65,7 @@ HknRails::Application.routes.draw do
     match "/"                                       => "coursesurveys#index",      :as => :coursesurveys
     match "course/:dept_abbr"                       => "coursesurveys#department", :as => :coursesurveys_department
     match "course/:dept_abbr/:short_name"           => "coursesurveys#course",     :as => :coursesurveys_course
-    match "course/:dept_abbr/:short_name/:semester" => "coursesurveys#klass",      :as => :coursesurveys_klass
+    match "course/:dept_abbr/:short_name/:semester(/:section)" => "coursesurveys#klass",      :as => :coursesurveys_klass
     # This is a hack to allow periods in the parameter. Otherwise, Rails automatically splits on periods
     match "instructor/:name"                        => "coursesurveys#instructor", :as => :coursesurveys_instructor, :constraints => {:name => /.+/}
     match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating

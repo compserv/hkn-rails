@@ -2,10 +2,12 @@
 
 <img id="trend" src="/trend" alt="trend"/>
 <table id="course_info" class="infobox">
+<%- unless @course.name.eql?("(No title)") -%>
   <tr> <th>Title</th>            <td><%= @course.name %></td> </tr>
+<%- end -%>
 <%- unless @instructors.blank? -%>
   <tr>
-    <th>Instructor<%= @instructors.size > 1 ? "s" : "" %> in Charge</th>
+    <th><%= 'Instructor'.pluralize_for(@instructors.size) %> in Charge</th>
     <td>
       <% @instructors.each do |instructor| %>
         <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
@@ -13,11 +15,15 @@
     </td>
   </tr>
 <%- end -%>
+<%- unless @course.units.nil? -%>
   <tr> <th>Units</th>         <td><%= @course.units %></td> </tr>
+<%- end -%>
 <%- unless @course.prereqs.blank? -%>
   <tr> <th>Prerequisites</th> <td><%= @course.prereqs %></td> </tr>
 <%- end -%>
+<%- unless @course.description.blank? -%>
   <tr> <th>Description</th>   <td><%= @course.description %></td> </tr>
+<%- end -%>
 </table>
 
 <%- if @course.klasses.blank? -%>
@@ -39,12 +45,10 @@
       <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
     </td>
     <td>
-      <%= sprintf "%.1f", effectiveness.mean %> / <%= @effective_max %>
-      <%= rating_bar(effectiveness.mean/@effective_max) %>
+     <%= rating_and_bar(effectiveness.mean, @effective_max) %>
     </td>
     <td>
-      <%= sprintf "%.1f", worthwhileness.mean %> / <%= @worthwhile_max %>
-      <%= rating_bar(worthwhileness.mean/@worthwhile_max) %>
+      <%= rating_and_bar(worthwhileness.mean, @worthwhile_max) %>
     </td>
   </tr>
 <%- end -%>
@@ -56,12 +60,10 @@
   <tr>
     <td colspan="2"></td>
     <td>
-      <%= sprintf "%.1f", @total_effectiveness %> / <%= @effective_max %>
-      <%= rating_bar(@total_effectiveness/@effective_max) %>
+     <%= rating_and_bar(@total_effectiveness, @effective_max) %>
     </td>
     <td>
-      <%= sprintf "%.1f", @total_worthwhileness %> / <%= @worthwhile_max %>
-      <%= rating_bar(@total_worthwhileness/@worthwhile_max) %>
+     <%= rating_and_bar(@total_worthwhileness, @worthwhile_max) %>
     </td>
   </tr>
 </table>

@@ -10,8 +10,7 @@
         <%- end -%>
       </td>
       <td>
-        <%= sprintf "%.1f", rating %> / <%= @prof_eff_q.max.to_f %> 
-        <%= rating_bar(rating/@prof_eff_q.max) %>
+       <%= rating_and_bar(rating, @prof_eff_q.max) %>
       </td>
       <td>
         <%= link_to klass.proper_semester, surveys_klass_path(klass) %>

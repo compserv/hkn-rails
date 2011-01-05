@@ -58,6 +58,14 @@ class SurveyAnswer < ActiveRecord::Base
     
 #    self.update_attributes(:mean => self.mean, :median => self.median, :deviation => self.deviation)
     
-  end
+  end #recompute_stats!
   
+  def confidence_interval
+    k = "survey_answer/#{self.id}/confidence_interval"
+    v = Rails.cache.read(k)
+    return v if v
+    v = 1.96*self.deviation/Math.sqrt(ActiveSupport::JSON.decode(frequencies).values.reduce{|x,y| x.to_i+y.to_i})
+    Rails.cache.write(k, v)
+    v
+  end
 end

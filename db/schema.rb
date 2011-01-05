@@ -10,11 +10,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(:version => 20110101011010) do
-=======
-ActiveRecord::Schema.define(:version => 20101231220030) do
->>>>>>> 7ee0ebfab0350136f53df059dbb927d02ad361d0
+ActiveRecord::Schema.define(:version => 20110104032558) do
+
+  create_table "alumnis", :force => true do |t|
+    t.string   "grad_semester"
+    t.string   "grad_school"
+    t.string   "job_title"
+    t.string   "company"
+    t.integer  "salary"
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "announcements", :force => true do |t|
     t.string   "title"
@@ -105,19 +112,15 @@ ActiveRecord::Schema.define(:version => 20101231220030) do
   end
 
   create_table "courses", :force => true do |t|
-    t.string   "course_number",                                :null => false
-    t.string   "suffix",                       :default => ""
-    t.string   "prefix",                       :default => ""
-    t.string   "name",                                         :null => false
+    t.string   "course_number",                 :null => false
+    t.string   "suffix",        :default => ""
+    t.string   "prefix",        :default => ""
+    t.string   "name",                          :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "units"
-<<<<<<< HEAD
-    t.text     "prereqs",       :limit => 255
-=======
     t.text     "prereqs"
->>>>>>> 7ee0ebfab0350136f53df059dbb927d02ad361d0
     t.integer  "department_id"
   end
 

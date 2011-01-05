@@ -28,6 +28,15 @@ module CoursesurveysHelper
     end
   end
 
+  def rating_and_bar(score, max, url=nil, inverted=nil)
+    contents = "
+    #{sprintf "%.1f", score}<span class=\"rating2\"> / #{max}</span>\n
+    #{rating_bar(score/max.to_f)}
+    "
+ 
+    content_tag(:span, contents.html_safe)
+  end
+
   def frequency_bar(rating)
     width = (rating*100).to_int
 
@@ -39,7 +48,11 @@ module CoursesurveysHelper
   end
 
   def surveys_klass_path(klass)
-    coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
+    if klass.section.blank?
+      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
+    else
+      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester, klass.section
+    end
   end
 
   def surveys_course_path(course)
