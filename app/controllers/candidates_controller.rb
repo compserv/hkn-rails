@@ -18,6 +18,7 @@ class CandidatesController < ApplicationController
     requirements = @current_user.candidate.requirements_status
     @status = requirements[:status]
     @rsvps = requirements[:rsvps]
+    @events = Event.order("start_time asc").limit(5)
     
     @challenges = @current_user.candidate.challenges
   end

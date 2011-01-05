@@ -44,6 +44,13 @@
   <h1>Candidate Portal</h1>
   <h2>Announcements</h2>
 
+  <% for a in @announcements %>
+  <div class="announcement">
+    <span class="title"><%= a.title %></span> - <span class="author"><%= a.person.first_name  + " " + a.person.last_name %></span>
+    <span class="body"><%= a.body %></span>
+  </div>
+  <% end %>
+  
   <h2>Checklist</h2>
 
   <h3>Events</h3>
@@ -108,4 +115,16 @@
 </div>
 <div id="sidebar" style="float:right">
   <h2>Upcoming Events</h2>
+  <% for event in @events %>
+    <div class="event">
+      <span class="name"><%= event.name %></span>
+      <span>
+        <span class="time">
+          <%= event.start_time %> to <%= event.end_time %>
+        </span>
+        <span class="location"><%= event.location %></span>
+      </span>
+      <span class="description"><%= event.description %></span>
+    </div>
+  <% end %>
 </div>
