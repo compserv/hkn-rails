@@ -85,12 +85,13 @@ class CoursesurveysController < ApplicationController
       @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
       render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
     else
-      @latest_klass = @course.klasses.find(:first, {:order => "created_at DESC"})
+      sort_order = "semester, section DESC"
+      @latest_klass = @course.klasses.find(:first, {:order => sort_order})
       @instructors = @latest_klass.instructors unless @latest_klass.nil?
       @results = []
       effective_sum = 0.0
       worthwhile_sum = 0.0
-      @course.klasses.each do |klass|
+      @course.klasses.order(sort_order).each do |klass|
         klass.instructors.each do |instructor|        
           prof_eff = SurveyAnswer.find(:first, :conditions => {
             :instructor_id => instructor.id,
@@ -141,7 +142,9 @@ class CoursesurveysController < ApplicationController
       render :text => "Semester #{params[:semester]} not formatted correctly."
     end
     semester = year+season_no
-    @klass = Klass.find(:first, :conditions => { :course_id => @course.id, :semester => semester })
+    conditions = { :course_id => @course.id, :semester => semester }
+    conditions[:section] = params[:section].to_i unless params[:section].blank?
+    @klass = Klass.find(:first, :conditions => conditions, :order => "section ASC" )
     if @klass.blank?
       @errors = "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
       render :text => "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
@@ -201,6 +204,14 @@ class CoursesurveysController < ApplicationController
   def instructor
     (last_name, first_name) = params[:name].split(',')
     @instructor = Instructor.find_by_name(first_name, last_name)
+    
+    cache_key = "#{@instructor.cache_key}/controllerdata"
+   
+    unless (cached_values = Rails.cache.read(cache_key)).nil?
+      @instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total = Marshal.load(cached_values)
+    else # no cached data loaded
+    
+    
     @instructed_klasses = []
     @tad_klasses = []
 
@@ -215,12 +226,12 @@ class CoursesurveysController < ApplicationController
       effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => prof_eff_q.id}).first
       worthwhileness = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => worthwhile_q.id}).first
 
-      unless effectiveness.blank? or worthwhileness.blank?
+      unless (effectiveness.blank? or worthwhileness.blank?)
         @instructed_klasses << [
-          klass, 
-          @instructor, 
-          effectiveness,
-          worthwhileness,
+          klass.id, 
+          @instructor.id, 
+          effectiveness.id,
+          worthwhileness.id,
         ]
 
         if klass.course.course_number.to_i < 200 
@@ -229,56 +240,78 @@ class CoursesurveysController < ApplicationController
           totals = @grad_totals
         end
 
-        if totals.has_key? klass.course
-          totals[klass.course] << [effectiveness.mean, worthwhileness.mean]
-        else
-          totals[klass.course] = [[effectiveness.mean, worthwhileness.mean]]
-        end
+        totals[klass.course.id] ||= []
+        totals[klass.course.id] << [effectiveness.mean, worthwhileness.mean]
+#        if totals.has_key? klass.course
+#          totals[klass.course.id] << [effectiveness.mean, worthwhileness.mean]
+#        else
+#          totals[klass.course.id] = [[effectiveness.mean, worthwhileness.mean]]
+#        end
       end
     end
 
     # Aggregate totals
-    @undergrad_totals.keys.each do |course|
-      scores = @undergrad_totals[course]
-      count = scores.size
-      total = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
-      @undergrad_totals[course] = total.map{|score| score/count}.push count
-    end
-    @undergrad_total = @undergrad_totals.keys.reduce([0, 0, 0]) do |sum, new| 
-      (sum_eff, sum_wth, sum_count) = sum
-      (new_eff, new_wth, new_count) = @undergrad_totals[new]
-      [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
-    end
-    (eff, wth, count) = @undergrad_total
-    @undergrad_total = [eff/count, wth/count, count] unless count == 0
-
-    unless @grad_totals.empty?
-      @grad_totals.keys.each do |course|
-        scores = @grad_totals[course]
-        count = scores.size
-        total = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
-        @grad_totals[course] = total.map{|score| score/count}.push count
+    totals = [@undergrad_totals, @grad_totals]
+    total = [0,0] # will end up as [@undergrad_total, @grad_total]
+    [0,1].each do |i|
+      unless totals[i].empty?
+        totals[i].keys.each do |course_id|
+          scores = totals[i][course_id]
+          count = scores.size
+          total_score = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
+          totals[i][course_id] = total_score.map{|score| score/count}.push count
+        end
+        total[i] = totals[i].keys.reduce([0, 0, 0]) do |sum, new| 
+          (sum_eff, sum_wth, sum_count) = sum
+          (new_eff, new_wth, new_count) = totals[i][new]
+          [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
+        end
+        (eff, wth, count) = total[i]
+        total[i] = [eff/count, wth/count, count] unless count == 0
       end
-      @grad_total = @grad_totals.keys.reduce([0, 0, 0]) do |sum, new| 
-        (sum_eff, sum_wth, sum_count) = sum
-        (new_eff, new_wth, new_count) = @grad_totals[new]
-        [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
-      end
-      (eff, wth, count) = @grad_total
-      @grad_total = [eff/count, wth/count, count] unless count == 0
     end
+    @undergrad_total, @grad_total = total
 
-    @instructor.tad_klasses.each do |klass|
-      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => ta_eff_q.id}).first
+
+    @instructor.tad_klasses.each do |klass_id|
+      effectiveness  = SurveyAnswer.find(:first, :conditions => {:instructor_id=>@instructor.id, :klass_id=>klass_id, :survey_question_id => ta_eff_q.id})
       unless effectiveness.blank?
         @tad_klasses << [
-          klass, 
-          @instructor, 
-          effectiveness,
+          klass_id, 
+          @instructor.id, 
+          effectiveness.id,
+          nil                # no worthwhileness
         ]
       end
     end
+    
+    Rails.cache.write(cache_key, Marshal.dump([@instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total]))
+  end # cache
+
+  # Unwrap from id to object, for the view
+  [@instructed_klasses, @tad_klasses].each do |a|
+    a.each do |k|
+      k[0] =        Klass.find(k[0])
+      k[1] =   Instructor.find(k[1])
+      k[2] = SurveyAnswer.find(k[2])
+      k[3] = SurveyAnswer.find(k[3]) unless k[3].blank?
+    end
   end
+  
+  temp = {}
+  @undergrad_totals.each do |course_id,tuple|
+    temp[Course.find(course_id)] = tuple
+  end
+  @undergrad_totals = temp
+
+  temp = {}
+  @grad_totals.each do |course_id,tuple|
+    temp[Course.find(course_id)] = tuple
+  end
+  @grad_totals = temp
+
+
+  end #instructor
 
   def rating
     @answer = SurveyAnswer.find(params[:id])

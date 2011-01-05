@@ -39,8 +39,9 @@
       <%- if answer.survey_question.important -%></strong><%- end -%>
     </td>
     <td>
-      <%= sprintf "%.1f", answer.mean %> / <%= answer.survey_question.max.to_f %>
-      <%= rating_bar(answer.mean/answer.survey_question.max.to_f, surveys_rating_path(answer), answer.survey_question.inverted) %>
+      <span class="rating1"><%= sprintf "%.1f", answer.mean %></span>
+      <span class="rating2"> / <%= answer.survey_question.max %> &plusmn; <%= sprintf "%.1f", answer.confidence_interval %></span>
+      <span class="rating3"><%= rating_bar(answer.mean/answer.survey_question.max.to_f, surveys_rating_path(answer), answer.survey_question.inverted) %></span>
     </td>
   </tr>
     <%- end -%>

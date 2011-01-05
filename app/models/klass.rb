@@ -27,8 +27,14 @@ class Klass < ActiveRecord::Base
     "#{course.course_abbr} #{proper_semester}"
   end
 
+  def all_sections
+    # This is slow, but whatever.. there shouldn't be too many klasses for a given semester
+    Klass.find(:all, :conditions => {:course_id => self.course.id, :semester => self.semester})
+  end
+
   def proper_semester
-    "#{SEMESTER_MAP[semester[-1..-1].to_i]} #{semester[0..3]}"
+    section_string = all_sections.length > 1 ? " Section #{section}" : ""
+    "#{SEMESTER_MAP[semester[-1..-1].to_i]} #{semester[0..3]}#{section_string}"
   end
 
   def url_semester

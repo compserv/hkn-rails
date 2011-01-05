@@ -25,11 +25,11 @@
       <%= link_to "#{klass.course.course_abbr} #{klass.proper_semester}", surveys_klass_path(klass) %>
     </td>
     <td>
-      <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
+      <%= sprintf "%.1f", effectiveness.mean %><span class="rating2"> / <%= effectiveness.survey_question.max.to_f %></span>
       <%= rating_bar(effectiveness.mean/effectiveness.survey_question.max.to_f) %>
     </td>
     <td>
-      <%= sprintf "%.1f", worthwhileness.mean %> / <%= worthwhileness.survey_question.max.to_f %>
+      <%= sprintf "%.1f", worthwhileness.mean %><span class="rating2"> / <%= worthwhileness.survey_question.max.to_f %></span>
       <%= rating_bar(worthwhileness.mean/worthwhileness.survey_question.max.to_f) %>
     </td>
     <td>
@@ -40,78 +40,44 @@
   </tr>
   <%- end -%>
   <tr><th>Totals</th><th>Teaching Effectiveness</th><th>How worthwhile was this course?</th><th></th></tr>
-  <%- unless @undergrad_totals.empty? -%>
-    <%- @undergrad_totals.each do |course,tuple| -%>
-      <%- (effectiveness, worthwhileness, count) = tuple -%>
-  <tr>
-    <td>
-      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-    <%- end -%>
-    <%- (effectiveness, worthwhileness, count) = @undergrad_total -%>
-  <tr>
-    <td>
-      <strong>Undergraduate Courses (<%= count %>)</strong>
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-  <%- end -%>
-  <%- unless @grad_totals.empty? -%>
-    <%- @grad_totals.each do |course,tuple| -%>
-      <%- (effectiveness, worthwhileness, count) = tuple -%>
-  <tr>
-    <td>
-      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-    <%- end -%>
-    <%- (effectiveness, worthwhileness, count) = @grad_total -%>
-  <tr>
-    <td>
-      <strong>Graduate Courses (<%= count %>)</strong>
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-  <%- end -%>
+  <%- [[@undergrad_total, @undergrad_totals, "Undergraduate"], [@grad_total, @grad_totals, "Graduate"]].each do |total,totals,totals_str| -%>
+    <%- unless totals.empty? -%>
+      <%- totals.each do |course,tuple| -%>
+        <%- (effectiveness, worthwhileness, count) = tuple -%>
+    <tr>
+      <td>
+        <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
+      </td>
+      <td>
+        <%= sprintf "%.1f", effectiveness %><span class="rating2"> / 7.0</span>
+        <%= rating_bar(effectiveness/7.0) %>
+      </td>
+      <td>
+        <%= sprintf "%.1f", worthwhileness %><span class="rating2"> / 7.0</span>
+        <%= rating_bar(worthwhileness/7.0) %>
+      </td>
+      <td>
+      </td>
+    </tr>
+      <%- end # totals.each -%>
+      <%- (effectiveness, worthwhileness, count) = total -%>
+    <tr>
+      <td>
+        <strong><%= totals_str %> Courses (<%= count %>)</strong>
+      </td>
+      <td>
+        <%= sprintf "%.1f", effectiveness %><span class="rating2"> / 7.0</span>
+        <%= rating_bar(effectiveness/7.0) %>
+      </td>
+      <td>
+        <%= sprintf "%.1f", worthwhileness %><span class="rating2"> / 7.0</span>
+        <%= rating_bar(worthwhileness/7.0) %>
+      </td>
+      <td>
+      </td>
+    </tr>
+    <%- end # unless totals.empty -%>
+  <%- end # both totals -%>
 </table>
 <%- end -%>
 

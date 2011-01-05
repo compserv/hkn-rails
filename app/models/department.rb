@@ -68,8 +68,13 @@ class Department < ActiveRecord::Base
     @@nice_abbrs.each_pair do |proper, informals|
       if informals.include? abbr
         abbr = proper
+        break
       end
     end
+    d = find_by_abbr(abbr)
+    return d unless d.nil?
+    # Didn't find one, perhaps abbreviations are stored wrong.. try to fix them
+    Department.all.each {|d| d.nice_abbrs}
     find_by_abbr(abbr)
   end
 end
