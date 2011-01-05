@@ -31,6 +31,9 @@ class Klass < ActiveRecord::Base
     # This is slow, but whatever.. there shouldn't be too many klasses for a given semester
     Klass.find(:all, :conditions => {:course_id => self.course.id, :semester => self.semester})
   end
+  def has_other_sections?
+    not all_sections.empty?
+  end
 
   def proper_semester
     section_string = all_sections.length > 1 ? " Section #{section}" : ""

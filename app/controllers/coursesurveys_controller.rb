@@ -151,15 +151,9 @@ class CoursesurveysController < ApplicationController
       return
     end
 
-    @results = []
-    klass_id = @klass.id
-    (@klass.instructors + @klass.tas).each do |instructor|
-      if instructor.private
-        answers = nil
-      else
-        answers = SurveyAnswer.find(:all, :conditions => { :klass_id => klass_id, :instructor_id => instructor.id}, :order => '"order"')
-      end
-      @results << [instructor, answers]
+    @results = (@klass.instructors + @klass.tas).collect do |instructor|
+      answers = instructor.private ? nil : @klass.survey_answers.find(:all, :conditions => {:instructor_id => instructor.id}, :order => '"order"')
+      [instructor, answers]
     end
   end
 
