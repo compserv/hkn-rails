@@ -1,32 +1,40 @@
 <% content_for :header do %>
-  <%= javascript_include_tag "raphael.min" %>
-  <%= javascript_include_tag "g.raphael.min" %>
-  <%= javascript_include_tag "raphael-bar.min" %>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script type="text/javascript">
-    $(document).ready(function() {
-      r = Raphael("holder");
-      fin = function () {
-        this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
-      };
-      fout = function () {
-        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-      };
-      fin2 = function () {
-        var y = [], res = [];
-        for (var i = this.bars.length; i--;) {
-          y.push(this.bars[i].y);
-          res.push(this.bars[i].value || "0");
+    google.load("visualization", "1", {packages:["corechart"]});
+    
+    google.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Semester');
+      data.addColumn('number', 'Teaching Effectiveness');
+      data.addColumn('number', 'Worthwhile Course?');
+      data.addRows($(".semester").length);
+      
+      count = 0;
+      $("#ratings tbody tr").each(function(){
+        dat = $($(this)).children("td")
+        year = $(dat[0]).find(".semester a").html();
+        eff = parseFloat($(dat[2]).find(".rating").html(), 10);
+        worth = parseFloat($(dat[3]).find(".rating").html(), 10);
+        
+        console.log(year + ": " + eff + " " + worth);
+        
+        if(year != null){
+          data.setValue(count, 0, year);
+          data.setValue(count, 1, eff);
+          data.setValue(count, 2, worth);
+          count++;
         }
-        this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
-      }
-      fout2 = function () {
-        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-      };
-      r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+        
+      }); 
 
-      r.g.barchart(10, 10, 320, 250, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2);
-  
-    });
+      var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
+      chart.draw(data, 
+        {width: 800, height: 400, title: 'Course Survey', hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}, isStacked: true, backgroundColor: 'none', reverseCategories: true}
+      );
+    }
   </script>
 <% end %>
 
@@ -61,7 +69,7 @@
 <%- if @course.klasses.blank? -%>
 <p>No survey data available for this course.</p>
 <%- else -%>
-<div id="holder"></div> 
+<div id="chart_div"></div> 
 
 <div id="table">
   <table id="ratings" class="table">
@@ -74,7 +82,7 @@
   <%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
     <tr>
       <td>
-        <%= link_to klass.proper_semester, surveys_klass_path(klass) %>
+        <span class="semester"><%= link_to klass.proper_semester, surveys_klass_path(klass) %></span>
       </td>
       <td>
         <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
