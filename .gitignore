@@ -6,3 +6,4 @@ config/database.yml
 *.swp
 nbproject
 Gemfile.lock
+*.pyc
