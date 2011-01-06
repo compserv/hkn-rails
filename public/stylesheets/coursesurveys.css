@@ -46,3 +46,12 @@
 {
   font-size: x-small;
 }
+
+#holder{
+  float:left;
+  width: 400px;
+}
+
+#table{
+  float: right;
+}

@@ -1,30 +1,31 @@
 <% content_for :header do %>
   <%= javascript_include_tag "raphael.min" %>
+  <%= javascript_include_tag "g.raphael.min" %>
   <%= javascript_include_tag "raphael-bar.min" %>
   <script type="text/javascript">
     $(document).ready(function() {
-      var r = Raphael("holder"),
-          fin = function () {
-            this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
-          },
-          fout = function () {
-            this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-          },
-          fin2 = function () {
-            var y = [], res = [];
-            or (var i = this.bars.length; i--;) {
-              y.push(this.bars[i].y);
-              res.push(this.bars[i].value || "0");
-            }
-            this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
-          },
-          fout2 = function () {
-            this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-          };
-          r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+      r = Raphael("holder");
+      fin = function () {
+        this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+      };
+      fout = function () {
+        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+      };
+      fin2 = function () {
+        var y = [], res = [];
+        for (var i = this.bars.length; i--;) {
+          y.push(this.bars[i].y);
+          res.push(this.bars[i].value || "0");
+        }
+        this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
+      }
+      fout2 = function () {
+        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+      };
+      r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
 
-          r.g.barchart(330, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2);
-      
+      r.g.barchart(10, 10, 320, 250, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2);
+  
     });
   </script>
 <% end %>
@@ -60,63 +61,50 @@
 <%- if @course.klasses.blank? -%>
 <p>No survey data available for this course.</p>
 <%- else -%>
-<table id="data">
-  <tfoot>
-    <tr>
-      <%- @results.reverse.slice(-10..-1).each do |klass, instructor, effectiveness, worthwhileness| -%>
-        <th><%= klass.proper_semester %></th>
-      <%- end -%>
-    </tr>
-  </tfoot>
-  <tbody>
-    <tr>  
-      <%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
-        <td><%= effectiveness.mean %></td>
-      <%- end -%>
-    </tr>
-  </tbody>
-</table>
 <div id="holder"></div> 
 
-<table id="ratings" class="table">
-  <tr>
-    <th>Sections</th>
-    <th>Instructor</th>
-    <th>Teaching Effectiveness</th>
-    <th>How worthwhile was this course?</th>
-  </tr>
-<%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
-  <tr>
-    <td>
-      <%= link_to klass.proper_semester, surveys_klass_path(klass) %>
-    </td>
-    <td>
-      <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
-    </td>
-    <td>
-     <%= rating_and_bar(effectiveness.mean, @effective_max) %>
-    </td>
-    <td>
-      <%= rating_and_bar(worthwhileness.mean, @worthwhile_max) %>
-    </td>
-  </tr>
-<%- end -%>
-  <tr>
-    <th colspan="2">Overall Rating</th>
-    <th>Teaching Effectiveness</th>
-    <th>How worthwhile was this course?</th>
-  </tr>
-  <tr>
-    <td colspan="2"></td>
-    <td>
-     <%= rating_and_bar(@total_effectiveness, @effective_max) %>
-    </td>
-    <td>
-     <%= rating_and_bar(@total_worthwhileness, @worthwhile_max) %>
-    </td>
-  </tr>
-</table>
+<div id="table">
+  <table id="ratings" class="table">
+    <tr>
+      <th>Sections</th>
+      <th>Instructor</th>
+      <th>Teaching Effectiveness</th>
+      <th>How worthwhile was this course?</th>
+    </tr>
+  <%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
+    <tr>
+      <td>
+        <%= link_to klass.proper_semester, surveys_klass_path(klass) %>
+      </td>
+      <td>
+        <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+      </td>
+      <td>
+       <%= rating_and_bar(effectiveness.mean, @effective_max) %>
+      </td>
+      <td>
+        <%= rating_and_bar(worthwhileness.mean, @worthwhile_max) %>
+      </td>
+    </tr>
+  <%- end -%>
+    <tr>
+      <th colspan="2">Overall Rating</th>
+      <th>Teaching Effectiveness</th>
+      <th>How worthwhile was this course?</th>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td>
+       <%= rating_and_bar(@total_effectiveness, @effective_max) %>
+      </td>
+      <td>
+       <%= rating_and_bar(@total_worthwhileness, @worthwhile_max) %>
+      </td>
+    </tr>
+  </table>
+</div>
 
+<div class="clear"></div>
 <p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
 <%- end -%>
 
