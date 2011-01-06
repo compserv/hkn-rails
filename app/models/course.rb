@@ -16,7 +16,7 @@ class Course < ActiveRecord::Base
 
   belongs_to :department
   has_and_belongs_to_many :tutors
-  has_many :klasses, :order => "semester, section DESC"
+  has_many :klasses, :order => "semester DESC, section DESC"
   has_many :coursesurveys, :through => :klasses
   has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :exams
