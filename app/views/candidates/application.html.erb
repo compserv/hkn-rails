@@ -61,7 +61,10 @@
     <%= hidden_field_tag(:committee_prefs, "", :id=>"committee_prefs") %>
     <ul id="sortable">
       <% for pref in @app_details[:committee_prefs] %>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><span><%= pref %></span></li>
+        <li class="ui-state-default">
+          <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+          <span><%= pref %></span>
+        </li>
       <% end %>
     </ul>
   </p>
@@ -70,5 +73,6 @@
     <%= label_tag "What activities would you like to see HKN do this semester?" %>
     <%= text_area_tag(:suggestion, @app_details[:suggestion]) %>
   </p>
+  
 <%= submit_tag "Save Application", :id=>"submit_app" %>
 <% end %>

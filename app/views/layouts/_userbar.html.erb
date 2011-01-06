@@ -1,12 +1,12 @@
 <div id="userbar">
-<% if @current_user %>
-  Welcome, <%= @current_user.first_name + " " + @current_user.last_name %>
-  <div class="userlinks small" style="clear:both">
-    [ <%= link_to "Settings", account_settings_path %> | <%= link_to "Logout", logout_path %> ]
-  </div>
-<% else %>
-  <div class="small">
-    <%= link_to "Login", login_path %> or <%= link_to "Register", register_path %>
-  </div>
-<% end %>
+  <% if @current_user %>
+    Welcome, <%= @current_user.first_name + " " + @current_user.last_name %>
+    <div class="userlinks small" style="clear:both">
+      [ <%= link_to "Settings", account_settings_path %> | <%= link_to "Logout", logout_path %> ]
+    </div>
+  <% else %>
+    <div class="small">
+      <%= link_to "Login", login_path %> or <%= link_to "Register", register_path %>
+    </div>
+  <% end %>
 </div>

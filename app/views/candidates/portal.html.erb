@@ -39,42 +39,61 @@
     });
   </script>
 <% end %>
-
-<div id="main" style="float:left">
-  <h1>Candidate Portal</h1>
-  <h2>Announcements</h2>
-
-  <% for a in @announcements %>
-  <div class="announcement">
-    <span class="title"><%= a.title %></span> - <span class="author"><%= a.person.first_name  + " " + a.person.last_name %></span>
-    <span class="body"><%= a.body %></span>
-  </div>
+<div id="sidebar">
+  <h2>Upcoming Events</h2>
+  <ul id="upcoming_events" class="plain">
+  <% for event in @events %>
+    <li class="event">
+      <span class="name"><%= event.name %></span>
+      <span>
+        <span class="time">
+          <%= event.start_time %> to <%= event.end_time %>
+        </span>
+        <span class="location"><%= event.location %></span>
+      </span>
+      <span class="description"><%= event.description %></span>
+    </li>
   <% end %>
-  
-  <h2>Checklist</h2>
-
-  <h3>Events</h3>
-  <% @status.each do |req, status| %>
-  <h4>
-    <%=h req.to_s + ": " %>
-    <% if status == true %>
-    <span class="status_done">Done</span>
-    <% else %>
-    <span class="status_notdone">Not Done</span>
-    <% end %>
-  </h4>
-  <ul>
-    <% for rsvp in @rsvps[req] %>
-    <li><%= rsvp.event.name %> <%= rsvp.confirmed == "true" ? "Confirmed" : "Not Confirmed" %></li>
-    <% end %>
   </ul>
-  <% end %>
- 
- 
+</div>
 
-  <h3>Challenges</h3>
+<div id="main">
+  <h1>Candidate Portal</h1>
   
-    <ul id="challenges">
+  <div id="announcements">
+    <h2>Announcements</h2>
+      <ul class="plain">
+      <% for a in @announcements %>
+        <li class="announcement">
+          <span class="title"><%= a.title %></span> - <span class="author"><%= a.person.first_name  + " " + a.person.last_name %></span>
+          <span class="body"><%= a.body %></span>
+        </li>
+      <% end %>
+      </ul>
+  </div>
+  
+  <div id="checklist">
+    <h2>Checklist</h2>
+  
+    <h3>Events</h3>
+    <% @status.each do |req, status| %>
+    <h4>
+      <%=h req.to_s + ": " %>
+      <% if status == true %>
+      <span class="status_done">Done</span>
+      <% else %>
+      <span class="status_notdone">Not Done</span>
+      <% end %>
+    </h4>
+    <ul class="plain">
+      <% for rsvp in @rsvps[req] %>
+      <li><%= rsvp.event.name %> <%= rsvp.confirmed == "true" ? "Confirmed" : "Not Confirmed" %></li>
+      <% end %>
+    </ul>
+    <% end %>
+
+    <h3>Challenges</h3>
+    <ul id="challenges" class="plain">
     <% if @challenges.length > 0 %>
       <% for challenge in @challenges %>
         <li>
@@ -88,43 +107,34 @@
       No challenges requested
     <% end %>
     </ul>
-
-  <h4>Request Challenge Confirmation</h4>
-  <div id="request_challenge_errors"></div>
-  <%= label_tag "Find Officer" %>
-  <%= text_field_tag "officer", "", :id => "officer" %>
+    
+    <div id="request_challenge_container">
+      <h4>Request Challenge Confirmation</h4>
+      <span id="request_challenge_errors"></span>
+      <%= label_tag "Find Officer" %>
+      <%= text_field_tag "officer", "", :id => "officer" %>
   
-  <%= label_tag "Challenge Name"%>
-  <%= text_field_tag "challenge_name" %>
+      <%= label_tag "Challenge Name"%>
+      <%= text_field_tag "challenge_name" %>
   
-  <%= submit_tag "Send Request", :id => "challenge_submit" %>
-
-  <h3>Course Surveys</h3>
-
-  <h3>Forms</h3>
-  <ul>
-    <li>
-      <%= link_to "Resume", "../../resumes/upload" %>
-    </li>
-    <li>
-      <%= link_to "Quiz", "../quiz" %>
-    </li>
-  </ul>
-
-  <h3>Additional Forms</h3>
-</div>
-<div id="sidebar" style="float:right">
-  <h2>Upcoming Events</h2>
-  <% for event in @events %>
-    <div class="event">
-      <span class="name"><%= event.name %></span>
-      <span>
-        <span class="time">
-          <%= event.start_time %> to <%= event.end_time %>
-        </span>
-        <span class="location"><%= event.location %></span>
-      </span>
-      <span class="description"><%= event.description %></span>
+      <%= submit_tag "Send Request", :id => "challenge_submit" %>
     </div>
-  <% end %>
+
+    <h3>Course Surveys</h3>
+    [Coming Soon]
+    
+    <h3>Forms</h3>
+    <ul id="forms" class="plain">
+      <li>
+        <%= link_to "Resume", "../../resumes/upload" %>
+      </li>
+      <li>
+        <%= link_to "Quiz", "../quiz" %>
+      </li>
+    </ul>
+
+    <h3>Additional Forms</h3>
+    [Coming Soon]
+  </div>
 </div>
+

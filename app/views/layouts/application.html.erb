@@ -9,6 +9,8 @@
   <%= javascript_include_tag "navigation.js" %>
   <%= csrf_meta_tag %>
   <%= yield(:header) %>
+  
+  <!--Automatically includes javascript or css files with the same name as the controller -->
   <% filename = controller.controller_name %>
   <% if FileTest.exist?  RAILS_ROOT + "/public/stylesheets/" + filename + ".css" %>
     <%= stylesheet_link_tag "#{filename}" %>
@@ -19,53 +21,48 @@
 </head>
 <body>
 
-<div id="header">
-	<div id="logoback">
-		<div id="logo">
-      <%= link_to image_tag("site/LogoDraftPlain.png"), root_url %>
-		</div>
-	</div>
-  <%= render "layouts/navigation" %>
-</div>
-
-<div id="content">
-<% if !@hide_topbar %>
-  <div id="topbar">
-    <%= render "layouts/userbar" %>
-    <%= render "layouts/searcharea" if @show_searcharea %>
-    <div style="clear:both; line-height:0px">&nbsp;</div>
+  <div id="header">
+  	<div id="logoback">
+  		<div id="logo">
+        <%= link_to image_tag("site/LogoDraftPlain.png"), root_url %>
+  		</div>
+  	</div>
+    <%= render "layouts/navigation" %>
   </div>
-<% end %>
 
-  <div id="container">
-	<% if !@messages.empty? %>
-	<div id="messages">
-		<% @messages.each do |message| %>
-		<div class="message">
-			<%= message %>
-		</div>
-		<% end %>
-	</div>
-	<% end %>
-	<% if Rails.env=="development" and !@debug.empty? %>
-	<div id="debug">
-		<% @debug.each do |message| %>
-		<div class="message">Debug:
-			<%= message %>
-		</div>
-		<% end %>
-	</div>
-	<% end %>
-<%= yield %>
-  </div>
-</div>
+  <div id="content">
+    <% if !@hide_topbar %>
+      <div id="topbar">
+        <%= render "layouts/userbar" %>
+        <%= render "layouts/searcharea" if @show_searcharea %>
+        <div class="clear"></div>
+      </div>
+    <% end %>
 
-<div id="footer">
-	<div id="footer-right">Eta Kappa Nu, Mu Chapter (<a href="mailto:www@hkn.eecs.berkeley.edu">www@hkn.eecs.berkeley.edu</a>)</div>
-  <div id="footer-left">
-    <%= link_to "HOME", root_url %> | <a href="/about/contact/">CONTACT</a>
+    <div id="container">
+  	  <% if !@messages.empty? %>
+    	  <div id="messages">
+      		<% @messages.each do |message| %>
+      		  <div class="message"><%= message %></div>
+      		<% end %>
+      	</div>
+    	<% end %>
+    	<% if Rails.env=="development" and !@debug.empty? %>
+    	  <div id="debug">
+      		<% @debug.each do |message| %>
+      		  <div class="message">Debug:<%= message %></div>
+      		<% end %>
+    	  </div>
+  	  <% end %>
+    
+      <%= yield %>
+    </div>
   </div>
-</div>
+
+  <div id="footer">
+  	<div id="footer-right">Eta Kappa Nu, Mu Chapter (<a href="mailto:www@hkn.eecs.berkeley.edu">www@hkn.eecs.berkeley.edu</a>)</div>
+    <div id="footer-left"><%= link_to "HOME", root_url %> | <a href="/about/contact/">CONTACT</a></div>
+  </div>
 
 </body>
 </html>
