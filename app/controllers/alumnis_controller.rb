@@ -34,7 +34,20 @@ class AlumnisController < ApplicationController
 
   # GET /alumnis/1/edit
   def edit
-    @alumni = @current_user.alumni
+    if @current_user
+
+      if @current_user.alumni
+        @alumni = @current_user.alumni
+      else
+        @alumni = Alumni.new
+        @alumni.person = @current_user
+        @alumni.save
+      end
+
+    else
+      flash[:notice] = "You must log in to edit your alumni information."
+      redirect_to "/login"
+    end
   end
 
   # POST /alumnis

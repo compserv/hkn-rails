@@ -52,6 +52,7 @@ HknRails::Application.routes.draw do
   resources :alumnis
   scope "alumni" do
     match "registration" => "alumnis#edit"
+    match "newsletter" => "alumnis#newsletter"
   end
 
   # Resumes, this is kind of just a prototype test right now

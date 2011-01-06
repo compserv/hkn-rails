@@ -22,7 +22,6 @@ describe "alumnis/edit.html.erb" do
       assert_select "input#alumni_job_title", :name => "alumni[job_title]"
       assert_select "input#alumni_company", :name => "alumni[company]"
       assert_select "input#alumni_salary", :name => "alumni[salary]"
-      assert_select "input#alumni_person", :name => "alumni[person]"
     end
   end
 end

@@ -34,14 +34,6 @@ describe AlumnisController do
     end
   end
 
-  describe "GET edit" do
-    it "assigns the requested alumni as @alumni" do
-      Alumni.stub(:find).with("37") { mock_alumni }
-      get :edit, :id => "37"
-      assigns(:alumni).should be(mock_alumni)
-    end
-  end
-
   describe "POST create" do
     describe "with valid params" do
       it "assigns a newly created alumni as @alumni" do
