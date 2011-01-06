@@ -17,7 +17,7 @@ class ResumesController < ApplicationController
                 "#{@current_user.first_name}.pdf"
     f = File.open(file_name, "wb")
     if @resume.save
-      @resume.file = f
+      @resume.file = f.path
       @resume.save! # This should always work if 2 lines above worked
       # Save file to disk only if it's valid
       f.write(resume_file.read)
@@ -46,6 +46,16 @@ class ResumesController < ApplicationController
       else
         @resinfo[person] = {:upload =>"No resume uploaded", :gpa => ""}
       end
+    end
+  end
+
+  # Shows resume (PDF, not model data) after authorization
+  def download
+    @resume = Resume.find(params[:id])
+    if @current_user and ( (@current_user == @resume.person) or (@current_user.in_groups?(['superusers', 'indrel'])) )
+      send_file @resume.file, :type => 'application/pdf', :x_sendfile => true
+    else
+      redirect_to :root, :notice => "Insufficient privileges to access this page."
     end
   end
   

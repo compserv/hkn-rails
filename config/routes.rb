@@ -1,5 +1,4 @@
 HknRails::Application.routes.draw do
-  get "resumes/new"
 
   #Department tours
   scope "dept_tour" do
@@ -56,8 +55,10 @@ HknRails::Application.routes.draw do
   end
 
   # Resumes, this is kind of just a prototype test right now
+  get "resumes/new"
   scope "resumes" do
     match "upload" => "resumes#new", :as => :resumes_upload
+    match "download/:id" => "resumes#download", :as => :resume_download
   end
   resources :resumes
 
