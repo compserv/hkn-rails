@@ -2,7 +2,9 @@
 db/*.sqlite3
 log/*.log
 tmp/**/*
+private/**/*
 config/database.yml
-*.swp
-nbproject
 Gemfile.lock
+*.swp
+*.pyc
+nbproject

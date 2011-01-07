@@ -11,7 +11,7 @@
 	
 		<% current_resume = @current_user.resumes.first %>
 		<% upload_time = current_resume.created_at.getlocal.to_datetime.strftime("%A %B %e, %Y %l:%M %p") %>
-			<tr><td><%= "Uploaded #{upload_time}" %></td></tr>
+			<tr><td><%= link_to "Uploaded #{upload_time}", resume_download_path(current_resume.id) %></td></tr>
 			<tr><td><%= "GPA #{current_resume.overall_gpa} (overall)" %></td></tr>
 			<tr><td><%= link_to "Update resume", :resumes_upload %>
 		<% end %>
