@@ -82,7 +82,9 @@ class EventsController < ApplicationController
     duration = @event.end_time - @event.start_time
     @blocks = []
 
+    invalid = false
     case params[:rsvp_type]
+    when 'No RSVPs'
     when 'Whole Event RSVPs'
       # Implies one block with the same start and end time as the event
       block = Block.new
@@ -98,8 +100,9 @@ class EventsController < ApplicationController
         num_blocks.times do |i|
           block = Block.new
           block.event = @event
-          block.start_time = @event.start_time + (block_length * i)
-          block.end_time = block.start_time + block_length
+          start_time = @event.start_time + (block_length * i)
+          block.start_time = start_time 
+          block.end_time = start_time + block_length
           block.rsvp_cap = params[:rsvp_cap]
           @blocks << block
         end
@@ -112,13 +115,16 @@ class EventsController < ApplicationController
           @blocks << block
         end
       end
+    else
+      invalid = true
     end
     @event.blocks = @blocks
 
     respond_to do |format|
       # Don't save event if any block is invalid
-      @event.transaction do
+      ActiveRecord::Base.transaction do
         begin
+          raise if invalid
           @event.save!
           @blocks.each do |block| 
             block.save!
