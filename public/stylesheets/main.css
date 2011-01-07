@@ -164,8 +164,8 @@ h2{
 
 
 /* Main Content */
-#content { padding: 0 10px 10px 10px; width: auto; }
-#container { clear: both; padding: 12px 8px 20px 8px; width: auto; overflow: hidden; }
+#content { padding: 15px 50px; width: auto; }
+#container { clear: both; width: auto; overflow: hidden; }
 
 /* Footer */
 #footer { clear: both; background: #003366; color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
@@ -190,33 +190,8 @@ h2{
 /* Forms */
 .field label { float: left; clear:left; width: 12em; margin-right: 5px; }
 .field input { clear: left; }
-.form-group { border: 1px solid black; margin: 5px 0px; padding: 4px; }
 
 #results table { border: 1px solid black; border-collapse: collapse; width: 100%; }
-
-/* Calendar */
-#calendar { border-collapse: collapse; table-layout: fixed; width: 100%; }
-#calendar th { border: 1px solid #BBBBBB; background-color: #EEEEEE; }
-#calendar td { border: 1px solid #BBBBBB; background-color: white; padding: 0; }
-#calendar td.today { background-color: #CCCCFF; }
-#calendar .today .date-field { background-color: #AAAAFF; }
-#calendar td.inactive { background-color: #F8F8F8; }
-#calendar .date-field { background-color: #F5F9FF; text-align: right; font-size: 80%; line-height: 1.5em; }
-#calendar .date-cell { min-height: 3em; }
-.calendar .event a { color: white; }
-.calendar .event a:hover { color: white; text-decoration: none; }
-.calendar .event { background-color: #8888FF; -moz-border-radius: 0.8em; margin: 2px 0; padding: 0 3px; font-size: 80%; }
-.calendar .event { color: white; background-color: #8888FF; }
-.calendar .event:hover { color: white; background-color: #444488; }
-
-.calendar .fun { background-color: #FF6666; }
-.calendar .big-fun { background-color: #44CC44; }
-.calendar .mandatory-for-candidates { background-color: #AA66DD; }
-.calendar .industry { background-color: #BBBB22; }
-.calendar .community-service { background-color: #EEBB22; }
-.calendar .department-service { background-color: #22BBBB; }
-.calendar .misc { background-color: #BBBB22; }
-.calendar li { display: inline; }
 
 /* Two-column Layout */
 #columns-wrapper { width: 90%; margin: auto; }

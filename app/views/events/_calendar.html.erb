@@ -1,15 +1,17 @@
 <div id="calendar-wrapper">
-  <h2 class="center"><%= @start_date.strftime('%B %Y') %></h2>
-
-  <ul class="plain calendar">
+  <ul class="plain calendar" style="float:right">
     <% EventType.order(:name).each do |event_type| %>
     <li class="event <%= event_type.classify %>"><%= event_type.name %></li>
     <% end %>
   </ul>
+  <div class="clear"></div>
+  
+  <span class="title"><%= @start_date.strftime('%B %Y') %></span>
 
   <div class="calendar-controls">
-    <%= link_to "Prev Month", {:month => @start_date.prev_month.month, :year => @start_date.prev_month.year} %>
-    <%= link_to "Next Month", {:month => @start_date.next_month.month, :year => @start_date.next_month.year} %>
+    <span style="float:left;"><%= link_to "Prev Month", {:month => @start_date.prev_month.month, :year => @start_date.prev_month.year} %></span>
+    <span style="float:right;"><%= link_to "Next Month", {:month => @start_date.next_month.month, :year => @start_date.next_month.year} %></span>
+    <div class="clear"></div>
     <div id="spinner" style="display:inline"></div>
   </div>
 

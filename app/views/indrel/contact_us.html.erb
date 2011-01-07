@@ -1,26 +1,40 @@
-<div id="infobar">
-  <b>Eta Kappa Nu (HKN) Mu Chapter</b><br />
-  EECS Honor Society<br />
-  Industrial Relations Committee<br />
-  <br />
-  290 Cory Hall<br />
-  Berkeley, CA 94720<br />
-  <br />
-  Tel: 510.642.7346<br />
-  Fax: 510.642.2845<br />
-  <%= mail_to 'indrel@hkn.eecs.berkeley.edu' %><br />
-  <%= link_to 'http://hkn.eecs.berkeley.edu' %>
-</div>
-
-<h1>Contact Us</h1>
-
-<h2>The Industrial Relations Committee</h2>
-<% @indrel_officers.each do |officer| %>
-  <div>
-    <%= image_tag officer.picture, :class => "indrel-officer-photo" unless officer.picture.nil? %>
-    <div>
-      <b><%= officer.fullname %></b><br />
-      <%= mail_to "#{officer.username}@hkn.eecs.berkeley.edu", "#{officer.username}@hkn", :encode => :hex %>
-    </div>
-  </div>
+<% content_for :header do %>
+  <style type="text/css">
+    #contain{
+      background: white;
+      width: 600px;
+      margin: auto;
+      padding: 1em;
+      -webkit-box-shadow: 0px 5px 20px #eee;
+    }
+  </style>
 <% end %>
+
+<div id="contain">
+  <h1>Contact Us</h1>
+
+  <div id="infobar">
+    <b>Eta Kappa Nu (HKN) Mu Chapter</b><br />
+    EECS Honor Society<br />
+    Industrial Relations Committee<br />
+    <br />
+    290 Cory Hall<br />
+    Berkeley, CA 94720<br />
+    <br />
+    Tel: 510.642.7346<br />
+    Fax: 510.642.2845<br />
+    <%= mail_to 'indrel@hkn.eecs.berkeley.edu' %><br />
+    <%= link_to 'http://hkn.eecs.berkeley.edu' %>
+  </div>
+
+  <h2>The Industrial Relations Committee</h2>
+  <% @indrel_officers.each do |officer| %>
+    <div>
+      <%= image_tag officer.picture, :class => "indrel-officer-photo" unless officer.picture.nil? %>
+      <div>
+        <b><%= officer.fullname %></b><br />
+        <%= mail_to "#{officer.username}@hkn.eecs.berkeley.edu", "#{officer.username}@hkn", :encode => :hex %>
+      </div>
+    </div>
+  <% end %>
+</div>
