@@ -121,7 +121,7 @@ HknRails::Application.routes.draw do
 
   #Tutoring pages
   scope "tutor" do
-    match "/" => "tutor#schedule"
+    match "/" => "tutor#schedule", :as => "tutor"
     match "schedule" => "tutor#schedule"
   end
   
