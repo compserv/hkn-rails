@@ -166,6 +166,12 @@
 	</a>
 </li>
 <li>
+	<a href="/admin/indrel/" class="navigation_sublevel_item">
+		Indrel
+	</a>
+</li>
+
+<li>
 	<%- if @current_user && @current_user.in_group?("deprel") -%>
 	<a href="/admin/deprel" class="navigation_sublevel_item">
 		Deprel Admin [<%= controller.num_deprel_requests %>]

@@ -17,6 +17,9 @@ HknRails::Application.routes.draw do
     scope "deprel" do
       match "/" => "deprel#overview"
     end
+    scope "indrel" do
+      match "/" => "indrel#indrel_db", :as => "indrel_db"
+    end
   end
   
   resources :dept_tour_requests do
@@ -102,14 +105,11 @@ HknRails::Application.routes.draw do
     match "resume-books"              => "indrel#resume_books",                   :as => "resume_books"
     get   "resume-books/order"        => "indrel#resume_books_order",             :as => "resume_books_order"
     post  "resume-books/order"        => "indrel#resume_books_order_post",        :as => "resume_books_order_post"
-    scope "db" do
-      match "/" => "indrel#indrel_db", :as => "indrel_db"
-      resources :companies
-      resources :contacts
-      resources :events,      :controller => "indrel_events",      :as => "indrel_events"
-      resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
-      resources :locations
-    end
+    resources :companies
+    resources :contacts
+    resources :events,      :controller => "indrel_events",      :as => "indrel_events"
+    resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
+    resources :locations
   end
 
   # Static pages
