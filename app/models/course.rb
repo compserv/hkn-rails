@@ -16,12 +16,18 @@ class Course < ActiveRecord::Base
 
   belongs_to :department
   has_and_belongs_to_many :tutors
-  has_many :klasses, :order => "semester DESC"
+  has_many :klasses, :order => "semester DESC, section DESC"
   has_many :coursesurveys, :through => :klasses
+  has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
   validates :name,          :presence => true
+  
+  def invalid?
+    # Some courses are invalid, and shouldn't be listed.
+    name =~ /INVALID/
+  end
 
   def dept_abbr
     department.nice_abbrs.first

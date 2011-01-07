@@ -29,11 +29,18 @@ class Klass < ActiveRecord::Base
 
   def all_sections
     # This is slow, but whatever.. there shouldn't be too many klasses for a given semester
-    Klass.find(:all, :conditions => {:course_id => self.course.id, :semester => self.semester})
+    Klass.find(:all, :conditions => {:course_id => course_id, :semester => semester})
+  end
+  def has_other_sections?
+    not Klass.find(:first, :conditions => ['course_id = ? and semester = ? and id != ?', course_id, semester, id]).nil?
   end
 
-  def proper_semester
-    section_string = all_sections.length > 1 ? " Section #{section}" : ""
+  def proper_semester(options={})
+    # e.g. Fall 2010 Section 2
+    # options
+    #  - sections: set true to show 'Section n' when multiple sections are present for the same semester
+    #
+    section_string = (all_sections.length > 1 ? " Section #{section}" : "") if options[:sections]
     "#{SEMESTER_MAP[semester[-1..-1].to_i]} #{semester[0..3]}#{section_string}"
   end
 

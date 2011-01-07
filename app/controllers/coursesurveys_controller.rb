@@ -20,8 +20,10 @@ class CoursesurveysController < ApplicationController
     @upper_div = []
     @grad      = []
     @prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
-    current_semester = (Time.now.year*10 + (Time.now.month/3)).to_s
-    start_semester   = (4.years.ago.year*10 + (4.years.ago.month/3)).to_s
+    if params[:full_list].blank?
+      current_semester = (Time.now.year*10 + (Time.now.month/3)).to_s
+      start_semester   = (4.years.ago.year*10 + (4.years.ago.month/3)).to_s
+    end
 
     #Course.find(:all, :conditions => { :department_id => @department.id }).each do |course|
     #Course.find(:all, 
@@ -39,41 +41,36 @@ class CoursesurveysController < ApplicationController
     #  end
     #end
 
-    Course.where(:department_id => @department.id).each do |course|
-      instructors = []
+    Course.find(:all, :conditions => {:department_id => @department.id}, :order => 'course_number, prefix, suffix').each do |course|
+      next if course.invalid?
+
       ratings = []
-      if params[:full_list].blank?
-        klasses = course.klasses.where({ :semester => start_semester.to_s..current_semester.to_s }).order(:semester)
-      else
-        klasses = course.klasses.order(:semester)
-      end
-      klasses.each do |klass|
-        SurveyAnswer.find(:all, :conditions => { :klass_id => klass.id, :survey_question_id => @prof_eff_q.id }).each do |answer|
-          instructors << answer.instructor_id
-          ratings << answer.mean
-        end
-      end
+      sort_order = 'semester DESC, section DESC'
 
-      instructors = instructors.uniq[0..3]
+      find_args = {:order => sort_order}
+      find_args[:conditions] = {:semester => start_semester.to_s..current_semester.to_s} if params[:full_list].blank?
+      first_klass = course.klasses.find(:first, find_args) #.find(:first, :conditions => conditions, :order => sort_order)
 
-      unless ratings.empty?
-        count = ratings.size
-        rating = ratings.reduce{|x,y|x+y}/count
-        tuple = [course, instructors, rating, klasses.first]
-        if course.course_number.to_i < 100
-          @lower_div << tuple
-        elsif course.course_number.to_i < 200
-          @upper_div << tuple
-        else
-          @grad << tuple
-        end
-      end
-    end
+      next if first_klass.nil?   # Sometimes the latest klass is really old, and not included in these results
+
+      avg_rating = SurveyAnswer.average(:mean, :joins => 'INNER JOIN klasses ON klasses.id = klass_id', :conditions => ['survey_question_id = ? and klasses.course_id = ?', @prof_eff_q.id, course.id])
+      
+      avg_rating.nil? ? next : avg_rating = avg_rating.to_f
+
+      instructors = course.instructors.uniq[0..3]
+      tuple = [course, instructors, avg_rating, first_klass] #klasses.first]
+       case course.course_number.to_i
+         when   0.. 99: @lower_div
+         when 100..199: @upper_div
+         else           @grad
+       end << tuple
+ end
 
   end
 
   def course
     @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
+    @course = Course.find(@course.id, :include => [:klasses => :instructors]) unless @course.nil?  # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
     @effective_max  = effective_q.max
@@ -85,44 +82,37 @@ class CoursesurveysController < ApplicationController
       @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
       render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
     else
-      sort_order = "semester, section DESC"
-      @latest_klass = @course.klasses.find(:first, {:order => sort_order})
-      @instructors = @latest_klass.instructors unless @latest_klass.nil?
+      sort_order = "semester DESC, section DESC"
       @results = []
       effective_sum = 0.0
       worthwhile_sum = 0.0
       @course.klasses.order(sort_order).each do |klass|
-        klass.instructors.each do |instructor|        
-          prof_eff = SurveyAnswer.find(:first, :conditions => {
-            :instructor_id => instructor.id,
-            :klass_id => klass.id,
-            :survey_question_id => effective_q.id} )
-          worthwhileness = SurveyAnswer.find(:first, :conditions => {
-            :instructor_id => instructor.id,
-            :klass_id => klass.id,
-            :survey_question_id => worthwhile_q.id} )
-            
-          
+        klass.instructors.each do |instructor|
+          prof_eff, worthwhileness = [effective_q, worthwhile_q].collect { |q|
+            klass.survey_answers.find(:first, :conditions => {:instructor_id => instructor.id, :survey_question_id => q.id}, :select => 'mean' )
+          }
+         
           # TODO: sometimes prof_eff or worthwhileness is missing... like if the imported data is incomplete
           # Fail gracefully
           if prof_eff.nil? or worthwhileness.nil? then
             flash[:warning] = "Data on this page may be incomplete. We're currently in the process of adding more survey responses."
+            logger.warn "incomplete data. course=#{@course.id}, klass=#{klass.id}, instructor=#{instructor.id}, prof_eff=#{prof_eff.nil? ? 'nil':prof_eff.id}, ww=#{worthwhileness.nil? ? 'nil':worthwhileness.id}"
             next
           end
             
           @results << [
             klass, 
             instructor, 
-            prof_eff,
-            worthwhileness,
+            prof_eff.mean,
+            worthwhileness.mean,
           ]
           
-          effective_sum  += prof_eff.mean.to_f
-          worthwhile_sum += worthwhileness.mean.to_f
+          effective_sum  += prof_eff.mean
+          worthwhile_sum += worthwhileness.mean
         end
       end
 
-      unless (@course.klasses.empty? or @results.empty?)
+      unless @results.empty?
         @total_effectiveness  = effective_sum/@results.size.to_f
         @total_worthwhileness = worthwhile_sum/@results.size.to_f
       end
@@ -151,15 +141,9 @@ class CoursesurveysController < ApplicationController
       return
     end
 
-    @results = []
-    klass_id = @klass.id
-    (@klass.instructors + @klass.tas).each do |instructor|
-      if instructor.private
-        answers = nil
-      else
-        answers = SurveyAnswer.find(:all, :conditions => { :klass_id => klass_id, :instructor_id => instructor.id}, :order => '"order"')
-      end
-      @results << [instructor, answers]
+    @results = (@klass.instructors + @klass.tas).collect do |instructor|
+      answers = instructor.private ? nil : @klass.survey_answers.find(:all, :conditions => {:instructor_id => instructor.id}, :order => '"order"')
+      [instructor, answers]
     end
   end
 

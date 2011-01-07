@@ -79,7 +79,7 @@
       <th>Teaching Effectiveness</th>
       <th>How worthwhile was this course?</th>
     </tr>
-  <%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
+  <%- @results.each do |klass, instructor, effectiveness_mean, worthwhileness_mean| -%>
     <tr>
       <td>
         <span class="semester"><%= link_to klass.proper_semester, surveys_klass_path(klass) %></span>
@@ -88,10 +88,10 @@
         <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
       </td>
       <td>
-       <%= rating_and_bar(effectiveness.mean, @effective_max) %>
+       <%= rating_and_bar(effectiveness_mean, @effective_max) %>
       </td>
       <td>
-        <%= rating_and_bar(worthwhileness.mean, @worthwhile_max) %>
+        <%= rating_and_bar(worthwhileness_mean, @worthwhile_max) %>
       </td>
     </tr>
   <%- end -%>

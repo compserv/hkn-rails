@@ -5,13 +5,8 @@
 <%- end -%>
 
 <table id="ratings" class="table">
-  <tr><th>Lower-Division Courses</th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
-  <%= render :partial => "department_row", :locals => { :courses => @lower_div } %>
-
-  <tr><th>Upper-Division Courses</th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
-  <%= render :partial => "department_row", :locals => { :courses => @upper_div } %>
-
-  <tr><th>Graduate Courses</th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
-  <%= render :partial => "department_row", :locals => { :courses => @grad } %>
-
+  <%- [ [@lower_div, 'Lower-Division'], [@upper_div, 'Upper-Division'], [@grad, 'Graduate'] ].each do |courses, course_type| -%>
+    <tr><th><%= course_type %></th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
+    <%= render :partial => 'department_row', :locals => {:courses => courses} %>
+  <%- end -%>
 </table>
