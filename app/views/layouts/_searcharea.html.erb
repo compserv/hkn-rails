@@ -2,7 +2,7 @@
   <div id="examfiles" class="searchcontrol">
     <form action="/exam/list/" method="get">
       <div>
-        <input type="text" id="id_exam_course" name="exam_course" value="Search Exams" class="text autoclear" />
+        <input type="text" id="id_exam_course" name="exam_course" placeholder="Search Exams" class="text autoclear" />
         <input class="button" type="submit" value="Search" />
       </div>
     </form>
@@ -12,7 +12,7 @@
   </div>
   <div id="coursesurvey" class="searchcontrol">
     <%= form_tag(coursesurveys_search_path, :method => "post") do %>
-      <%= text_field_tag(:query, "Search Course Surveys", :class => "text") %>
+      <%= text_field_tag(:query, "", :class => "text", :placeholder=>"Search Course Surveys") %>
       <%= submit_tag("Search") %>
     <%- end -%>
     <div class="small searchhelp">

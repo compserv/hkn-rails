@@ -52,6 +52,8 @@
               <li><a href="/tutor/">Tutoring</a></li>
               <li><%= link_to "Course Surveys", coursesurveys_path %></li>
               <li><a href="/exam/browse/">Exam Archive</a></li>
+            </ul>
+            <ul class="plain">
               <li><a href="/courseguide/">Course Guide</a></li>
               <li><a href="/services/more/">More Services</a></li>
             </ul>
@@ -62,6 +64,8 @@
               <li><%= link_to "Why HKN?", indrel_path %></li>
               <li><%= link_to "Resume Books", resume_books_path %></li>
               <li><%= link_to "Infosessions", infosessions_path %></li>
+            </ul>
+            <ul class="plain">
               <li><%= link_to "Career Fair", career_fair_path %></li>
               <li><%= link_to "Contact Us", indrel_contact_us_path %></li>
             </ul>
@@ -73,6 +77,8 @@
               <li><%= link_to "Officers",          people_list_path("officers") %></li>
               <li><%= link_to "Committee Members", people_list_path("cmembers") %></li>
               <li><%= link_to "Members",           people_list_path("members") %></li>
+            </ul>
+            <ul class="plain">
               <li><%= link_to "Candidates",        people_list_path("candidates") %></li>
             </ul>
           </div>
@@ -83,6 +89,8 @@
               <li><%= link_to "Events Calendar", events_calendar_path %></li>
               <li><%= link_to "Upcoming Events", events_category_path('future') %></li>
               <li><%= link_to "Past Events", events_category_path('past') %></li>
+            </ul>
+            <ul class="plain">
               <li><%= link_to "My RSVPs", my_rsvps_path %></li>
             </ul>
           </div>
@@ -99,6 +107,8 @@
               <li><a href="/about/contact/" class="navigation_sublevel_item">Contact Information</a></li>
               <li><a href="/gallery2/" class="navigation_sublevel_item">Photo Gallery</a></li>
               <li><a href="/about/yearbook/" class="navigation_sublevel_item">Yearbooks</a></li>
+            </ul>
+            <ul class="plain">
               <li><a href="/about/slideshow/" class="navigation_sublevel_item">Slideshows</a></li>
               <li><a href="/about/officers/" class="navigation_sublevel_item">Current Officers</a></li>
             </ul>
@@ -111,6 +121,8 @@
               <li><a href="/admin/" class="navigation_sublevel_item">Django Admin</a></li>
               <li><a href="/admin/request/list/" class="navigation_sublevel_item">Requests [0]</a></li>
               <li><a href="/admin/tutor/signup/" class="navigation_sublevel_item">Tutor Signup</a></li>
+            </ul>
+            <ul class="plain">
               <li><a href="/admin/tutor/view_signups/" class="navigation_sublevel_item">View Tutor Signups</a></li>
               <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
               <li>
@@ -134,20 +146,16 @@
           <%- end -%>
           
     	  </div>
+    	  <div id="topbar">
+          <%= render "layouts/searcharea" %>
+          <div class="clear"></div>
+        </div>
     	  <div class="clear"></div>
     	</div>
   	</div>
   </div>
 
   <div id="content">
-    <% if !@hide_topbar %>
-      <div id="topbar">
-        <%= render "layouts/userbar" %>
-        <%= render "layouts/searcharea" if @show_searcharea %>
-        <div class="clear"></div>
-      </div>
-    <% end %>
-
     <div id="container">
   	  <% if !@messages.empty? %>
     	  <div id="messages">

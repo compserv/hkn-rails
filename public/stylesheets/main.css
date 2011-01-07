@@ -7,7 +7,7 @@ a { color: #3366CC; text-decoration: none; }
 a:link { color: #3366CC; }
 a:visited { color: #3366CC; }
 a:hover { text-decoration: underline; }
-input { border: 1px solid #003366; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+/*input { border: 1px solid #003366; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 input:focus { border: 1px solid black; }
 input[type=submit] { background: #EEEEEE; margin: 4px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
 input[type=submit]:hover { -moz-box-shadow: 0px 0px 3px #000; -webkit-box-shadow: 0px 0px 3px #000; }
@@ -17,10 +17,10 @@ textarea  { width: 400px; height: 100px; }
 select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 select:focus { border: 1px solid black; }
 textarea { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
-textarea:focus { border: 1px solid black; }
+textarea:focus { border: 1px solid black; }*/
 label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right; }
-.small { font-size: x-small; line-height: 1.3em; }
-.aside { font-size: x-small; line-height: 1.3em; color: #444444; }
+.small { font-size: 0.8em; line-height: 1.2em; }
+.aside { font-size: 0.8em; line-height: 1.2em; color: #444444; }
 .super { font-size: 75%; vertical-align: super; }
 .warning { color: red; }
 th, td { padding: 4px; vertical-align: top; text-align: left; }
@@ -42,15 +42,18 @@ body{
 
 h1{
   font-size: 1.4em;
+  text-shadow: white 0px -2px 0px;
 }
 
 h2{
   font-size: 1.2em;
   color: #666;
+  text-shadow: white 0px -2px 0px;
 }
 
 h2{
   font-size: 1.1em;
+  text-shadow: white 0px -2px 0px;
 }
 /* Header */
 #navigation{
@@ -88,8 +91,7 @@ h2{
 }
 
 #lower{
-  background: rgba(10, 10, 30, 0.03);
-  height: 160px;
+  background: rgba(10, 10, 30, 0.05);
 }
 
 #lower #content{
@@ -99,15 +101,15 @@ h2{
 #logo{
   width: 437px;
   height: 88px;
-  background: url("../images/hkn_logo_blue.png");
+  background: url("../images/hkn_logo.png");
   float: left;
   cursor: pointer;
 }
 
 #submenu{
-  font-size: 1.2em;
+  font-size: 1.3em;
   line-height: 1.3em;
-  padding-left: 50px;
+  padding-left: 20px;
   padding-top: 10px;
   float: left;
 }
@@ -116,17 +118,38 @@ h2{
   display: none;
 }
 
+#submenu .submenu ul{
+  padding-left: 3em;
+  float:left;
+}
+
 #submenu a{
+  font-family: "Cuprum";
+  text-transform: uppercase;
   color: #999;
   text-decoration: none;
+  text-shadow: white 0px -1px 0px;
 }
 
 #submenu a:hover{
-  
+  color: #666;
 }
 
 #submenu .current{
   display: block;
+}
+
+#topbar{
+  padding-top: 10px;
+  float: right;
+}
+
+#searcharea input{
+  background: rgba(0,0,0, 0.05);
+  border-radius: 5px;
+  border: 0px;
+  font-size: 1.2em;
+  padding: 3px;
 }
 
 
