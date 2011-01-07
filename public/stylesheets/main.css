@@ -1,13 +1,8 @@
 /*** Standard Styling ***/
 html { height: 100%; }
-body { height: 100%; font-family: "Lucida Grande",Verdana,Arial,sans-serif; line-height: 1.5em; font-size: 14px; margin: 0; padding: 0; background: #FFFFFF; }
-ul, ol { margin-left: 25px; }
-h1 { color: #003366; font-weight: bold; font-size: x-large; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 12px 0 0; }
-h2 { font-weight: inherit; font-size: 130%; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 10px 0 0; }
-h3 { font-weight: bold; font-size: 100%; font-family: arial, helvetica, sans-serif; margin: 8px 0; padding: 8px 0 0;}
+body { height: 100%; margin: 0; padding: 0; background: #FFFFFF; }
+ul, ol { margin-left: 15px; }
 img { border: none; }
-p { line-height: 1.4; font-size: small; margin: 8px 0; }
-li { line-height: 1.8; font-size: small; }
 a { color: #3366CC; text-decoration: none; }
 a:link { color: #3366CC; }
 a:visited { color: #3366CC; }
@@ -37,60 +32,107 @@ ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1em; t
 .center { text-align: center; }
 
 /*** Main Layout ***/
-/* Header */
-#header { text-align: center; }
-#logo { margin: auto; background: white; }
-#navigation { font-family: "Trebuchet MS",Arial,tahoma,sans-serif; width: 100%; font-size: 15px; height: 54px; background: #003366; }
-#toplevel { height: 30px; margin: 0 auto; width: 100%; text-align: center; display: inline; }
-#toplevel ul { padding: 0; margin: 0; list-style: none; height: 30px; text-align: center; background: #336699; line-height: 30px; }
-#toplevel li { display: inline; position: relative; top: 2px; padding: 5px 0px 5px 0px; margin: 0px 5px; height: 28px; line-height: 28px; text-align: center; }
-#toplevel li a { text-align: center; text-decoration: none; color: #ffffff; padding: 0px 13px 5px 13px; }
-#toplevel li a:visited { text-align: center; text-decoration: none; color: #ffffff; }
-#toplevel li.selected { background: #003366; }
-#toplevel li.selected:hover { background: #003366; }
-#toplevel li:hover { background: #225588; }
-.submenu { font-size: 13px; height: 24px; display: none; clear: both; }
-.submenu ul { padding: 0; margin: 0; list-style: none; height: 24px; text-align: center; background: #003366; line-height: 24px; }
-.submenu li { display: inline; padding: 0; margin: 0; height: 24px; text-align: center; }
-.submenu li a { text-align: center; height: 18px; text-decoration: none; color: #ffffff; padding: 2px 7px 3px 10px; display: inline; }
-.submenu li a:visited { text-align: center; height: 18px; text-decoration: none; color: #ffffff; display: inline; }
-.submenu li a:hover { background: #002244; text-decoration: none; }
+body{
+  background: url("../images/back_gray.png");
+  font-family: "Puritan", "Lucinda Grande", Helvetica, Arial, serif;
+  font-size: 0.9em;
+  line-height: 1.3em;
+  color: #333;
+}
 
-/* Top Bar */
-#topbar { 
-  border-left: 1px #003366 solid; 
-  border-right: 1px #003366 solid; 
-  border-bottom: 1px #003366 solid; 
-  -webkit-border-bottom-left-radius: 10px; 
-  -webkit-border-bottom-right-radius: 10px; 
-  -moz-border-radius-bottomleft: 10px; 
-  -moz-border-radius-bottomright: 10px; 
-  padding-bottom: 3px; 
-  background-color: #ADC3DB; 
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #ADC3DB), color-stop(1, #B0E0E0));
-  background-image: -moz-linear-gradient( center bottom, #ADC3DB 0%, #B0E0E0 100% );
+h1{
+  font-size: 1.4em;
 }
-#topbar input { background: #DCE2ED; border: 1px #003366 solid; padding: 2px 3px; margin: 4px; }
-#topbar input[type=submit] { 
-  background-color: #DCE2ED; 
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #BBCCCC), color-stop(1, #DDEEEE));
-  background-image: -moz-linear-gradient( center bottom, #BBCCCC 0%, #DDEEEE 100% );
-  padding: 2px 3px; 
-  margin: 4px; 
+
+h2{
+  font-size: 1.2em;
+  color: #666;
 }
-#topbar input[type=submit]:active { 
-  background-color: #DCE2ED; 
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #DDEEEE), color-stop(1, #BBCCCC));
-  background-image: -moz-linear-gradient( center bottom, #DDEEEE 0%, #BBCCCC 100% );
+
+h2{
+  font-size: 1.1em;
 }
-#topbar input.text { width: 200px; }
-#topbar .searchhelp { margin-left: 5px; }
-#userbar { float: left; padding: 5px 8px 5px 8px; }
-#searcharea { float: right; padding: 5px 8px; }
-.searchcontrol { text-align: left; float: left; padding-left: 15px; }
+/* Header */
+#navigation{
+  width: 100%;
+  background: #403f3f;
+  color: white;
+}
+
+#navigation ul{
+  margin: 0px;
+  padding: 8px;
+  padding-left: 50px;
+  font-family: "Cuprum";
+  font-size: 1.2em;
+}
+
+#navigation li{
+  list-style-type: none;
+  display: inline-block;
+  padding-right: 2em;
+  text-transform: uppercase;
+}
+
+#navigation a{
+  text-decoration: none;
+  color: white;
+}
+
+#navigation a:hover{
+  color: #f7e26b;
+}
+
+#navigation li a.current{
+  color: #f7e26b;
+}
+
+#lower{
+  background: rgba(10, 10, 30, 0.03);
+  height: 160px;
+}
+
+#lower #content{
+  padding: 30px 50px;
+}
+
+#logo{
+  width: 437px;
+  height: 88px;
+  background: url("../images/hkn_logo_blue.png");
+  float: left;
+  cursor: pointer;
+}
+
+#submenu{
+  font-size: 1.2em;
+  line-height: 1.3em;
+  padding-left: 50px;
+  padding-top: 10px;
+  float: left;
+}
+
+#submenu .submenu{
+  display: none;
+}
+
+#submenu a{
+  color: #999;
+  text-decoration: none;
+}
+
+#submenu a:hover{
+  
+}
+
+#submenu .current{
+  display: block;
+}
+
+
 
 /* Main Content */
-#content { padding: 0 10px 10px 10px; width: auto; background: #EAEFFF; }
+#content { padding: 0 10px 10px 10px; width: auto; }
 #container { clear: both; padding: 12px 8px 20px 8px; width: auto; overflow: hidden; }
 
 /* Footer */
