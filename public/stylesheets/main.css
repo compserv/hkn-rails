@@ -168,7 +168,7 @@ h2{
 #container { clear: both; width: auto; overflow: hidden; }
 
 /* Footer */
-#footer { clear: both; background: #003366; color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
+#footer { clear: both; background: #403f3f; color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
 #footer a { color: #ffffff; }
 #footer a:visited { color: #ffffff; }
 #footer-right { float: right; }
