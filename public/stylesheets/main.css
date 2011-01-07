@@ -180,6 +180,7 @@ h2{
 /* Forms */
 .field label { float: left; clear:left; width: 12em; margin-right: 5px; }
 .field input { clear: left; }
+.form-group { border: 1px solid black; margin: 5px 0px; padding: 4px; }
 
 #results table { border: 1px solid black; border-collapse: collapse; width: 100%; }
 

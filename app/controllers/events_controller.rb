@@ -61,6 +61,7 @@ class EventsController < ApplicationController
   # GET /events/new.xml
   def new
     @event = Event.new
+    @blocks = @event.blocks
 
     respond_to do |format|
       format.html # new.html.erb
@@ -79,26 +80,56 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(params[:event])
     duration = @event.end_time - @event.start_time
-    num_blocks = Integer(params[:num_blocks])
-    block_length = duration/num_blocks
-    
-    @debug << "We want " + num_blocks.to_s + " blocks that are " + block_length.to_s + " seconds long"
-    
-    @blocks = Array.new(num_blocks)
-    0.upto(num_blocks - 1) do |i|
-      @blocks[i] = Block.new
-      @blocks[i].event = @event
-      @blocks[i].start_time = @event.start_time + (block_length * i)
-      @blocks[i].end_time = @blocks[i].start_time + block_length
-    end
-    respond_to do |format|
-      if @event.save
-        0.upto(num_blocks - 1) { |i| @blocks[i].save }
-        format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
-        format.xml  { render :xml => @event, :status => :created, :location => @event }
+    @blocks = []
+
+    case params[:rsvp_type]
+    when 'Whole Event RSVPs'
+      # Implies one block with the same start and end time as the event
+      block = Block.new
+      block.event = @event
+      block.start_time = @event.start_time
+      block.end_time = @event.end_time
+      block.rsvp_cap = params[:rsvp_cap]
+      @blocks << block
+    when 'Block RSVPs'
+      num_blocks = params[:num_blocks].to_i # Invalid strings are mapped to 0
+      if params[:uniform_blocks]
+        block_length = duration/num_blocks
+        num_blocks.times do |i|
+          block = Block.new
+          block.event = @event
+          block.start_time = @event.start_time + (block_length * i)
+          block.end_time = block.start_time + block_length
+          block.rsvp_cap = params[:rsvp_cap]
+          @blocks << block
+        end
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        # We assume that if block times are manually set, then they will appear
+        # in params hashed as block0, block1, etc...
+        num_blocks.times do |i|
+          block = Block.new(params["block#{i}"])
+          block.event = @event
+          @blocks << block
+        end
+      end
+    end
+    @event.blocks = @blocks
+
+    respond_to do |format|
+      # Don't save event if any block is invalid
+      @event.transaction do
+        begin
+          @event.save!
+          @blocks.each do |block| 
+            block.save!
+          end
+
+          format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
+          format.xml  { render :xml => @event, :status => :created, :location => @event }
+        rescue
+          format.html { render :action => "new" }
+          format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        end
       end
     end
   end
