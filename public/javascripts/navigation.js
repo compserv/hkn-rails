@@ -27,16 +27,15 @@ $(document).ready(function() {
 		$($(".navigation_toplevel_item")[0]).addClass("current");	
 		$(".submenu").first().show();
 	}
-	$(".navigation_toplevel_item").click(
-      function () {
-        $(".navigation_toplevel_item").removeClass("current");
-        $(this).addClass("current");
-        $(this).blur();
-        $(".submenu").hide();
-        id = $(this).attr("id") + "_submenu";
-        //$(id).fadeIn({ duration: 0.2 });		
-		    $("#" + id).show();
-      });
+	$(".navigation_toplevel_item").click(function () {
+    $(".navigation_toplevel_item").removeClass("current");
+    $(this).addClass("current");
+    $(this).blur();
+    $(".submenu").hide();
+    id = $(this).attr("id") + "_submenu";
+    //$(id).fadeIn({ duration: 0.2 });		
+    $("#" + id).show();
+  });
   
 });
 

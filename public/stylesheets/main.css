@@ -130,7 +130,7 @@ h2{
   text-shadow: white 0px -1px 0px;
 }
 
-#submenu a:hover{
+#submenu a:hover, .submenu .current{
   color: #666;
 }
 
@@ -149,6 +149,16 @@ h2{
   border: 0px;
   font-size: 1.2em;
   padding: 3px;
+}
+
+#main{
+  width: 65%;
+  float: left;
+}
+
+#sidebar{
+  width: 30%;
+  float: right;
 }
 
 
@@ -208,7 +218,7 @@ h2{
 .calendar li { display: inline; }
 
 /* Two-column Layout */
-#columns-wrapper { width: 800px; margin: auto; }
+#columns-wrapper { width: 90%; margin: auto; }
 #col1 { float: left; width: 48%; }
 #col2 { float: right; width: 48%; }
 
