@@ -122,9 +122,9 @@ describe EventsController do
           Event.stub(:new) { @mock_event }
           @mock_block = mock_model(Block, :save! => true).as_null_object
           #Block.stub(:new) { @mock_block }
-          block0 = 'Block 0'
-          block1 = 'Block 1'
-          block2 = 'Block 1'
+          block0 = {}
+          block1 = {}
+          block2 = {}
 
           Block.should_receive(:new).once.ordered.with(block0).and_return @mock_block
           Block.should_receive(:new).once.ordered.with(block1).and_return @mock_block
@@ -140,9 +140,9 @@ describe EventsController do
           Event.stub(:new) { @mock_event }
           @mock_block = mock_model(Block, :save! => lambda{raise }).as_null_object
           #Block.stub(:new) { @mock_block }
-          block0 = 'Block 0'
-          block1 = 'Block 1'
-          block2 = 'Block 1'
+          block0 = {}
+          block1 = {}
+          block2 = {}
 
           post :create, :event => {}, :rsvp_type => @rsvp_type, :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1, :block2 => block2
           response.should render_template("new")
@@ -171,20 +171,147 @@ describe EventsController do
     describe "with valid params" do
       it "updates the requested event" do
         Event.should_receive(:find).with("37") { mock_event }
-        mock_event.should_receive(:update_attributes).with({'these' => 'params'})
+        mock_event.should_receive(:update_attributes!).with({'these' => 'params'})
         put :update, :id => "37", :event => {'these' => 'params'}
       end
 
       it "assigns the requested event as @event" do
-        Event.stub(:find) { mock_event(:update_attributes => true) }
+        Event.stub(:find) { mock_event(:update_attributes! => true) }
         put :update, :id => "1"
         assigns(:event).should be(mock_event)
       end
 
       it "redirects to the event" do
-        Event.stub(:find) { mock_event(:update_attributes => true) }
-        put :update, :id => "1"
+        Event.stub(:find) { mock_event(:update_attributes! => true) }
+        put :update, :id => "1", :rsvp_type => "No RSVPs"
         response.should redirect_to(event_url(mock_event))
+      end
+
+      describe "with No RSVPs" do
+        it "deletes all existing blocks and RSVPs" do
+          @mock_event = mock_event(:update_attributes! => true)
+          Event.stub(:find) { @mock_event }
+          @mock_blocks = []
+          @mock_event.stub(:blocks) { @mock_blocks }
+          @mock_blocks.should_receive(:delete_all)
+          @mock_rsvps = []
+          @mock_event.stub(:rsvps) { @mock_rsvps }
+          @mock_rsvps.should_receive(:delete_all)
+          put :update, :id => "1", :rsvp_type => "No RSVPs"
+        end
+      end
+
+      describe "with Whole Event RSVPs" do
+        describe "if event used to have Block RSVPs" do
+          it "deletes all existing blocks" do
+            @mock_event = mock_event(:update_attributes! => true)
+            Event.stub(:find) { @mock_event }
+            @mock_blocks = [1, 2]
+            @mock_event.stub(:blocks) { @mock_blocks }
+            @mock_blocks.should_receive(:delete_all)
+
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs"
+          end
+
+          it "creates one block with the same start and end times" do
+            start_time = Time.now
+            end_time = Time.now + 1.minute
+            rsvp_cap = 10
+
+            @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
+            @mock_blocks = [1, 2]
+            @mock_event.stub(:blocks) { @mock_blocks }
+            Event.stub(:find) { @mock_event }
+            @mock_block = mock_model(Block, :save! => true)
+            @mock_blocks.stub(:delete_all)
+            Block.stub(:new) { @mock_block }
+
+            @mock_block.should_receive(:rsvp_cap=).with(rsvp_cap)
+            @mock_block.should_receive(:event=).with(@mock_event)
+            @mock_block.should_receive(:start_time=).with(start_time)
+            @mock_block.should_receive(:end_time=).with(end_time)
+
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap, :event => {:start_time => start_time, :end_time => end_time}
+          end
+        end
+        
+        describe "if event used to have Whole Event RSVPs" do
+          it "does not create a new block" do
+            @mock_event = mock_event(:update_attributes! => true)
+            Event.stub(:find) { @mock_event }
+            @mock_block = mock_model(Block, :save! => true)
+            @mock_block.stub(:rsvp_cap=)
+            @mock_block.stub(:event=)
+            @mock_block.stub(:start_time=)
+            @mock_block.stub(:end_time=)
+            @mock_blocks = [@mock_block]
+            @mock_event.stub(:blocks) { @mock_blocks }
+            Block.should_not_receive(:new)
+
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs"
+          end
+
+          it "updates the existing block start and end times" do
+            start_time = Time.now
+            end_time = Time.now + 1.minute
+            rsvp_cap = 10
+
+            @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
+            Event.stub(:find) { @mock_event }
+            @mock_block = mock_model(Block, :save! => true)
+            @mock_block.stub(:rsvp_cap=)
+            @mock_block.stub(:event=)
+            @mock_block.should_receive(:start_time=).with(start_time)
+            @mock_block.should_receive(:end_time=).with(end_time)
+            @mock_blocks = [@mock_block]
+            @mock_event.stub(:blocks) { @mock_blocks }
+            Block.should_not_receive(:new)
+
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs"
+          end
+        end
+      end
+
+      describe "with Block RSVPs" do
+        it "deletes all existing blocks which are not specified" do
+          num_blocks = 3
+          @mock_event = mock_event(:update_attributes! => true)
+          Event.stub(:find) { @mock_event }
+          @mock_block0 = mock_model(Block, :save! => true).as_null_object
+          @mock_block1 = mock_model(Block, :save! => true).as_null_object
+          @mock_block2 = mock_model(Block, :save! => true).as_null_object
+          block0 = {:id => 0}
+          block1 = {:id => 1}
+          block2 = {:id => 2}
+
+          @mock_event.stub(:blocks) { [@mock_block0, @mock_block1, @mock_block2] }
+
+          Block.should_receive(:find).once.ordered.with(0).and_return @mock_block0
+          Block.should_receive(:find).once.ordered.with(1).and_return @mock_block1
+          Block.should_not_receive(:find).with(2)
+          @mock_block2.should_receive(:delete)
+
+          put :update, :id => "1", :event => {}, :rsvp_type => 'Block RSVPs', :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1
+        end
+
+        it "creates new blocks with correct parameters" do
+          num_blocks = 3
+          @mock_event = mock_event(:update_attributes! => true)
+          Event.stub(:find) { @mock_event }
+          @mock_block0 = mock_model(Block, :save! => true).as_null_object
+          @mock_block1 = mock_model(Block, :save! => true).as_null_object
+          @mock_block2 = mock_model(Block, :save! => true).as_null_object
+          block0 = {:id => 0}
+          block1 = {:id => 1}
+          block2 = {}
+
+          Block.should_receive(:find).once.ordered.with(0).and_return @mock_block0
+          Block.should_receive(:find).once.ordered.with(1).and_return @mock_block1
+          Block.should_not_receive(:find).with(2)
+          Block.should_receive(:new).with(block2).and_return @mock_block2
+
+          put :update, :id => "1", :event => {}, :rsvp_type => 'Block RSVPs', :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1, :block2 => block2
+        end
       end
     end
 

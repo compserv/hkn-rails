@@ -165,8 +165,8 @@ class EventsController < ApplicationController
 
     # Don't save event if any block is invalid
     valid = true
-    begin
-      ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
+      begin
 
         case params[:rsvp_type]
         when 'No RSVPs'
@@ -242,10 +242,10 @@ class EventsController < ApplicationController
         @blocks.each do |block| 
           block.save!
         end
-      end # end transaction
-    rescue
-      valid = false
-    end
+      rescue ActiveRecord::ActiveRecordError
+        valid = false
+      end
+    end # end transaction
 
     respond_to do |format|
       if valid
