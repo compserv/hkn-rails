@@ -78,10 +78,17 @@ h4{
   text-shadow: white 0px -2px 0px;
   margin-bottom: 0.1em;
 }
+
+#wrapper{
+  min-height: 100%;
+  height: auto !important;
+	height: 100%;
+	margin: 0 auto -30px; /* the bottom margin is the negative value of the footer's height */
+}
 /* Header */
 #navigation{
   width: 100%;
-  background: #403f3f;
+  background: #403f3f url("../images/back_dark.png");
   color: white;
 }
 
@@ -192,11 +199,11 @@ h4{
 #container { clear: both; width: auto; overflow: hidden; }
 
 /* Footer */
-#footer { clear: both; background: #403f3f; color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
+#footer { clear: both; height: 30px; background: #403f3f url("../images/back_dark.png"); color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
 #footer a { color: #ffffff; }
 #footer a:visited { color: #ffffff; }
 #footer-right { float: right; }
-
+#push {height: 30px;}
 /* Messages */
 #messages { display: block; margin: 0 0 1em; text-align: center;}
 #debug { display: block; font-size: 12px !important; margin: 0 0 1em; padding: 4px 25px 4px 25px; }
