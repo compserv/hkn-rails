@@ -13,7 +13,7 @@ module CoursesurveysHelper
     end
 
     color = (width > 75) ?  "#77c265" : (width > 50) ? "#f6e68b" : "#ed8d86"
-    inner_html_options = { :class => "subbar", :style => "width: #{width}%; background-color: #{color}; margin-left: #{margin_left}%;" }
+    inner_html_options = { :class => "subbar", :style => "width: #{width}%; background-color: #{color}; margin-left: 0px;" }
 
     if url.nil?
       content_tag(:span, outer_html_options) do

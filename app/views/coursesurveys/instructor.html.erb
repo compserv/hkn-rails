@@ -32,23 +32,30 @@
 
       var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
       chart.draw(data, 
-        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: true, backgroundColor: 'none', reverseCategories: true}
+        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: true, backgroundColor: 'none'}
       );
     }
   </script>
 <% end %>
 
-<h1><%= @instructor.full_name %></h1>
+<div id="instructor_box" class="trans-bg">
+  <h1><%= @instructor.full_name %></h1>
 
-<%= image_tag @instructor.picture, :id => "instructor_picture" unless @instructor.picture.blank? %>
-<table id="instructor_info" class="infobox">
-  <tr> <th>Title</th>             <td><%= @instructor.title.blank? ? "Teaching Assistant" : @instructor.title %></td> </tr>
-  <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
-  <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
-  <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
-  <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
-  <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
-</table>
+  <div style="float:left; margin-right: 1em;">
+    <%= image_tag@instructor.picture, :class=>"instructor_photo" unless @instructor.picture.blank? %>
+  </div>
+  <div style="float:left;">
+    <table id="instructor_info" class="infobox">
+      <tr> <th>Title</th>             <td><%= @instructor.title.blank? ? "Teaching Assistant" : @instructor.title %></td> </tr>
+      <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
+      <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
+      <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
+      <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
+      <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
+    </table>
+  </div>
+  <div class="clear"></div>
+</div>
 
 <%- unless @instructed_klasses.blank? -%>
 <div id="chart_div"></div> 
@@ -159,8 +166,9 @@
 <%- if @instructed_klasses.empty? and @tad_klasses.empty? -%>
 <p>No survey data available for this instructor.</p>
 <%- else -%>
-<p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
 <%- end -%>
 
-<%= render :partial => 'emailhkn' %>
-<a href="/student/howtouse.shtml">[Info about this page]</a>
+<div style="text-align: center; padding-top: 1em;">
+  <%= render :partial => 'emailhkn' %>
+  <a href="/student/howtouse.shtml">[Info about this page]</a>
+</div>
