@@ -23,7 +23,17 @@
   <% end %>
 </head>
 <body>
-<div id="chat"></div>
+<div id="bar">
+  <div class="left">
+    <div id="userbar" style="display:none">
+      <%= render "layouts/userbar" %>
+    </div>
+  </div>
+  <div class="right">
+    <div id="user" class="bar-icon"></div>
+    <div id="chat" class="bar-icon"></div>
+  </div>
+</div>
 <div id="chatwindow">
 </div>
 <div id="wrapper">
@@ -152,7 +162,6 @@
           
     	  </div>
     	  <div id="topbar">
-          <%= render "layouts/userbar" %>
           <%= render "layouts/searcharea" %>
           <div class="clear"></div>
         </div>

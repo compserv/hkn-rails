@@ -217,14 +217,43 @@ h4{
 }
 
 /*** Chat ***/
-#chat{
-  background: black;
+#bar{
+  background: rgba(0, 0, 0, 0.7);
   cursor: pointer;
   position:fixed;
-  bottom: 0px;
-  right:0px;
-  height: 50px;
-  width: 50px;
+  bottom: 2em;
+  right: 5px;
+  padding: 5px 0px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+#bar .left{
+  float:left;
+}
+#bar .right{
+  float:right;
+}
+.bar-icon{
+  margin: 5px;
+  opacity: 0.8;
+  height: 24px;
+  width: 24px;
+}
+.bar-icon:hover{
+  opacity: 1;
+}
+
+#chat{
+  background: url("/images/icons/chat.png");
+}
+
+
+
+#user{
+  background: url("/images/icons/user.png") no-repeat;
+  position:relative;
+  left: 3px;
 }
 
 #chatbox{
@@ -237,11 +266,48 @@ h4{
   display: none;
   background: white;
   position:fixed;
-  bottom: 50px;
-  right:50px;
+  bottom: 2em;
+  right: 40px;
   height: 50%;
   width: 40%;
 }
+
+#userbar{
+  color: white;
+  padding: 5px;
+  line-height: 1em;
+}
+
+#userbar a{
+  color: #f9df49;
+}
+
+.userbar-link{
+  opacity: 0.9;
+}
+
+.userbar-link:hover{
+  opacity: 1;
+}
+
+.userbar-link .icon{
+  display: inline-block;
+  margin: 2px;
+  height: 17px;
+  width: 16px;
+  position: relative;
+  top: 5px;
+}
+
+#settings{
+  background: url("/images/icons/cog.png") no-repeat;
+}
+
+#logout{
+  background: url("/images/icons/shutdown.png");
+}
+
+
 
 /* Two-column Layout */
 #columns-wrapper { width: 95%; margin: auto; }
