@@ -20,6 +20,7 @@
   function new_block_form(i) {
     var block = $('#block_template').clone();
     var block_id = 'block'+i;
+    // Update fields with block number i
     block.attr('id', block_id);
     block.find('select').each( function(index) {
       var old_name = $(this).attr('name');
@@ -41,24 +42,35 @@
     return block;
   }
 
+  block_num = <%= @event.blocks.size %>;
+
   function update_blocks(e) {
     var value = $('#rsvp_type option:selected')[0].value
     if (value == 'Block RSVPs') {
       if ($('#uniform_blocks').attr('checked')) {
         $('#blocks').hide();
         $('#rsvp_cap_div').show();
+        $('#num_blocks_div').show();
       } else {
-        var num_blocks = parseInt($('#num_blocks')[0].value);
-        if (!isNaN(num_blocks) && (num_blocks != $('#blocks > div').length)) {
-          $('#blocks div').remove();
-          for (var i = 0; i < num_blocks; i+=1) {
-            $('#blocks').append(new_block_form(i));
-          }
-        }
         $('#blocks').show();
         $('#rsvp_cap_div').hide();
+        $('#num_blocks_div').hide();
+        //var num_blocks = parseInt($('#num_blocks')[0].value);
+        //if (!isNaN(num_blocks) && (num_blocks != $('#blocks > div').length)) {
+        //  $('#blocks div').remove();
+        //  for (var i = 0; i < num_blocks; i+=1) {
+        //    $('#blocks').append(new_block_form(i));
+        //  }
+        //}
+        //$('#blocks').show();
+        //$('#rsvp_cap_div').hide();
       }
     }
+  }
+
+  function add_block() {
+    $('#blocks').append(new_block_form(block_num));
+    block_num += 1;
   }
 
   $(document).ready(function() {
@@ -66,14 +78,14 @@
     update_blocks();
     $('#rsvp_type').change(update_rsvp_type);
     $('#uniform_blocks').change(update_blocks);
-    $('#num_blocks').change(update_blocks);
-    $('#num_blocks').keydown(function(e) {
-      // Update number of block forms when Enter is pressed
-      if (e.keyCode == '13') {
-        $(this).blur();
-        $(this).change();
-      }
-    });
+    //$('#num_blocks').change(update_blocks);
+    //$('#num_blocks').keydown(function(e) {
+    //  // Update number of block forms when Enter is pressed
+    //  if (e.keyCode == '13') {
+    //    $(this).blur();
+    //    $(this).change();
+    //  }
+    //});
   });
 </script>
 
@@ -136,18 +148,22 @@
   </div>
   <div id="rsvp_blocks" class="field">
     <div class="field">
-      <%= label_tag :num_blocks, 'Number of blocks' %><br />
-      <%= number_field_tag :num_blocks, @event.blocks.size %>
-    </div>
-    <div class="field">
       <%= label_tag :uniform_blocks, 'Uniform Blocks' %><br />
       <%= check_box_tag :uniform_blocks, true, (@event.blocks.size == 0) %>
     </div>
+    <div id="num_blocks_div" class="field">
+      <%= label_tag :num_blocks, 'Number of blocks' %><br />
+      <%= number_field_tag :num_blocks, @event.blocks.size %>
+    </div>
     <div id="blocks">
+      <div>
+        <%= link_to_function 'Add Block', 'add_block();' %>
+      </div>
       <% @event.blocks.size.times do |block_num| %>
         <% block = @event.blocks[block_num] %>
         <% block_name = "block#{block_num}" %>
         <div id="block<%= block_num %>" class="form-group">
+          <%= hidden_field block_name, :id, :value => block.id %>
           <div class="field">
             <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %><br />
             <%= number_field block_name, :rsvp_cap, :value => block.rsvp_cap %>
@@ -160,6 +176,15 @@
             <%= label_tag :end_time, 'End Time' %><br />
             <%= datetime_select block_name, :end_time, :default => block.end_time %>
           </div>
+          <div>
+            <% unless block.rsvps.empty? %>
+              This block has RSVPs from the following people: 
+              <% block.rsvps.each do |rsvp| %>
+                <%= rsvp.person.fullname %>
+              <% end %>
+            <% end %>
+          </div>
+          <%= link_to_function 'Delete', :onclick => "$(this).parent().remove();" %>
         </div>
       <% end %>
     </div>
@@ -176,6 +201,7 @@
         <%= label_tag :end_time, 'End Time' %><br />
         <%= datetime_select :block, :end_time %>
       </div>
+      <%= link_to_function 'Delete', :onclick => "$(this).parent().remove();" %>
     </div>
   </div>
   <div class="field">

@@ -82,7 +82,7 @@ class EventsController < ApplicationController
     duration = @event.end_time - @event.start_time
     @blocks = []
 
-    invalid = false
+    valid = true
     case params[:rsvp_type]
     when 'No RSVPs'
     when 'Whole Event RSVPs'
@@ -109,33 +109,46 @@ class EventsController < ApplicationController
       else
         # We assume that if block times are manually set, then they will appear
         # in params hashed as block0, block1, etc...
-        num_blocks.times do |i|
-          block = Block.new(params["block#{i}"])
+        params.keys().reject{|x| !(x =~ /block\d+/)}.each do |block_name|
+          #block = Block.new(params["block#{i}"])
+          block_hash = params[block_name]
+          if block_hash.has_key?('id')
+            block = Block.find(block_hash['id'])
+            block.update_attributes(block_hash)
+          else
+            block = Block.new(params[block_name])
+          end
           block.event = @event
           @blocks << block
         end
       end
     else
-      invalid = true
+      #raise "Invalid RSVP type"
+      valid = false
+      @event.errors[:base] << "Invalid RSVP type"
     end
-    @event.blocks = @blocks
 
-    respond_to do |format|
-      # Don't save event if any block is invalid
-      ActiveRecord::Base.transaction do
-        begin
-          raise if invalid
+    if valid
+      begin
+        # Don't save event if any block is invalid
+        ActiveRecord::Base.transaction do
           @event.save!
           @blocks.each do |block| 
             block.save!
           end
-
-          format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
-          format.xml  { render :xml => @event, :status => :created, :location => @event }
-        rescue
-          format.html { render :action => "new" }
-          format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
         end
+      rescue
+        valid = false
+      end
+    end
+
+    respond_to do |format|
+      if valid
+        format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
+        format.xml  { render :xml => @event, :status => :created, :location => @event }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -148,21 +161,94 @@ class EventsController < ApplicationController
     original_start = @event.start_time
     original_end = @event.end_time
 
-    respond_to do |format|
-      if @event.update_attributes(params[:event])
-        num_blocks = Integer(params[:num_blocks]) 
-        if num_blocks != @blocks.length || original_start != @event.start_time || original_end != @event.end_time
-          @blocks.clear
-          duration = @event.end_time - @event.start_time
-          block_length = duration/num_blocks
-          0.upto(num_blocks - 1) do |i|
-            @blocks[i] = Block.new
-            @blocks[i].event = @event
-            @blocks[i].start_time = @event.start_time + (block_length * i)
-            @blocks[i].end_time = @blocks[i].start_time + block_length
-            @blocks[i].save
+    @event.update_attributes!(params[:event])
+
+    # Don't save event if any block is invalid
+    valid = true
+    ActiveRecord::Base.transaction do
+      begin
+
+        case params[:rsvp_type]
+        when 'No RSVPs'
+          # Delete existing blocks and any RSVPs
+          @event.blocks.delete_all
+          @event.rsvps.delete_all
+        when 'Whole Event RSVPs'
+          # Implies one block with the same start and end time as the event
+          case @event.blocks.size
+          when 0
+            block = Block.new
+          when 1
+            block = @event.blocks[0]
+          else
+            @event.blocks.delete_all
+            block = Block.new
           end
+          block.event = @event
+          block.start_time = @event.start_time
+          block.end_time = @event.end_time
+          block.rsvp_cap = params[:rsvp_cap]
+          @blocks = [block]
+        when 'Block RSVPs'
+          num_blocks = params[:num_blocks].to_i # Invalid strings are mapped to 0
+          # We will destroy all existing blocks if uniform_blocks is selected.
+          # Even if event was originally created with uniform_blocks selected,
+          # the edit page should display it in manual block mode, which will 
+          # preserve any blocks that the user does not explicitly delete.
+          if params[:uniform_blocks]
+            @event.blocks.delete_all
+            @blocks = []
+            duration = @event.end_time - @event.start_time
+            block_length = duration/num_blocks
+            num_blocks.times do |i|
+              block = Block.new
+              block.event = @event
+              start_time = @event.start_time + (block_length * i)
+              block.start_time = start_time 
+              block.end_time = start_time + block_length
+              block.rsvp_cap = params[:rsvp_cap]
+              @blocks << block
+            end
+          else
+            # We assume that if block times are manually set, then they will appear
+            # in params hashed as block0, block1, etc...
+            old_blocks = @event.blocks
+            new_blocks = []
+            params.keys().reject{|x| !(x =~ /block\d+/)}.each do |block_name|
+              block_hash = params[block_name]
+              if block_hash.has_key?('id')
+                block = Block.find(block_hash['id'])
+                block.update_attributes(block_hash)
+              else
+                block = Block.new(params[block_name])
+              end
+              block.event = @event
+              new_blocks << block
+            end
+
+            old_blocks.each do |block|
+              if !new_blocks.include?(block)
+                block.delete
+              end
+            end
+
+            @blocks = new_blocks
+          end
+        else
+          valid = false
+          @event.errors[:base] << "Invalid RSVP type"
         end
+
+        @blocks.each do |block| 
+          block.save!
+        end
+      rescue ActiveRecord::ActiveRecordError
+        valid = false
+      end
+    end # end transaction
+
+    respond_to do |format|
+      if valid
         format.html { redirect_to(@event, :notice => 'Event was successfully updated.') }
         format.xml  { head :ok }
       else
