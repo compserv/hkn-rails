@@ -3,22 +3,35 @@ html { height: 100%; }
 body { height: 100%; margin: 0; padding: 0; background: #FFFFFF; }
 ul, ol { margin-left: 15px; }
 img { border: none; }
+
+/*Links*/
 a { color: #3366CC; text-decoration: none; }
 a:link { color: #3366CC; }
 a:visited { color: #3366CC; }
 a:hover { text-decoration: underline; }
-/*input { border: 1px solid #003366; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+
+/*Forms*/
+input { border: 1px solid #ccc; background: white; border-radius: 3px; -moz-border-radius: 3px; -moz-border-radius: 3px;font-size: 1.1em; margin: 2px 0; padding: 2px 3px; outline: none;}
 input:focus { border: 1px solid black; }
 input[type=submit] { background: #EEEEEE; margin: 4px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
-input[type=submit]:hover { -moz-box-shadow: 0px 0px 3px #000; -webkit-box-shadow: 0px 0px 3px #000; }
+input[type=submit]:hover {  }
 input.short { width: 100px; }
 input.long  { width: 200px; }
+
 textarea  { width: 400px; height: 100px; }
-select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+select { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 1.1em; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
 select:focus { border: 1px solid black; }
-textarea { border: 1px solid #CCCCCC; background: #F1F1F1; font-size: 11px; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; }
+textarea { border: 1px solid #CCCCCC; background: white; border-radius: 3px; -moz-border-radius: 3px; -moz-border-radius: 3px; font-size: 1.1em; font-weight: normal; margin: 2px 0; padding: 2px 3px; vertical-align: middle; outline: none;}
 textarea:focus { border: 1px solid black; }*/
 label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right; }
+
+.field label { float: left; clear:left; width: 12em; margin-right: 5px; }
+.field input { clear: left; }
+
+/*Tables*/
+#results table { border: 1px solid black; border-collapse: collapse; width: 100%; }
+
+/*Other*/
 .small { font-size: 0.8em; line-height: 1.2em; }
 .aside { font-size: 0.8em; line-height: 1.2em; color: #444444; }
 .super { font-size: 75%; vertical-align: super; }
@@ -30,6 +43,9 @@ th { font-weight: bold; }
 .right_column { float: right; }
 ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1em; text-indent: -1em; }
 .center { text-align: center; }
+.clear{
+  clear:both;
+}
 
 /*** Main Layout ***/
 body{
@@ -37,7 +53,7 @@ body{
   font-family: "Puritan", "Lucinda Grande", Helvetica, Arial, serif;
   font-size: 0.9em;
   line-height: 1.3em;
-  color: #333;
+  color: #403f3f;
 }
 
 h1{
@@ -48,11 +64,19 @@ h1{
 h2{
   font-size: 1.2em;
   text-shadow: white 0px -2px 0px;
+  margin-bottom: 0.1em;
 }
 
-h2{
+h3{
   font-size: 1.1em;
   text-shadow: white 0px -2px 0px;
+  margin-bottom: 0.1em;
+}
+
+h4{
+  font-size: 1em;
+  text-shadow: white 0px -2px 0px;
+  margin-bottom: 0.1em;
 }
 /* Header */
 #navigation{
@@ -174,32 +198,18 @@ h2{
 #footer-right { float: right; }
 
 /* Messages */
-#messages { display: block; font-size: 12px !important; margin: 0 0 3px; padding: 4px 25px 4px 25px; }
-#debug { display: block; font-size: 12px !important; margin: 0 0 3px; padding: 4px 25px 4px 25px; }
-.message { border: solid 3px #003366; padding: 10px; background: #336699; color: #FFFFFF; }
+#messages { display: block; margin: 0 0 1em; text-align: center;}
+#debug { display: block; font-size: 12px !important; margin: 0 0 1em; padding: 4px 25px 4px 25px; }
+.message { border: solid 1px #E6D98A; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; padding: 5px; background: #FFFAD6; color: #595957; }
 #debug .message { border: solid 3px #cc0000; padding: 10px; background: #ff6666; color: #FFFFFF; }
 
 /*** Specific Page Styling ***/
-/* Info Bar */
-/*#infobar { float: right; width: 300px; border-left: 1px solid #003366; padding-left: 8px; margin-left: 12px; height: 100%; overflow: auto; }*/
 #sidebar{
     float:right;
     width: 30%;
 }
 
-/* Forms */
-.field label { float: left; clear:left; width: 12em; margin-right: 5px; }
-.field input { clear: left; }
-
-#results table { border: 1px solid black; border-collapse: collapse; width: 100%; }
-
 /* Two-column Layout */
-#columns-wrapper { width: 90%; margin: auto; }
+#columns-wrapper { width: 95%; margin: auto; }
 #col1 { float: left; width: 48%; }
 #col2 { float: right; width: 48%; }
-
-
-/* Clearfix for floating layouts */
-.clear{
-  clear:both;
-}
