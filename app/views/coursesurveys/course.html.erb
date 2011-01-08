@@ -32,16 +32,14 @@
 
       var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
       chart.draw(data, 
-        {width: $(window).width()*0.9, height: 400, title: 'Course Survey', hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}, isStacked: true, backgroundColor: 'none', reverseCategories: true}
+        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: true, backgroundColor: 'none', reverseCategories: true}
       );
     }
   </script>
 <% end %>
 
 <h1><%= @course.course_name %></h1>
-
-<img id="trend" src="/trend" alt="trend"/>
-<table id="course_info" class="infobox">
+<table id="course_info" class="infobox trans-bg">
 <%- unless @course.name.eql?("(No title)") -%>
   <tr> <th>Title</th>            <td><%= @course.name %></td> </tr>
 <%- end -%>

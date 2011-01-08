@@ -12,7 +12,7 @@ module CoursesurveysHelper
       margin_left = 0
     end
 
-    color = (width > 75) ?  "green" : (width > 50) ? "orange" : "red"
+    color = (width > 75) ?  "#77c265" : (width > 50) ? "#f6e68b" : "#ed8d86"
     inner_html_options = { :class => "subbar", :style => "width: #{width}%; background-color: #{color}; margin-left: #{margin_left}%;" }
 
     if url.nil?

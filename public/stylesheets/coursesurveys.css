@@ -1,5 +1,5 @@
-.ratingbar { width: 70px; height: 9px; border: 1px black solid; display: inline-block; }
-.ratingbar .subbar { height: 100%; display: block; }
+.ratingbar { width: 100px; height: 15px; border: 1px #ddd solid; display: inline-block; padding: 2px; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.ratingbar .subbar { height: 100%; display: block; border-radius: 2px; -webkit-border-radius: 2px; -moz-border-radius: 2px;}
 .histogram th, .histogram td { padding: 0 4px; }
 .frequencybar { width: 200px; height: 20px; display: inline-block; }
 .frequencybar .subbar { 
@@ -10,16 +10,6 @@
   background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #FFDD44), color-stop(1, #FFEE66));
   background-image: -moz-linear-gradient( center left, #FFDD44 0%, #EEFF33 100% );
 }
-.infobox {
-  border: 1px black solid; 
-  border-radius: 20px; 
-  -moz-border-radius: 20px; 
-  -webkit-border-radius: 20px; 
-  background-color: #ADC3DB; 
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
-  background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
-  padding: 10px;
-}
 .infobox th { text-align: right; }
 #instructor_info { margin: auto; }
 #rating_info { margin: auto; width: auto; }
@@ -28,16 +18,16 @@
 .info-label { display: table-cell; text-align: right; font-weight: bold; padding: 5px; }
 .info-item { display: table-cell; text-align: left; padding: 5px; }
 .clear { clear: both; }
-#trend { float: right; }
-#ratings { border: 1px solid black; border-collapse: collapse; margin: 10px auto; font-size: 90%; }
-.table th { border: 1px solid black; background-color: #BBCCEE; 
-  background-color: #ADC3DB; 
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #C0D8F0), color-stop(1, #E0F0FF));
-  background-image: -moz-linear-gradient( center bottom, #C0D8F0 0%, #E0F0FF 100% );
+
+#ratings { width: 85%; border: 1px solid #ddd; border-collapse: collapse; margin: 10px auto; }
+.table th { 
+  border: 1px solid #ddd;
+  background-color: #403f3f; 
+  color: white;
 }
 .table td { border: 1px dashed #AABBDD; padding: 2px 4px; }
-.table tr:nth-child(even) { background-color: #E8F0F5; }
-.table tr:nth-child(odd)  { background-color: #D8E0EE; }
+.table tr:nth-child(even) { background-color: #f9f9f9; }
+.table tr:nth-child(odd)  { background-color: #fff; }
 #instructor_picture { float: left; margin-right: 10px; }
 #instructorbox { padding: 10px; float: left; margin: 10px auto; }
 #instructorbox ul { list-style: none }

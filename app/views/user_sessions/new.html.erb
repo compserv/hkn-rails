@@ -1,17 +1,35 @@
-<h1>Login</h1>
-
-<%= form_for @user_session, :url => create_session_path do |f| %>
-  <%= f.error_messages %>
-  <%= f.label :username %>
-  <%= f.text_field :username %><br />
-  <br />
-  <%= f.label :password %>
-  <%= f.password_field :password %><br />
-  <br />
-  <%= f.label :remember_me %><%= f.check_box :remember_me %><br />
-  <br />
-  <%= hidden_field_tag(:referer, @referer) %>
-  <%= f.submit "Login" %>
+<% content_for :header do %>
+  <style type="text/css">
+    #contain{     
+      width: 500px;
+      margin: auto;
+    }
+  </style>
 <% end %>
 
-<%= link_to "Don't have an account?", register_path %>
+<div class="white-bg" id="contain">
+  <h1>Login</h1>
+
+  <%= form_for @user_session, :url => create_session_path do |f| %>
+    <%= f.error_messages %>
+    
+    <div class="field">
+      <%= f.label :username %>
+      <%= f.text_field :username %>
+    </div>
+    
+    <div class="field">
+      <%= f.label :password %>
+      <%= f.password_field :password %>
+    </div>
+    
+    <div class="field">
+    <%= f.label :remember_me %><%= f.check_box :remember_me %>
+    </div>
+    
+    <%= hidden_field_tag(:referer, @referer) %>
+    <%= f.submit "Login" %>
+  <% end %>
+
+  <%= link_to "Don't have an account?", register_path %>
+</div>

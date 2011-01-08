@@ -1,16 +1,13 @@
 <% content_for :header do %>
   <style type="text/css">
-    #contain{
-      background: white;
+    #contain{   
       width: 600px;
       margin: auto;
-      padding: 1em;
-      -webkit-box-shadow: 0px 5px 20px #eee;
     }
   </style>
 <% end %>
 
-<div id="contain">
+<div class="white-bg" id="contain">
   <h1>Contact Us</h1>
 
   <div id="infobar">
@@ -27,6 +24,8 @@
     <%= link_to 'http://hkn.eecs.berkeley.edu' %>
   </div>
 
+  <div class="light-hbar"></div>
+  
   <h2>The Industrial Relations Committee</h2>
   <% @indrel_officers.each do |officer| %>
     <div>

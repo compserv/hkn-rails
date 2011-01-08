@@ -10,12 +10,7 @@
     }
     
     #sidebar, #announcements{
-      border-radius: 5px;
-      -moz-border-radius: 5px;
-      -webkit-border-radius: 5px;
-      padding: 1em;
       margin: 1em 0px;
-      background: rgba(10, 10, 30, 0.03);
     }
     ul.semi-plain{
       list-style: none;
@@ -93,7 +88,7 @@
     });
   </script>
 <% end %>
-<div id="sidebar">
+<div id="sidebar" class="trans-bg">
   <h2>Upcoming Events</h2>
   <ul id="upcoming_events" class="plain">
   <% for event in @events %>
@@ -120,7 +115,7 @@
 <div id="main">
   <h1>Candidate Portal</h1>
   
-  <div id="announcements">
+  <div id="announcements" class="trans-bg">
     <h2>Announcements</h2>
       <ul class="plain">
       <% for a in @announcements %>
@@ -208,7 +203,7 @@
       </ul>
       
     </div>
-    <div class="clear" style="border-bottom: 1px solid #eee; padding-top: 1em"></div>
+    <div class="clear light-hbar"></div>
     <h3>
       <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
       Course Surveys</h3>
