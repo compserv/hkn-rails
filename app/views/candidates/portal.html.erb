@@ -156,7 +156,7 @@
       </ul>
     </div>
 
-    <div style="float:left; width: 45%; padding-left: 4em;">
+    <div style="float:left; width: 45%; padding-left: 3em;">
       <h3>
         <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
         Challenges</h3>
@@ -178,15 +178,15 @@
       <div id="request_challenge_container">
         <h4>Request Challenge Confirmation</h4>
         <span id="request_challenge_errors"></span>
-        <p>
+        <div class="field">
           <%= label_tag "Find Officer" %>
           <%= text_field_tag "officer", "", :id => "officer" %>
-        </p>
+        </div>
       
-        <p>
+        <div class="field">
         <%= label_tag "Challenge Name"%>
         <%= text_field_tag "challenge_name" %>
-        </p>
+        </div>
         
         <p>
         <%= submit_tag "Send Request", :id => "challenge_submit" %>
