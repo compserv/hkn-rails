@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-# Usage: import_exams EXAM_DIRECTORY || EXAM 
+# Usage: import_exams EXAM_DIRECTORY | EXAM
+#
 # This script will import exams from the specified folder, or the given
 # exam if one is specified. Klasses must be imported prior to running the
 # script by importing coursesurveys. Exams must be formatted as follows:
@@ -19,41 +20,46 @@
 require File.expand_path('../../config/environment', __FILE__)
 require 'fileutils'
 
-$filepattern = /[a-zA-Z]+\d+[a-zA-Z]*_(sp|fa|su)\d\d_(mt\d+|f|q\d+)(_sol)?$/
+# Regex for verifying the file format
+$filepattern = /[a-zA-Z]+\d+[a-zA-Z]*_(sp|fa|su)\d\d_(mt\d+|f|q\d+)(_sol)?.(\w)+$/
+# Regex for tokenizing the file name
+
+$tokenpattern = /([a-zA-Z]+)(\d+[a-zA-Z]*)_(sp|fa|su)(\d\d)_(mt|f|q)(\d)?(_sol)?.\w+$/
+
 VALID_EXTENSIONS = ['pdf']
-d = 3
 
 
+# Imports the exam at the given file path into the database. Also moves
+# successfully imported exams in the given directory, if specified.
 def importExam(file_path, success_dir=nil)
   basedir = File.dirname(file_path)
   filename = File.basename(file_path)
 
   puts "importing #{filename} ..."
 
-  if not isValidFile?(filename)
-    puts "\tinvalid file name: #{filename} - ignoring"
-    return false
-  elsif not file_path = convertFile(filename, basedir)
+  if not isValidExamFile?(filename)
     return false
   end
 
+  file_path = convertFile(file_path)
   filename = File.basename(file_path)
 
-  # file should now be a valid pdf
-  description = filename.split('.')[0]
+  # File should now be a properly formatted pdf file
+  dept, course_num, season, year, exam_type_abbr, type_num, sol_flag = (
+    filename.scan($tokenpattern)[0])
+  semester = season + year
+  dept.upcase!
+  course_num.upcase!
 
-  course_abbr, semester, exam_abbr, sol_flag = description.split('_')
-  dept_abbr = course_abbr[0..1]
-  course_number = course_abbr[2, course_abbr.length]
-  # TODO optimize this to not do two separate lookups
-  dept_abbr.upcase!
-  course_number.upcase!
-  course = Course.find_by_short_name(dept_abbr, course_number)
+  # Check if corresponding Course exists
+  course = Course.find_by_short_name(dept, course_num)
   if course.nil?
-    puts "\tcould not find course #{dept_abbr}#{course_number}"
+    puts "\tcould not find course #{dept}#{course_num}"
     puts "\tadd the course and re-run the script."
     return false
   end
+
+  # Check if the corresponding Klass exists
   klass = Klass.find_by_course_and_nice_semester(course, semester)
   if klass.nil?
     puts "\tcould not find klass #{course} #{semester}"
@@ -61,19 +67,18 @@ def importExam(file_path, success_dir=nil)
     return false
   end
 
-  exam_type_abbr = exam_abbr[/[a-z]+/]
   exam_type = Exam.typeFromAbbr(exam_type_abbr)
-  number = exam_abbr[/\d/]
   is_solution = !sol_flag.nil?
 
+  # Check if the exam already exists
   exam = Exam.where(:klass_id => klass.id, :course_id => course.id,
                     :filename => filename, :exam_type => exam_type,
-                    :number => number, :is_solution => is_solution)
+                    :number => type_num, :is_solution => is_solution)
   if exam.empty?
     puts "\texam not found. Adding to database."
     exam = Exam.new(:klass_id => klass.id, :course_id => course.id,
                     :filename => filename, :exam_type => exam_type,
-                    :number => number, :is_solution => is_solution)
+                    :number => type_num, :is_solution => is_solution)
     success = exam.save
     if not success
       puts "\tproblems saving exam: #{exam.errors}"
@@ -83,6 +88,7 @@ def importExam(file_path, success_dir=nil)
     success = true
   end
 
+  # Move the file if successful
   if success and success_dir
     FileUtils.mv(file_path, success_dir)
   end
@@ -90,41 +96,44 @@ def importExam(file_path, success_dir=nil)
   return success
 end
 
-def isValidFile?(filename)
-  name_type = filename.split('.')
-  return name_type.length == 2 && name_type[0] =~ $filepattern
-end
-
-def convertFile(filename, basedir)
-  description, type = filename.split('.')
-  path = File.join(basedir, filename)
-
+# Ensures the file is correctly formatted and of a supported file type.
+def isValidExamFile?(filename)
+  if not $filepattern.match(filename)
+    puts "\tinvalid file name: #{filename} - ignoring"
+    return false
+  end
+  type = filename.split('.')[1]
   if not VALID_EXTENSIONS.include?(type)
-    return nil 
+    puts "\tunsupported file type: #{type} - ignoring"
+    puts "\tsupported file types: #{VALID_EXTENSIONS}"
+    return false
+  else
+    return true
   end
+end
 
-  if description =~ /[A-Z]/
+# Given a properly formatted file of a supported file type, makes the
+# filename lowercase and converts it to pdf. Returns the new file path.
+def convertFile(file_path)
+  filename = File.basename(file_path)
+  basedir = File.dirname(file_path)
+
+  # Make sure the file is all lowercase, for consistency
+  if filename =~ /[A-Z]/
     puts "\tRenaming to all lowercase"
-    description = description.downcase
-    new_name = "#{description}.#{type}"
-    new_path = File.join(basedir, new_name)
-    FileUtils.mv(path, new_path)
-    filename = new_name
-    path = new_path
+    filename.downcase!
+    new_path = File.join(basedir, filename)
+    FileUtils.mv(file_path, new_path)
+    file_path = new_path
   end
-  
+
+  description, type = filename.split('.')
+
   # TODO add conversion from other types
-  return path
+  return file_path
 end
 
-def checkFileType(file_path)
-  if not checkFileType(file_path, file_type)
-    puts "\tunsupported filetype: #{fileItype} - ignoring"
-    return
-  end
-end
-
-# Imports the 
+# Imports a directory of exam files. Moves files to 'dirname/successful'.
 def importExamDirectory(dirname)
   puts "Importing exams from #{dirname}..."
   success_dir = File.join(dirname, 'successful')
@@ -154,23 +163,24 @@ def importExamDirectory(dirname)
 end
 
 
-file_or_dir = File.expand_path('~/examfiles/test')
+file_or_dir = File.expand_path('~/examfiles/test') # testing default
+
+# Error checking
 if ARGV.size == 0
   puts 'You must specify an exam or directory.'
-  puts 'Supported filetypes: pdf'
+  puts "Supported filetypes: #{VALID_EXTENSIONS}"
   puts "Debugging: using default ~/examfiles/test"
 # exit
-else
-  file_or_dir = File.expand_path(ARGV[0])
-end
-  
-if not Klass.exists?
+elsif not Course.exists?
+  abort 'No Courses found. Please import courses before re-running this script.'
+elsif not Klass.exists?
   abort 'No Klasses found. Please import course surveys before re-running this script."'
+elsif not File.exist?(file_or_dir = File.expand_path(ARGV[0]))
+  abort "Could not find #{file_or_dir} - exiting."
 end
 
-if not File.exist?(file_or_dir)
-  abort "Could not find #{file_or_dir} - exiting."
-elsif File.file?(file_or_dir)
+
+if File.file?(file_or_dir)
   importExam(file_or_dir)
 else	# directory
   importExamDirectory(file_or_dir)
