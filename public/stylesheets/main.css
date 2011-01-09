@@ -13,9 +13,34 @@ a:hover { text-decoration: underline; }
 /*Forms*/
 input { border: 1px solid #ccc; background: white; border-radius: 3px; -moz-border-radius: 3px; -moz-border-radius: 3px;font-size: 1.1em; margin: 2px 0; padding: 2px 3px; outline: none;}
 input:focus { border: 1px solid black; }
-input[type=submit] { background: #EEEEEE; margin: 4px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
-input[type=submit]:hover {  }
-input.short { width: 100px; }
+/*input[type=submit] { background: #EEEEEE; margin: 4px;  }
+input[type=submit]:hover {  }*/
+input[type=submit]{
+  font-size: 0.8em;
+  background: #222 url(/images/alert-overlay.png) repeat-x;
+  background-color: #888;
+  display: inline-block;
+  padding: 5px 10px 6px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  line-height: 1;
+  -moz-box-shadow: 0 1px 5px #ccc;
+  -webkit-box-shadow: 0 1px 5px #ccc;
+  text-shadow: 0 -1px 1px #444;
+  border: 1px solid #787878;
+  border-radius: 8px; 
+  -moz-border-radius: 8px; 
+  -webkit-border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+}
+input[type=submit]:hover{
+  background-color: #777;
+  text-shadow: 0 -1px 1px #222;
+  
+}
+input.short { width: 100px;}
 input.long  { width: 200px; }
 
 textarea  { width: 400px; height: 100px; }
@@ -180,6 +205,11 @@ h4{
   border: 0px;
   font-size: 1.2em;
   padding: 3px;
+  color: #666;
+  -moz-box-shadow: none;
+  font-weight: normal;
+  -webkit-box-shadow: none;
+  text-shadow: none;
 }
 
 #main{
