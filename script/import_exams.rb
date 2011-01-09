@@ -23,17 +23,6 @@ $filepattern = /[a-zA-Z]+\d+[a-zA-Z]*_(sp|fa|su)\d\d_(mt\d+|f|q\d+)(_sol)?$/
 VALID_EXTENSIONS = ['pdf']
 d = 3
 
-def createExamForKlass(klass, exam_type, number, is_solution)
-  course = klass.course
-  if exam_type == 0 then
-    type = "q"
-  elsif exam_type == 1 then
-    type = "mt"
-  elsif exam_type == 2 then
-    type = "f"
-  end
-  filename = "#{course.course_abbr}_#{klass.semester}#{klass.time}#{type}#{number}.pdf"
-end
 
 def importExam(file_path, success_dir=nil)
   basedir = File.dirname(file_path)
@@ -80,9 +69,7 @@ def importExam(file_path, success_dir=nil)
   exam = Exam.where(:klass_id => klass.id, :course_id => course.id,
                     :filename => filename, :exam_type => exam_type,
                     :number => number, :is_solution => is_solution)
-  if exam.nil?
-    puts "\texam already exists."
-  else
+  if exam.empty?
     puts "\texam not found. Adding to database."
     exam = Exam.new(:klass_id => klass.id, :course_id => course.id,
                     :filename => filename, :exam_type => exam_type,
@@ -91,6 +78,13 @@ def importExam(file_path, success_dir=nil)
     if not success
       puts "\tproblems saving exam: #{exam.errors}"
     end
+  else
+    puts "\texam already exists."
+    success = true
+  end
+
+  if success and success_dir
+    FileUtils.mv(file_path, success_dir)
   end
 
   return success
@@ -130,11 +124,20 @@ def checkFileType(file_path)
   end
 end
 
+# Imports the 
 def importExamDirectory(dirname)
   puts "Importing exams from #{dirname}..."
   success_dir = File.join(dirname, 'successful')
+  puts "Successful imports will go into #{success_dir}"
+  if not File.exist?(success_dir)
+    puts "Could not find #{success_dir}. Creating now."
+    FileUtils.mkdir(success_dir)
+  end
+
   n_succeeded = 0
   n_failed = 0
+
+  # Call importExam for each file in directory.
   Dir[File.join(dirname, '*')].each do |file_path|
     if File.file?(file_path)
       if importExam(file_path, success_dir)
@@ -142,8 +145,6 @@ def importExamDirectory(dirname)
       else
         n_failed += 1
       end
-    else
-      puts "Ignoring \"#{file_path}\" (not a file)."
     end
   end
 
@@ -153,19 +154,21 @@ def importExamDirectory(dirname)
 end
 
 
-
+file_or_dir = File.expand_path('~/examfiles/test')
 if ARGV.size == 0
   puts 'You must specify an exam or directory.'
   puts 'Supported filetypes: pdf'
-  exit
+  puts "Debugging: using default ~/examfiles/test"
+# exit
+else
+  file_or_dir = File.expand_path(ARGV[0])
 end
   
 if not Klass.exists?
   abort 'No Klasses found. Please import course surveys before re-running this script."'
 end
 
-file_or_dir = ARGV[0]
-if not File.exists?(file_or_dir)
+if not File.exist?(file_or_dir)
   abort "Could not find #{file_or_dir} - exiting."
 elsif File.file?(file_or_dir)
   importExam(file_or_dir)
