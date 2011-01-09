@@ -34,4 +34,13 @@ describe Slot do
     slot.should_not be_valid
     slot.errors[:room].should include("room needs to be 0 (Cory) or 1 (Soda)")
   end
-end
+
+  it "should require a valid tutor" do
+    slot1 = Slot.create(@good_opts.merge(:room => 0))
+    slot2 = Slot.create(@good_opts.merge(:room => 1, :time => slot1.time))
+    tutor = Tutor.create(:slots => [slot1, slot2])
+    slot1.tutors << tutor
+    slot2.tutors << tutor
+    slot1.should_not be_valid
+    slot1.errors[:tutor].should include("A tutor cannot be in two places at once!")
+  end

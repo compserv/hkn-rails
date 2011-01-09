@@ -38,6 +38,8 @@ ActiveRecord::Schema.define(:version => 20110104032558) do
     t.datetime "updated_at"
     t.integer  "preference_level"
     t.datetime "time"
+    t.integer  "adjacency",        :default => 0
+    t.integer  "room_strength",    :default => 0
   end
 
   create_table "blocks", :force => true do |t|

@@ -8,6 +8,8 @@ class Availability < ActiveRecord::Base
   #   updated_at       : datetime 
   #   preference_level : integer 
   #   time             : datetime 
+  #   adjacency        : integer 
+  #   room_strength    : integer 
   # =======================
 
   belongs_to :tutor
