@@ -6,8 +6,6 @@ img { border: none; }
 
 /*Links*/
 a { color: #3366CC; text-decoration: none; }
-a:link { color: #3366CC; }
-a:visited { color: #3366CC; }
 a:hover { text-decoration: underline; }
 
 /*Forms*/
@@ -62,7 +60,18 @@ label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right
 .super { font-size: 75%; vertical-align: super; }
 .warning { color: red; }
 th, td { padding: 4px; vertical-align: top; text-align: left; }
-th { font-weight: bold; }
+th {
+  border: 1px solid #ddd;
+  background-color: #403f3f; 
+  color: white;
+}
+th a{
+  color: #f9df49;
+}
+tr:nth-child(even) { background-color: #f9f9f9; }
+tr:nth-child(odd)  { background-color: #fff; }
+
+td { border: 1px dashed #ddd; padding: 2px 4px; }
 .infodiv { width: 300px; text-align: left; }
 .two_column { width: 45%; float: left; }
 .right_column { float: right; }
