@@ -19,7 +19,7 @@ end
 describe Slot do
   before(:each) do
     @good_opts = {
-      :time => DateTime.parse("2010-07-23 11:00:00 UTC"),
+      :time => Slot.get_time(1, 11)
       :room => 1
     }
     @good_tutor_opts = {
