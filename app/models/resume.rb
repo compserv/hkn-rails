@@ -21,9 +21,20 @@ class Resume < ActiveRecord::Base
   validates :graduation_year, :numericality => true
   validates :graduation_semester, :presence => true
   validates :file, :presence => true
+  before_destroy :delete_file
   
   default_scope :order => 'resumes.created_at DESC'
   # so we can just pick out the 'first' of the resumes to get the most recent
+  
+  def delete_file
+    
+    begin
+      File.delete(self[:file])
+    rescue
+      # Should log an error here
+    end
+  end
+    
   
 protected
   
