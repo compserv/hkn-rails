@@ -2,10 +2,10 @@ class Slot < ActiveRecord::Base
 
   # === List of columns ===
   #   id         : integer 
-  #   time       : datetime 
   #   room       : integer 
   #   created_at : datetime 
   #   updated_at : datetime 
+  #   time       : datetime 
   # =======================
 
   has_and_belongs_to_many :tutors
@@ -92,9 +92,12 @@ class Slot < ActiveRecord::Base
 
   def valid_tutor
     valid = true
-    otherTutors = Slot.find(:first, :conditions => ["time = ? and room != ?", time, room]).tutors
+    return false if not valid_room or time.nil?
+    otherslot = Slot.find_by_time_and_room(time, 1-room)
+    other_tutors = otherslot.tutors if otherslot
+    other_tutors ||= []
     for tutor1 in tutors
-      for tutor2 in otherTutors
+      for tutor2 in other_tutors
         if tutor1 == tutor2
           valid = false
           break

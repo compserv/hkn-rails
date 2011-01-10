@@ -19,7 +19,7 @@ end
 describe Slot do
   before(:each) do
     @good_opts = {
-      :time => Slot.get_time(1, 11)
+      :time => Slot.get_time(1, 11),
       :room => 1
     }
     @good_tutor_opts = {
@@ -42,7 +42,7 @@ describe Slot do
 
   it "should require a valid tutor" do
     slot1 = Slot.create(@good_opts.merge(:room => 0))
-    slot2 = Slot.create(@good_opts.merge(:room => 1, :time => slot1.time))
+    slot2 = Slot.create(@good_opts)
     tutor = Tutor.create(@good_tutor_opts.merge(:slots => [slot1, slot2]))
     slot1.tutors << tutor
     slot2.tutors << tutor
