@@ -44,3 +44,4 @@ describe Slot do
     slot1.should_not be_valid
     slot1.errors[:tutor].should include("A tutor cannot be in two places at once!")
   end
+end
