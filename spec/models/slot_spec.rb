@@ -22,6 +22,11 @@ describe Slot do
       :time => DateTime.parse("2010-07-23 11:00:00 UTC"),
       :room => 1
     }
+    @good_tutor_opts = {
+      :person => mock_model(Person),
+      #:availabilities => [mock_model(Availability)],
+      :languages => "C"
+    }
   end
 
   it "should accept valid parameters" do
@@ -38,7 +43,7 @@ describe Slot do
   it "should require a valid tutor" do
     slot1 = Slot.create(@good_opts.merge(:room => 0))
     slot2 = Slot.create(@good_opts.merge(:room => 1, :time => slot1.time))
-    tutor = Tutor.create(:slots => [slot1, slot2])
+    tutor = Tutor.create(@good_tutor_opts.merge(:slots => [slot1, slot2]))
     slot1.tutors << tutor
     slot2.tutors << tutor
     slot1.should_not be_valid

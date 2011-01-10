@@ -119,7 +119,7 @@ class Admin::TutorController < Admin::AdminController
               ret += ' '
             end
 
-            person = Person.where(avail.tutor.person_id == id).first
+            person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
             ret += person.first_name + person.last_name[0..0]
             ret += avail.preference_level.to_s
 
