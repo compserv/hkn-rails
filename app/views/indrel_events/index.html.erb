@@ -1,25 +1,30 @@
+<%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <h1>Listing events</h1>
 
-<table>
-  <tr>
-    <th>Time</th>
-    <th>Company</th>
+<div id="results">
+<div id="spinner">&nbsp;</div>
+<%= will_paginate @events, :class => "pagination ajax" %>
+
+<table class="table">
+  <tr class="pagination">
+    <th><%= sort_link 'Time', 'time' %></th>
+    <th><%= sort_link 'Company', 'companies.name' %></th>
     <th>Food</th>
     <th>Contact</th>
-    <th>Turnout</th>
+    <th><%= sort_link 'Turnout', 'turnout' %></th>
     <th rowspan="2">Comments</th>
   </tr>
   <tr>
-    <th>Location</th>
-    <th>Event type</th>
+    <th><%= sort_link 'Location', 'locations.name' %></th>
+    <th><%= sort_link 'Event Type', 'indrel_event_types.name' %></th>
     <th>Prizes</th>
-    <th>Officer</th>
+    <th><%= sort_link 'Officer', 'officer' %></th>
     <th>Feedback</th>
   </tr>
 
 <% count = 0 %>
 <% for event in @events %>
-  <tr<%= " style=\"background:#eee;\"" if (count % 2 == 0) %>>
+  <tr<% if (count % 2 == 0) %> <%= ' style=background-color:#ddd;' %><% end %>>
     <td><%=h event.time.strftime("%b %d, %Y, %I:%M:%S%p %Z") %></td>
     <td><%=h event.company %></td>
     <td><%=h event.food %></td>
@@ -29,18 +34,21 @@
     <td><%= link_to 'Show', event %></td>
     <td><%= link_to 'Edit', edit_indrel_event_path(event) %></td>
   </tr>
-  <tr<%= " style=\"background:#eee;\"" if (count % 2 == 0) %>>
+  <tr<% if (count % 2 == 0) %> <%= ' style=background-color:#ddd;' %><% end %>>
     <td><%=h event.location %></td>
     <td><%=h event.indrel_event_type %></td>
     <td><%=h event.prizes %></td>
     <td><%=h event.officer %></td>
     <td><%=h event.feedback %></td>
-    <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td colspan="2"><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
   <% count = count + 1 %>
 <% end %>
 </table>
+</div>
 
 <br />
 
 <%= link_to 'New event', new_indrel_event_path %>
+
+<%= ajaxify_links('pagination') %>

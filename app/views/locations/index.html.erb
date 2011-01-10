@@ -1,9 +1,14 @@
+<%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <h1>Listing locations</h1>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Capacity</th>
+<div id="results">
+<div id="spinner">&nbsp;</div>
+<%= will_paginate @locations, :class => "pagination ajax" %>
+
+<table class="table">
+  <tr class="pagination">
+    <th><%= sort_link 'Name', 'name' %></th>
+    <th><%= sort_link 'Capacity', 'capacity' %></th>
     <th>Comments</th>
   </tr>
 
@@ -18,7 +23,10 @@
   </tr>
 <% end %>
 </table>
+</div>
 
 <br />
 
 <%= link_to 'New location', new_location_path %>
+
+<%= ajaxify_links('pagination') %>
