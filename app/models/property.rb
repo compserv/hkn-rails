@@ -14,6 +14,8 @@ class Property < ActiveRecord::Base
   Semester = /^\d{4}[0-5]$/	#A regex which validates the semester
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validate :there_is_only_one, :on => :create
+  validates_numericality_of :tutoring_start, :greater_than_or_equal_to => 11
+  validates_numericality_of :tutoring_end, :greater_than => :tutoring_start, :less_than_or_equal_to => 16
 
   class << self
     def get_or_create
@@ -69,10 +71,10 @@ class Property < ActiveRecord::Base
     end
   end
 
-
   def there_is_only_one
     if Property.count > 0
       errors.add(:base, "There can only be one property entry")
     end
   end
+
 end

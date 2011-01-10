@@ -11,6 +11,7 @@ HknRails::Application.routes.draw do
       match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
       match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses
       match "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
+      match "params_for_scheduler" => "tutor#params_for_scheduler"
       match "/" => "tutor#settings"
       match "settings" => "tutor#settings", :as=>:tutor_settings
     end

@@ -13,6 +13,7 @@ class Slot < ActiveRecord::Base
 
   #TODO Validate whether a tutor is assigned to both rooms of the same time.
   validate :valid_room
+  validate :valid_tutor
   validates :room, :presence => true
   validates :time, :presence => true
 
@@ -55,6 +56,10 @@ class Slot < ActiveRecord::Base
       slots = find_by_wday(wday)
       slots.select {|slot| slot.room == room}
     end
+   def find_by_wday_hour_and_room(wday, hour, room)
+      slots = all
+      slots.select {|slot| slot.wday == wday and slot.hour == hour and slot.room == room}
+    end
   end
 
   def to_s
@@ -83,6 +88,20 @@ class Slot < ActiveRecord::Base
     if !room.blank?
       errors[:room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (room == 0 or room == 1)
     end
+  end
+
+  def valid_tutor
+    valid = true
+    otherTutors = Slot.find(:first, :conditions => ["time = ? and room != ?", time, room]).tutors
+    for tutor1 in tutors
+      for tutor2 in otherTutors
+        if tutor1 == tutor2
+          valid = false
+          break
+        end
+      end
+    end
+    errors[:tutor] << "A tutor cannot be in two places at once!" unless valid
   end
   
   def availabilities
