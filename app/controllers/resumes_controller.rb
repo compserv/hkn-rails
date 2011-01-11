@@ -7,46 +7,38 @@ class ResumesController < ApplicationController
   end
   
   def create
-    @resume = @current_user.resumes.new(params[:resume])
     resume_file = params[:resume][:file]
+    resume_constructor_args = params[:resume]
     # strftime doesn't have milliseconds in ruby 1.8.7
+    # So it will just put in an "L" in resume names for now
+    # and when(?) we upgrade to 1.9+ it will start writing
+    # times with milliseconds
     time_string = Time.new.utc.strftime("%Y%m%d%H%M%S%L")
-    # Why did they use random strings on the django site??
     file_name = "private/resumes/#{time_string}_"+
                 "#{@current_user.last_name}_" +
                 "#{@current_user.first_name}.pdf"
     f = File.open(file_name, "wb")
-    if @resume.save
-      @resume.file = f.path
-      @resume.save! # This should always work if 2 lines above worked
-      # Save file to disk only if it's valid
+    resume_constructor_args[:file] = file_name
+    @resume = @current_user.resumes.new(resume_constructor_args)
+    if @resume.save and not f.nil? then
       f.write(resume_file.read)
       flash[:notice] = "Resume Uploaded"
       redirect_to account_settings_path
+      # Delete all older resuems:
+      old_resumes = @current_user.resumes[(1..-1)] # All but most recent res.
+      old_resumes.each { |resume| @current_user.resumes.destroy(resume.id) }
     else
       render :action => "new"
     end
     if not f.nil?
       f.close
     end
+
+    
   end
   
   def index
-    members_group = Group.where(:name => "members").first # 16
-    candidates_group = Group.where(:name => "candidates").first # 17
-    officers_group = Group.where(:name => "officers").first # 18
-    comms_group = Group.where(:name => "committees").first #19
-    people = Person.find(:all)
-    @resinfo = Hash.new
-    people.each do |person|
-      if person.resumes.first :
-        resume = person.resumes.first
-        @resinfo[person] = {:upload => "Uploaded at #{resume.created_at}", 
-                            :gpa => "#{resume.overall_gpa}" }
-      else
-        @resinfo[person] = {:upload =>"No resume uploaded", :gpa => ""}
-      end
-    end
+    @resumes = Resume.find(:all)
   end
 
   # Shows resume (PDF, not model data) after authorization

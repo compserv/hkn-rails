@@ -8,12 +8,10 @@ class Slot < ActiveRecord::Base
   #   updated_at : datetime 
   # =======================
 
-  has_and_belongs_to_many :tutors
+  has_and_belongs_to_many :tutors, :after_add => :check_tutor
   has_many :slot_changes
 
-  #TODO Validate whether a tutor is assigned to both rooms of the same time.
   validate :valid_room
-  validate :valid_tutor
   validates :room, :presence => true
   validates :time, :presence => true
 
@@ -89,21 +87,19 @@ class Slot < ActiveRecord::Base
       errors[:room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (room == 0 or room == 1)
     end
   end
-
-  def valid_tutor
-    valid = true
-    otherTutors = Slot.find(:first, :conditions => ["time = ? and room != ?", time, room]).tutors
-    for tutor1 in tutors
-      for tutor2 in otherTutors
-        if tutor1 == tutor2
-          valid = false
-          break
-        end
+  
+  def check_tutor(tutor)
+    otherslot = Slot.find_by_time_and_room(time, 1-room)
+    other_tutors = otherslot.tutors if otherslot
+    other_tutors ||= []
+    for other_tutor in other_tutors
+      if tutor == other_tutor
+        tutors.delete(tutor)
+        break
       end
     end
-    errors[:tutor] << "A tutor cannot be in two places at once!" unless valid
   end
-  
+
   def availabilities
     return Availability.where(:time=>time)
   end
