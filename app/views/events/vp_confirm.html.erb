@@ -15,9 +15,9 @@
 
     <% if rsvp.confirmed == "true" %>
     <td>Confirmed</td>
-    <td><%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id) =%></td>
+    <td><%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id) %></td>
     <% else %>
-    <td><%= link_to "Confirm", confirm_rsvp_path(rsvp.id) =%></td>
+    <td><%= link_to "Confirm", confirm_rsvp_path(rsvp.id) %></td>
     <td></td>
     <% end %>
   </tr>
