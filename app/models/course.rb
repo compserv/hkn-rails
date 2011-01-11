@@ -24,7 +24,8 @@ class Course < ActiveRecord::Base
   validates :course_number, :presence => true
   validates :name,          :presence => true
 
-  scope :ordered, :order => 'CAST(courses.course_number AS integer)'
+  scope :ordered, order("prefix, CAST(courses.course_number AS integer), suffix")
+  scope :ordered_desc, order("(prefix, CAST(courses.course_number AS integer), suffix) DESC")
   
   def invalid?
     # Some courses are invalid, and shouldn't be listed.
