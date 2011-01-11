@@ -76,7 +76,8 @@ class Course < ActiveRecord::Base
   def Course.find_all_with_exams_by_department_abbr(dept_abbr)
     @department = Department.find_by_nice_abbr(dept_abbr)
     if !@department.nil?
-      Course.find(:all, :include => :department, :conditions => ['department_id = ?', @department.id], :joins => :exams)
+      # TODO fix query to be more efficient
+      Course.where(:department_id => @department.id).reject {|course| course.exams.empty?}
     end
   end
 end
