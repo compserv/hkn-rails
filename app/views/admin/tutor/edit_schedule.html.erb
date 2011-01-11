@@ -2,6 +2,8 @@
 <h1>Edit Tutoring Schedule</h1>
 <%= form_tag do %>
 <input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
+<p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
+<p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
 <table id="edit_schedule">
 <% @rows.each do |row| %>
 	<tr>
@@ -14,17 +16,25 @@
 		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
 		<td  class="slot cory">
+			<p> Cory </p>
 			<select name="<%= formatslot day, row + "C" %>[]" multiple="multiple">
-				<% if @preferred[formatslot day, row] %>
+				<% if @cory_preferred[formatslot day, row] %>
 				<optgroup label="Preferred">
-				<% @preferred[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
+				<% @cory_preferred[formatslot day, row].each do |entry| %>
+				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "C" %>><%= entry[0].person.fullname + entry[1] %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
-				<% if @available[formatslot day, row] %>
+				<% if @cory_available[formatslot day, row] %>
 				<optgroup label="Available">
-				<% @available[formatslot day, row].each do |tutor| %>
+				<% @cory_available[formatslot day, row].each do |entry| %>
+				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "C" %>><%= entry[0].person.fullname + entry[1] %></option>
+				<% end %>
+				</optgroup>
+                            <% end %>
+                            <% if not @others[formatslot day, row].blank? %>
+				<optgroup label="Others">
+				<% @others[formatslot day, row].each do |tutor| %>
 				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
@@ -36,18 +46,26 @@
 	<tr>
 		<% @days.each do |day| %>
 		<td  class="slot soda">
+			<p> Soda </p>
 			<select name="<%= formatslot day, row + "S" %>[]" multiple="multiple">
-				<% if @preferred[formatslot day, row] %>
+				<% if @soda_preferred[formatslot day, row] %>
 				<optgroup label="Preferred">
-				<% @preferred[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
+				<% @soda_preferred[formatslot day, row].each do |entry| %>
+				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "S" %>><%= entry[0].person.fullname + entry[1] %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
-				<% if @available[formatslot day, row] %>
+				<% if @soda_available[formatslot day, row] %>
 				<optgroup label="Available">
-				<% @available[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
+				<% @soda_available[formatslot day, row].each do |entry| %>
+				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "S" %>><%= entry[0].person.fullname + entry[1] %></option>
+				<% end %>
+				</optgroup>
+				<% end %>
+                            <% if not @others[formatslot day, row].blank? %>
+				<optgroup label="Others">
+				<% @others[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
@@ -58,5 +76,5 @@
 	</tr>
 <% end %>
 </table>
-<input type="submit" value="Submit Schedule" />
+<input type="submit" value="Submit" />
 <% end %>

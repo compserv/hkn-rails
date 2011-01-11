@@ -120,10 +120,13 @@ class Admin::TutorController < Admin::AdminController
             end
 
             person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
+            ret += avail.tutor.id.to_s
             ret += person.first_name + person.last_name[0..0]
             ret += avail.preference_level.to_s
 
-            if avail.preferred_room == room
+            if avail.room_strength == 0
+              ret += 'p'
+            elsif avail.preferred_room == room
               ret += 'P'
             elsif avail.room_strength == 1
               ret += 'p'
@@ -144,18 +147,63 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def edit_schedule
-    tutors = Tutor.all
-    @preferred = Hash.new
-    @available = Hash.new
-    for tutor in tutors
-      tutor.availabilities.each do |a|
-        if a.preference_level==1
-          @preferred[a.time.utc.strftime('%a%H')] ||= []; @preferred[a.time.utc.strftime('%a%H')] << tutor
-        else
-          @available[a.time.utc.strftime('%a%H')] ||= []; @available[a.time.utc.strftime('%a%H')] << tutor
+    @cory_preferred = Hash.new
+    @cory_available = Hash.new
+    @soda_preferred = Hash.new
+    @soda_available = Hash.new
+
+    @others = Hash.new
+    if params[:all_tutors]
+      for slot in Slot.find(:all, :conditions => "room=0")
+        time = slot.time.utc.strftime('%a%H')
+        for tutor in Tutor.all
+          @others[time] ||= []; @others[time] << tutor
         end
       end
     end
+
+    for tutor in Tutor.all
+      tutor.availabilities.each do |a|
+        cory_str = ' ('; soda_str = ' ('
+
+        if a.room_strength == 0
+          cory_str += 'p'; soda_str += 'p'
+        elsif a.room_strength == 1
+          if a.preferred_room == 0
+            cory_str += 'P'; soda_str += 'p'
+          else
+            cory_str += 'p'; soda_str += 'P'
+          end
+        else
+          if a.preferred_room == 0
+            cory_str += 'P'
+          else
+            soda_str += 'P'
+          end
+        end
+
+        if a.adjacency == 2
+          cory_str += 'A'; soda_str += 'A'
+        elsif a.adjacency == 1
+          cory_str += 'a'; soda_str += 'a'
+        end
+
+        cory_str += ')'; soda_str += ')'
+
+        time = a.time.utc.strftime('%a%H')
+        if params[:all_tutors]
+          @others[time].delete(tutor)
+        end
+        if a.preference_level==1
+          @cory_preferred[time] ||= []; @cory_preferred[time] << [tutor, cory_str]
+          @soda_preferred[time] ||= []; @soda_preferred[time] << [tutor, soda_str]
+        else
+          @cory_available[time] ||= []; @cory_available[time] << [tutor, cory_str]
+          @soda_available[time] ||= []; @soda_available[time] << [tutor, soda_str]
+        end
+      end
+    end
+
     @assignments = Hash.new
     slots = Hash.new
     for slot in Slot.all
@@ -165,10 +213,8 @@ class Admin::TutorController < Admin::AdminController
 
     prop = Property.get_or_create
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
-    @hours = %w(11 12 13 14 15 16)
-    @rows = ["Hours"] + @hours
-#    @hours = prop.tutoring_start .. prop.tutoring_end
-#    @rows = ["Hours"] + @hours.to_a
+    @hours = prop.tutoring_start .. prop.tutoring_end
+    @rows = ["Hours"] + @hours.to_a.map! {|x| x.to_s}
     
     if params[:authenticity_token]  #The form was submitted
       changed=false
@@ -185,10 +231,16 @@ class Admin::TutorController < Admin::AdminController
           slots[x].tutors << Tutor.find(Integer(added))
         end
       end
+
       if changed
-        redirect_to :admin_tutor_edit_schedule, :notice => "Tutoring schedule updated."
+        flash[:notice] = "Tutoring schedule updated."
+        redirect_to :action => "edit_schedule", :all_tutors => !params[:only_available]
+      elsif not params[:only_available]
+        flash[:notice] = "Tutors shown for all slots."
+        redirect_to :action => "edit_schedule", :all_tutors => !params[:only_available]
       else
-        redirect_to :admin_tutor_edit_schedule, :notice => "Nothing changed in the tutoring schedule."
+        flash[:notice] = "Nothing changed in the tutoring schedule."
+        redirect_to :action => "edit_schedule", :all_tutors => !params[:only_available]
       end
     end
   end
