@@ -79,7 +79,7 @@ HknRails::Application.routes.draw do
     match "rating/:id/update"                       => "coursesurveys#updaterating", :as => :coursesurveys_update_rating
     match "search(/:query)"                         => "coursesurveys#search",     :as => :coursesurveys_search
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
-
+    
     match "how-to"                                  => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
     match "info-profs"                              => "static#coursesurveys_info_profs", :as => :coursesurveys_info_profs
     match "ferpa"                                   => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
@@ -91,6 +91,11 @@ HknRails::Application.routes.draw do
     resources :rsvps
     resources :blocks
   end
+
+  match "vp_confirm" => "events#vp_confirm", :as => :vp_confirm
+  match "confirm_rsvp/:id" => "rsvps#confirm", :as => :confirm_rsvp
+  match "unconfirm_rsvp/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
+
   match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
 
   resources :event_types

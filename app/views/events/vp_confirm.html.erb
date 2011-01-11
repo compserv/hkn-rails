@@ -1,0 +1,27 @@
+<h1>Confirm Candidate RSVPs</h1>
+
+<% @events.each do |event| %>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Status</th>
+    <th></th>
+  </tr>
+  
+  <% event.rsvps.each do |rsvp| %>
+  <% if rsvp.person.in_group?("candidates") %>
+  <tr>
+    <td>rsvp.person.name</td>
+
+    <% if rsvp.confirmed == "true" %>
+    <td>Confirmed</td>
+    <td><%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id) =%></td>
+    <% else %>
+    <td><%= link_to "Confirm", confirm_rsvp_path(rsvp.id) =%></td>
+    <td></td>
+    <% end %>
+  </tr>
+  <% end %>
+  <% end %>
+</table>
+<% end %>
