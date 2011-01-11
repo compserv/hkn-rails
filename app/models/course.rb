@@ -11,8 +11,7 @@ class Course < ActiveRecord::Base
   #   units         : integer 
   #   prereqs       : text 
   #   department_id : integer 
-  #   course_number : string 
-  #   new_number    : integer 
+  #   course_number : integer 
   # =======================
 
   belongs_to :department

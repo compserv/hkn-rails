@@ -14,12 +14,14 @@ class Klass < ActiveRecord::Base
   # =======================
 
   belongs_to :course
-  has_many :coursesurveys
-  has_many :survey_answers
+  has_one :coursesurvey, :dependent => :destroy
+  has_many :survey_answers, :dependent => :destroy
   has_and_belongs_to_many :instructors
   # tas = TAs
   has_and_belongs_to_many :tas, { :class_name => "Instructor", :join_table => "klasses_tas" }
-  has_many :exams
+  has_many :exams, :dependent => :destroy
+
+  scope :current_semester, joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section')
   
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
   ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }

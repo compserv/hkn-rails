@@ -1,0 +1,22 @@
+<h1>Corresponding Secretary Admin - Manage Classes</h1>
+
+<table>
+  <tr>
+    <th>Course Number</th>
+    <th>Section</th>
+    <th>Notes</th>
+    <th>Surveyors</th>
+  </tr>
+  <% @coursesurveys.each do |coursesurvey| %>
+    <tr>
+      <td><%= coursesurvey.klass.course.course_abbr %></td>
+      <td><%= coursesurvey.klass.section %></td>
+      <td><%= coursesurvey.klass.notes %></td>
+      <td>
+        <% coursesurvey.surveyors.each do |person| %>
+          <%= person.fullname %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

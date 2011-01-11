@@ -7,6 +7,19 @@ HknRails::Application.routes.draw do
   end
 
   namespace :admin do
+    scope "csec", :as => "csec" do
+      match "/" => "csec#index"
+      get "select_classes" => "csec#select_classes", :as => :select_classes
+      post "select_classes" => "csec#select_classes_post", :as => :select_classes
+      match "manage_classes" => "csec#manage_classes", :as => :manage_classes
+      match "manage_candidates" => "csec#manage_candidates", :as => :manage_candidates
+    end
+    scope "deprel" do
+      match "/" => "deprel#overview"
+    end
+    scope "indrel" do
+      match "/" => "indrel#indrel_db", :as => "indrel_db"
+    end
     scope "tutor" do
       match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
       match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses
@@ -16,12 +29,6 @@ HknRails::Application.routes.draw do
       match "settings" => "tutor#settings", :as=>:tutor_settings
       match "find_courses" => "tutor#find_courses"
       match "add_course" => "tutor#add_course"
-    end
-    scope "deprel" do
-      match "/" => "deprel#overview"
-    end
-    scope "indrel" do
-      match "/" => "indrel#indrel_db", :as => "indrel_db"
     end
   end
   resources :course_preferences

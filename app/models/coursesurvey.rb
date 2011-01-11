@@ -7,11 +7,15 @@ class Coursesurvey < ActiveRecord::Base
   #   scheduled_time : datetime 
   #   created_at     : datetime 
   #   updated_at     : datetime 
-  #   klass          : integer 
+  #   klass_id       : integer 
   # =======================
 
-  belongs_to :instructor
   belongs_to :klass
+  has_and_belongs_to_many :surveyors, { :class_name => "Person" }
+
+  validates :klass_id, :presence => true, :uniqueness => true
+
+  scope :current_semester, joins(:klass => :course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section')
 
   @@statusmap = { 0 => "Not Done", 1 => "Contacted", 2 => "Scheduled", 3 => "Done" }
 

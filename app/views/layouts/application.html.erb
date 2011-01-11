@@ -43,17 +43,17 @@
   	    <li><a class="navigation_toplevel_item" id="services" href="#">Student Services</a></li>
   	    <li><a class="navigation_toplevel_item" id="indrel" href="#">Industry Relations</a></li>
   	    <li><a class="navigation_toplevel_item" id="events" href="#">Events</a></li>
-  	    <%- if @current_user -%>
+  	    <% if @current_user %>
   	      <li><a class="navigation_toplevel_item" id="people" href="#">People</a></li>
-  	    <%- end -%>
-  	    <%- if @current_user && @current_user.in_group?("comms") -%>
-  	      <li><a class="navigation_toplevel_item" id="admin" href="#">Administration</a></li>
-  	    <%- end -%>
+  	    <% end %>
   	    <li><a class="navigation_toplevel_item" id="alumni" href="#">Alumni Network</a></li>
   	    <li><a class="navigation_toplevel_item" id="about" href="#">About HKN</a></li>
-  	    <%- if @current_user && @current_user.in_group?("candidates") -%>
+  	    <% if @auth["candidates"] %>
   	      <li><a class="navigation_toplevel_item" id="cand" href="#">Candidate Portal</a></li>
-  	    <%- end -%>
+  	    <% end %>
+  	    <% if @auth["comms"] %>
+  	      <li><a class="navigation_toplevel_item" id="admin" href="#">Administration</a></li>
+  	    <% end %>
   	  </ul>
   	</div>
   	<div id="lower">
@@ -85,7 +85,7 @@
             </ul>
           </div>
 
-          <%- if @current_user -%>
+          <% if @current_user %>
           <div class="submenu" id="people_submenu">
             <ul class="plain">
               <li><%= link_to "Officers",          people_list_path("officers") %></li>
@@ -96,7 +96,7 @@
               <li><%= link_to "Candidates",        people_list_path("candidates") %></li>
             </ul>
           </div>
-          <%- end -%>
+          <% end %>
 
           <div class="submenu" id ="events_submenu">
             <ul class="plain">
@@ -129,37 +129,38 @@
           </div>
 
 
-          <%- if @current_user && @current_user.in_group?("comms") -%>
-          <div class="submenu" id ="admin_submenu">
-            <ul class="plain">
-              <li><a href="/admin/" class="navigation_sublevel_item">Django Admin</a></li>
-              <li><a href="/admin/request/list/" class="navigation_sublevel_item">Requests [0]</a></li>
-              <li><a href="/admin/tutor/signup/" class="navigation_sublevel_item">Tutor Signup</a></li>
-            </ul>
-            <ul class="plain">
-              <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
-              <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
-              <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel</a></li>
-              <li>
-              	<%- if @current_user && @current_user.in_group?("deprel") -%>
-              	  <a href="/admin/deprel" class="navigation_sublevel_item">
-                		Deprel Admin [<%= controller.num_deprel_requests %>]
-                	</a>
-              	<%- end -%>
-              </li>
-            </ul>
-          </div>
-          <%- end -%>
-
-          <%- if @current_user && @current_user.in_group?("candidates") -%>
+          <% if @current_user && @auth["candidates"] %>
           <div class="submenu" id="cand_submenu">
             <ul class="plain">
               <li><a href="/cand/portal/" class="navigation_sublevel_item">Portal Home</a></li>
               <li><a href="/cand/application/" class="navigation_sublevel_item">Application Form</a></li>
             </ul>
           </div>
-          <%- end -%>
+          <% end %>
           
+          <% if @auth["comms"] %>
+          <div class="submenu" id ="admin_submenu">
+            <ul class="plain">
+              <li><a href="/admin/tutor/signup/" class="navigation_sublevel_item">Tutor Signup</a></li>
+            </ul>
+            <ul class="plain">
+              <% if @auth['csec'] %>
+                <li><a href="/admin/csec" class="navigation_sublevel_item">Csec Admin</a></li>
+              <% end %>
+              <% if @auth["deprel"] %>
+                <li><a href="/admin/deprel" class="navigation_sublevel_item">Deprel Admin [<%= controller.num_deprel_requests %>]</a></li>
+              <% end %>
+              <% if @auth["indrel"] %>
+                <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel Admin</a></li>
+              <% end %>
+              <% if @auth["tutor"] %>
+                <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
+                <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
+              <% end %>
+            </ul>
+          </div>
+          <% end %>
+
     	  </div>
     	  <div id="topbar">
           <%= render "layouts/searcharea" %>

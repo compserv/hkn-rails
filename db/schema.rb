@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110111112121) do
+ActiveRecord::Schema.define(:version => 20110111204703) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -140,7 +140,12 @@ ActiveRecord::Schema.define(:version => 20110111112121) do
     t.datetime "scheduled_time"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "klass",          :null => false
+    t.integer  "klass_id",       :null => false
+  end
+
+  create_table "coursesurveys_people", :id => false, :force => true do |t|
+    t.integer "coursesurvey_id"
+    t.integer "person_id"
   end
 
   create_table "departments", :force => true do |t|
@@ -292,13 +297,14 @@ ActiveRecord::Schema.define(:version => 20110111112121) do
   end
 
   create_table "properties", :force => true do |t|
-    t.string   "semester",         :default => "20103"
+    t.string   "semester",             :default => "20103"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "tutoring_enabled", :default => false
-    t.text     "tutoring_message", :default => ""
-    t.integer  "tutoring_start",   :default => 11
-    t.integer  "tutoring_end",     :default => 16
+    t.boolean  "tutoring_enabled",     :default => false
+    t.text     "tutoring_message",     :default => ""
+    t.integer  "tutoring_start",       :default => 11
+    t.integer  "tutoring_end",         :default => 16
+    t.boolean  "coursesurveys_active", :default => false,   :null => false
   end
 
   create_table "quiz_responses", :force => true do |t|
