@@ -21,7 +21,7 @@ class ExamsController < ApplicationController
   def course
     @course = Course.find_by_short_name(params[:dept_abbr], params[:full_course_number])
     klasses = Klass.where(:course_id => @course.id).order('semester DESC').reject {|klass| klass.exams.empty?}
-    @exam_path = '/examfiles/'
+    @exam_path = '/examfiles/' # TODO clean up
 
     @results = klasses.collect do |klass|
       exams = {}

@@ -3,7 +3,7 @@
 # Usage: import_exams EXAM_DIRECTORY | EXAM
 #
 # This script will import exams from the specified folder, or the given
-# exam if one is specified. Klasses must be imported prior to running the
+# exam if one is specified. Successfully imported exams will go into the ~hkn-rails/public/examfiles directory. Klasses must be imported prior to running the
 # script by importing coursesurveys. Exams must be formatted as follows:
 # 	<course abbr>_<semester>_<exam-type>[#][_sol].<filetype>
 # For example, "cs61a_fa10_mt3.pdf" or "ee40_su05_f_sol.pdf".
