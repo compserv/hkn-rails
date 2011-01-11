@@ -12,12 +12,15 @@ HknRails::Application.routes.draw do
       match "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
       match "/" => "tutor#settings"
       match "settings" => "tutor#settings", :as=>:tutor_settings
+      match "find_courses" => "tutor#find_courses"
+      match "add_course" => "tutor#add_course"
     end
     scope "deprel" do
       match "/" => "deprel#overview"
     end
   end
-  
+  resources :course_preferences
+
   resources :dept_tour_requests do
     member do
       post "respond"
