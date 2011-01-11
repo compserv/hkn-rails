@@ -36,6 +36,14 @@ class Exam < ActiveRecord::Base
     @@TYPE_ABBRS[exam_type]
   end
 
+  def short_type
+    "#{type_abbr}#{number}"
+  end
+
+  def file_type
+    filename.split('.')[1]
+  end
+
   def Exam.typeFromAbbr(abbr)
     @@TYPE_NUMS[abbr]
   end

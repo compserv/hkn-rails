@@ -77,7 +77,7 @@ class Course < ActiveRecord::Base
     @department = Department.find_by_nice_abbr(dept_abbr)
     if !@department.nil?
       # TODO fix query to be more efficient
-      Course.where(:department_id => @department.id).reject {|course| course.exams.empty?}
+      Course.where(:department_id => @department.id).ordered.reject {|course| course.exams.empty?}
     end
   end
 end

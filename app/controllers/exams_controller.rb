@@ -17,4 +17,24 @@ class ExamsController < ApplicationController
       format.xml  { render :xml => @exams }
     end
   end
+
+  def course
+    @course = Course.find_by_short_name(params[:dept_abbr], params[:full_course_number])
+    klasses = Klass.where(:course_id => @course.id).order('semester DESC').reject {|klass| klass.exams.empty?}
+    @exam_path = '/examfiles/'
+    
+    @results = klasses.collect do |klass|
+      exams = {}
+      solutions = {}
+      klass.exams.each do |exam|
+        if exam.is_solution
+          exams[exam.short_type] = exam
+        else
+          solutions[exam.short_type] = exam
+        end
+      end
+      [klass.proper_semester, klass.instructors.first, exams, solutions]
+    end
+  end
+
 end

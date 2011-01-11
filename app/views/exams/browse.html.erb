@@ -22,7 +22,7 @@ ul.courses li {
   <h1><%= dept_name %></h1>
   <ul class="courses">
     <% courses.each do |course| %>
-	    <li><%= "#{course.dept_abbr} #{course.course_number} - #{course.exams.length} exam(s)" %>
+	    <li><%= "#{course.dept_abbr} #{course.course_number}#{course.suffix} - #{course.exams.length} exam(s)" %>
     <% end %>
   </ul>
 </div>
