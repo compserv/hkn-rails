@@ -1,8 +1,13 @@
+<%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <h1>Listing event_types</h1>
 
-<table>
-  <tr>
-    <th>Name</th>
+<div id="results">
+<div id="spinner">&nbsp;</div>
+<%= will_paginate @event_types, :class => "pagination ajax" %>
+
+<table class="table">
+  <tr class="pagination">
+    <th><%= sort_link 'Name', 'name' %></th>
   </tr>
 
 <% for event_type in @event_types %>
@@ -14,7 +19,10 @@
   </tr>
 <% end %>
 </table>
+</div>
 
 <br />
 
 <%= link_to 'New event_type', new_indrel_event_type_path %>
+
+<%= ajaxify_links('pagination') %>

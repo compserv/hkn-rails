@@ -1,12 +1,17 @@
+<%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <h1>Listing contacts</h1>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
+<div id="results">
+<div id="spinner">&nbsp;</div>
+<%= will_paginate @contacts, :class => "pagination ajax" %>
+
+<table class="table">
+ <tr class="pagination">
+    <th><%= sort_link 'Name', 'name' %></th>
+    <th><%= sort_link 'Email', 'email' %></th>
     <th>Office Phone</th>
     <th>Cell Phone</th>
-    <th>Company</th>
+    <th><%= sort_link 'Company', 'companies.name' %></th>
     <th>Comments</th>
   </tr>
 
@@ -24,7 +29,10 @@
   </tr>
 <% end %>
 </table>
+</div>
 
 <br />
 
 <%= link_to 'New contact', new_contact_path %>
+
+<%= ajaxify_links('pagination') %>

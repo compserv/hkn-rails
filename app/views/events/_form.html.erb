@@ -1,5 +1,96 @@
+<script>
+  function update_rsvp_type(e) {
+    var value = $('#rsvp_type option:selected')[0].value
+    if (value == 'No RSVPs') {
+      $('#rsvp_blocks').hide();
+      $('#rsvp_cap_div').hide();
+    } else if (value == 'Whole Event RSVPs') {
+      $('#rsvp_blocks').hide();
+      $('#rsvp_cap_div').show();
+    } else if (value == 'Block RSVPs') {
+      $('#rsvp_blocks').show();
+      if ($('#uniform_blocks').attr('checked')) {
+        $('#rsvp_cap_div').show();
+      } else {
+        $('#rsvp_cap_div').hide();
+      }
+    }
+  }
+
+  function new_block_form(i) {
+    var block = $('#block_template').clone();
+    var block_id = 'block'+i;
+    // Update fields with block number i
+    block.attr('id', block_id);
+    block.find('select').each( function(index) {
+      var old_name = $(this).attr('name');
+      var new_name = old_name.replace('block', block_id);
+      $(this).attr('name', new_name);
+      var old_id = $(this).attr('id');
+      var new_id = old_id.replace('block', block_id);
+      $(this).attr('id', new_id);
+    });
+    block.find('input').each( function(index) {
+      var old_name = $(this).attr('name');
+      var new_name = old_name.replace('block', block_id);
+      $(this).attr('name', new_name);
+      var old_id = $(this).attr('id');
+      var new_id = old_id.replace('block', block_id);
+      $(this).attr('id', new_id);
+    });
+    block.show();
+    return block;
+  }
+
+  block_num = <%= @event.blocks.size %>;
+
+  function update_blocks(e) {
+    var value = $('#rsvp_type option:selected')[0].value
+    if (value == 'Block RSVPs') {
+      if ($('#uniform_blocks').attr('checked')) {
+        $('#blocks').hide();
+        $('#rsvp_cap_div').show();
+        $('#num_blocks_div').show();
+      } else {
+        $('#blocks').show();
+        $('#rsvp_cap_div').hide();
+        $('#num_blocks_div').hide();
+        //var num_blocks = parseInt($('#num_blocks')[0].value);
+        //if (!isNaN(num_blocks) && (num_blocks != $('#blocks > div').length)) {
+        //  $('#blocks div').remove();
+        //  for (var i = 0; i < num_blocks; i+=1) {
+        //    $('#blocks').append(new_block_form(i));
+        //  }
+        //}
+        //$('#blocks').show();
+        //$('#rsvp_cap_div').hide();
+      }
+    }
+  }
+
+  function add_block() {
+    $('#blocks').append(new_block_form(block_num));
+    block_num += 1;
+  }
+
+  $(document).ready(function() {
+    update_rsvp_type();
+    update_blocks();
+    $('#rsvp_type').change(update_rsvp_type);
+    $('#uniform_blocks').change(update_blocks);
+    //$('#num_blocks').change(update_blocks);
+    //$('#num_blocks').keydown(function(e) {
+    //  // Update number of block forms when Enter is pressed
+    //  if (e.keyCode == '13') {
+    //    $(this).blur();
+    //    $(this).change();
+    //  }
+    //});
+  });
+</script>
+
 <%= form_for(@event) do |f| %>
-  <% if @event.errors.any? %>
+  <% if @event.errors.any? or @blocks.map{|b| b.errors.any?}.reduce{|x,y| x ||= y} %>
   <div id="errorExplanation">
     <h2><%= pluralize(@event.errors.count, "error") %> prohibited this event from being saved:</h2>
     <ul>
@@ -7,6 +98,15 @@
       <li><%= msg %></li>
     <% end %>
     </ul>
+    <% @blocks.size.times do |block_num| %>
+      <% block = @blocks[block_num] %>
+      Block #<%= block_num %>
+      <ul>
+        <% block.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+        <% end %>
+      </ul>
+    <% end %>
   </div>
   <% end %>
 
@@ -38,41 +138,71 @@
     <%= f.label :end_time %><br />
     <%= datetime_select :event, :end_time %>
   </div>
-  <div>
-    <%= label_tag(:blocktype_single, "Single block") %>
-    <%= radio_button_tag(:blocktype, "single", true, {:onclick => "blocks(1);"}) %>
-    <%= label_tag(:blocktype_uniform, "Multiple uniform blocks") %>
-    <%= radio_button_tag(:blocktype, "uniform", false, {:onclick => "blocks(2);"}) %>
-  </div>
-  <div class="field" id="numblocks">
-    <%= label_tag :num_blocks, 'Number of blocks' %><br />
-    <%= number_field_tag :num_blocks, 1, :onkeypress => "return numeric(event);" %>
-  </div>
-  <script>
-    var blockfield = document.getElementById('numblocks');
-    var num_blocks = document.getElementById('num_blocks');
-    blockfield.style.display = 'none';
-    
-    function blocks(selectID) {
-      if (selectID == 1) {
-        num_blocks.value = "1";
-        blockfield.style.display = 'none';
-      }
-      else if (selectID == 2)
-        blockfield.style.display = 'block';
-    }
-
-    function numeric(evt) {
-      evt = (evt) ? evt : window.event;
-      var charcode = (evt.which) ? evt.which : evt.keyCode;
-      if (charcode > 31 && (charcode < 48 || charcode > 57))
-        return false;
-      return true;
-    }
-  </script>
   <div class="field">
-    <%= label_tag :max_rsvps, 'Maximum RSVPs' %><br />
-    <%= number_field_tag :max_rsvps %>
+    <%= label_tag :rsvp_type, 'RSVP Type' %><br />
+    <%= select_tag :rsvp_type, options_for_select(['No RSVPs', 'Whole Event RSVPs', 'Block RSVPs'], :selected => case(@event.blocks.size) when 0 then 'No RSVPs' when 1 then 'Whole Event RSVPs' else 'Block RSVPs' end) %>
+  </div>
+  <div id="rsvp_cap_div" class="field">
+    <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %><br />
+    <%= number_field_tag :rsvp_cap %>
+  </div>
+  <div id="rsvp_blocks" class="field">
+    <div class="field">
+      <%= label_tag :uniform_blocks, 'Uniform Blocks' %><br />
+      <%= check_box_tag :uniform_blocks, true, (@event.blocks.size == 0) %>
+    </div>
+    <div id="num_blocks_div" class="field">
+      <%= label_tag :num_blocks, 'Number of blocks' %><br />
+      <%= number_field_tag :num_blocks, @event.blocks.size %>
+    </div>
+    <div id="blocks">
+      <div>
+        <%= link_to_function 'Add Block', 'add_block();' %>
+      </div>
+      <% @event.blocks.size.times do |block_num| %>
+        <% block = @event.blocks[block_num] %>
+        <% block_name = "block#{block_num}" %>
+        <div id="block<%= block_num %>" class="form-group">
+          <%= hidden_field block_name, :id, :value => block.id %>
+          <div class="field">
+            <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %><br />
+            <%= number_field block_name, :rsvp_cap, :value => block.rsvp_cap %>
+          </div>
+          <div class="field">
+            <%= label_tag :start_time, 'Start Time' %><br />
+            <%= datetime_select block_name, :start_time, :default => block.start_time %>
+          </div>
+          <div class="field">
+            <%= label_tag :end_time, 'End Time' %><br />
+            <%= datetime_select block_name, :end_time, :default => block.end_time %>
+          </div>
+          <div>
+            <% unless block.rsvps.empty? %>
+              This block has RSVPs from the following people: 
+              <% block.rsvps.each do |rsvp| %>
+                <%= rsvp.person.fullname %>
+              <% end %>
+            <% end %>
+          </div>
+          <%= link_to_function 'Delete', :onclick => "$(this).parent().remove();" %>
+        </div>
+      <% end %>
+    </div>
+    <div id="block_template" class="form-group" style="display:none">
+      <div class="field">
+        <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %><br />
+        <%= number_field :block, :rsvp_cap %>
+      </div>
+      <div class="field">
+        <%= label_tag :start_time, 'Start Time' %><br />
+        <%= datetime_select :block, :start_time %>
+      </div>
+      <div class="field">
+        <%= label_tag :end_time, 'End Time' %><br />
+        <%= datetime_select :block, :end_time %>
+      </div>
+      <%= link_to_function 'Delete', :onclick => "$(this).parent().remove();" %>
+    </div>
   </div>
   <div class="field">
     <%= f.label :need_transportation %><br />

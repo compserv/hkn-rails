@@ -1,0 +1,77 @@
+<h1> Upload Resume </h1>
+
+<%= form_for @resume, :html => { :multipart => true } do |f| %>
+	<% if @resume.errors.any? %>
+  <div id="errorExplanation">
+    <h2><%= pluralize(@resume.errors.count, "error") %> prohibited this resume from being uploaded:</h2>
+    <ul>
+    <% @resume.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <%- end -%>
+	<% @f = f %>
+	<%= render :partial => "current_resume", :locals => { :f  => @f }%>
+	<% @current_resume = @current_user.resumes.first %>
+	<div class="field">
+		<%= f.label :overall_gpa, "Overall GPA" %>
+		<%= f.text_field :overall_gpa %>
+	</div>
+	<div class="field">
+		<%= f.label :major_gpa, "Major GPA (optional)" %>
+		<%= f.text_field :major_gpa %>
+	</div>
+	<div class="field">
+		<%= f.label :resume_text, "Resume Text" %>
+		<table class="field-layout">
+			<tr><td><%= f.text_area :resume_text %></td></tr>
+			<tr><td>Paste the contents of your resume (used for searching).</td></tr>
+		</div>
+	</div>
+	<div class="field">
+		<!-- Spring should be selected by default unless most recent resume has a fall grad date -->
+		<table class = "field-layout"><tr>
+		<td><%= f.label :graduation_semester %></td>
+		<% if @current_resume && !@resume.graduation_semester && @current_resume.graduation_semester == "fall":
+			   fall_options = {:checked => true}
+			   spring_options = {}
+		   else
+				 fall_options = {}
+				 spring_options = {:checked => true}
+		   end
+		 %>
+		<td><%= f.radio_button :graduation_semester, "spring",
+		 	                     spring_options %></td><td>Spring</td>
+		<td><%= f.radio_button :graduation_semester, "fall",
+		                       fall_options %></td><td>Fall</td>
+		</tr></table>
+	</div>
+	<div class="field">
+		<!-- Should have the graduation year of most recent resume as default -->
+		<%
+		if @resume.graduation_year :
+			grad_year_options = {}
+		elsif @current_resume : # A valid current resume should have a non-nil grad year!
+			grad_year_options = {:value => @current_resume.graduation_year}
+		else
+			grad_year_options = {}
+		end
+			%>
+		<%= f.label :graduation_year %>
+		<table>
+		<tr><td><%= f.text_field :graduation_year, grad_year_options %></td></tr>
+		<tr><td>Please provide your intended graduation semester and year e.g. Fall 2015, Spring 2022.</td></tr>
+		</table>
+	</div>
+	<div class="field">
+		<%= f.label :file, "Resume" %>
+		<table>
+			<tr><td><%= f.file_field(:file, :accept => 'application/pdf') %></td></tr>
+			<tr><td>Please provide a PDF of your resume.</td></tr>
+		</table>
+	</div>
+  <div class="actions">
+    <%= f.submit "Upload Resume" %>
+  </div>
+<%- end -%>

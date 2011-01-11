@@ -1,10 +1,25 @@
-<h1>Tutoring Settings</h1>
+<h1>Tutoring Admin</h1>
 <%= form_tag("", :method => :post) do %>
 	<%= label_tag :enabled, "Tutoring Enabled:" %>
-	<%= select_tag :enabled, options_for_select([ ["Enabled",true], ["Disabled", false]], @enabled) %>
+	<%= select_tag :enabled, options_for_select([ ["Enabled", true], ["Disabled", false]], @enabled) %>
 	<br />
 	<%= label_tag :message, "Message to show when tutoring is disabled:" %>
 	<%= text_field_tag :message, @message, :size => 100 %>
+       <br />
+	<%= label_tag :semester, "Current semester:" %>
+	<%= select_tag :semester, options_for_select([ ["Spring", 1], ["Summer", 2], ["Fall", 3]], @semester) %>
+	<br />
+	<%= label_tag :year, "Current year:" %>
+	<%= text_field_tag :year, @year, :size => 10 %>
+	<br />
+	<%= label_tag :start, "First hour (integer between 11 and 16):" %>
+	<%= text_field_tag :start, @start, :size => 10 %>
+	<br />
+	<%= label_tag :end, "Last hour (integer between 11 and 16):" %>
+	<%= text_field_tag :end, @end, :size => 10 %>
 	<br />
 	<%= submit_tag %>
 <% end %>
+	<br /><br />
+	<%= "Get scheduling parameters for running the scheduler locally." %>
+	<%= button_to "Officer Parameters", :action => "params_for_scheduler" %>

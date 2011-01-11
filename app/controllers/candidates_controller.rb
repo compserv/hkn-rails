@@ -18,8 +18,7 @@ class CandidatesController < ApplicationController
     requirements = @current_user.candidate.requirements_status
     @status = requirements[:status]
     @rsvps = requirements[:rsvps]
-    
-    @challenges = @current_user.candidate.challenges
+    @events = Event.order("start_time asc").limit(5)
   end
   
   def find_officers #FIXME: what's a more efficient way to do this?
@@ -57,10 +56,10 @@ class CandidatesController < ApplicationController
     #is there a better way to look up a person like this?
     officer = Person.find(:first, :conditions => {:first_name => officer_name[0], :last_name => officer_name[1]})
     if(!officer or !officer.in_group?("officers")) #If officer does not exist
-      render :text => "Invalid officer."
+      render :json => [false, "Invalid officer."]
       return
     elsif(challenge_name == "") #challenge name is blank
-       render :text => "Challenge name is blank."
+       render :json => [false, "Challenge name is blank."]
        return
     end
     
@@ -69,11 +68,15 @@ class CandidatesController < ApplicationController
     saved = challenge.save
     
     if(!saved) #challenge didn't save for some reason
-      render :text => "Oops, something went wrong!"
+      render :json => [false, "Oops, something went wrong!"]
       return
     end
     
-    render :text => true
+    render :json => [true, challenge.id]
+  end
+  
+  def update_challenges
+    render :partial => "challenges"
   end
 
   def submit_quiz

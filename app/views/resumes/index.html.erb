@@ -1,0 +1,13 @@
+<h1> Résumés </h1>
+
+<table class="table">
+	<tr><th>Upload Date</th><th>Person</th><th>Overall GPA</th><th>File Location</th></tr>
+<% Resume.find(:all).each do |resume| %>
+<!-- I hope everyone capitalizes the first letters of their names. But it's not really a big deal-->
+	<tr><td> <%= resume.updated_at %> </td>
+	    <td> <%= "#{resume.person.first_name} #{resume.person.last_name}" %> </td>
+			<td> <%= resume.overall_gpa %>
+		  <td> <%= resume.file %> </td>
+	</tr>
+<% end %>
+</table>

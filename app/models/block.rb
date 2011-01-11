@@ -10,11 +10,14 @@ class Block < ActiveRecord::Base
   #   event_id   : integer 
   # =======================
 
+  # Nonpositive rsvp_cap implies no limit
   has_and_belongs_to_many :rsvps
   belongs_to :event
 
   validate :valid_time_range
   validates :event, :presence => true
+
+  default_scope :order => 'start_time'
 
   def valid_time_range
     if !start_time.blank? and !end_time.blank?

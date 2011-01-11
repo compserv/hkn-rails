@@ -50,7 +50,9 @@
 <li>	
 	<a href="/exam/browse/">Exam Archive</a>
 </li>
-<li><a href="/courseguide/">Course Guide</a></li>
+<li>
+	<a href="/courseguide/">Course Guide</a>
+</li>
 <li>	
 	<a href="/services/more/">More Services</a>
 </li>
@@ -159,7 +161,7 @@
 	</a>
 </li>
 <li>	
-	<a href="/admin/tutor/view_signups/" class="navigation_sublevel_item">
+	<a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">
 		View Tutor Signups
 	</a>
 </li>
@@ -169,6 +171,12 @@
 		Tutor Admin
 	</a>
 </li>
+<li>
+	<a href="/admin/indrel/" class="navigation_sublevel_item">
+		Indrel
+	</a>
+</li>
+
 <li>
 	<%- if @current_user && @current_user.in_group?("deprel") -%>
 	<a href="/admin/deprel" class="navigation_sublevel_item">

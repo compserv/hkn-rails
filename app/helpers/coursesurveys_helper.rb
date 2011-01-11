@@ -12,8 +12,8 @@ module CoursesurveysHelper
       margin_left = 0
     end
 
-    color = (width > 75) ?  "green" : (width > 50) ? "orange" : "red"
-    inner_html_options = { :class => "subbar", :style => "width: #{width}%; background-color: #{color}; margin-left: #{margin_left}%;" }
+    color = (width > 75) ?  "#77c265" : (width > 50) ? "#f6e68b" : "#ed8d86"
+    inner_html_options = { :class => "subbar", :style => "width: #{width}%; background-color: #{color}; margin-left: 0px;" }
 
     if url.nil?
       content_tag(:span, outer_html_options) do
@@ -28,6 +28,15 @@ module CoursesurveysHelper
     end
   end
 
+  def rating_and_bar(score, max, url=nil, inverted=nil)
+    contents = "
+    <span class=\"rating\">#{sprintf "%.1f", score}</span><span class=\"rating2\"> / #{max}</span>\n
+    #{rating_bar(score/max.to_f)}
+    "
+ 
+    content_tag(:span, contents.html_safe)
+  end
+
   def frequency_bar(rating)
     width = (rating*100).to_int
 
@@ -39,7 +48,11 @@ module CoursesurveysHelper
   end
 
   def surveys_klass_path(klass)
-    coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
+    if klass.section.blank? || klass.has_other_sections?
+      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
+    else
+      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester, klass.section
+    end
   end
 
   def surveys_course_path(course)

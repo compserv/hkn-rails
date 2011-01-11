@@ -8,10 +8,9 @@ class Slot < ActiveRecord::Base
   #   updated_at : datetime 
   # =======================
 
-  has_and_belongs_to_many :tutors
+  has_and_belongs_to_many :tutors, :after_add => :check_tutor
   has_many :slot_changes
 
-  #TODO Validate whether a tutor is assigned to both rooms of the same time.
   validate :valid_room
   validates :room, :presence => true
   validates :time, :presence => true
@@ -55,6 +54,10 @@ class Slot < ActiveRecord::Base
       slots = find_by_wday(wday)
       slots.select {|slot| slot.room == room}
     end
+   def find_by_wday_hour_and_room(wday, hour, room)
+      slots = all
+      slots.select {|slot| slot.wday == wday and slot.hour == hour and slot.room == room}
+    end
   end
 
   def to_s
@@ -85,6 +88,18 @@ class Slot < ActiveRecord::Base
     end
   end
   
+  def check_tutor(tutor)
+    otherslot = Slot.find_by_time_and_room(time, 1-room)
+    other_tutors = otherslot.tutors if otherslot
+    other_tutors ||= []
+    for other_tutor in other_tutors
+      if tutor == other_tutor
+        tutors.delete(tutor)
+        break
+      end
+    end
+  end
+
   def availabilities
     return Availability.where(:time=>time)
   end

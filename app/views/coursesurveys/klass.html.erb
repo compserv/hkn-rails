@@ -1,6 +1,6 @@
 <h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
 
-<div id="instructorbox" class="infobox">
+<div id="instructorbox" class="infobox trans-bg">
   <h3>Instructor<%= "s" if @klass.instructors.size > 1 %></h3>
   <ul>
     <% @klass.instructors.each do |instructor| %>
@@ -13,41 +13,42 @@
       <li><%= link_to instructor.full_name, surveys_instructor_path(instructor) %></li>
     <% end %>
   </ul>
+  
+  <%= render :partial => 'emailhkn' %>
 </div>
 
-<table id="ratings" class="table">
-<%- @results.each do |instructor, answers| -%>
-  <%- if answers.nil? -%>
-  <tr>
-    <th colspan="2">
-      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
-    </th>
-  </tr>
-  <tr><td colspan="2">This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>.</td></tr>
-  <%- else -%>
-  <tr>
-    <th>
-      <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
-    </th>
-    <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.reduce{|x,y| x.to_i+y.to_i} %> respondents</th>
-  </tr>
-    <%- answers.each do |answer| -%>
-  <tr>
-    <td>
-      <%- if answer.survey_question.important -%><strong><%- end -%>
-      <%= answer.survey_question.text %>
-      <%- if answer.survey_question.important -%></strong><%- end -%>
-    </td>
-    <td>
-      <%= sprintf "%.1f", answer.mean %> / <%= answer.survey_question.max.to_f %>
-      <%= rating_bar(answer.mean/answer.survey_question.max.to_f, surveys_rating_path(answer), answer.survey_question.inverted) %>
-    </td>
-  </tr>
+<div id="klass_table">
+  <table id="ratings" class="table">
+  <%- @results.each do |instructor, answers| -%>
+    <%- if answers.nil? -%>
+    <tr>
+      <th colspan="2">
+        <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+      </th>
+    </tr>
+    <tr><td colspan="2">This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>.</td></tr>
+    <%- else -%>
+    <tr>
+      <th>
+        <%= @klass.instructor_type(instructor) %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+      </th>
+      <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.reduce{|x,y| x.to_i+y.to_i} %> respondents</th>
+    </tr>
+      <%- answers.each do |answer| -%>
+    <tr>
+      <td>
+        <%- if answer.survey_question.important -%><strong><%- end -%>
+        <%= answer.survey_question.text %>
+        <%- if answer.survey_question.important -%></strong><%- end -%>
+      </td>
+      <td>
+        <span class="rating1"><%= sprintf "%.1f", answer.mean %></span>
+        <span class="rating2"> / <%= answer.survey_question.max %> &plusmn; <%= sprintf "%.1f", answer.confidence_interval %></span>
+        <span class="rating3"><%= rating_bar(answer.mean/answer.survey_question.max.to_f, surveys_rating_path(answer), answer.survey_question.inverted) %></span>
+      </td>
+    </tr>
+      <%- end -%>
     <%- end -%>
   <%- end -%>
-<%- end -%>
-</table>
-
-<p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
-
-<%= render :partial => 'emailhkn' %>
+  </table>
+</div>

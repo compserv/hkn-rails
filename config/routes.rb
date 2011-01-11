@@ -1,4 +1,5 @@
 HknRails::Application.routes.draw do
+
   #Department tours
   scope "dept_tour" do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup
@@ -10,6 +11,7 @@ HknRails::Application.routes.draw do
       match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
       match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses
       match "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
+      match "params_for_scheduler" => "tutor#params_for_scheduler"
       match "/" => "tutor#settings"
       match "settings" => "tutor#settings", :as=>:tutor_settings
       match "find_courses" => "tutor#find_courses"
@@ -17,6 +19,9 @@ HknRails::Application.routes.draw do
     end
     scope "deprel" do
       match "/" => "deprel#overview"
+    end
+    scope "indrel" do
+      match "/" => "indrel#indrel_db", :as => "indrel_db"
     end
   end
   resources :course_preferences
@@ -49,15 +54,27 @@ HknRails::Application.routes.draw do
   match "account-settings" => "people#edit", :as => :account_settings
   resources :people, :except => [:new, :create, :index]
 
+  # Alumni
+  resources :alumnis
+  scope "alumni" do
+    match "registration" => "alumnis#edit"
+    match "newsletter" => "alumnis#newsletter"
+  end
+
   # Resumes, this is kind of just a prototype test right now
-  match "resumes" => "resumes#show"
+  get "resumes/new"
+  scope "resumes" do
+    match "upload" => "resumes#new", :as => :resumes_upload
+    match "download/:id" => "resumes#download", :as => :resume_download
+  end
+  resources :resumes
 
   # Course Surveys
   scope "coursesurveys" do
     match "/"                                       => "coursesurveys#index",      :as => :coursesurveys
     match "course/:dept_abbr"                       => "coursesurveys#department", :as => :coursesurveys_department
     match "course/:dept_abbr/:short_name"           => "coursesurveys#course",     :as => :coursesurveys_course
-    match "course/:dept_abbr/:short_name/:semester" => "coursesurveys#klass",      :as => :coursesurveys_klass
+    match "course/:dept_abbr/:short_name/:semester(/:section)" => "coursesurveys#klass",      :as => :coursesurveys_klass
     # This is a hack to allow periods in the parameter. Otherwise, Rails automatically splits on periods
     match "instructor/:name"                        => "coursesurveys#instructor", :as => :coursesurveys_instructor, :constraints => {:name => /.+/}
     match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
@@ -92,14 +109,11 @@ HknRails::Application.routes.draw do
     match "resume-books"              => "indrel#resume_books",                   :as => "resume_books"
     get   "resume-books/order"        => "indrel#resume_books_order",             :as => "resume_books_order"
     post  "resume-books/order"        => "indrel#resume_books_order_post",        :as => "resume_books_order_post"
-    scope "db" do
-      match "/" => "indrel#indrel_db", :as => "indrel_db"
-      resources :companies
-      resources :contacts
-      resources :events,      :controller => "indrel_events",      :as => "indrel_events"
-      resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
-      resources :locations
-    end
+    resources :companies
+    resources :contacts
+    resources :events,      :controller => "indrel_events",      :as => "indrel_events"
+    resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
+    resources :locations
   end
 
   # Static pages
@@ -111,7 +125,7 @@ HknRails::Application.routes.draw do
 
   #Tutoring pages
   scope "tutor" do
-    match "/" => "tutor#schedule"
+    match "/" => "tutor#schedule", :as => "tutor"
     match "schedule" => "tutor#schedule"
   end
   
@@ -128,6 +142,7 @@ HknRails::Application.routes.draw do
     match "submit_quiz" => "candidates#submit_quiz"
     match "submit_app" => "candidates#submit_app"
     match "request_challenge" => "candidates#request_challenge"
+    match "update_challenges" => "candidates#update_challenges"
     match "find_officers" => "candidates#find_officers"
   end
   #resources :user_session

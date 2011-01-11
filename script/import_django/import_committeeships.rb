@@ -1,14 +1,4 @@
 #!/usr/bin/env ruby
-#
-# TODO: Figure out if we want to store the following info:
-# * Address
-# * Graduating semester (this is probably a yes)
-# * Privacy (we probably want to implement this)
-# 
-# Also figure out how we want to do other stuff
-# * Officership/candidateship/cmembership
-# * Pictures
-# * Grad student?
 
 require File.expand_path('../../../config/environment', __FILE__)
 

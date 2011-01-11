@@ -12,6 +12,17 @@
 
 ActiveRecord::Schema.define(:version => 20110110073815) do
 
+  create_table "alumnis", :force => true do |t|
+    t.string   "grad_semester"
+    t.string   "grad_school"
+    t.string   "job_title"
+    t.string   "company"
+    t.integer  "salary"
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "announcements", :force => true do |t|
     t.string   "title"
     t.string   "body"
@@ -27,6 +38,8 @@ ActiveRecord::Schema.define(:version => 20110110073815) do
     t.datetime "updated_at"
     t.integer  "preference_level"
     t.datetime "time"
+    t.integer  "adjacency",        :default => 0
+    t.integer  "room_strength",    :default => 0
   end
 
   create_table "blocks", :force => true do |t|
@@ -296,6 +309,20 @@ ActiveRecord::Schema.define(:version => 20110110073815) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "resumes", :force => true do |t|
+    t.decimal  "overall_gpa"
+    t.decimal  "major_gpa"
+    t.text     "resume_text"
+    t.integer  "graduation_year"
+    t.string   "graduation_semester"
+    t.string   "file"
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "resumes", ["person_id"], :name => "index_resumes_on_person_id"
 
   create_table "rsvps", :force => true do |t|
     t.string   "confirmed"

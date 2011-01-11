@@ -21,54 +21,88 @@
       }
     });
   </script>
+  <style type="text/css">
+    ul#sortable{
+      list-style: none;
+      text-indent: 5px;
+    }
+    
+    li.ui-state-default{
+      border-radius: 5px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      padding: 2px;
+      background: #403f3f url("/images/back_dark.png");
+      border: 0px;
+      width: 60%;
+      margin: 0.5em;
+      font-weight: normal;
+      color: white;
+      cursor:pointer;
+    }
+    
+    .ui-state-default .ui-icon{
+      display: inline-block;
+      background-image: url("/images/icons/move.png");
+      background-position: 0px 0px;
+      position:relative;
+      top: 2px;
+    }
+  </style>
 <% end %>
 
 <h1>Candidate Application</h1>
 
 <%= form_tag "/cand/submit_app"  do %> 
-  <p>
-    <%= label_tag "AIM Screen name" %>
-    <%= text_field_tag(:aim, @app_details[:aim]) %>
-  </p>
+  <div style="float:left; width:45%;">
+    <div class="field">
+      <%= label_tag "AIM Screen name" %>
+      <%= text_field_tag(:aim, @app_details[:aim]) %>
+    </div>
   
-  <p>
-    <%= label_tag "Your Local (Berkeley) Address" %>
-    <%= text_field_tag(:local_address, @app_details[:local_address]) %>
-  </p>
+    <div class="field">
+      <%= label_tag "Your Local (Berkeley) Address" %>
+      <%= text_field_tag(:local_address, @app_details[:local_address]) %>
+    </div>
   
-  <p>
-    <%= label_tag "Your Permanent Address" %>
-    <%= text_field_tag(:perm_address, @app_details[:perm_address]) %>
-  </p>
+    <div class="field">
+      <%= label_tag "Your Permanent Address" %>
+      <%= text_field_tag(:perm_address, @app_details[:perm_address]) %>
+    </div>
   
-  <p>
-    <%= label_tag "Phone" %>
-    <%= text_field_tag(:phone, @app_details[:phone]) %>
-  </p>
+    <div class="field">
+      <%= label_tag "Phone" %>
+      <%= text_field_tag(:phone, @app_details[:phone]) %>
+    </div>
   
-  <p>
-    <%= label_tag "Graduation Semester" %>
-    <%= text_field_tag(:grad_sem, @app_details[:grad_sem]) %>
-  </p>
+    <div class="field">
+      <%= label_tag "Graduation Semester" %>
+      <%= text_field_tag(:grad_sem, @app_details[:grad_sem]) %>
+    </div>
   
-  <p>
-    <%= label_tag "Release information to other candidates" %>
-    <%= check_box_tag(:release, @app_details[:release]) %>
-  </p>
-  
-  <p>
-    <%= label_tag "Committee Preferences" %>
+    <div class="field">
+      <%= label_tag "Release information" %>
+      <%= check_box_tag(:release, @app_details[:release]) %>
+    </div>
+    
+    <%= label_tag "What activities would you like to see HKN do this semester?" %><br/>
+    <%= text_area_tag(:suggestion, @app_details[:suggestion]) %>
+  </div>
+  <div style="float:left; width: 45%; padding-left: 3em;">
+      <%= label_tag "Committee Preferences" %><br/>
     <%= hidden_field_tag(:committee_prefs, "", :id=>"committee_prefs") %>
-    <ul id="sortable">
+    <ul id="sortable" class="plain">
       <% for pref in @app_details[:committee_prefs] %>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><span><%= pref %></span></li>
+        <li class="ui-state-default">
+          <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+          <span><%= pref %></span>
+        </li>
       <% end %>
     </ul>
-  </p>
+  </div>
+  <div class="clear"></div>
   
-  <p>
-    <%= label_tag "What activities would you like to see HKN do this semester?" %>
-    <%= text_area_tag(:suggestion, @app_details[:suggestion]) %>
-  </p>
+  
+  
 <%= submit_tag "Save Application", :id=>"submit_app" %>
 <% end %>

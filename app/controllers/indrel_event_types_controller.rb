@@ -4,11 +4,26 @@ class IndrelEventTypesController < ApplicationController
   # GET /event_types
   # GET /event_types.xml
   def index
-    @event_types = IndrelEventType.find(:all)
+    per_page = 10
+	order = params[:sort] || "name"
+	sort_direction = case params[:sort_direction]
+						when "up" then "ASC"
+						when "down" then "DESC"
+						else "ASC"
+						end
+
+	@search_opts = {'sort' => "name"}.merge params
+	opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
+	@event_types = IndrelEventType.paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @event_types }
+      format.js {
+        render :update do |page|
+          page.replace 'results', :partial => 'list_results'
+        end
+      }
     end
   end
 

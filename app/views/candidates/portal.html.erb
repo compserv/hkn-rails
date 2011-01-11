@@ -1,6 +1,55 @@
 <% content_for :header do %>
   <%= javascript_include_tag "jquery-autocomplete.min" %>
   <%= stylesheet_link_tag "jquery-autocomplete" %>
+  <style type="text/css">
+  
+    #checklist{
+      background: white;
+      padding: 1em;
+      -webkit-box-shadow: 0px 5px 20px #eee;
+    }
+    
+    #sidebar, #announcements{
+      margin: 1em 0px;
+    }
+    ul.semi-plain{
+      list-style: none;
+      padding: 0px;
+      margin: 0px;
+      padding-left: 1em;
+    }
+    .req_status{
+      display: inline-block;
+      width: 16px;
+      height: 13px;
+      position:relative;
+      top:2px;
+    }
+    .status_done{
+      background: url("/images/icons/check.png");
+    }
+    .status_notdone{
+      
+      background: url("/images/icons/uncheck.png");
+    }
+    
+    .event_status{
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      position:relative;
+      top: 4px;
+    }
+    
+    .event_done{
+      background: url("/images/icons/bullet_green.png");
+    }
+    
+    .event_notdone{
+      background: url("/images/icons/bullet_red.png");
+    }
+    
+  </style>
   <script type="text/javascript">
     $(document).ready(function() {
       $.ajax({
@@ -17,19 +66,17 @@
         $.post("../request_challenge",  
           { officer: officer_name, name: challenge_name},
           function(data) { 
-            if(data == "true"){ //OK submission
+            console.log(data);
+            if(data[0] == true){ //OK submission
+              $("#request_challenge_errors").empty();
               $("input[name=officer]").val(""); //clear fields
               $("input[name=challenge_name]").val("");
               
-              //ajax
-              ch = $("<li></li>");
-              ch.append($("<span></span>").addClass("officer_name").html(officer_name));
-              ch.append($("<span></span>").addClass("challenge_name").html(challenge_name));
-              ch.append($("<span></span>").addClass("challenge_status").html("Pending"));
-              $("#challenges").append(ch);
+              $("#challenges").load("../update_challenges");
+              //$("#challenges").append("<%= escape_javascript(render :partial => "challenges") %>");
               
             } else{
-              $("#request_challenge_errors").html(data);
+              $("#request_challenge_errors").html(data[1]);
             }
             
           }
@@ -39,73 +86,117 @@
     });
   </script>
 <% end %>
-
-<div id="main" style="float:left">
-  <h1>Candidate Portal</h1>
-  <h2>Announcements</h2>
-
-  <h2>Checklist</h2>
-
-  <h3>Events</h3>
-  <% @status.each do |req, status| %>
-  <h4>
-    <%=h req.to_s + ": " %>
-    <% if status == true %>
-    <span class="status_done">Done</span>
-    <% else %>
-    <span class="status_notdone">Not Done</span>
-    <% end %>
-  </h4>
-  <ul>
-    <% for rsvp in @rsvps[req] %>
-    <%= rsvp.event.name %> <%= rsvp.event.confirmed == true ? "Confirmed" : "Not Confirmed" %>
-    <% end %>
-  </ul>
+<div id="sidebar" class="trans-bg">
+  <h2>Upcoming Events</h2>
+  <ul id="upcoming_events" class="plain">
+  <% for event in @events %>
+    <li class="event">
+      <span class="name"><%= event.name %></span>
+      <span>
+        <span class="time">
+          <%= event.start_time %> to <%= event.end_time %>
+        </span>
+        <span class="location"><%= event.location %></span>
+      </span>
+      <span class="description"><%= event.description %></span>
+    </li>
   <% end %>
- 
- 
-
-  <h3>Challenges</h3>
+  </ul>
   
-    <ul id="challenges">
-    <% if @challenges.length > 0 %>
-      <% for challenge in @challenges %>
-        <li>
-          <% officer = Person.find(challenge.officer_id) %>
-          <span class="officer_name"><%= officer.first_name + " " + officer.last_name %></span>
-          <span class="challenge_name"><%= challenge.name %></span>
-          <span class="challenge_status"><%= challenge.status ? "Done" : "Pending" %></span>
+  <h2>Important Information</h2>
+  [Coming Soon]
+  
+  <h2>Additional Forms</h2>
+  [Coming Soon]
+</div>
+
+<div id="main">
+  <h1>Candidate Portal</h1>
+  
+  <div id="announcements" class="trans-bg">
+    <h2>Announcements</h2>
+      <ul class="plain">
+      <% for a in @announcements %>
+        <li class="announcement">
+          <span class="title"><%= a.title %></span> - <span class="author"><%= a.person.first_name  + " " + a.person.last_name %></span>
+          <span class="body"><%= a.body %></span>
         </li>
       <% end %>
-    <% else %>
-      No challenges requested
-    <% end %>
-    </ul>
-
-  <h4>Request Challenge Confirmation</h4>
-  <div id="request_challenge_errors"></div>
-  <%= label_tag "Find Officer" %>
-  <%= text_field_tag "officer", "", :id => "officer" %>
+      </ul>
+  </div>
   
-  <%= label_tag "Challenge Name"%>
-  <%= text_field_tag "challenge_name" %>
-  
-  <%= submit_tag "Send Request", :id => "challenge_submit" %>
+  <div id="checklist">
+    <h2>Checklist</h2>
+    
+    <div style="float:left; width: 45%;">
+      <h3>
+        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        Events</h3>
+      <ul class="semi-plain">
+        <% @status.each do |req, status| %>
+        <li>
+          <h4>
+            <span class="<%= "req_status " + (status ? "status_done" : "status_notdone") %>"></span>
+            <%=h req.to_s %>
+          </h4>
+          <ul class="semi-plain">
+            <% for rsvp in @rsvps[req] %>
+            <li><span class="<%= "event_status " + (rsvp.confirmed == 'true' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+            <% end %>
+          </ul>
+        </li>
+        <% end %>
+      </ul>
+    </div>
 
-  <h3>Course Surveys</h3>
-
-  <h3>Forms</h3>
-  <ul>
-    <li>
-      <%= link_to "Resume", "../../resume/upload" %>
-    </li>
-    <li>
-      <%= link_to "Quiz", "../quiz" %>
-    </li>
-  </ul>
-
-  <h3>Additional Forms</h3>
+    <div style="float:left; width: 45%; padding-left: 3em;">
+      <h3>
+        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        Challenges</h3>
+      <ul id="challenges" class="semi-plain">
+        <%= render :partial => "challenges"%>    
+      </ul>
+    
+      <div id="request_challenge_container">
+        <h4>Request Challenge Confirmation</h4>
+        <span id="request_challenge_errors"></span>
+        <div class="field">
+          <%= label_tag "Find Officer" %>
+          <%= text_field_tag "officer", "", :id => "officer" %>
+        </div>
+      
+        <div class="field">
+        <%= label_tag "Challenge Name"%>
+        <%= text_field_tag "challenge_name" %>
+        </div>
+        
+        <p>
+        <%= submit_tag "Send Request", :id => "challenge_submit" %>
+        </p>
+      </div>
+      
+      <h3>
+        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        Forms</h3>
+      <ul id="forms" class="semi-plain">
+        <li>
+          <span class="<%= "event_status " + (false ? 'event_done' : 'event_notdone') %>"></span>
+          <%= link_to "Resume", "../../resumes/upload" %>
+        </li>
+        <li>
+          <span class="<%= "event_status " + (false ? 'event_done' : 'event_notdone') %>"></span>
+          <%= link_to "Quiz", "../quiz" %>
+        </li>
+      </ul>
+      
+    </div>
+    <div class="clear light-hbar"></div>
+    <h3>
+      <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+      Course Surveys</h3>
+    [Coming Soon]
+    
+    
+  </div>
 </div>
-<div id="sidebar" style="float:right">
-  <h2>Upcoming Events</h2>
-</div>
+

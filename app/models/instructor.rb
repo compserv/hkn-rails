@@ -30,7 +30,7 @@ class Instructor < ActiveRecord::Base
   end
   
   def ta?
-    title =~ /TA/i
+    title =~ /TA|Teaching Assistant/
   end
 
   def Instructor.find_by_name(first_name, last_name)

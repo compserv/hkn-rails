@@ -1,73 +1,120 @@
-<h1><%= @course.course_name %></h1>
+<% content_for :header do %>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+    
+    google.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Semester');
+      data.addColumn('number', 'Teaching Effectiveness');
+      data.addColumn('number', 'Worthwhile Course?');
+      data.addRows($(".semester").length);
+      
+      count = 0;
+      $("#ratings tbody tr").each(function(){
+        dat = $($(this)).children("td")
+        year = $(dat[0]).find(".semester a").html();
+        eff = parseFloat($(dat[2]).find(".rating").html(), 10);
+        worth = parseFloat($(dat[3]).find(".rating").html(), 10);
+        
+        console.log(year + ": " + eff + " " + worth);
+        
+        if(year != null){
+          data.setValue(count, 0, year);
+          data.setValue(count, 1, eff);
+          data.setValue(count, 2, worth);
+          count++;
+        }
+        
+      }); 
 
-<img id="trend" src="/trend" alt="trend"/>
-<table id="course_info" class="infobox">
-  <tr> <th>Title</th>            <td><%= @course.name %></td> </tr>
-<%- unless @instructors.blank? -%>
-  <tr>
-    <th>Instructor<%= @instructors.size > 1 ? "s" : "" %> in Charge</th>
-    <td>
-      <% @instructors.each do |instructor| %>
-        <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
-      <% end %>
-    </td>
-  </tr>
-<%- end -%>
-  <tr> <th>Units</th>         <td><%= @course.units %></td> </tr>
-<%- unless @course.prereqs.blank? -%>
-  <tr> <th>Prerequisites</th> <td><%= @course.prereqs %></td> </tr>
-<%- end -%>
-  <tr> <th>Description</th>   <td><%= @course.description %></td> </tr>
-</table>
+      var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
+      chart.draw(data, 
+        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: true, backgroundColor: 'none', reverseCategories: true}
+      );
+    }
+  </script>
+<% end %>
 
+<div class="trans-bg">
+  <h1><%= @course.course_name %></h1>
+  <table id="course_info" class="infobox">
+  <%- unless @course.name.eql?("(No title)") -%>
+    <tr> <th>Title</th>            <td><%= @course.name %></td> </tr>
+  <%- end -%>
+  <%- unless @instructors.blank? -%>
+    <tr>
+      <th><%= 'Instructor'.pluralize_for(@instructors.size) %> in Charge</th>
+      <td>
+        <% @instructors.each do |instructor| %>
+          <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+        <% end %>
+      </td>
+    </tr>
+  <%- end -%>
+  <%- unless @course.units.nil? -%>
+    <tr> <th>Units</th>         <td><%= @course.units %></td> </tr>
+  <%- end -%>
+  <%- unless @course.prereqs.blank? -%>
+    <tr> <th>Prerequisites</th> <td><%= @course.prereqs %></td> </tr>
+  <%- end -%>
+  <%- unless @course.description.blank? -%>
+    <tr> <th>Description</th>   <td><%= @course.description %></td> </tr>
+  <%- end -%>
+  </table>
+</div>
 <%- if @course.klasses.blank? -%>
 <p>No survey data available for this course.</p>
 <%- else -%>
-<table id="ratings" class="table">
-  <tr>
-    <th>Sections</th>
-    <th>Instructor</th>
-    <th>Teaching Effectiveness</th>
-    <th>How worthwhile was this course?</th>
-  </tr>
-<%- @results.each do |klass, instructor, effectiveness, worthwhileness| -%>
-  <tr>
-    <td>
-      <%= link_to klass.proper_semester, surveys_klass_path(klass) %>
-    </td>
-    <td>
-      <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness.mean %> / <%= @effective_max %>
-      <%= rating_bar(effectiveness.mean/@effective_max) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness.mean %> / <%= @worthwhile_max %>
-      <%= rating_bar(worthwhileness.mean/@worthwhile_max) %>
-    </td>
-  </tr>
-<%- end -%>
-  <tr>
-    <th colspan="2">Overall Rating</th>
-    <th>Teaching Effectiveness</th>
-    <th>How worthwhile was this course?</th>
-  </tr>
-  <tr>
-    <td colspan="2"></td>
-    <td>
-      <%= sprintf "%.1f", @total_effectiveness %> / <%= @effective_max %>
-      <%= rating_bar(@total_effectiveness/@effective_max) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", @total_worthwhileness %> / <%= @worthwhile_max %>
-      <%= rating_bar(@total_worthwhileness/@worthwhile_max) %>
-    </td>
-  </tr>
-</table>
+<div id="chart_div"></div> 
 
-<p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
+<div id="table">
+  <table id="ratings" class="table">
+    <tr>
+      <th>Sections</th>
+      <th>Instructor</th>
+      <th>Teaching Effectiveness</th>
+      <th>How worthwhile was this course?</th>
+    </tr>
+  <%- @results.each do |klass, instructor, effectiveness_mean, worthwhileness_mean| -%>
+    <tr>
+      <td>
+        <span class="semester"><%= link_to klass.proper_semester, surveys_klass_path(klass) %></span>
+      </td>
+      <td>
+        <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+      </td>
+      <td>
+       <%= rating_and_bar(effectiveness_mean, @effective_max) %>
+      </td>
+      <td>
+        <%= rating_and_bar(worthwhileness_mean, @worthwhile_max) %>
+      </td>
+    </tr>
+  <%- end -%>
+    <tr>
+      <th colspan="2">Overall Rating</th>
+      <th>Teaching Effectiveness</th>
+      <th>How worthwhile was this course?</th>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td>
+       <%= rating_and_bar(@total_effectiveness, @effective_max) %>
+      </td>
+      <td>
+       <%= rating_and_bar(@total_worthwhileness, @worthwhile_max) %>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="clear"></div>
 <%- end -%>
 
-<%= render :partial => 'emailhkn' %>
-<a href="/student/howtouse.shtml">[Info about this page]</a>
+<div style="text-align: center; padding-top: 1em;">
+  <%= render :partial => 'emailhkn' %>
+  <a href="/student/howtouse.shtml">[Info about this page]</a>
+</div>

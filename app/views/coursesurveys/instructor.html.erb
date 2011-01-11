@@ -1,119 +1,135 @@
-<h1><%= @instructor.full_name %></h1>
+<% content_for :header do %>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+    
+    google.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Semester');
+      data.addColumn('number', 'Teaching Effectiveness');
+      data.addColumn('number', 'Worthwhile Course?');
+      data.addRows($(".semester").length);
+      
+      count = 0;
+      $("#ratings tbody tr").each(function(){
+        dat = $($(this)).children("td")
+        year = $(dat[0]).find(".semester a").html();
+        eff = parseFloat($(dat[1]).find(".rating").html(), 10);
+        worth = parseFloat($(dat[2]).find(".rating").html(), 10);
+        
+        console.log(year + ": " + eff + " " + worth);
+        
+        if(year != null){
+          data.setValue(count, 0, year);
+          data.setValue(count, 1, eff);
+          data.setValue(count, 2, worth);
+          count++;
+        }
+        
+      }); 
 
-<%= image_tag @instructor.picture, :id => "instructor_picture" unless @instructor.picture.blank? %>
-<table id="instructor_info" class="infobox">
-  <tr> <th>Title</th>             <td><%= @instructor.title.blank? ? "Teaching Assistant" : @instructor.title %></td> </tr>
-  <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
-  <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
-  <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
-  <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
-  <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
-</table>
+      var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
+      chart.draw(data, 
+        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: true, backgroundColor: 'none'}
+      );
+    }
+  </script>
+<% end %>
+
+<div id="instructor_box" class="trans-bg">
+  <h1><%= @instructor.full_name %></h1>
+
+  <div style="float:left; margin-right: 1em;">
+    <%= image_tag@instructor.picture, :class=>"instructor_photo" unless @instructor.picture.blank? %>
+  </div>
+  <div style="float:left;">
+    <table id="instructor_info" class="infobox">
+      <tr> <th>Title</th>             <td><%= @instructor.title.blank? ? "Teaching Assistant" : @instructor.title %></td> </tr>
+      <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
+      <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
+      <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
+      <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
+      <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
+    </table>
+  </div>
+  <div class="clear"></div>
+</div>
 
 <%- unless @instructed_klasses.blank? -%>
-<h3 class="center">Classes Taught</h3>
-<table id="ratings" class="table">
-  <tr>
-    <th>Sections</th>
-    <th>Teaching Effectiveness</th>
-    <th>How worthwhile was this course?</th>
-    <th>Other Instructors</th>
-  </tr>
-  <%- @instructed_klasses.each do |klass, instructor, effectiveness, worthwhileness| -%>
-  <tr>
-    <td>
-      <%= link_to "#{klass.course.course_abbr} #{klass.proper_semester}", surveys_klass_path(klass) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness.mean %> / <%= effectiveness.survey_question.max.to_f %>
-      <%= rating_bar(effectiveness.mean/effectiveness.survey_question.max.to_f) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness.mean %> / <%= worthwhileness.survey_question.max.to_f %>
-      <%= rating_bar(worthwhileness.mean/worthwhileness.survey_question.max.to_f) %>
-    </td>
-    <td>
-    <%- klass.instructors.each do |instructor| -%>
-      <%= link_to instructor.full_name, surveys_instructor_path(instructor) unless instructor == @instructor %>
+<div id="chart_div"></div> 
+<div id="table">
+  <h3 class="center">Classes Taught</h3>
+  <table id="ratings" class="table">
+    <tr>
+      <th>Sections</th>
+      <th>Teaching Effectiveness</th>
+      <th>How worthwhile was this course?</th>
+      <th>Other Instructors</th>
+    </tr>
+    <%- @instructed_klasses.each do |klass, instructor, effectiveness, worthwhileness| -%>
+    <tr>
+      <td>
+         <span class="semester"><%= link_to "#{klass.course.course_abbr} #{klass.proper_semester}", surveys_klass_path(klass) %></span>
+      </td>
+      <td>
+        <span class="rating"><%= sprintf "%.1f", effectiveness.mean %></span><span class="rating2"> / <%= effectiveness.survey_question.max.to_f %></span>
+        <%= rating_bar(effectiveness.mean/effectiveness.survey_question.max.to_f) %>
+      </td>
+      <td>
+        <span class="rating"><%= sprintf "%.1f", worthwhileness.mean %></span><span class="rating2"> / <%= worthwhileness.survey_question.max.to_f %></span>
+        <%= rating_bar(worthwhileness.mean/worthwhileness.survey_question.max.to_f) %>
+      </td>
+      <td>
+      <%- klass.instructors.each do |instructor| -%>
+        <%= link_to instructor.full_name, surveys_instructor_path(instructor) unless instructor == @instructor %>
+      <%- end -%>
+      </td>
+    </tr>
     <%- end -%>
-    </td>
-  </tr>
+    <tr><th>Totals</th><th>Teaching Effectiveness</th><th>How worthwhile was this course?</th><th></th></tr>
+    <%- [[@undergrad_total, @undergrad_totals, "Undergraduate"], [@grad_total, @grad_totals, "Graduate"]].each do |total,totals,totals_str| -%>
+      <%- unless totals.empty? -%>
+        <%- totals.each do |course,tuple| -%>
+          <%- (effectiveness, worthwhileness, count) = tuple -%>
+      <tr>
+        <td>
+         <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
+        </td>
+        <td>
+          <%= sprintf "%.1f", effectiveness %><span class="rating2"> / 7.0</span>
+          <%= rating_bar(effectiveness/7.0) %>
+        </td>
+        <td>
+          <%= sprintf "%.1f", worthwhileness %><span class="rating2"> / 7.0</span>
+          <%= rating_bar(worthwhileness/7.0) %>
+        </td>
+        <td>
+        </td>
+      </tr>
+        <%- end # totals.each -%>
+        <%- (effectiveness, worthwhileness, count) = total -%>
+      <tr>
+        <td>
+          <strong><%= totals_str %> Courses (<%= count %>)</strong>
+        </td>
+        <td>
+          <%= sprintf "%.1f", effectiveness %><span class="rating2"> / 7.0</span>
+          <%= rating_bar(effectiveness/7.0) %>
+        </td>
+        <td>
+          <%= sprintf "%.1f", worthwhileness %><span class="rating2"> / 7.0</span>
+          <%= rating_bar(worthwhileness/7.0) %>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <%- end # unless totals.empty -%>
+    <%- end # both totals -%>
+  </table>
   <%- end -%>
-  <tr><th>Totals</th><th>Teaching Effectiveness</th><th>How worthwhile was this course?</th><th></th></tr>
-  <%- unless @undergrad_totals.empty? -%>
-    <%- @undergrad_totals.each do |course,tuple| -%>
-      <%- (effectiveness, worthwhileness, count) = tuple -%>
-  <tr>
-    <td>
-      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-    <%- end -%>
-    <%- (effectiveness, worthwhileness, count) = @undergrad_total -%>
-  <tr>
-    <td>
-      <strong>Undergraduate Courses (<%= count %>)</strong>
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-  <%- end -%>
-  <%- unless @grad_totals.empty? -%>
-    <%- @grad_totals.each do |course,tuple| -%>
-      <%- (effectiveness, worthwhileness, count) = tuple -%>
-  <tr>
-    <td>
-      <%= link_to "#{course.course_abbr}", surveys_course_path(course) %> (<%= count %>)
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-    <%- end -%>
-    <%- (effectiveness, worthwhileness, count) = @grad_total -%>
-  <tr>
-    <td>
-      <strong>Graduate Courses (<%= count %>)</strong>
-    </td>
-    <td>
-      <%= sprintf "%.1f", effectiveness %> / 7.0
-      <%= rating_bar(effectiveness/7.0) %>
-    </td>
-    <td>
-      <%= sprintf "%.1f", worthwhileness %> / 7.0
-      <%= rating_bar(worthwhileness/7.0) %>
-    </td>
-    <td>
-    </td>
-  </tr>
-  <%- end -%>
-</table>
-<%- end -%>
+</div>
 
 <%- unless @tad_klasses.blank? -%>
   <%- if @instructor.private -%>
@@ -150,8 +166,9 @@
 <%- if @instructed_klasses.empty? and @tad_klasses.empty? -%>
 <p>No survey data available for this instructor.</p>
 <%- else -%>
-<p><strong>Hint:</strong> You can click on the colored rating bars to see detailed statistics on a particular rating.</p>
 <%- end -%>
 
-<%= render :partial => 'emailhkn' %>
-<a href="/student/howtouse.shtml">[Info about this page]</a>
+<div style="text-align: center; padding-top: 1em;">
+  <%= render :partial => 'emailhkn' %>
+  <a href="/student/howtouse.shtml">[Info about this page]</a>
+</div>

@@ -4,11 +4,34 @@ class IndrelEventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
-    @events = IndrelEvent.find(:all, :order=>'time DESC')
+    per_page = 10
+	order = params[:sort] || "time"
+	sort_direction = case params[:sort_direction]
+						when "up" then "ASC"
+						when "down" then "DESC"
+						else "DESC"
+						end
+
+	@search_opts = {'sort' => "time", 'sort_direction' => "down" }.merge params
+	opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
+
+	if params[:sort] == "companies.name"
+		opts.merge!( { :joins => "LEFT OUTER JOIN companies ON companies.id = indrel_events.company_id" } )
+	elsif params[:sort] == "locations.name"
+		opts.merge!( { :joins => "LEFT OUTER JOIN locations ON locations.id = indrel_events.location_id" } )
+	elsif params[:sort] == "indrel_event_types.name"
+		opts.merge!( { :joins => "LEFT OUTER JOIN indrel_event_types ON indrel_event_types.id = indrel_events.indrel_event_type_id" } )
+	end
+    @events = IndrelEvent.paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
+      format.js {
+        render :update do |page|
+          page.replace 'results', :partial => 'list_results'
+        end
+      }
     end
   end
 

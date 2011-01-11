@@ -17,12 +17,21 @@ class Course < ActiveRecord::Base
   belongs_to :department
   has_many :course_preferences
   has_many :tutors, :through => :course_preferences
-  has_many :klasses, :order => "semester DESC"
+  has_many :klasses, :order => "semester DESC, section DESC"
   has_many :coursesurveys, :through => :klasses
+  has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
   validates :name,          :presence => true
+
+  scope :ordered, order("prefix, CAST(courses.course_number AS integer), suffix")
+  scope :ordered_desc, order("(prefix, CAST(courses.course_number AS integer), suffix) DESC")
+  
+  def invalid?
+    # Some courses are invalid, and shouldn't be listed.
+    name =~ /INVALID/
+  end
 
   def dept_abbr
     department.nice_abbrs.first
@@ -51,7 +60,7 @@ class Course < ActiveRecord::Base
   end
 
   # E.g. ("EE", "C149")
-  def Course.find_by_short_name(dept_abbr, full_course_number)
+  def Course.find_by_short_name(dept_abbr, full_course_number, section=nil)
     (prefix, course_number, suffix) = full_course_number.scan(/^([a-zA-Z]*)([0-9]*)([a-zA-Z]*)$/).first
     department = Department.find_by_nice_abbr(dept_abbr)
     raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?
