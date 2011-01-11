@@ -68,8 +68,8 @@
               <li><a href="/exam/browse/">Exam Archive</a></li>
             </ul>
             <ul class="plain">
-              <li><a href="/courseguide/">Course Guide</a></li>
-              <li><a href="/services/more/">More Services</a></li>
+              <li><%= link_to "Course Guide", comingsoon_path || "/courseguide/" %></li>
+              <li><%= link_to "More Services", comingsoon_path || "/services/more" %></li>
             </ul>
           </div>
 
@@ -119,12 +119,12 @@
           <div class="submenu" id ="about_submenu">
             <ul class="plain">
               <li><a href="/about/contact/" class="navigation_sublevel_item">Contact Information</a></li>
-              <li><a href="/gallery2/" class="navigation_sublevel_item">Photo Gallery</a></li>
-              <li><a href="/about/yearbook/" class="navigation_sublevel_item">Yearbooks</a></li>
+              <li><%= link_to "Photo Gallery", comingsoon_path||"/gallery2/", :class=>"navigation_sublevel_item" %></li>
+              <li><%= link_to "Yearbooks",     "/about/yearbook/",            :class=>"navigation_sublevel_item" %></li>
             </ul>
             <ul class="plain">
               <li><a href="/about/slideshow/" class="navigation_sublevel_item">Slideshows</a></li>
-              <li><a href="/about/officers/" class="navigation_sublevel_item">Current Officers</a></li>
+              <li><%= link_to "Current Officers", comingsoon_path||"/about/officers/", :class=>"navigation_sublevel_item" %></li>
             </ul>
           </div>
 

@@ -126,6 +126,7 @@ HknRails::Application.routes.draw do
   # Static pages
   scope "about" do
     match "contact"   => "static#contact"
+    match "comingsoon" => "static#comingsoon", :as => "comingsoon"
     match "yearbook"  => "static#yearbook"
     match "slideshow" => "static#slideshow"
   end
