@@ -14,7 +14,8 @@
       <td><%= coursesurvey.klass.notes %></td>
       <td>
         <% coursesurvey.surveyors.each do |person| %>
-          <%= person.fullname %>
+          <%= link_to person.fullname, person %>
+          <%= "," if coursesurvey.surveyors.last != person %>
         <% end %>
       </td>
     </tr>

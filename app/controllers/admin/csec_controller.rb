@@ -27,4 +27,7 @@ class Admin::CsecController < Admin::AdminController
     @coursesurveys = Coursesurvey.current_semester
   end
 
+  def manage_candidates
+    @people = Person.current_candidates
+  end
 end

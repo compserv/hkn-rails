@@ -1,0 +1,20 @@
+<h1>Corresponding Secretary Admin - Manage Candidates</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Classes Signed Up For</th>
+  </tr>
+  <% @people.each do |person| %>
+    <tr>
+      <td>
+        <%= link_to person.fullname, person %>
+      </td>
+      <td>
+        <% person.coursesurveys.includes(:klass => :course).current_semester.each do |coursesurvey| %>
+          <%= coursesurvey.klass.course.course_abbr%>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
