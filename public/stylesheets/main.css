@@ -137,7 +137,7 @@ h4{
 #navigation li{
   list-style-type: none;
   display: inline-block;
-  padding-right: 2em;
+  padding-right: 1.5em;
   text-transform: uppercase;
 }
 

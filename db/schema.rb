@@ -368,10 +368,10 @@ ActiveRecord::Schema.define(:version => 20110109031854) do
   end
 
   create_table "slots", :force => true do |t|
+    t.datetime "time"
     t.integer  "room"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "time"
   end
 
   create_table "slots_tutors", :id => false, :force => true do |t|

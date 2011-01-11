@@ -66,19 +66,17 @@
         $.post("../request_challenge",  
           { officer: officer_name, name: challenge_name},
           function(data) { 
-            if(data == "true"){ //OK submission
+            console.log(data);
+            if(data[0] == true){ //OK submission
+              $("#request_challenge_errors").empty();
               $("input[name=officer]").val(""); //clear fields
               $("input[name=challenge_name]").val("");
               
-              //ajax
-              ch = $("<li></li>");
-              ch.append($("<span></span>").addClass("officer_name").html(officer_name));
-              ch.append($("<span></span>").addClass("challenge_name").html(challenge_name));
-              ch.append($("<span></span>").addClass("challenge_status").html("Pending"));
-              $("#challenges").append(ch);
+              $("#challenges").load("../update_challenges");
+              //$("#challenges").append("<%= escape_javascript(render :partial => "challenges") %>");
               
             } else{
-              $("#request_challenge_errors").html(data);
+              $("#request_challenge_errors").html(data[1]);
             }
             
           }
@@ -156,18 +154,7 @@
         <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
         Challenges</h3>
       <ul id="challenges" class="semi-plain">
-      <% if @challenges.length > 0 %>
-        <% for challenge in @challenges %>
-          <li>
-            <span class="<%= "event_status " + (challenge.status ? 'event_done' : 'event_notdone') %>"></span>
-            <% officer = Person.find(challenge.officer_id) %>
-            <span class="officer_name"><%= officer.first_name + " " + officer.last_name %></span>
-            <span class="challenge_name"><%= challenge.name %></span>
-          </li>
-        <% end %>
-      <% else %>
-        No challenges requested
-      <% end %>
+        <%= render :partial => "challenges"%>    
       </ul>
     
       <div id="request_challenge_container">
