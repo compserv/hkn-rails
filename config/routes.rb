@@ -7,13 +7,12 @@ HknRails::Application.routes.draw do
   end
 
   namespace :admin do
-    scope "tutor" do
-      match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
-      match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses
-      match "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
-      match "params_for_scheduler" => "tutor#params_for_scheduler"
-      match "/" => "tutor#settings"
-      match "settings" => "tutor#settings", :as=>:tutor_settings
+    scope "csec", :as => "csec" do
+      match "/" => "csec#index"
+      get "select_classes" => "csec#select_classes", :as => :select_classes
+      post "select_classes" => "csec#select_classes_post", :as => :select_classes
+      match "manage_classes" => "csec#manage_classes", :as => :manage_classes
+      match "manage_candidates" => "csec#manage_candidates", :as => :manage_candidates
     end
     scope "deprel" do
       match "/" => "deprel#overview"
@@ -21,8 +20,19 @@ HknRails::Application.routes.draw do
     scope "indrel" do
       match "/" => "indrel#indrel_db", :as => "indrel_db"
     end
+    scope "tutor" do
+      match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
+      match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses
+      match "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
+      match "params_for_scheduler" => "tutor#params_for_scheduler"
+      match "/" => "tutor#settings"
+      match "settings" => "tutor#settings", :as=>:tutor_settings
+      match "find_courses" => "tutor#find_courses"
+      match "add_course" => "tutor#add_course"
+    end
   end
-  
+  resources :course_preferences
+
   resources :dept_tour_requests do
     member do
       post "respond"
@@ -131,9 +141,15 @@ HknRails::Application.routes.draw do
     match "schedule" => "tutor#schedule"
   end
   
+  # Exams
   scope "exam" do
     resources :exams
-    match "browse" => "exams#browse"
+    match "browse"                                => "exams#browse",
+      :as => :exams_browse
+    match "course/:dept_abbr"                     => "exams#department",
+      :as => :exams_department
+    match "course/:dept_abbr/:full_course_number" => "exams#course",
+      :as => :exams_course
   end
 
   #Candidates
@@ -144,6 +160,7 @@ HknRails::Application.routes.draw do
     match "submit_quiz" => "candidates#submit_quiz"
     match "submit_app" => "candidates#submit_app"
     match "request_challenge" => "candidates#request_challenge"
+    match "update_challenges" => "candidates#update_challenges"
     match "find_officers" => "candidates#find_officers"
   end
   #resources :user_session
