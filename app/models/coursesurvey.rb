@@ -7,7 +7,6 @@ class Coursesurvey < ActiveRecord::Base
   #   scheduled_time : datetime 
   #   created_at     : datetime 
   #   updated_at     : datetime 
-  #   instructor_id  : integer 
   #   klass          : integer 
   # =======================
 
