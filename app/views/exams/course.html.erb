@@ -1,3 +1,4 @@
+<h1><%= @course.course_name %></h1>
 
 <div id="table">
   <table id="exams" class="table">
@@ -21,13 +22,11 @@
 	<td>
 	<%- exam = exams[short_type] -%>
 	<%- sol = solutions[short_type] -%>
-	<%= (link_to "[#{exam.file_type}]", @exam_path+exam.filename) unless exam.nil?%><%= (link_to '[solution]', sol.filename) unless sol.nil? %> 
+	<%= (link_to "[#{exam.file_type}]", @exam_path+exam.filename) unless exam.nil?%><%= (link_to '[solution]', @exam_path+sol.filename) unless sol.nil? %>
       </td>
       <%- end -%>
     </tr>
   <%- end -%>
   </table>
 </div>
-
-<div class="clear"></div>
 

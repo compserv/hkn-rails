@@ -27,6 +27,7 @@ $filepattern = /[a-zA-Z]+\d+[a-zA-Z]*_(sp|fa|su)\d\d_(mt\d+|f|q\d+)(_sol)?.(\w)+
 $tokenpattern = /([a-zA-Z]+)(\d+[a-zA-Z]*)_(sp|fa|su)(\d\d)_(mt|f|q)(\d)?(_sol)?.\w+$/
 
 VALID_EXTENSIONS = ['pdf']
+SUCCESS_DIR = File.join(::Rails.root.to_s, 'public', 'examfiles')
 
 
 # Imports the exam at the given file path into the database. Also moves
@@ -134,9 +135,9 @@ def convertFile(file_path)
 end
 
 # Imports a directory of exam files. Moves files to 'dirname/successful'.
-def importExamDirectory(dirname)
+def importExamDirectory(dirname, success_dir=nil)
   puts "Importing exams from #{dirname}..."
-  success_dir = File.join(dirname, 'successful')
+  success_dir = File.join(dirname, 'successful') unless !success_dir.nil?
   puts "Successful imports will go into #{success_dir}"
   if not File.exist?(success_dir)
     puts "Could not find #{success_dir}. Creating now."
@@ -180,8 +181,11 @@ elsif not File.exist?(file_or_dir = File.expand_path(ARGV[0]))
 end
 
 
+puts "Creating output directory: #{SUCCESS_DIR}" unless File.exists?(SUCCESS_DIR)
+FileUtils.mkdir_p(SUCCESS_DIR)
+
 if File.file?(file_or_dir)
-  importExam(file_or_dir)
+  importExam(file_or_dir, SUCCESS_DIR)
 else	# directory
-  importExamDirectory(file_or_dir)
+  importExamDirectory(file_or_dir, SUCCESS_DIR)
 end
