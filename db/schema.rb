@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101231220030) do
+ActiveRecord::Schema.define(:version => 20110110073815) do
 
   create_table "announcements", :force => true do |t|
     t.string   "title"
@@ -100,6 +100,14 @@ ActiveRecord::Schema.define(:version => 20101231220030) do
     t.string   "cellphone"
   end
 
+  create_table "course_preferences", :force => true do |t|
+    t.integer  "course_id"
+    t.integer  "tutor_id"
+    t.integer  "level"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "courses", :force => true do |t|
     t.string   "course_number",                 :null => false
     t.string   "suffix",        :default => ""
@@ -111,37 +119,6 @@ ActiveRecord::Schema.define(:version => 20101231220030) do
     t.integer  "units"
     t.text     "prereqs"
     t.integer  "department_id"
-  end
-
-  create_table "courses_in_progress_tutors", :id => false, :force => true do |t|
-    t.integer "course_id"
-    t.integer "tutor_id"
-  end
-
-  create_table "courses_preferred_tutors", :force => true do |t|
-    t.integer  "course_taking_id"
-    t.integer  "tutor_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "courses_taken_tutors", :force => true do |t|
-    t.integer  "course_taken_id"
-    t.integer  "tutor_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "courses_taking_tutors", :force => true do |t|
-    t.integer  "course_taking_id"
-    t.integer  "tutor_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "courses_tutors", :id => false, :force => true do |t|
-    t.integer "course_id"
-    t.integer "tutor_id"
   end
 
   create_table "coursesurveys", :force => true do |t|
