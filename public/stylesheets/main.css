@@ -6,16 +6,39 @@ img { border: none; }
 
 /*Links*/
 a { color: #3366CC; text-decoration: none; }
-a:link { color: #3366CC; }
-a:visited { color: #3366CC; }
 a:hover { text-decoration: underline; }
 
 /*Forms*/
 input { border: 1px solid #ccc; background: white; border-radius: 3px; -moz-border-radius: 3px; -moz-border-radius: 3px;font-size: 1.1em; margin: 2px 0; padding: 2px 3px; outline: none;}
 input:focus { border: 1px solid black; }
-input[type=submit] { background: #EEEEEE; margin: 4px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
-input[type=submit]:hover {  }
-input.short { width: 100px; }
+/*input[type=submit] { background: #EEEEEE; margin: 4px;  }
+input[type=submit]:hover {  }*/
+input[type=submit]{
+  font-size: 0.8em;
+  background: #222 url(/images/alert-overlay.png) repeat-x;
+  background-color: #888;
+  display: inline-block;
+  padding: 5px 10px 6px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  line-height: 1;
+  -moz-box-shadow: 0 1px 5px #ccc;
+  -webkit-box-shadow: 0 1px 5px #ccc;
+  text-shadow: 0 -1px 1px #444;
+  border: 1px solid #787878;
+  border-radius: 8px; 
+  -moz-border-radius: 8px; 
+  -webkit-border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+}
+input[type=submit]:hover{
+  background-color: #777;
+  text-shadow: 0 -1px 1px #222;
+  
+}
+input.short { width: 100px;}
 input.long  { width: 200px; }
 
 textarea  { width: 400px; height: 100px; }
@@ -37,7 +60,18 @@ label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right
 .super { font-size: 75%; vertical-align: super; }
 .warning { color: red; }
 th, td { padding: 4px; vertical-align: top; text-align: left; }
-th { font-weight: bold; }
+th {
+  border: 1px solid #ddd;
+  background-color: #403f3f; 
+  color: white;
+}
+th a{
+  color: #f9df49;
+}
+tr:nth-child(even) { background-color: #f9f9f9; }
+tr:nth-child(odd)  { background-color: #fff; }
+
+td { border: 1px dashed #ddd; padding: 2px 4px; }
 .infodiv { width: 300px; text-align: left; }
 .two_column { width: 45%; float: left; }
 .right_column { float: right; }
@@ -103,7 +137,7 @@ h4{
 #navigation li{
   list-style-type: none;
   display: inline-block;
-  padding-right: 2em;
+  padding-right: 1.5em;
   text-transform: uppercase;
 }
 
@@ -180,6 +214,11 @@ h4{
   border: 0px;
   font-size: 1.2em;
   padding: 3px;
+  color: #666;
+  -moz-box-shadow: none;
+  font-weight: normal;
+  -webkit-box-shadow: none;
+  text-shadow: none;
 }
 
 #main{

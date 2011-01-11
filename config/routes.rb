@@ -139,6 +139,7 @@ HknRails::Application.routes.draw do
     match "submit_quiz" => "candidates#submit_quiz"
     match "submit_app" => "candidates#submit_app"
     match "request_challenge" => "candidates#request_challenge"
+    match "update_challenges" => "candidates#update_challenges"
     match "find_officers" => "candidates#find_officers"
   end
   #resources :user_session
