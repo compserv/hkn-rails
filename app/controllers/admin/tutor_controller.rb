@@ -113,30 +113,32 @@ class Admin::TutorController < Admin::AdminController
           slot = Slot.select{|slot| slot.room == room and slot.hour == hour and slot.wday == wday}.first
           firstAvail = true
           for avail in slot.availabilities
-            if firstAvail
-              firstAvail = false
-            else
-              ret += ' '
-            end
-
             person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
-            ret += avail.tutor.id.to_s
-            ret += person.first_name + person.last_name[0..0]
-            ret += avail.preference_level.to_s
+            if person.in_group?("officers")
 
-            if avail.room_strength == 0
-              ret += 'p'
-            elsif avail.preferred_room == room
-              ret += 'P'
-            elsif avail.room_strength == 1
-              ret += 'p'
-            end
-            if avail.adjacency == 2
-              ret += 'A'
-            elsif avail.adjacency == 1
-              ret += 'a'
-            end
+              if firstAvail
+                firstAvail = false
+              else
+                ret += ' '
+              end
+              ret += avail.tutor.id.to_s
+              ret += person.first_name + person.last_name[0..0]
+              ret += avail.preference_level.to_s
 
+              if avail.room_strength == 0
+                ret += 'p'
+              elsif avail.preferred_room == room
+                ret += 'P'
+              elsif avail.room_strength == 1
+                ret += 'p'
+              end
+              if avail.adjacency == 2
+                ret += 'A'
+              elsif avail.adjacency == 1
+                ret += 'a'
+              end
+
+            end #officer check
           end #avail
         end #day
       end #hour
