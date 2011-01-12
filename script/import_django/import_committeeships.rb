@@ -53,4 +53,10 @@ officerships.each do |id, officership|
     :person_id => new_person_id,
     :title => 'officer'
   )
+  if !new_person.in_group?('comms')
+    new_person.groups << Group.find_by_name('comms')
+  end
+  if !new_person.in_group?('officers')
+    new_person.groups << Group.find_by_name('officers')
+  end
 end

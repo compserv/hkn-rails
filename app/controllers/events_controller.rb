@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authorize_act, :except => [:index, :calendar, :show, :vp_confirm]
+  before_filter :authorize_comms, :except => [:index, :calendar, :show, :vp_confirm]
   # GET /events
   # GET /events.xml
   def index
