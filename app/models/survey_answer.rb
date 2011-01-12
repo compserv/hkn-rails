@@ -34,13 +34,19 @@ class SurveyAnswer < ActiveRecord::Base
     self.mean = self.median = self.deviation = 0
     
     # Counters
-    num_scores = f.values.reduce{|a,b|a+b} -f['N/A'] -f['Omit']
+    num_scores = f.values.reduce{|a,b|a+b}
+    if f.keys.include? 'N/A'
+      num_scores -= f['N/A']
+    end
+    if f.keys.include? 'Omit'
+      num_scores -= -f['Omit']
+    end
     median_counter = num_scores/2
   
     # Compute mean & median
     (1..self.survey_question.max).each do |score|
         # mean
-        self.mean += score*f[score]
+        self.mean += score*f[score] if f.keys.include? score
         
         # median
         if self.median == 0 then
