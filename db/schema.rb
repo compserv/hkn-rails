@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110111222443) do
+ActiveRecord::Schema.define(:version => 20110112022123) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -136,11 +136,11 @@ ActiveRecord::Schema.define(:version => 20110111222443) do
 
   create_table "coursesurveys", :force => true do |t|
     t.integer  "max_surveyors"
-    t.integer  "status"
+    t.integer  "status",         :default => 0, :null => false
     t.datetime "scheduled_time"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "klass_id",       :null => false
+    t.integer  "klass_id",                      :null => false
   end
 
   create_table "coursesurveys_people", :id => false, :force => true do |t|
