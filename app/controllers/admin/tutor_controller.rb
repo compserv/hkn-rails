@@ -1,10 +1,12 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :add_course, :find_courses]
   
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
     tutor.availabilities.each {|a| @prefs[a.time.utc.strftime('%a%H')] = a.preference_level}
+    @sliders = Hash.new
+    tutor.availabilities.each {|a| @sliders[a.time.utc.strftime('%a%H')] = a.get_slider_value}
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     prop = Property.get_or_create
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
@@ -15,16 +17,20 @@ class Admin::TutorController < Admin::AdminController
         daytime = Slot.extract_day_time(x)
         if daytime
           pref = Availability.prefstr_to_int[params[x]]
-          if @prefs[x] != pref #This slot changed
+          slider = params["slider-#{x}"].to_i
+          room, strength = Availability.slider_to_room_strength(slider)
+          if @prefs[x] != pref or (@sliders[x].nil? ? 2 : @sliders[x]) != slider #This slot changed
             changed = true
             availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id)
-            if pref == 0  #delete the existing availability for this slot
+            if pref == 0 and strength == 0 #delete the existing availability for this slot
               availability.first.destroy
             else
               if availability.empty?
-                tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level=>pref)
+                tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level => pref, :preferred_room => room, :room_strength => strength)
               else
                 availability.first.preference_level = pref
+                availability.first.preferred_room = room
+                availability.first.room_strength = strength
                 availability.first.save
               end
             end
@@ -83,7 +89,8 @@ class Admin::TutorController < Admin::AdminController
     ret += "SCORE_ADJACENT = 1</br>"
     ret += "SCORE_ADJACENT_SAME_OFFICE = 2</br>"
     ret += "DEFAULT_HOURS = 2</br>"
-    ret += "exceptions = {}</br>"
+    ret += "#Input exceptions to the number of tutoring hours below. Ex: exceptions = {u'201DummyA':3, u'597DummyB':1}</br>"
+    ret += "exceptions = {} </br>"
     ret += "defaultHours = 2</br>"
     ret += "scoring = {'adjacent_same_office': 2, 'correct_office': 2, 'adjacent': 1, 'miss_penalty': 10000, 'preference': {1: 6, 2: 0}}</br></br>"
 

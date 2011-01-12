@@ -34,10 +34,13 @@ class Person < ActiveRecord::Base
   has_many :challenges
   has_many :resumes
   has_one :suggestion
+  has_and_belongs_to_many :coursesurveys
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
   # Username, password, and email validation is done by AuthLogic
+
+  scope :current_candidates, joins(:groups).where('groups.id' => Group.find_by_name('candidates'))
 
   acts_as_authentic do |c|
     # Options go here if you have any

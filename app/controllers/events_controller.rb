@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authorize_act, :except => [:index, :calendar, :show]
+  before_filter :authorize_comms, :except => [:index, :calendar, :show]
   # GET /events
   # GET /events.xml
   def index
@@ -23,6 +23,21 @@ class EventsController < ApplicationController
     end
   end
 
+  def vp_confirm
+    types = ["Mandatory for Candidates", "Big Fun", "Fun", "Community Service"]
+    @events = Event.past
+
+    # Need to find some way to filter out non-candidate events
+    # etypes = EventType.find(:all, :conditions => { :name => types })
+    # @events = Event.past.find(:all, :conditions => { :event_type_id => etypes }, :order => :start_time)
+    
+
+    respond_to do |format|
+      format.html # vp_confirm.html.erb
+      format.xml  { render :xml => @events }
+    end
+  end
+        
   def calendar
     month = (params[:month] || Time.now.month).to_i
     year = (params[:year] || Time.now.year).to_i

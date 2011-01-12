@@ -6,8 +6,8 @@ describe EventsController do
   # only the correct users have access, but this will do for now.
   # Also, all comms should be able to access the Events stuff, not just act
   before(:all) do
-    EventsController.skip_before_filter :authorize_act
-    EventsController.skip_before_filter :check_act
+    EventsController.skip_before_filter :authorize_comms
+    EventsController.skip_before_filter :check_comms
   end
 
   def mock_event(stubs={})

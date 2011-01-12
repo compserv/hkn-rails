@@ -1,0 +1,27 @@
+<h1>Corresponding Secretary Admin - Select Classes to Survey</h1>
+
+<%= link_to "Back to Csec Admin", admin_csec_path %>
+
+<%= form_tag admin_csec_select_classes_post_path do %>
+  <div class="field">
+    <%= label_tag :coursesurveys_active, "Allow Course Survey Signups" %>
+    <%= check_box_tag :coursesurveys_active, true, Property.get_or_create.coursesurveys_active %>
+  </div>
+  <table>
+    <tr>
+      <th>Needs Survey</th>
+      <th>Course Number</th>
+      <th>Section</th>
+      <th>Notes</th>
+    </tr>
+    <% for klass in @klasses %>
+      <tr>
+        <td><%= check_box_tag "klass#{klass.id}", true, !klass.coursesurvey.nil? %></td>
+        <td><%= klass.course.course_abbr %></td>
+        <td><%= klass.section %></td>
+        <td><%= klass.notes %></td>
+      </tr>
+    <% end %>
+  </table>
+  <%= submit_tag %>
+<% end %>

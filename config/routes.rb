@@ -7,6 +7,20 @@ HknRails::Application.routes.draw do
   end
 
   namespace :admin do
+    scope "csec", :as => "csec" do
+      match "/" => "csec#index"
+      get "select_classes" => "csec#select_classes", :as => :select_classes
+      post "select_classes" => "csec#select_classes_post", :as => :select_classes_post
+      get "manage_classes" => "csec#manage_classes", :as => :manage_classes
+      post "manage_classes" => "csec#manage_classes_post", :as => :manage_classes_post
+      match "manage_candidates" => "csec#manage_candidates", :as => :manage_candidates
+    end
+    scope "deprel" do
+      match "/" => "deprel#overview"
+    end
+    scope "indrel" do
+      match "/" => "indrel#indrel_db", :as => "indrel_db"
+    end
     scope "tutor" do
       match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
       match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses
@@ -16,12 +30,6 @@ HknRails::Application.routes.draw do
       match "settings" => "tutor#settings", :as=>:tutor_settings
       match "find_courses" => "tutor#find_courses"
       match "add_course" => "tutor#add_course"
-    end
-    scope "deprel" do
-      match "/" => "deprel#overview"
-    end
-    scope "indrel" do
-      match "/" => "indrel#indrel_db", :as => "indrel_db"
     end
   end
   resources :course_preferences
@@ -82,7 +90,7 @@ HknRails::Application.routes.draw do
     match "rating/:id/update"                       => "coursesurveys#updaterating", :as => :coursesurveys_update_rating
     match "search(/:query)"                         => "coursesurveys#search",     :as => :coursesurveys_search
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
-
+    
     match "how-to"                                  => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
     match "info-profs"                              => "static#coursesurveys_info_profs", :as => :coursesurveys_info_profs
     match "ferpa"                                   => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
@@ -94,6 +102,11 @@ HknRails::Application.routes.draw do
     resources :rsvps
     resources :blocks
   end
+
+  match "vp_confirm" => "events#vp_confirm", :as => :vp_confirm
+  match "confirm_rsvp/:id" => "rsvps#confirm", :as => :confirm_rsvp
+  match "unconfirm_rsvp/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
+
   match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
 
   resources :event_types
@@ -119,6 +132,7 @@ HknRails::Application.routes.draw do
   # Static pages
   scope "about" do
     match "contact"   => "static#contact"
+    match "comingsoon" => "static#comingsoon", :as => "comingsoon"
     match "yearbook"  => "static#yearbook"
     match "slideshow" => "static#slideshow"
   end
@@ -142,7 +156,7 @@ HknRails::Application.routes.draw do
 
   #Candidates
   scope "cand" do
-    match "portal" => "candidates#portal"
+    match "portal" => "candidates#portal", :as => :candidate_portal
     match "quiz" => "candidates#quiz"
     match "application" => "candidates#application"
     match "submit_quiz" => "candidates#submit_quiz"
@@ -150,6 +164,8 @@ HknRails::Application.routes.draw do
     match "request_challenge" => "candidates#request_challenge"
     match "update_challenges" => "candidates#update_challenges"
     match "find_officers" => "candidates#find_officers"
+    get "coursesurvey_signup" => "candidates#coursesurvey_signup", :as => "coursesurvey_signup"
+    post "coursesurvey_signup" => "candidates#coursesurvey_signup_post", :as => "coursesurvey_signup_post"
   end
   #resources :user_session
 

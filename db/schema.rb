@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110110073815) do
+ActiveRecord::Schema.define(:version => 20110112022123) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -122,26 +122,30 @@ ActiveRecord::Schema.define(:version => 20110110073815) do
   end
 
   create_table "courses", :force => true do |t|
-    t.string   "course_number",                 :null => false
     t.string   "suffix",        :default => ""
     t.string   "prefix",        :default => ""
-    t.string   "name",                          :null => false
+    t.string   "name"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "units"
     t.text     "prereqs"
     t.integer  "department_id"
+    t.integer  "course_number"
   end
 
   create_table "coursesurveys", :force => true do |t|
     t.integer  "max_surveyors"
-    t.integer  "status"
+    t.integer  "status",         :default => 0, :null => false
     t.datetime "scheduled_time"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "instructor_id"
-    t.integer  "klass",          :null => false
+    t.integer  "klass_id",                      :null => false
+  end
+
+  create_table "coursesurveys_people", :id => false, :force => true do |t|
+    t.integer "coursesurvey_id"
+    t.integer "person_id"
   end
 
   create_table "departments", :force => true do |t|
@@ -293,13 +297,14 @@ ActiveRecord::Schema.define(:version => 20110110073815) do
   end
 
   create_table "properties", :force => true do |t|
-    t.string   "semester",         :default => "20103"
+    t.string   "semester",             :default => "20103"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "tutoring_enabled", :default => false
-    t.text     "tutoring_message", :default => ""
-    t.integer  "tutoring_start",   :default => 11
-    t.integer  "tutoring_end",     :default => 16
+    t.boolean  "tutoring_enabled",     :default => false
+    t.text     "tutoring_message",     :default => ""
+    t.integer  "tutoring_start",       :default => 11
+    t.integer  "tutoring_end",         :default => 16
+    t.boolean  "coursesurveys_active", :default => false,   :null => false
   end
 
   create_table "quiz_responses", :force => true do |t|
