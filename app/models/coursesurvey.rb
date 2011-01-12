@@ -14,6 +14,7 @@ class Coursesurvey < ActiveRecord::Base
   has_and_belongs_to_many :surveyors, { :class_name => "Person" }
 
   validates :klass_id, :presence => true, :uniqueness => true
+  validates :max_surveyors, :numericality => true
 
   scope :current_semester, joins(:klass => :course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section')
 
@@ -21,5 +22,13 @@ class Coursesurvey < ActiveRecord::Base
 
   def get_status_text()
     @@statusmap[status]
+  end
+
+  def full?
+    if max_surveyors.nil?
+      return true
+    else
+      return surveyors.count >= max_surveyors
+    end
   end
 end

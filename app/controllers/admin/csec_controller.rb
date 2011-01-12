@@ -27,6 +27,20 @@ class Admin::CsecController < Admin::AdminController
     @coursesurveys = Coursesurvey.current_semester
   end
 
+  def manage_classes_post
+    params.keys.reject{|x| !(x =~ /^survey[0-9]*$/)}.each do |param_id|
+      id = param_id[6..-1]
+      coursesurvey = Coursesurvey.find(id)
+      # This should not fail
+      coursesurvey.update_attributes(:max_surveyors => params["survey#{coursesurvey.id}"])
+      if !coursesurvey.valid?
+        redirect_to(admin_csec_manage_classes_path, :notice => "Error happened. Your input was probably not valid.")
+        return
+      end
+    end
+    redirect_to(admin_csec_manage_classes_path, :notice => "Updated classes")
+  end
+
   def manage_candidates
     @people = Person.current_candidates
   end
