@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110111204703) do
+ActiveRecord::Schema.define(:version => 20110111222443) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
