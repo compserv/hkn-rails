@@ -10,8 +10,8 @@ class Tutor < ActiveRecord::Base
 
   belongs_to :person
 
-  has_many :course_preferences
-  has_many :courses, :through => :course_preferences
+  has_many :course_preferences, :dependent => :destroy
+  has_many :courses, :through => :course_preferences, :uniq => true
   has_and_belongs_to_many :slots
   has_many :availabilities
 

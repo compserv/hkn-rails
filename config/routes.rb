@@ -10,8 +10,9 @@ HknRails::Application.routes.draw do
     scope "csec", :as => "csec" do
       match "/" => "csec#index"
       get "select_classes" => "csec#select_classes", :as => :select_classes
-      post "select_classes" => "csec#select_classes_post", :as => :select_classes
-      match "manage_classes" => "csec#manage_classes", :as => :manage_classes
+      post "select_classes" => "csec#select_classes_post", :as => :select_classes_post
+      get "manage_classes" => "csec#manage_classes", :as => :manage_classes
+      post "manage_classes" => "csec#manage_classes_post", :as => :manage_classes_post
       match "manage_candidates" => "csec#manage_candidates", :as => :manage_candidates
     end
     scope "deprel" do
@@ -155,7 +156,7 @@ HknRails::Application.routes.draw do
 
   #Candidates
   scope "cand" do
-    match "portal" => "candidates#portal"
+    match "portal" => "candidates#portal", :as => :candidate_portal
     match "quiz" => "candidates#quiz"
     match "application" => "candidates#application"
     match "submit_quiz" => "candidates#submit_quiz"
@@ -163,6 +164,8 @@ HknRails::Application.routes.draw do
     match "request_challenge" => "candidates#request_challenge"
     match "update_challenges" => "candidates#update_challenges"
     match "find_officers" => "candidates#find_officers"
+    get "coursesurvey_signup" => "candidates#coursesurvey_signup", :as => "coursesurvey_signup"
+    post "coursesurvey_signup" => "candidates#coursesurvey_signup_post", :as => "coursesurvey_signup_post"
   end
   #resources :user_session
 

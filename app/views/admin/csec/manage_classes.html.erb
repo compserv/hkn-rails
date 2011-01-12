@@ -1,22 +1,43 @@
 <h1>Corresponding Secretary Admin - Manage Classes</h1>
 
-<table>
-  <tr>
-    <th>Course Number</th>
-    <th>Section</th>
-    <th>Notes</th>
-    <th>Surveyors</th>
-  </tr>
-  <% @coursesurveys.each do |coursesurvey| %>
+<p> <%= link_to "Back to Csec Admin", admin_csec_path %> </p>
+
+<script>
+  function set_all_max_surveyors() {
+    var x = $('#global_max_surveyors').attr('value');
+    $('#manage_classes_table input[type="text"]').each( function(index) {
+      $(this).attr('value', x);
+    });
+  }
+</script>
+
+<p> <%= link_to_function 'Set all max surveyors', "set_all_max_surveyors();" %> <%= text_field_tag "global_max_surveyors" %> </p>
+<%= form_tag admin_csec_manage_classes_post_path do %>
+  <table id="manage_classes_table">
     <tr>
-      <td><%= coursesurvey.klass.course.course_abbr %></td>
-      <td><%= coursesurvey.klass.section %></td>
-      <td><%= coursesurvey.klass.notes %></td>
-      <td>
-        <% coursesurvey.surveyors.each do |person| %>
-          <%= person.fullname %>
-        <% end %>
-      </td>
+      <th>Status</th>
+      <th>Course Number</th>
+      <th>Section</th>
+      <th>Notes</th>
+      <th>Max Surveyors</th>
+      <th>Surveyors</th>
     </tr>
-  <% end %>
-</table>
+    <% @coursesurveys.each do |coursesurvey| %>
+      <tr>
+        <td><%= select_tag "survey#{coursesurvey.id}[status]", options_for_select(Coursesurvey.statusmap.invert.to_a.sort{|a,b| a.last <=> b.last }, :selected => coursesurvey.status ) %></td>
+        <td><%= coursesurvey.klass.course.course_abbr %></td>
+        <td><%= coursesurvey.klass.section %></td>
+        <td><%= coursesurvey.klass.notes %></td>
+        <td><%= text_field_tag "survey#{coursesurvey.id}[max_surveyors]", coursesurvey.max_surveyors %></td>
+        <td>
+          <% coursesurvey.surveyors.each do |person| %>
+            <%= link_to person.fullname, person %>
+            <%= "," if coursesurvey.surveyors.last != person %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+
+  <%= submit_tag %>
+<% end %>

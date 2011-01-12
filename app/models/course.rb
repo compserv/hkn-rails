@@ -15,8 +15,8 @@ class Course < ActiveRecord::Base
   # =======================
 
   belongs_to :department
-  has_many :course_preferences
-  has_many :tutors, :through => :course_preferences
+  has_many :course_preferences, :dependent => :destroy
+  has_many :tutors, :through => :course_preferences, :uniq => true
   has_many :klasses, :order => "semester DESC, section DESC", :dependent => :destroy
   has_many :coursesurveys, :through => :klasses
   has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
