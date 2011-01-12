@@ -83,7 +83,8 @@ class Admin::TutorController < Admin::AdminController
     ret += "SCORE_ADJACENT = 1</br>"
     ret += "SCORE_ADJACENT_SAME_OFFICE = 2</br>"
     ret += "DEFAULT_HOURS = 2</br>"
-    ret += "exceptions = {}</br>"
+    ret += "#Input exceptions to the number of tutoring hours below. Ex: exceptions = {u'201DummyA':3, u'597DummyB':1}</br>"
+    ret += "exceptions = {} </br>"
     ret += "defaultHours = 2</br>"
     ret += "scoring = {'adjacent_same_office': 2, 'correct_office': 2, 'adjacent': 1, 'miss_penalty': 10000, 'preference': {1: 6, 2: 0}}</br></br>"
 
