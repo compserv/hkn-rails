@@ -1,6 +1,7 @@
 <h1>Confirm Candidate RSVPs</h1>
 
 <% @events.each do |event| %>
+<h4><%= event.name %></h4>
 <table>
   <tr>
     <th>Name</th>
@@ -11,7 +12,7 @@
   <% event.rsvps.each do |rsvp| %>
   <% if rsvp.person.in_group?("candidates") %>
   <tr>
-    <td>rsvp.person.name</td>
+    <td><%= rsvp.person.name %></td>
 
     <% if rsvp.confirmed == "true" %>
     <td>Confirmed</td>
