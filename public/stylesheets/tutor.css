@@ -1,6 +1,8 @@
 table#slot_table{}
 
-table#slot_table th {width: 80px; text-align: center}
+table#slot_table th { width: 100px; text-align: center}
+table#slot_table .slider_container { padding: 10px 15px; }
+#big_slider_container { width: 400px; padding: 10px 15px; }
 
 td.slot_preferred {background-color: #B2F2AA;}
 

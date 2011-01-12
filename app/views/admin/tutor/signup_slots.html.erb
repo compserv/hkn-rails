@@ -1,5 +1,52 @@
-<% stylesheet_link_tag "tutor.css" %>
+<% content_for :header do %>
+  <%= stylesheet_link_tag "tutor.css" %>
+  <%= stylesheet_link_tag "jquery-ui-1.8.7.custom.css" %>
+  <%= javascript_include_tag "jquery-ui-1.8.7.custom.min.js" %>
+  <script type="text/javascript">
+    function updateSlider(ths,value) {
+        $(ths).next().val(value);
+        var color = new Array();
+        color[0] = "rgba(51,171,7,0.75)";
+        color[1] = "rgba(51,171,7,0.3)";
+        color[2] = "transparent";
+        color[3] = "rgba(9,75,189,0.3)";
+        color[4] = "rgba(9,75,189,0.75)";
+        $(ths).parent().css("background-color", color[value]);
+    }
+
+    function updateAllSliders(event, ui) {
+      $( ".slider" ).each(function(){
+        $(this).slider("value",ui.value)
+      });
+    }
+    
+    $(function() {
+      $( "#big_slider" ).slider({
+        value: 2,
+        min: 0,
+        max: 4,
+        slide: updateAllSliders,
+        change: updateAllSliders
+      });
+
+      $( ".slider" ).each(function(){
+	$(this).slider({
+	  value: $(this).next().val(),
+          min: 0,
+          max: 4,
+	  //change: function(event,ui) { $(this).parent().css("background-color","#000000"); }
+	  slide: function(event, ui) { updateSlider(this, ui.value); },
+	  change: function(event, ui) { updateSlider(this, ui.value); }
+	});
+        $(this).slider("value",$(this).next().val());
+      });
+    });
+
+  </script>
+<% end %>
+
 <h1>Sign up for tutoring slots</h1>
+<div id="big_slider_container"><div id="big_slider"></div></div>
 <form action="" method="post">
 <%= token_tag %>
 <table id="slot_table">
@@ -11,7 +58,7 @@
 		<th class="slot_table_header"><%= day %></th>
 		<% end %>
 	<% else %>
-		<td  rowspan="3" class="slot"><%= format_hour_slot row.to_i %></td>
+		<td  rowspan="4" class="slot"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
 		<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 2 %> value="preferred" /></td>
 		<% end%>
@@ -25,6 +72,15 @@
 		<% @days.each do |day| %>
 		<td class = "slot slot_unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 0 %> value="unavailable"/></td>
 		<% end%>
+	</tr>
+	<tr>
+	        <% @days.each do |day| %>
+		<td class="slot slider_container">
+		  <div class="slider"></div>
+		  <% a = @current_user.tutor.get_availability_by_day_hour(day,row.to_i) %>
+		  <% val = a.nil? ? 2 : a.get_slider_value %>
+		  <%= hidden_field_tag "slider-#{day[0..2]}#{row.to_i}", val %></td>
+		<% end %>
 	<% end %>
 	</tr>
 <% end %>
