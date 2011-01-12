@@ -130,7 +130,7 @@
     
     <div style="float:left; width: 45%;">
       <h3>
-        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        <span class="<%= "req_status " + (@done["events"] ? "status_done" : "status_notdone") %>"></span>
         Events</h3>
       <ul class="semi-plain">
         <% @status.each do |req, status| %>
@@ -151,7 +151,7 @@
 
     <div style="float:left; width: 45%; padding-left: 3em;">
       <h3>
-        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        <span class="<%= "req_status " + (@done["challenges"] ? "status_done" : "status_notdone") %>"></span>
         Challenges</h3>
       <ul id="challenges" class="semi-plain">
         <%= render :partial => "challenges"%>    
@@ -176,15 +176,15 @@
       </div>
       
       <h3>
-        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        <span class="<%= "req_status " + (@done["forms"] ? "status_done" : "status_notdone") %>"></span>
         Forms</h3>
       <ul id="forms" class="semi-plain">
         <li>
-          <span class="<%= "event_status " + (false ? 'event_done' : 'event_notdone') %>"></span>
+          <span class="<%= "event_status " + (@done["resume"] ? 'event_done' : 'event_notdone') %>"></span>
           <%= link_to "Resume", "../../resumes/upload" %>
         </li>
         <li>
-          <span class="<%= "event_status " + (false ? 'event_done' : 'event_notdone') %>"></span>
+          <span class="<%= "event_status " + (@done["quiz"] ? 'event_done' : 'event_notdone') %>"></span>
           <%= link_to "Quiz", "../quiz" %>
         </li>
       </ul>
@@ -192,7 +192,7 @@
     </div>
     <div class="clear light-hbar"></div>
     <h3>
-      <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+      <span class="<%= "req_status " + (@done["course_surveys"] ? "status_done" : "status_notdone") %>"></span>
       Course Surveys</h3>
     [Coming Soon]
     
