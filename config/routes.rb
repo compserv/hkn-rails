@@ -156,7 +156,7 @@ HknRails::Application.routes.draw do
 
   #Candidates
   scope "cand" do
-    match "portal" => "candidates#portal"
+    match "portal" => "candidates#portal", :as => :candidate_portal
     match "quiz" => "candidates#quiz"
     match "application" => "candidates#application"
     match "submit_quiz" => "candidates#submit_quiz"
