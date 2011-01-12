@@ -28,6 +28,24 @@ class Course < ActiveRecord::Base
   scope :ordered, order("prefix, courses.course_number, suffix")
   scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
 
+  # Sunspot
+  searchable do
+    text :name, :stored => true, :boost => 2.0
+    text :description, :stored => true
+    integer :course_number, :stored => true
+    text :course_string do |c|
+      [c.prefix, c.course_number.to_s, c.suffix].join
+    end
+    string :course_abbr
+    text :course_abbr
+    text :dept_abbrs do |c|
+      [c.department.name, c.department.abbr, c.department.nice_abbrs].join(' ')
+    end
+    integer :department_id, :references => Department
+    boolean :invalid, :using => :invalid?
+  end
+  # end sunspot
+
   # A few notes about course numbers
   # prefix refers to letters that appear before numbers, e.g. C for cross-listed, H for honors
   # course_number refers to just the numbers, e.g. the 61 in 61A
@@ -36,7 +54,7 @@ class Course < ActiveRecord::Base
   
   def invalid?
     # Some courses are invalid, and shouldn't be listed.
-    name =~ /INVALID/
+    !!(name =~ /INVALID/)
   end
 
   def dept_abbr

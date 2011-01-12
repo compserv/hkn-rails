@@ -17,8 +17,37 @@ class Instructor < ActiveRecord::Base
   # =======================
 
   has_many :coursesurveys
-  has_and_belongs_to_many :klasses
+  has_and_belongs_to_many :klasses, { :order => "semester DESC" }
   has_and_belongs_to_many :tad_klasses, { :class_name => "Klass", :join_table => "klasses_tas" }
+
+  # sunspot
+  searchable do
+    text :full_name
+  end
+  # end sunspot
+
+  def courses(options={})
+    courses = Course.find(:all, {
+                 :select => "DISTINCT courses.*",
+                 #:group =>  "courses.id, courses.course_number, klasses.semester",
+                 #:order => "klasses.semester DESC",
+                 :conditions => "klasses_tas.instructor_id = #{id}",
+                 :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN klasses_tas ON klasses_tas.klass_id = klasses.id"
+                 }.merge(options)
+                ) + 
+                Course.find(:all, {
+                 :select => "DISTINCT courses.*",
+                 #:group =>  "courses.id",
+                 :conditions => "instructors_klasses.instructor_id = #{id}",
+                 :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
+                 }.merge(options)
+                )
+    courses.sort{|a,b| a.course_abbr <=> b.course_abbr}
+  end
+
+  def average_rating
+    SurveyAnswer.average(:mean, :conditions => {:survey_question_id=>[SurveyQuestion.find_by_keyword(:prof_eff).id, SurveyQuestion.find_by_keyword(:ta_eff).id], :instructor_id=>id})
+  end
 
   def full_name
     first_name + " " + last_name

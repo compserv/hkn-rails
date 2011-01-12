@@ -340,6 +340,36 @@ class CoursesurveysController < ApplicationController
   def search
     @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
     @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
+
+    # Query
+    params[:q] ||= ''
+
+    # Department
+    unless params[:dept].blank?
+      @dept = Department.find_by_nice_abbr(params[:dept].upcase)
+      params[:dept] = (@dept ? @dept.abbr : nil)
+    end
+
+    @results = {} # [instructor, courses, rating]
+
+    # Search courses
+    @results[:courses] = Course.search do
+      with(:department_id, @dept.id) if @dept
+      with(:invalid, false)
+      keywords params[:q] unless params[:q].blank?
+      order_by :department_id
+      order_by :course_number
+    end
+
+    # Search instructors
+    @results[:instructors] = Instructor.search do
+      keywords params[:q] unless params[:q].blank?
+    end
+end
+
+  def search_BY_SQL
+    @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
+    @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
     @eff_q = @prof_eff_q
     query = params[:query] || ""
     query.upcase!
