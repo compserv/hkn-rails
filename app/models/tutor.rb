@@ -10,8 +10,8 @@ class Tutor < ActiveRecord::Base
 
   belongs_to :person
 
-  has_and_belongs_to_many :courses
-  has_and_belongs_to_many :courses_in_progress, :class_name => "Course", :join_table => "courses_in_progress_tutors"
+  has_many :course_preferences
+  has_many :courses, :through => :course_preferences
   has_and_belongs_to_many :slots
   has_many :availabilities
 

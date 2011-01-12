@@ -27,7 +27,7 @@ describe Exam, "when created with blank parameters" do
 
   it "should require a is_solution to be valid" do
     @exam.should_not be_valid
-    @exam.errors[:is_solution].should include("can't be blank")
+    @exam.errors[:is_solution].should include("is not included in the list")
   end
 end
 

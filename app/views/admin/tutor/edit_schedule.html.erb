@@ -4,6 +4,8 @@
 <input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
 <p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
 <p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
+<p>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit. Then add them back in the right places, and submit again. 
+If you don't do that exactly, the schedule may not end up in the right state.</p>
 <table id="edit_schedule">
 <% @rows.each do |row| %>
 	<tr>

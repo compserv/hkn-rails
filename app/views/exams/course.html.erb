@@ -1,0 +1,32 @@
+<h1><%= @course.course_name %></h1>
+
+<div id="table">
+  <table id="exams" class="table">
+    <tr>
+      <th>Semester</th>
+      <th>Instructor</th>
+      <th>Midterm 1</th>
+      <th>Midterm 2</th>
+      <th>Midterm 3</th>
+      <th>Final</th>
+    </tr>
+  <%- @results.each do |semester, instructor, exams, solutions| -%>
+    <tr>
+      <td>
+	<%= semester %>
+      </td>
+      <td>
+	<%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+      </td>
+      <%- ['mt1', 'mt2', 'mt3', 'f'].each do |short_type| -%>
+	<td>
+	<%- exam = exams[short_type] -%>
+	<%- sol = solutions[short_type] -%>
+	<%= (link_to "[#{exam.file_type}]", @exam_path+exam.filename) unless exam.nil?%><%= (link_to '[solution]', @exam_path+sol.filename) unless sol.nil? %>
+      </td>
+      <%- end -%>
+    </tr>
+  <%- end -%>
+  </table>
+</div>
+

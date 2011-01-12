@@ -124,7 +124,7 @@ ActiveRecord::Schema.define(:version => 20110111204703) do
   create_table "courses", :force => true do |t|
     t.string   "suffix",        :default => ""
     t.string   "prefix",        :default => ""
-    t.string   "name",                          :null => false
+    t.string   "name"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"

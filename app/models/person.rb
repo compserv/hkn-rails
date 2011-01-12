@@ -34,6 +34,7 @@ class Person < ActiveRecord::Base
   has_many :challenges
   has_many :resumes
   has_one :suggestion
+  has_and_belongs_to_many :coursesurveys
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true

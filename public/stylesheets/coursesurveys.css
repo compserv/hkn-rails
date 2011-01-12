@@ -18,19 +18,9 @@
 .info-item { display: table-cell; text-align: left; padding: 5px; }
 .clear { clear: both; }
 
-#ratings { width: 85%; border: 1px solid #ddd; border-collapse: collapse; margin: auto;}
+#ratings { width: 85%; border: 1px solid #ddd; border-collapse: collapse; margin: 1em auto; }
 #ratings th, #ratings td { text-align: center;}
-.table th { 
-  border: 1px solid #ddd;
-  background-color: #403f3f; 
-  color: white;
-}
-.table th a{
-  color: #f9df49;
-}
-.table td { border: 1px dashed #AABBDD; padding: 2px 4px; }
-.table tr:nth-child(even) { background-color: #f9f9f9; }
-.table tr:nth-child(odd)  { background-color: #fff; }
+
 .instructor_photo { background: white; border: 1px solid #ccc; padding: 3px; }
 #instructorbox { float: left; width: 20%; }
 #instructorbox ul { list-style: none }
@@ -47,8 +37,4 @@
 .rating2
 {
   font-size: x-small;
-}
-
-#chart_div{
-  padding: 1em 0px;
 }

@@ -11,7 +11,7 @@
 		<th class="slot_table_header"><%= day %></th>
 		<% end %>
 	<% else %>
-		<td  rowspan="3"><%= format_hour_slot row.to_i %></td>
+		<td  rowspan="3" class="slot"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
 		<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 2 %> value="preferred" /></td>
 		<% end%>

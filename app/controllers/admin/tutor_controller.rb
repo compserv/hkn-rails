@@ -113,30 +113,32 @@ class Admin::TutorController < Admin::AdminController
           slot = Slot.select{|slot| slot.room == room and slot.hour == hour and slot.wday == wday}.first
           firstAvail = true
           for avail in slot.availabilities
-            if firstAvail
-              firstAvail = false
-            else
-              ret += ' '
-            end
-
             person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
-            ret += avail.tutor.id.to_s
-            ret += person.first_name + person.last_name[0..0]
-            ret += avail.preference_level.to_s
+            if person.in_group?("officers")
 
-            if avail.room_strength == 0
-              ret += 'p'
-            elsif avail.preferred_room == room
-              ret += 'P'
-            elsif avail.room_strength == 1
-              ret += 'p'
-            end
-            if avail.adjacency == 2
-              ret += 'A'
-            elsif avail.adjacency == 1
-              ret += 'a'
-            end
+              if firstAvail
+                firstAvail = false
+              else
+                ret += ' '
+              end
+              ret += avail.tutor.id.to_s
+              ret += person.first_name + person.last_name[0..0]
+              ret += avail.preference_level.to_s
 
+              if avail.room_strength == 0
+                ret += 'p'
+              elsif avail.preferred_room == room
+                ret += 'P'
+              elsif avail.room_strength == 1
+                ret += 'p'
+              end
+              if avail.adjacency == 2
+                ret += 'A'
+              elsif avail.adjacency == 1
+                ret += 'a'
+              end
+
+            end #officer check
           end #avail
         end #day
       end #hour
@@ -261,6 +263,47 @@ class Admin::TutorController < Admin::AdminController
       prop.tutoring_end = params[:end]
       prop.semester = params[:year] + params[:semester]
       prop.save
+    end
+  end
+
+  def find_courses
+    render :json => Course.all.map {|c| c.course_abbr }
+  end
+
+  def add_course
+    course_name = params[:course]
+    preference_level = params[:level]
+    @course_options = Hash[Course.all.map {|x| [x.course_abbr, x.id]}]
+    @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
+    if !@course_options.include?(course_name)
+      render :text => "Course not found."
+      return
+    end
+    if !@preference_options.include?(preference_level)
+      render :text => "Please select a preference level."
+      return
+    end
+    course_id = @course_options[course_name]
+    level = @preference_options[preference_level]
+    tutor = @current_user.get_tutor
+    @courses_added = tutor.courses
+    if params[:authenticity_token]  #The form was submitted
+      course = Course.find(course_id)
+      @debug << course
+      if not tutor.courses.include? course
+        cp = CoursePreference.create
+        cp.course_id = course_id
+        cp.tutor_id = tutor.id
+        cp.level = level
+        cp.save
+        #tutor.courses << course
+        #cp = tutor.course_preferences.find_by_course_id(course_id)
+        #cp.level = level
+        #cp.save
+        render :text => cp.id.to_s()
+      else
+        render :text => "You were already signed up for #{course}."
+      end
     end
   end
 
