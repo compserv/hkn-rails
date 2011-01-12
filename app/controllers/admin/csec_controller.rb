@@ -32,7 +32,7 @@ class Admin::CsecController < Admin::AdminController
       id = param_id[6..-1]
       coursesurvey = Coursesurvey.find(id)
       # This should not fail
-      coursesurvey.update_attributes(:max_surveyors => params["survey#{coursesurvey.id}"])
+      coursesurvey.update_attributes(params[param_id])
       if !coursesurvey.valid?
         redirect_to(admin_csec_manage_classes_path, :notice => "Error happened. Your input was probably not valid.")
         return

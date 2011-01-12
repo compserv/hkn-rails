@@ -25,6 +25,10 @@ class Coursesurvey < ActiveRecord::Base
     @@statusmap[status]
   end
 
+  def self.statusmap
+    @@statusmap
+  end
+
   def full?
     if max_surveyors.nil?
       return true
