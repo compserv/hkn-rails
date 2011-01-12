@@ -47,7 +47,7 @@ officerships.each do |id, officership|
     next
   end
   new_person_id = new_person.id
-  Committeeship.create( 
+  commship = Committeeship.create( 
     :committee => new_position_abbr(position['short_name']),
     :semester => new_semester(officership['semester']),
     :person_id => new_person_id,
@@ -58,5 +58,8 @@ officerships.each do |id, officership|
   end
   if !new_person.in_group?('officers')
     new_person.groups << Group.find_by_name('officers')
+  end
+  if !new_person.in_group?(commship.committee)
+    new_person.groups << Group.find_by_name(commship.committee)
   end
 end
