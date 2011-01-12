@@ -96,18 +96,21 @@ HknRails::Application.routes.draw do
     match "ferpa"                                   => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
   end
 
-  match "events/calendar" => "events#calendar", :as => :events_calendar
-  match "events/:category" => "events#index", :as => :events_category, :constraints => {:category => /(future|past)/}
-  resources :events do
-    resources :rsvps
-    resources :blocks
+  scope "events" do
+    match "events/calendar" => "events#calendar", :as => :events_calendar
+    match "events/:category" => "events#index", :as => :events_category, :constraints => {:category => /(future|past)/}
+    resources :events do
+      resources :rsvps
+      resources :blocks
+    end
+
+    match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
+
+    #Routes for vp's rsvp confirmation page
+    match "vp_confirm" => "events#vp_confirm", :as => :vp_confirm
+    match "confirm_rsvp/:id" => "rsvps#confirm", :as => :confirm_rsvp
+    match "unconfirm_rsvp/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
   end
-
-  match "vp_confirm" => "events#vp_confirm", :as => :vp_confirm
-  match "confirm_rsvp/:id" => "rsvps#confirm", :as => :confirm_rsvp
-  match "unconfirm_rsvp/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
-
-  match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
 
   resources :event_types
 
