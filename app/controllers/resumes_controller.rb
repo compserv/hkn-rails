@@ -20,7 +20,7 @@ class ResumesController < ApplicationController
     f = File.open(file_name, "wb")
     resume_constructor_args[:file] = file_name
     @resume = @current_user.resumes.new(resume_constructor_args)
-    if @resume.save and not f.nil? then
+    if @resume.save and not f.nil?
       f.write(resume_file.read)
       flash[:notice] = "Resume Uploaded"
       redirect_to account_settings_path
@@ -49,11 +49,6 @@ class ResumesController < ApplicationController
     else
       redirect_to :root, :notice => "Insufficient privileges to access this page."
     end
-  end
-  
-  private
-  
-  def most
   end
 
 end

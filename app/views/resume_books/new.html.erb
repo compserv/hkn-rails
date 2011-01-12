@@ -1,0 +1,28 @@
+<h1>Generate a new Résumé Book</h1>
+<p>The resume book will contain all resumes submitted <emph>after</emph>
+  the cutoff date.</p>
+
+<%= form_for @resume_book do |f| %>
+  <% if @resume_book.errors.any? %>
+    <div id="errorExplanation">
+      <h2><%= pluralize(@resume_book.errors.count, "error") %> prohibited this résumé from being uploaded:</h2>
+      <ul>
+        <% @resume_book.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <%- end -%>
+  <div class = "field">
+  	<%= f.label :cutoff_date, "Cutoff Date" %>
+		<%= f.date_select :cutoff_date %>
+	</div>
+	<div class = "field">
+  	<%= f.label :remarks, "Remarks (optional)" %>
+		<%= f.text_field :remarks %>
+	</div>
+    
+  <div class="actions">
+    <%= f.submit "Create Résumé book" %>
+  </div>
+<%- end -%>
