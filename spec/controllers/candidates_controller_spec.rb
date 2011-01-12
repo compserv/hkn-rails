@@ -7,6 +7,7 @@ describe CandidatesController do
     @cand = mock_model(Candidate)
     @person.stub!(:candidate).and_return(@cand)
     @person.stub!(:admin?).and_return(false)
+    @person.stub!(:coursesurveys).and_return([])
     #controller.stub!(:current_user).and_return(@person)
     login_as @person
     controller.stub!(:is_candidate?).and_return(true)
