@@ -191,7 +191,7 @@ class CoursesurveysController < ApplicationController
     
     cache_key = "#{@instructor.cache_key}/controllerdata"
    
-    unless (cached_values = Rails.cache.read(cache_key)).nil?
+    unless (cached_values = Rails.cache.read(cache_key)).nil? or true
       @instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total = Marshal.load(cached_values)
     else # no cached data loaded
     
@@ -338,6 +338,13 @@ class CoursesurveysController < ApplicationController
   end
 
   def search
+    # hack.. remove annoying utf8 param
+    if request.url =~ /utf8=/i
+      new_url = request.url.gsub(/&?utf8=[^&]+&?/i, '')
+      redirect_to new_url
+      return
+    end
+
     @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
     @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
 
@@ -357,6 +364,7 @@ class CoursesurveysController < ApplicationController
       with(:department_id, @dept.id) if @dept
       with(:invalid, false)
       keywords params[:q] unless params[:q].blank?
+      order_by :score, :desc
       order_by :department_id
       order_by :course_number
     end

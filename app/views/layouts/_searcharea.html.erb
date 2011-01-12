@@ -11,9 +11,9 @@
     </div>
   </div>
   <div id="coursesurvey" class="searchcontrol">
-    <%= form_tag(coursesurveys_search_path, :method => "post") do %>
-      <%= text_field_tag(:query, "", :class => "text", :placeholder=>"Search Course Surveys") %>
-      <%= submit_tag("Search") %>
+    <%= form_tag(coursesurveys_search_path, :method => :get) do %>
+      <%= search_field_tag(:q, "", :class => "text", :placeholder=>"Search Course Surveys") %>
+      <%= submit_tag "Search", :name=>nil  %>
     <%- end -%>
     <div class="small searchhelp">
       example: Hilfinger, hilf*, cs 61a

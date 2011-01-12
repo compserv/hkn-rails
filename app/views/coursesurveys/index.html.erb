@@ -32,6 +32,12 @@
     There are hundreds of thousands of pages, so, although most aspects work fine, there may be errors of which we are unaware.  If you spot an error, especially a missing class or professor, or have a suggestion for the site, please email <%= link_to "www-coursesurvey@hkn.eecs.berkeley.edu", "mailto:www-coursesurvey@hkn.eecs.berkeley.edu" %>.
   </p>
 
+  <h2>Search For an Instructor or Course</h2>
+  <%= form_tag(coursesurveys_search_path, :method=>:get) do %>
+    <%= search_field_tag(:q, "", {:size => 40}) %>
+    <%= submit_tag "Search", :name => nil  %>
+  <%- end -%>
+
   <h2>Prerequisite Charts</h2>
   <p>(Click on a course in the images below to see its ratings)</p>
   <%= render :partial => "eemap" %>
