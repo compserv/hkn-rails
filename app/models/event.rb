@@ -25,7 +25,6 @@ class Event < ActiveRecord::Base
 
   scope :past,     joins(:event_type).order(:start_time).where(['start_time < ?', Time.now])
   scope :upcoming, joins(:event_type).order(:start_time).where(['start_time > ?', Time.now])
-  scope :candidate,joins(:event_type).order(:start_time).where(['?.includes?(event_type.name)', "Big Fun", "Fun"])
   scope :all,      joins(:event_type).order(:start_time)
 
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
