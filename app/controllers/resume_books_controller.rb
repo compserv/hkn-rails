@@ -1,7 +1,3 @@
-# TODO:
-# Find indrel officer names indrel_officer_names()
-
-require 'ERB'
 
 class ResumeBooksController < ApplicationController
   
@@ -9,15 +5,15 @@ class ResumeBooksController < ApplicationController
   
   def new
     @resume_book = ResumeBook.new
-    
   end
 
   def create
     @resume_book_root = "private/resume_books"
+    @gen_root = "#{@resume_book_root}/generation"
     res_book_params = params[:resume_book]
     @resume_book = ResumeBook.new(res_book_params)
-    @hash = self.get_hash
-    @scratch_dir = "mkdir #{@resume_book_root}/#{@hash}_scratch"
+    @hash = get_hash
+    @scratch_dir = "#{@resume_book_root}/#{@hash}_scratch"
     system "mkdir #{@scratch_dir}"
     cutoff_date = @resume_book.cutoff_date
     current_semester = Property.semester
@@ -30,20 +26,22 @@ class ResumeBooksController < ApplicationController
     indrel_officers = indrel_officer_names
     description = generate_description(resumes, cutoff_date, indrel_officers)
     temp_pdf_file = generate_pdf(resumes, cutoff_date, indrel_officers)
-    temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers)
+    temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers, 
+                                 temp_pdf_file)
     # We'll use this for now, hopefully final website will run on 1.9.2
-    res_book_directory = "#{@resume_book_root}/#{time_string}_resume_book"
-    pdf_file = "#{res_book_directory}/resume_book.pdf"
-    iso_file = "#{res_book_directory}/resume_book.iso"
+    res_book_directory = "#{@resume_book_root}/#{@hash}_resume_book"
     system "mkdir #{res_book_directory}"
+    pdf_file = "#{res_book_directory}/HKNResumeBook.pdf"
+    iso_file = "#{res_book_directory}/HKNResumeBook.iso"
     system "cp #{temp_pdf_file} #{pdf_file}"
     system "cp #{temp_iso_file} #{iso_file}"
-#    cleanup
+    cleanup
     @resume_book.details   = description
     @resume_book.directory = res_book_directory
     @resume_book.pdf_file  = pdf_file
     @resume_book.iso_file  = iso_file
     @resume_book.save!
+    redirect_to resume_book_path(@resume_book.id)
   end
 
   def index
@@ -52,28 +50,73 @@ class ResumeBooksController < ApplicationController
   def show
     @resume_book = ResumeBook.find(params[:id])
   end
+  
+  
+  # Copied from richardxia's code in the resume file
+  # I'm not sure if this is secure
+  
+  # Shows resume (PDF, not model data) after authorization
+  def download_pdf
+    @resume_book = ResumeBook.find(params[:id])
+    if @current_user and (@current_user.in_groups?(['superusers', 'indrel']))
+      send_file @resume_book.pdf_file, :type => 'application/pdf', :x_sendfile => true
+    else
+      redirect_to :root, :notice => "Insufficient privileges to access this page."
+    end
+  end
+  
+  # Shows resume (PDF, not model data) after authorization
+  def download_iso
+    @resume_book = ResumeBook.find(params[:id])
+    if @current_user and (@current_user.in_groups?(['superusers', 'indrel']))
+      send_file @resume_book.iso_file, :type => 'application/octet-stream', :x_sendfile => true
+    else
+      redirect_to :root, :notice => "Insufficient privileges to access this page."
+    end
+  end
 
 private
 
   def generate_pdf(resumes, cutoff_date, indrel_officers)
-    gen_root = "#{@resume_book_root}/generation"
-    scratch_dir = @scratch_dir
     # @scratch_dir is the scratch work directory
-    cover = "#{gen_root}/skeleton/cover.pdf"
     res_book_pdfs = Array.new
-    res_book_pdfs << cover
-    do_erb("#{gen_root}/indrel_letter.tex.erb",
-           "#{scratch_dir}/indrel_letter.tex",binding)
-    do_tex("#{scratch_dir}/scratch","letter.tex")
-    letter = "#{scratch_dir}/skeleton/indrel_letter.pdf"
-    res_book_pdfs << letter
-    
-    concatenate_pdf(res_book_pdfs, "#{scratch_dir}/scratch/res_book.pdf")
-    "#{scratch_dir}/scratch/res_book.pdf"
+    indrel_letter_template = "#{@gen_root}/indrel_letter.tex.erb"
+    toc_template = "#{@gen_root}/table_of_contents.tex.erb"
+    res_book_pdfs << "#{@gen_root}/skeleton/cover.pdf"
+    system "cp #{@gen_root}/skeleton/hkn_emblem.png #{@scratch_dir}/"
+    res_book_pdfs << process_tex_template(indrel_letter_template, binding)
+    sorted_yrs = sorted_years(resumes) #used in table of contents template
+    res_book_pdfs << process_tex_template(toc_template, binding)
+    sorted_years(resumes).each do |year|
+      res_book_pdfs << section_cover_page(year)
+      resumes[year].each do |resume|
+        res_book_pdfs << resume.file
+      end
+    end
+    concatenate_pdfs(res_book_pdfs, "#{@scratch_dir}/HKNResumeBook.pdf")
+  end
+  
+  # gets the file erb's it using do_erb and returns the location
+  # of the result (which is put in the @scratch_dir directory)
+  def process_tex_template(input_file_name, bindings)
+    file_base_name_tex_erb = File.basename(input_file_name)
+    file_base_name_tex = file_base_name_tex_erb[0..-5]
+    file_base_name_pdf = file_base_name_tex[0..-5] + ".pdf"
+    do_erb(input_file_name,"#{@scratch_dir}/#{file_base_name_tex}",bindings)
+    do_tex("#{@scratch_dir}",file_base_name_tex)
+    "#{@scratch_dir}/#{file_base_name_pdf}"
+  end
+  
+  def nice_class_name(year)
+    if year == :grads
+      "Graduates"
+    else
+      "Class of #{year}"
+    end
   end
   
   def do_erb(input_file_name, output_file_name, bindings)
-    template_string = File.new(input_file_name).readlines.join("\n")
+    template_string = File.new(input_file_name).readlines.join("")
     template = ERB.new(template_string)
     f = File.new(output_file_name, "w")
     f.write(template.result(bindings))
@@ -82,62 +125,78 @@ private
   
   def do_tex(directory, file_name)
     Dir.chdir(directory) do |dir_name|
-      system "pdflatex file_name"
+      system "pdflatex #{file_name}"
     end
   end
   
-  def concatenate_pdfs(pdf_file_list, output_file_name)
-    template_string = File.new(input_file_name).readlines.join("\n")
-    template = ERB.new(template_string)
-    f = file.new(output_file_name)
-    f.write(letter_template.result(bindings))
-    f.close
+  # year will be a year i.e. 2011 or :grads
+  def section_cover_page(year)
+    do_erb("#{@gen_root}/section_title.tex.erb",
+           "#{@scratch_dir}/#{year.to_s}title.tex",
+           binding)
+    do_tex("#{@scratch_dir}","#{year.to_s}title.tex")
+    "#{@scratch_dir}/#{year.to_s}title.pdf"
   end
   
-  def generate_iso(resumes, cutoff_date, indrel_officers)
-    file_name = "#{@resume_book_root}/generation/scratch/iso_file.txt"
-    f = File.new(file_name, "w")
-    f.write("ISO File Stub\n")
-    f.close
-    file_name
+  def concatenate_pdfs(pdf_file_list, output_file_name)
+    system "pdftk #{pdf_file_list.join(' ')} cat output #{output_file_name}"
+    output_file_name
+  end
+  
+  def generate_iso(resumes, cutoff_date, indrel_officers, res_book_pdf)
+    dir_name_fn = lambda {|year| year == :grads ? "grads" : year.to_s }
+    iso_dir = "#{@scratch_dir}/ResumeBookISO"
+    system "cp -R #{@gen_root}/skeleton/ResumeBookISO #{iso_dir}"
+    system "sed \"s/SEMESTER/#{nice_semester}/g\" #{iso_dir}/Welcome.html > #{iso_dir}/Welcome.html.tmp"
+    system "mv #{iso_dir}/Welcome.html.tmp #{iso_dir}/Welcome.html"
+    resumes.each_key do |year|
+      year_dir_name = "#{iso_dir}/Resumes/#{dir_name_fn.call(year)}"
+      system "mkdir #{year_dir_name}"
+      resumes[year].each do |resume|
+        system "cp #{resume.file} \"#{year_dir_name}/#{resume.person.last_name}, #{resume.person.first_name}.pdf\""
+      end
+    end
+    system "cp #{res_book_pdf} #{iso_dir}/HKNResumeBook.pdf"
+    system "genisoimage -V 'HKN Resume Book' -o #{@scratch_dir}/HKNResumeBook.iso -R -J #{iso_dir}"
+    "#{@scratch_dir}/HKNResumeBook.iso"
+  end
+  
+  # Stolen from committeeship. Why isn't this procedure in the property class?
+  SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
+  def nice_semester
+    "#{SEMESTER_MAP[Property.semester[-1..-1].to_i]} #{Property.semester[0..3]}"
+  end
+  
+  def setup
+    
   end
   
   def cleanup
     system "rm -rf #{@scratch_dir}"
   end
   
+  # get the keys of resumes hash in correct order so we have increasing years
+  # in resume book
+  def sorted_years(resumes)
+    grad_flag = resumes.keys.include?(:grads)
+    sorted_yrs = resumes.keys.reject{|x| x.class == Symbol}
+    sorted_yrs.sort!
+    sorted_yrs << :grads if grad_flag
+    sorted_yrs
+  end
+  
   def generate_description(resumes, cutoff_date, indrel_names)
     output_string = String.new
-    output_string += "Current Indrel (signing the letter) are:\n"
-    indrel_names.each do |indreller|
-       output_string += indreller + "\n"
-    end
-    output_string += "\n\n"
-    sorted_years = resumes.keys.reject{|x| x.class == Symbol}
-    sorted_years.sort!
-    sorted_years << :grads
-    sorted_years.each do |group|
-      if group == :grads
-        output_string += "Graduates (Alumni)\n"
-      else
-        output_string += "Class of " + group.to_s + "\n"
-      end
-      output_string += "-------------------------------------\n"
-      resumes[group].each do |resume|
-        person = resume.person
-        output_string += "#{person.last_name}, #{person.first_name}\n"
-      end
-      output_string += "\n\n"
-    end
-    output_string
   end
         
   def group_resumes(cutoff_date, graduating_class)
     resumes = Hash.new
-    resumes[:grads] = Array.new
     # Resume.where wasn't working... when I figure that out I will replace the following
     Resume.find(:all).reject{|resume| resume.created_at < cutoff_date}.each do |resume|
       if resume.graduation_year < graduating_class
+        if resumes[:grads].nil?
+          resumes[:grads] = Array.new
+        end
         resumes[:grads] << resume
       else
         if resumes[resume.graduation_year].nil?
@@ -159,13 +218,14 @@ private
     resumes
   end
   
-  # Hardcoded for now -- should be fixed within the week
   def indrel_officer_names
-    ["Akash Gupta", "Richard Lan", "Sameet Ramakrishnan", "Stephanie Ren"]
+    Committeeship.current.committee("indrel").officers.map {
+       |officer| "#{officer.person.first_name} #{officer.person.last_name}" }.sort
   end
   
   def get_hash
     Time.new.utc.strftime("%Y%m%d%H%M%S%L")
   end
+
     
 end

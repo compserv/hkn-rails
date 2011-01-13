@@ -1,14 +1,16 @@
 <h1> Résumé Books </h1>
 
+<%= link_to "Generate a new resume book", new_resume_book_path  %>
+
 <table class="table">
-	<tr><th>id</th><th>Creation Date</th><th>Remarks</th><th>PDF File Location</th><th>ISO File Location</th></tr>
-<% ResumeBook.find(:all).each do |resume_book| %>
+	<tr><th>id</th><th>Creation Date</th><th>Remarks</th><th>PDF File</th><th>ISO File</th></tr>
+<% ResumeBook.find(:all).reverse.each do |resume_book| %>
 <!-- I hope everyone capitalizes the first letters of their names. But it's not really a big deal-->
-	<tr><td> <%= resume_book.id %> </td>
+	<tr><td> <%= link_to resume_book.id, resume_book_path(resume_book.id) %> </td>
 	    <td> <%= resume_book.created_at %> </td>
 	    <td> <%= resume_book.remarks %> </td>
-			<td> <%= resume_book.pdf_file %>
-		  <td> <%= resume_book.iso_file %> </td>
+			<td> <%= link_to "Download PDF", resume_book_download_pdf_path(resume_book.id) %> </td>
+		  <td> <%= link_to "Download ISO", resume_book_download_iso_path(resume_book.id) %> </td>
 	</tr>
 <% end %>
 </table>
