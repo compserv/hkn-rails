@@ -49,6 +49,35 @@
       background: url("/images/icons/bullet_red.png");
     }
     
+    .event, .announcement {
+      padding: 0.5em;
+      margin: 5px;
+      text-indent: 0px;
+    }
+    
+    .event .time{
+      display: block;
+    }
+    .event .location{
+      display: block;
+    }
+    .event .description{
+      display: none;
+    }
+    
+    .announcement .title{
+      font-weight: bold;
+    }
+    
+    .announcement .body{
+      display: block;
+    }
+    
+    #upcoming_events, #announcements ul{
+      padding-left: 0px;
+      text-indent: 0px;
+    }
+    
   </style>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -87,14 +116,19 @@
   </script>
 <% end %>
 <div id="sidebar" class="trans-bg">
-  <h2>Upcoming Events</h2>
+  <h2>Upcoming Events <%= link_to "(see calendar)", "/events/calendar/" %></h2>
   <ul id="upcoming_events" class="plain">
   <% for event in @events %>
     <li class="event">
-      <span class="name"><%= event.name %></span>
+      <span class="name"><%= link_to event.name, event %> [<%= link_to "RSVP", "/events/" + event.id.to_s + "/rsvps/new" %>]</span>
       <span>
         <span class="time">
-          <%= event.start_time %> to <%= event.end_time %>
+          <%= event.start_time.strftime("%A (%b %d) at %I:%M%p") %>
+          <% if event.start_time.day == event.end_time.day %>
+            - <%= event.end_time.strftime("%I:%M%p") %>
+          <% else %>
+            - <%= event.end_time.strftime("%A (%b %d) at %I:%M%p") %>
+          <% end %>
         </span>
         <span class="location"><%= event.location %></span>
       </span>
@@ -118,7 +152,7 @@
       <ul class="plain">
       <% for a in @announcements %>
         <li class="announcement">
-          <span class="title"><%= a.title %></span> - <span class="author"><%= a.person.first_name  + " " + a.person.last_name %></span>
+          <span class="title"><%= a.title %></span> (Posted by <span class="author"><%= link_to(a.person.first_name  + " " + a.person.last_name, a.person) %>)</span>
           <span class="body"><%= a.body %></span>
         </li>
       <% end %>
@@ -130,7 +164,7 @@
     
     <div style="float:left; width: 45%;">
       <h3>
-        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        <span class="<%= "req_status " + (@done["events"] ? "status_done" : "status_notdone") %>"></span>
         Events</h3>
       <ul class="semi-plain">
         <% @status.each do |req, status| %>
@@ -151,7 +185,7 @@
 
     <div style="float:left; width: 45%; padding-left: 3em;">
       <h3>
-        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        <span class="<%= "req_status " + (@done["challenges"] ? "status_done" : "status_notdone") %>"></span>
         Challenges</h3>
       <ul id="challenges" class="semi-plain">
         <%= render :partial => "challenges"%>    
@@ -176,15 +210,15 @@
       </div>
       
       <h3>
-        <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+        <span class="<%= "req_status " + (@done["forms"] ? "status_done" : "status_notdone") %>"></span>
         Forms</h3>
       <ul id="forms" class="semi-plain">
         <li>
-          <span class="<%= "event_status " + (false ? 'event_done' : 'event_notdone') %>"></span>
+          <span class="<%= "event_status " + (@done["resume"] ? 'event_done' : 'event_notdone') %>"></span>
           <%= link_to "Resume", "../../resumes/upload" %>
         </li>
         <li>
-          <span class="<%= "event_status " + (false ? 'event_done' : 'event_notdone') %>"></span>
+          <span class="<%= "event_status " + (@done["quiz"] ? 'event_done' : 'event_notdone') %>"></span>
           <%= link_to "Quiz", "../quiz" %>
         </li>
       </ul>
@@ -192,51 +226,11 @@
     </div>
     <div class="clear light-hbar"></div>
     <h3>
-      <span class="<%= "req_status " + (false ? "status_done" : "status_notdone") %>"></span>
+      <span class="<%= "req_status " + (@done["course_surveys"] ? "status_done" : "status_notdone") %>"></span>
       Course Surveys</h3>
-    <% if @coursesurveys_active %>
-      <% if @current_user.coursesurveys.count < @required_surveys %>
-        <%= link_to "Sign Up", coursesurvey_signup_path %>
-      <% else %>
-        You are currently signed up for:
-        <table>
-          <tr>
-            <th>Status</th>
-            <th>Course Name</th>
-            <th>Section</th>
-            <th>Title</th>
-            <th>Instructor(s)</th>
-            <th>Times</th>
-            <th>Location</th>
-            <th>Notes</th>
-            <th>Other Surveyors</th>
-          </tr>
-          <% @coursesurveys.each do |coursesurvey| %>
-            <tr>
-              <td><%= coursesurvey.get_status_text() %></td>
-              <td><%= coursesurvey.klass.course.course_abbr %></td>
-              <td><%= coursesurvey.klass.section %></td>
-              <td><%= coursesurvey.klass.course.name %></td>
-              <td>
-                <% coursesurvey.klass.instructors.each do |instructor| %>
-                  <%= instructor.full_name %>
-                <% end %>
-              </td>
-              <td><%= coursesurvey.klass.time %></td>
-              <td><%= coursesurvey.klass.location %></td>
-              <td><%= coursesurvey.klass.notes %></td>
-              <td>
-                <% coursesurvey.surveyors.reject{|x| x == @current_user }.each do |surveyor| %>
-                  <%= link_to surveyor.fullname, surveyor %>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </table>
-      <% end %>
-    <% else %>
-      Coming Soon!
-    <% end %>
+    [Coming Soon]
+    
+    
   </div>
 </div>
 

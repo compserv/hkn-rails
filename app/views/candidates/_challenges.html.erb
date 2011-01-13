@@ -3,7 +3,7 @@
   <% for challenge in @challenges %>
     <li>
       <span class="<%= "event_status " + (challenge.status ? 'event_done' : 'event_notdone') %>"></span>
-      <span class="challenge_name"><%= challenge.name %></span>
+      <span class="challenge_name"><%= challenge.name %></span> - 
       <% officer = Person.find(challenge.officer_id) %>
       <span class="officer_name"><%= officer.first_name + " " + officer.last_name %></span>   
     </li>

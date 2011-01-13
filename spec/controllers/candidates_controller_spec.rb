@@ -15,8 +15,10 @@ describe CandidatesController do
   
   describe "GET 'portal'" do
     it "should be successful" do
-      @cand.stub!(:requirements_status).and_return(Hash.new)
+      @cand.stub!(:requirements_status).and_return({:status => {}, :rsvps => []})
       @cand.stub!(:challenges).and_return([])
+      @person.stub!(:resumes).and_return([])
+      @cand.stub!(:quiz_responses).and_return([])
       
       get 'portal'
       response.should be_success
