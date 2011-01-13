@@ -11,33 +11,46 @@ class Admin::TutorController < Admin::AdminController
     prop = Property.get_or_create
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
     @rows = ["Hours"] + @hours
+    @adjacency = tutor.adjacency
+
     if params[:authenticity_token]  #The form was submitted
-      changed=false
-      params.keys.each do |x|
-        daytime = Slot.extract_day_time(x)
-        if daytime
-          pref = Availability.prefstr_to_int[params[x]]
-          slider = params["slider-#{x}"].to_i
-          room, strength = Availability.slider_to_room_strength(slider)
-          if @prefs[x] != pref or (@sliders[x].nil? ? 2 : @sliders[x]) != slider #This slot changed
-            changed = true
-            availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id)
-            if pref == 0 and strength == 0 #delete the existing availability for this slot
-              availability.first.destroy
-            else
-              if availability.empty?
+      if params[:commit] == "Save changes"
+        changed = false
+        if @adjacency != params[:adjacency].to_i
+          changed = true
+          tutor.adjacency = params[:adjacency].to_i
+          tutor.save
+        end
+
+        params.keys.each do |x|
+          daytime = Slot.extract_day_time(x)
+          if daytime
+            pref = Availability.prefstr_to_int[params[x]]
+            slider = params["slider-#{x}"].to_i
+            room, strength = Availability.slider_to_room_strength(slider)
+            if @prefs[x] != pref or (pref != 0 and (@sliders[x].nil? ? 2 : @sliders[x]) != slider) #This slot changed
+              changed = true
+              availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id).first
+              if availability.nil?
                 tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level => pref, :preferred_room => room, :room_strength => strength)
+              elsif pref == 0 #delete the existing availability for this slot
+                availability.destroy
               else
-                availability.first.preference_level = pref
-                availability.first.preferred_room = room
-                availability.first.room_strength = strength
-                availability.first.save
+                availability.preference_level = pref
+                availability.preferred_room = room
+                availability.room_strength = strength
+                availability.save
               end
+              @prefs[x] = pref
             end
-            @prefs[x] = pref
           end
         end
+
+      else
+        changed = true
+        tutor.availabilities.delete_all
       end
+
       if changed
         redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
       else
@@ -62,12 +75,6 @@ class Admin::TutorController < Admin::AdminController
     end
   end
 
-  def generate_schedule
-  end
-
-  def view_signups
-  end
-
   def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False')
     prop = Property.get_or_create
     ret = "#HKN Mu Chapter parameters for tutoring schedule generator<br/>#Generated for "
@@ -81,6 +88,7 @@ class Admin::TutorController < Admin::AdminController
     ret += ", 'maximumCost': " + maximumCost + "}<br/>"
 
     ret += 'CORY = "Cory"</br>SODA = "Soda"</br>'
+    ret += "#The following data may be modified as needed.</br>"
     ret += "TUTORING_DAYS = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')</br>"
     ret += "TUTORING_TIMES = ('11a-12', '12-1', '1-2', '2-3', '3-4', '4-5')</br>"
     ret += "SCORE_CORRECT_OFFICE = 2</br>"
@@ -139,9 +147,9 @@ class Admin::TutorController < Admin::AdminController
               elsif avail.room_strength == 1
                 ret += 'p'
               end
-              if avail.adjacency == 2
+              if avail.tutor.adjacency == 1
                 ret += 'A'
-              elsif avail.adjacency == 1
+              elsif avail.tutor.adjacency == -1
                 ret += 'a'
               end
 
@@ -191,9 +199,9 @@ class Admin::TutorController < Admin::AdminController
           end
         end
 
-        if a.adjacency == 2
+        if tutor.adjacency == 1
           cory_str += 'A'; soda_str += 'A'
-        elsif a.adjacency == 1
+        elsif tutor.adjacency == -1
           cory_str += 'a'; soda_str += 'a'
         end
 
@@ -226,18 +234,26 @@ class Admin::TutorController < Admin::AdminController
     @rows = ["Hours"] + @hours.to_a.map! {|x| x.to_s}
     
     if params[:authenticity_token]  #The form was submitted
-      changed=false
-      @assignments.keys.each do |x|
-        daytime = Slot.extract_day_time(x)
-        old = @assignments[x].map {|t| t.id.to_s}
-        new = params[x] || []
-        for removed in old - new
-          changed = true
-          slots[x].tutors.delete Tutor.find(Integer(removed))
+
+      if params[:commit] == "Save changes"
+        changed = false
+        @assignments.keys.each do |x|
+          daytime = Slot.extract_day_time(x)
+          old = @assignments[x].map {|t| t.id.to_s}
+          new = params[x] || []
+          for removed in old - new
+            changed = true
+            slots[x].tutors.delete Tutor.find(Integer(removed))
+          end
+          for added in new - old
+            changed = true
+            slots[x].tutors << Tutor.find(Integer(added))
+          end
         end
-        for added in new - old
-          changed = true
-          slots[x].tutors << Tutor.find(Integer(added))
+      else
+        changed = true
+        @assignments.keys.each do |x|
+          slots[x].tutors.delete_all
         end
       end
 
@@ -264,7 +280,7 @@ class Admin::TutorController < Admin::AdminController
     @semester = prop.semester[4..4]
     
     if params[:authenticity_token]
-      prop.tutoring_enabled = params[:enabled] === "true"
+      prop.tutoring_enabled = params[:enabled] == "true"
       prop.tutoring_message = params[:message]
       prop.tutoring_start = params[:start]
       prop.tutoring_end = params[:end]
@@ -282,6 +298,7 @@ class Admin::TutorController < Admin::AdminController
     preference_level = params[:level]
     @course_options = Hash[Course.all.map {|x| [x.course_abbr, x.id]}]
     @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
+
     if !@course_options.include?(course_name)
       render :text => "Course not found."
       return
@@ -290,10 +307,12 @@ class Admin::TutorController < Admin::AdminController
       render :text => "Please select a preference level."
       return
     end
+
     course_id = @course_options[course_name]
     level = @preference_options[preference_level]
     tutor = @current_user.get_tutor
     @courses_added = tutor.courses
+
     if params[:authenticity_token]  #The form was submitted
       course = Course.find(course_id)
       @debug << course

@@ -188,10 +188,15 @@ class CoursesurveysController < ApplicationController
   def instructor
     (last_name, first_name) = params[:name].split(',')
     @instructor = Instructor.find_by_name(first_name, last_name)
+    if @instructor.nil? then
+      redirect_to coursesurveys_search_path([first_name,last_name].join(' '))
+      return
+    end
     
     cache_key = "#{@instructor.cache_key}/controllerdata"
-   
-    unless (cached_values = Rails.cache.read(cache_key)).nil?
+  
+    # TODO: fragment caching is disabled here
+    unless true #(cached_values = Rails.cache.read(cache_key)).nil?
       @instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total = Marshal.load(cached_values)
     else # no cached data loaded
     
@@ -338,60 +343,112 @@ class CoursesurveysController < ApplicationController
   end
 
   def search
+    # hack.. remove annoying utf8 param
+    if request.url =~ /utf8=/i
+      new_url = request.url.gsub(/&?utf8=[^&]+&?/i, '')
+      redirect_to new_url
+      return
+    end
+
     @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
     @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
-    @eff_q = @prof_eff_q
-    query = params[:query] || ""
-    query.upcase!
 
-    # If course abbr format:
-    if %w[CS EE].include? query[0..1].upcase
-      (dept_abbr, prefix, number, suffix) = params[:query].match(
-        /((?:CS)|(?:EE))\s*([a-zA-Z]*)([0-9]*)([a-zA-Z]*)/)[1..-1]
-      dept = Department.find_by_nice_abbr(dept_abbr)
-      course = Course.find(:first, :conditions => {:department_id => dept.id, :prefix => prefix, :course_number => number, :suffix => suffix})
-      redirect_to :action => :course, :dept_abbr => course.dept_abbr, :short_name => course.full_course_number
+    # Query
+    params[:q] ||= ''
+
+    # Department
+    unless params[:dept].blank?
+      @dept = Department.find_by_nice_abbr(params[:dept].upcase)
+      params[:dept] = (@dept ? @dept.abbr : nil)
     end
 
-    # Else try finding instructor
-    @results = []
-    name_query = params[:query].gsub(/\*/, '%').downcase
-    instructors = Instructor.find(:all, :conditions => ["(lower(last_name) LIKE ?) OR (lower(first_name) LIKE ?)", name_query, name_query]
-                   )
-    if instructors.size == 1
-      instructor = instructors.first
-      redirect_to :action => :instructor, :name => instructor.last_name+","+instructor.first_name
-    end
+    @results = {} # [instructor, courses, rating]
 
-    instructors.each do |instructor|
-      ratings = []
-      SurveyAnswer.find(:all, 
-                        :conditions => { :survey_question_id => [@prof_eff_q,@ta_eff_q], :instructor_id => instructor.id }
-                       ).each do |answer|
-        ratings << answer.mean
+    begin
+      # Search courses
+      @results[:courses] = Course.search do
+        with(:department_id, @dept.id) if @dept
+        with(:invalid, false)
+        keywords params[:q] unless params[:q].blank?
+        order_by :score, :desc
+        order_by :department_id
+        order_by :course_number
       end
-      courses = Course.find(:all,
-                   :select => "courses.id",
-                   :group =>  "courses.id",
-                   :conditions => "klasses_tas.instructor_id = #{instructor.id}",
-                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN klasses_tas ON klasses_tas.klass_id = klasses.id"
-                  ) + 
-                  Course.find(:all,
-                   :select => "courses.id",
-                   :group =>  "courses.id",
-                   :conditions => "instructors_klasses.instructor_id = #{instructor.id}",
-                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
-                  )
-      unless ratings.empty?
-        if instructor.private
-          rating = "private"
-        else
-          rating = 1.0/ratings.size*ratings.reduce{|x,y| x+y}
-        end
-        @results << [instructor, courses, rating]
+
+      # Search instructors
+      @results[:instructors] = Instructor.search do
+        keywords params[:q] unless params[:q].blank?
       end
+    rescue Errno::ECONNREFUSED
+      # Solr isn't started, hack together some results
+      logger.warn "Solr isn't started, falling back to lame search"
+
+      str = "%#{params[:q]}%"
+      [:courses, :instructors].each do |k|
+        @results[k] = FakeSearch.new
+      end
+
+      @results[:courses].results = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
+      @results[:instructors].results = Instructor.find(:all, :select=>[:id,:first_name,:last_name,:private,:title], :conditions => ["(first_name||' '||last_name) LIKE ?", str])
+      flash[:notice] = "Solr isn't started, so your results are probably lacking." if RAILS_ENV.eql?('development')
     end
-  end
+end
+
+##  def search_BY_SQL
+##    @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
+##    @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
+##    @eff_q = @prof_eff_q
+##    query = params[:query] || ""
+##    query.upcase!
+##
+##    # If course abbr format:
+##    if %w[CS EE].include? query[0..1].upcase
+##      (dept_abbr, prefix, number, suffix) = params[:query].match(
+##        /((?:CS)|(?:EE))\s*([a-zA-Z]*)([0-9]*)([a-zA-Z]*)/)[1..-1]
+##      dept = Department.find_by_nice_abbr(dept_abbr)
+##      course = Course.find(:first, :conditions => {:department_id => dept.id, :prefix => prefix, :course_number => number, :suffix => suffix})
+##      redirect_to :action => :course, :dept_abbr => course.dept_abbr, :short_name => course.full_course_number
+##    end
+##
+##    # Else try finding instructor
+##    @results = []
+##    name_query = params[:query].gsub(/\*/, '%').downcase
+##    instructors = Instructor.find(:all, :conditions => ["(lower(last_name) LIKE ?) OR (lower(first_name) LIKE ?)", name_query, name_query]
+##                   )
+##    if instructors.size == 1
+##      instructor = instructors.first
+##      redirect_to :action => :instructor, :name => instructor.last_name+","+instructor.first_name
+##    end
+##
+##    instructors.each do |instructor|
+##      ratings = []
+##      SurveyAnswer.find(:all, 
+##                        :conditions => { :survey_question_id => [@prof_eff_q,@ta_eff_q], :instructor_id => instructor.id }
+##                       ).each do |answer|
+##        ratings << answer.mean
+##      end
+##      courses = Course.find(:all,
+##                   :select => "courses.id",
+##                   :group =>  "courses.id",
+##                   :conditions => "klasses_tas.instructor_id = #{instructor.id}",
+##                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN klasses_tas ON klasses_tas.klass_id = klasses.id"
+##                  ) + 
+##                  Course.find(:all,
+##                   :select => "courses.id",
+##                   :group =>  "courses.id",
+##                   :conditions => "instructors_klasses.instructor_id = #{instructor.id}",
+##                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
+##                  )
+##      unless ratings.empty?
+##        if instructor.private
+##          rating = "private"
+##        else
+##          rating = 1.0/ratings.size*ratings.reduce{|x,y| x+y}
+##        end
+##        @results << [instructor, courses, rating]
+##      end
+##    end
+##  end
 
   def show_searcharea
     @show_searcharea = true

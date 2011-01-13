@@ -1,5 +1,6 @@
-<%= link_to "Download PDF", resume_boo_download_pdf_path(@resume_book.id) %><br />
-<%= link_to "Download ISO", resume_book_download_iso_path(@resume_book.id) %><br />
-Resume book generated on <%= @resume_book.created_at %><br />
+<p><%= link_to "Download PDF", resume_book_download_pdf_path(@resume_book.id) %></p>
+<p><%= link_to "Download ISO", resume_book_download_iso_path(@resume_book.id) %></p>
+<p>Resume book cutoff date: <%= @resume_book.cutoff_date %></p>
+<p>Resume book generated on <%= @resume_book.created_at %></p>
 <br />
 

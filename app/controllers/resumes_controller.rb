@@ -14,6 +14,9 @@ class ResumesController < ApplicationController
     # and when(?) we upgrade to 1.9+ it will start writing
     # times with milliseconds
     time_string = Time.new.utc.strftime("%Y%m%d%H%M%S%L")
+    if not Dir.entries("private/").include?("resumes")
+      Dir.mkdir("private/resumes")
+    end
     file_name = "private/resumes/#{time_string}_"+
                 "#{@current_user.last_name}_" +
                 "#{@current_user.first_name}.pdf"
@@ -50,5 +53,7 @@ class ResumesController < ApplicationController
       redirect_to :root, :notice => "Insufficient privileges to access this page."
     end
   end
+  
+  private
 
 end

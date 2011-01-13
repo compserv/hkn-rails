@@ -8,7 +8,6 @@ class Availability < ActiveRecord::Base
   #   updated_at       : datetime 
   #   preference_level : integer 
   #   time             : datetime 
-  #   adjacency        : integer 
   #   room_strength    : integer 
   # =======================
 
@@ -20,21 +19,20 @@ class Availability < ActiveRecord::Base
   validates :tutor, :presence => true
   validates :preference_level, :presence => true
   
-  @prefstr_to_int = {"unavailable"=>0,"available"=>1,"preferred"=>2}
+  @prefstr_to_int = {"unavailable"=>0, "preferred"=>1, "available"=>2}
+
   class << self
     attr_reader :prefstr_to_int
     
     def slider_to_room_strength(value)
-      if value == 2
-        room,strength = 0,0
-      elsif value < 2
-        room = 0
-        strength = value == 1 ? 1 : 2
-      else
-        room = 1
-        strength = value == 3 ? 1 : 2
-        return room,strength
+      case value
+        when 0 then room,strength = 0,2
+        when 1 then room,strength = 0,1
+        when 2 then room,strength = 0,0
+        when 3 then room,strength = 1,1
+        when 4 then room,strength = 1,2
       end
+      return room, strength
     end
   end
   
@@ -53,12 +51,11 @@ class Availability < ActiveRecord::Base
   end
 
   def get_slider_value
-    if room_strength == 0
-      return 2
-    elsif preferred_room == 0
-      return 1 - room_strength
+    if preferred_room == 0
+      return 2 - room_strength
     else
       return 2 + room_strength
     end
   end
+
 end
