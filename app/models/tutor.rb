@@ -6,6 +6,7 @@ class Tutor < ActiveRecord::Base
   #   languages  : string 
   #   created_at : datetime 
   #   updated_at : datetime 
+  #   adjacency  : integer 
   # =======================
 
   belongs_to :person
