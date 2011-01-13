@@ -21,6 +21,7 @@ class CandidatesController < ApplicationController
     @events = Event.order("start_time asc").limit(5)
     
     @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
+    
     @done["events"] = !@status.has_value?(false)
     @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 5
     @done["resume"] = @current_user.resumes.length >= 0
