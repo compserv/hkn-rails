@@ -1,9 +1,9 @@
-<h1> Upload Resume </h1>
+<h1> Upload Résumé </h1>
 
 <%= form_for @resume, :html => { :multipart => true } do |f| %>
 	<% if @resume.errors.any? %>
   <div id="errorExplanation">
-    <h2><%= pluralize(@resume.errors.count, "error") %> prohibited this resume from being uploaded:</h2>
+    <h2><%= pluralize(@resume.errors.count, "error") %> prohibited this résumé from being uploaded:</h2>
     <ul>
     <% @resume.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
@@ -26,7 +26,7 @@
 		<%= f.label :resume_text, "Resume Text" %>
 		<table class="field-layout">
 			<tr><td><%= f.text_area :resume_text %></td></tr>
-			<tr><td>Paste the contents of your resume (used for searching).</td></tr>
+			<tr><td>Paste the contents of your résumé (used for searching).</td></tr>
 		</div>
 	</div>
 	<div class="field">
@@ -68,10 +68,10 @@
 		<%= f.label :file, "Resume" %>
 		<table>
 			<tr><td><%= f.file_field(:file, :accept => 'application/pdf') %></td></tr>
-			<tr><td>Please provide a PDF of your resume.</td></tr>
+			<tr><td>Please provide a PDF of your résumé.</td></tr>
 		</table>
 	</div>
   <div class="actions">
-    <%= f.submit "Upload Resume" %>
+    <%= f.submit "Upload Résumé" %>
   </div>
 <%- end -%>
