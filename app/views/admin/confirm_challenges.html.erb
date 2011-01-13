@@ -1,0 +1,28 @@
+<h1>Confirm Candidate Challenges</h1>
+
+<h2>Pending Challenges</h2>
+<% if @pending_challenges.length > 0 %>
+  <ul class="plain">
+  <% for challenge in @pending_challenges %>
+    <li>
+      <%= link_to "[Confirm]", "../confirm_challenge/" + challenge.id.to_s %> 
+      <span class="challenge_name"><%= challenge.name %></span> (requested by <%= challenge.candidate.person.full_name %>)
+    </li>
+  <% end %>
+  </ul>
+<% else %>
+  No challenges requested from you right now. 
+<% end %>
+
+<h2>Accepted Challenges</h2>
+<% if @acc_challenges.length > 0 %>  
+  <ul class="plain">
+  <% for challenge in @acc_challenges %>
+    <li>
+      <span class="challenge_name"><%= challenge.name %></span> (requested by <%= challenge.candidate.person.full_name %>)
+    </li>
+  <% end %>
+  </ul>
+<% else %>
+  No challenge request history
+<% end %>
