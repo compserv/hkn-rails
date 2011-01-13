@@ -52,7 +52,7 @@ label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right
 .field input { clear: left; }
 
 /*Tables*/
-#results table { border: 1px solid black; border-collapse: collapse; width: 100%; }
+table { border-collapse: collapse; width: 100%; }
 
 /*Other*/
 .small { font-size: 0.8em; line-height: 1.2em; }
