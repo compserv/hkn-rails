@@ -109,7 +109,9 @@
 	      <%- if @current_user %>
               <li><%= link_to "My RSVPs", my_rsvps_path %></li>
 	      <%- end %>
+	      <%- if @current_user and @auth["vp"] -%>
 	      <li><%= link_to "Confirm RSVPs", vp_confirm_path %></li>
+	      <%- end %>
             </ul>
           </div>
 
