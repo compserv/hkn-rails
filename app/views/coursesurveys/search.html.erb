@@ -43,8 +43,7 @@
       <td><%- if i.private -%>
         [private]
         <%- else rating = i.average_rating -%>
-        <%= sprintf "%.1f", rating %> / <%= @prof_eff_q.max.to_f %> 
-        <%= rating_bar(rating/@prof_eff_q.max) %>
+        <%= rating_and_bar rating, (i.ta? ? @ta_eff_q.max : @prof_eff_q.max)  %>
         <%- end -%></td>
     </tr>
   <% end %>

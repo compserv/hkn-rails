@@ -71,3 +71,7 @@ class String
   end
 end
 
+# Used as a quick and dirty hack when solr isn't running
+class FakeSearch
+  attr_accessor :results
+end

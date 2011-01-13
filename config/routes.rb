@@ -104,7 +104,7 @@ HknRails::Application.routes.draw do
     match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
     match "rating/:id/edit"                         => "coursesurveys#editrating", :as => :coursesurveys_edit_rating
     match "rating/:id/update"                       => "coursesurveys#updaterating", :as => :coursesurveys_update_rating
-    match "search(/:query)"                         => "coursesurveys#search",     :as => :coursesurveys_search
+    match "search(/:q)"                         => "coursesurveys#search",     :as => :coursesurveys_search
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
     
     match "how-to"                                  => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
