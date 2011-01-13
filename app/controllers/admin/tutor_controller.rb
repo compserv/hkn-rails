@@ -1,10 +1,12 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :add_course, :find_courses]
   
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
     tutor.availabilities.each {|a| @prefs[a.time.utc.strftime('%a%H')] = a.preference_level}
+    @sliders = Hash.new
+    tutor.availabilities.each {|a| @sliders[a.time.utc.strftime('%a%H')] = a.get_slider_value}
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     prop = Property.get_or_create
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
@@ -15,16 +17,20 @@ class Admin::TutorController < Admin::AdminController
         daytime = Slot.extract_day_time(x)
         if daytime
           pref = Availability.prefstr_to_int[params[x]]
-          if @prefs[x] != pref #This slot changed
+          slider = params["slider-#{x}"].to_i
+          room, strength = Availability.slider_to_room_strength(slider)
+          if @prefs[x] != pref or (@sliders[x].nil? ? 2 : @sliders[x]) != slider #This slot changed
             changed = true
             availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id)
-            if pref == 0  #delete the existing availability for this slot
+            if pref == 0 and strength == 0 #delete the existing availability for this slot
               availability.first.destroy
             else
               if availability.empty?
-                tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level=>pref)
+                tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level => pref, :preferred_room => room, :room_strength => strength)
               else
                 availability.first.preference_level = pref
+                availability.first.preferred_room = room
+                availability.first.room_strength = strength
                 availability.first.save
               end
             end
@@ -83,7 +89,8 @@ class Admin::TutorController < Admin::AdminController
     ret += "SCORE_ADJACENT = 1</br>"
     ret += "SCORE_ADJACENT_SAME_OFFICE = 2</br>"
     ret += "DEFAULT_HOURS = 2</br>"
-    ret += "exceptions = {}</br>"
+    ret += "#Input exceptions to the number of tutoring hours below. Ex: exceptions = {u'201DummyA':3, u'597DummyB':1}</br>"
+    ret += "exceptions = {} </br>"
     ret += "defaultHours = 2</br>"
     ret += "scoring = {'adjacent_same_office': 2, 'correct_office': 2, 'adjacent': 1, 'miss_penalty': 10000, 'preference': {1: 6, 2: 0}}</br></br>"
 
@@ -263,6 +270,47 @@ class Admin::TutorController < Admin::AdminController
       prop.tutoring_end = params[:end]
       prop.semester = params[:year] + params[:semester]
       prop.save
+    end
+  end
+
+  def find_courses
+    render :json => Course.all.map {|c| c.course_abbr }
+  end
+
+  def add_course
+    course_name = params[:course]
+    preference_level = params[:level]
+    @course_options = Hash[Course.all.map {|x| [x.course_abbr, x.id]}]
+    @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
+    if !@course_options.include?(course_name)
+      render :text => "Course not found."
+      return
+    end
+    if !@preference_options.include?(preference_level)
+      render :text => "Please select a preference level."
+      return
+    end
+    course_id = @course_options[course_name]
+    level = @preference_options[preference_level]
+    tutor = @current_user.get_tutor
+    @courses_added = tutor.courses
+    if params[:authenticity_token]  #The form was submitted
+      course = Course.find(course_id)
+      @debug << course
+      if not tutor.courses.include? course
+        cp = CoursePreference.create
+        cp.course_id = course_id
+        cp.tutor_id = tutor.id
+        cp.level = level
+        cp.save
+        #tutor.courses << course
+        #cp = tutor.course_preferences.find_by_course_id(course_id)
+        #cp.level = level
+        #cp.save
+        render :text => cp.id.to_s()
+      else
+        render :text => "You were already signed up for #{course}."
+      end
     end
   end
 

@@ -14,14 +14,17 @@ class Klass < ActiveRecord::Base
   # =======================
 
   belongs_to :course
-  has_many :coursesurveys
-  has_many :survey_answers
+  has_one :coursesurvey, :dependent => :destroy
+  has_many :survey_answers, :dependent => :destroy
   has_and_belongs_to_many :instructors
   # tas = TAs
   has_and_belongs_to_many :tas, { :class_name => "Instructor", :join_table => "klasses_tas" }
-  has_many :exams
+  has_many :exams, :dependent => :destroy
+
+  scope :current_semester, joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section')
   
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
+  ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }
 
   def to_s
     "#{course.course_abbr} #{proper_semester}"
@@ -50,5 +53,15 @@ class Klass < ActiveRecord::Base
 
   def instructor_type(instructor)
     instructor_ids.include?(instructor.id) ? "Instructor" : "TA"
+  end
+
+  # e.g. sp05
+  def Klass.find_by_course_and_nice_semester(course, nice_semester)
+    # kind of a hacky way to convert decades, but should be fine if we
+    # replace this format/website by 2051
+    decade = nice_semester[2..3].to_i
+    year = (decade > 50 ? 1900 : 2000) + decade
+    semester = "#{year}#{ABBR_SEMESTERS[nice_semester[0..1]]}"
+    Klass.find_by_course_id_and_semester(course.id, semester)
   end
 end

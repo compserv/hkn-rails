@@ -2,7 +2,6 @@ class Course < ActiveRecord::Base
 
   # === List of columns ===
   #   id            : integer 
-  #   course_number : string 
   #   suffix        : string 
   #   prefix        : string 
   #   name          : string 
@@ -12,19 +11,27 @@ class Course < ActiveRecord::Base
   #   units         : integer 
   #   prereqs       : text 
   #   department_id : integer 
+  #   course_number : integer 
   # =======================
 
   belongs_to :department
-  has_and_belongs_to_many :tutors
-  has_many :klasses, :order => "semester DESC, section DESC"
+  has_many :course_preferences, :dependent => :destroy
+  has_many :tutors, :through => :course_preferences, :uniq => true
+  has_many :klasses, :order => "semester DESC, section DESC", :dependent => :destroy
   has_many :coursesurveys, :through => :klasses
   has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
-  validates :name,          :presence => true
 
-  scope :ordered, :order => 'CAST(courses.course_number AS integer)'
+  scope :ordered, order("prefix, courses.course_number, suffix")
+  scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
+
+  # A few notes about course numbers
+  # prefix refers to letters that appear before numbers, e.g. C for cross-listed, H for honors
+  # course_number refers to just the numbers, e.g. the 61 in 61A
+  # suffix refers to all letters that appear after the numbers, e.g. the A in 61A, the M in 145M, the AC in E130AC
+  # This is DIFFERENT from the old Django site's definitions
   
   def invalid?
     # Some courses are invalid, and shouldn't be listed.
@@ -74,7 +81,8 @@ class Course < ActiveRecord::Base
   def Course.find_all_with_exams_by_department_abbr(dept_abbr)
     @department = Department.find_by_nice_abbr(dept_abbr)
     if !@department.nil?
-      Course.find(:all, :include => :department, :conditions => ['department_id = ?', @department.id], :joins => :exams)
+      # TODO fix query to be more efficient
+      Course.where(:department_id => @department.id).ordered.reject {|course| course.exams.empty?}
     end
   end
 end

@@ -67,12 +67,18 @@ def parse_klass_info(line)
     instructor = Instructor.create( :first_name => first_name, :last_name => last_name, :private => privacy )
   end
 
-  # Check whether klass exists
+  # Check whether klass exists, note that the EE survey results for TAs may not not follow the same section number convention as the other results
   formatted_semester = semester[-4..-1] + case semester[0..-6] when "SPRING" then "1" when "SUMMER" then "2" when "FALL" then "3" else "UNKNOWN" end
   klass = Klass.find( :first, :conditions => { :course_id => course.id, :semester => formatted_semester, :section => section } )
   if klass.nil?
-    puts "No klass for #{semester} #{course.course_abbr} found. Creating new one."
-    klass = Klass.create( :course_id => course.id, :semester => formatted_semester, :section => section )
+    if title == 'ta'
+      raise "Error: TA #{first_name} #{last_name} belongs to unknown section of #{course_number}"
+    elsif title == 'prof'
+      puts "No klass for #{semester} #{course.course_abbr} found. Creating new one."
+      klass = Klass.create( :course_id => course.id, :semester => formatted_semester, :section => section )
+    else
+      raise "Error"
+    end
   end
 
   # Check whether instructor is an instructor or a TA for the klass

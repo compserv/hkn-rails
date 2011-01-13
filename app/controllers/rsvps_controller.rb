@@ -88,6 +88,25 @@ class RsvpsController < ApplicationController
     end
   end
 
+  def confirm
+    @rsvp = Rsvp.find(params[:id])
+    @rsvp.confirmed = "true"
+
+    respond_to do |format|
+      format.html { redirect_to(vp_confirm_path, :notice => 'Rsvp was confirmed.') }
+      format.xml  { render :xml => @rsvp }
+    end
+  end
+
+  def unconfirm
+    @rsvp = Rsvp.find(params[:id])
+    @rsvp.confirmed = nil
+    
+    respond_to do |format|
+      format.html { redirect_to(vp_confirm_path, :notice => 'Confirmation was removed.') }
+      format.xml { render :xml => @rsvp }
+    end
+  end
 
   def my_rsvps
     @rsvps = @current_user.rsvps

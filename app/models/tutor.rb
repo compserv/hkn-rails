@@ -10,8 +10,8 @@ class Tutor < ActiveRecord::Base
 
   belongs_to :person
 
-  has_and_belongs_to_many :courses
-  has_and_belongs_to_many :courses_in_progress, :class_name => "Course", :join_table => "courses_in_progress_tutors"
+  has_many :course_preferences, :dependent => :destroy
+  has_many :courses, :through => :course_preferences, :uniq => true
   has_and_belongs_to_many :slots
   has_many :availabilities
 
@@ -19,5 +19,16 @@ class Tutor < ActiveRecord::Base
   
   def to_s
     return person.fullname
+  end
+
+  def get_availability_by_day_hour(weekday,hour)
+    weekdays = {"Monday" => 5, "Tuesday" => 6, "Wednesday" => 7, "Thursday" => 1, "Friday" => 2, "Saturday" => 3, "Sunday" => 4}
+    t = Time.gm(1970,1,weekdays[weekday],hour,0,0).in_time_zone
+    a = Availability.find(:all, :conditions => { :time => t, :tutor_id => self.id })
+    if a.empty?
+      return nil
+    else
+      return a[0]
+    end
   end
 end

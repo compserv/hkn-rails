@@ -342,6 +342,7 @@ class CoursesurveysController < ApplicationController
     @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
     @eff_q = @prof_eff_q
     query = params[:query] || ""
+    query.upcase!
 
     # If course abbr format:
     if %w[CS EE].include? query[0..1].upcase

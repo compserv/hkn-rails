@@ -1,0 +1,47 @@
+<h1>Course Survey Signup</h1>
+
+<p>Please sign up for <b><%= pluralize @remaining_surveys, "more survey" %></b>.</p>
+
+<%= form_tag coursesurvey_signup_post_path do %>
+  <table>
+    <tr>
+      <th>Sign Up</th>
+      <th>Current # of Surveyors</th>
+      <th>Course Number</th>
+      <th>Section</th>
+      <th>Title</th>
+      <th>Instructor(s)</th>
+      <th>Times(s)</th>
+      <th>Location</th>
+      <th>Notes</th>
+    </tr>
+    <% @coursesurveys.each do |coursesurvey| %>
+      <tr>
+        <td>
+          <% if @current_user.coursesurveys.include? coursesurvey %>
+            Signed up!
+          <% else %>
+            <% if coursesurvey.full? %>
+              <b>FULL</b>
+            <% else %>
+              <%= check_box_tag "survey#{coursesurvey.id}", true %>
+            <% end %>
+          <% end %>
+        </td>
+        <td><%= coursesurvey.surveyors.count %></td>
+        <td><%= coursesurvey.klass.course.course_abbr %></td>
+        <td><%= coursesurvey.klass.section %></td>
+        <td><%= coursesurvey.klass.course.name%></td>
+        <td>
+          <% coursesurvey.klass.instructors.each do |instructor| %>
+            <%= link_to instructor.full_name, surveys_instructor_path(instructor) %><%= "," if instructor != coursesurvey.klass.instructors.last %>
+          <% end%>
+        </td>
+        <td><%= coursesurvey.klass.time %></td>
+        <td><%= coursesurvey.klass.location %></td>
+        <td><%= coursesurvey.klass.notes %></td>
+      </tr>
+    <% end %>
+  </table>
+  <%= submit_tag "Sign Up!" %>
+<% end %>

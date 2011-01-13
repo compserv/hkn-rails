@@ -1,17 +1,30 @@
 <h1>Browse Exams by Department</h1>
+<style type="text/css">
 
-<table>
-  <tr>
-    <th>Computer Science</th>
-    <th>Electrical Engineering</th>
-  </tr>
-<% max_length = get_max_length(@cs_courses, @ee_courses) %>
-<% (0...max_length).each do |i| %>
-  <tr>
-    <td><%= print_course_exams(@cs_courses[i]) %></td>
-    <td><%= print_course_exams(@ee_courses[i]) %></td>
-  </tr>
+ul.courses {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    list-style-position: outside;
+}
+ul.courses li {
+    padding: 5px 0 0 0;
+    border-top: solid 1px #000000;
+    margin: 0;
+    line-height: 1.3em;
+    font-size: small;
+    text-indent: 1em;
+}
+</style>
+
+<% @dept_courses.each do |dept_name, courses| %>
+<div style="float:left; margin-right: 30px; margin-top: 30px;">
+  <h1><%= dept_name %></h1>
+  <ul class="courses">
+    <% courses.each do |course| %>
+	    <li><%= link_to "#{course.dept_abbr} #{course.course_number}#{course.suffix} - #{course.exams.length} exam(s)", exams_course_path(course.dept_abbr, course.full_course_number) %>
+    <% end %>
+  </ul>
+</div>
 <% end %>
-</table>
-
 <br />

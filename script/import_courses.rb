@@ -103,6 +103,10 @@ def parse_course(course_text, i, department)
       :prereqs => prereqs,
       :department_id => department.id
     )
+    if !a.valid?
+      puts "Could not save #{prefix}#{course_number}#{suffix} because"
+      puts a.errors
+    end
   end
   return count
 end

@@ -1,14 +1,15 @@
 class Property < ActiveRecord::Base
 
   # === List of columns ===
-  #   id               : integer 
-  #   semester         : string 
-  #   created_at       : datetime 
-  #   updated_at       : datetime 
-  #   tutoring_enabled : boolean 
-  #   tutoring_message : text 
-  #   tutoring_start   : integer 
-  #   tutoring_end     : integer 
+  #   id                   : integer 
+  #   semester             : string 
+  #   created_at           : datetime 
+  #   updated_at           : datetime 
+  #   tutoring_enabled     : boolean 
+  #   tutoring_message     : text 
+  #   tutoring_start       : integer 
+  #   tutoring_end         : integer 
+  #   coursesurveys_active : boolean 
   # =======================
 
   Semester = /^\d{4}[0-5]$/	#A regex which validates the semester

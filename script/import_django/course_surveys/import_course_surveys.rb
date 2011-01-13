@@ -136,7 +136,9 @@ def analyze(table)
 end
 
 def load_and_analyze(table)
-    self.send(:analyze, table) unless self.send("load_#{table.to_s}".to_sym) == false
+    tablemap = {:answers=>:survey_answers, :questions=>:survey_questions}
+    analyzetable = tablemap.member?(table) ? tablemap[table] : table
+    self.send(:analyze, analyzetable) unless self.send("load_#{table.to_s}".to_sym) == false
 end
 
 def import!(options)

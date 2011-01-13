@@ -31,6 +31,10 @@ class Candidate < ActiveRecord::Base
     return req
   end
 
+  def self.required_surveys
+    3
+  end
+
   def requirements_status
     rsvps = self.person.rsvps
     sorted_rsvps = Hash.new
