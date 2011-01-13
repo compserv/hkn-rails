@@ -2,7 +2,6 @@ class Course < ActiveRecord::Base
 
   # === List of columns ===
   #   id            : integer 
-  #   course_number : string 
   #   suffix        : string 
   #   prefix        : string 
   #   name          : string 
@@ -12,7 +11,7 @@ class Course < ActiveRecord::Base
   #   units         : integer 
   #   prereqs       : text 
   #   department_id : integer 
-  #   new_number    : integer 
+  #   course_number : integer 
   # =======================
 
   belongs_to :department
