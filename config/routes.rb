@@ -20,6 +20,9 @@ HknRails::Application.routes.draw do
     end
     scope "indrel" do
       match "/" => "indrel#indrel_db", :as => "indrel_db"
+      match "resume_books" => "resume_books#index", :as => :resume_books_admin
+      match "resume_books/new" => "resume_books#new", :as => :resume_books_admin_new
+      match "resume_books/create" => "resume_books#create", :as => :resume_books_admin_create 
     end
     scope "tutor" do
       match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
