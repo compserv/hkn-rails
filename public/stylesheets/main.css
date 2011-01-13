@@ -51,8 +51,12 @@ label { font-weight: bold; padding-right: 3px; color: #444444; text-align: right
 .field label { float: left; clear:left; width: 12em; margin-right: 5px; }
 .field input { clear: left; }
 
+.glue {float:left; width: 400px;}
+.submitglue {clear:left;}
+.field table {width: 300px;}
+
 /*Tables*/
-#results table { border: 1px solid black; border-collapse: collapse; width: 100%; }
+table { border-collapse: collapse; width: 100%; }
 
 /*Other*/
 .small { font-size: 0.8em; line-height: 1.2em; }

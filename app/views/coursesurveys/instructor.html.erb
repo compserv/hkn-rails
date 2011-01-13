@@ -1,3 +1,4 @@
+<%- unless @instructed_klasses.blank? -%>
 <% content_for :header do %>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script type="text/javascript">
@@ -37,16 +38,21 @@
     }
   </script>
 <% end %>
+<% end %>
 
 <div id="instructor_box" class="trans-bg">
   <h1><%= @instructor.full_name %></h1>
 
   <div style="float:left; margin-right: 1em;">
-    <%= image_tag@instructor.picture, :class=>"instructor_photo" unless @instructor.picture.blank? %>
+    <% if File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank? %>
+      <%= image_tag @instructor.picture, :class=>"instructor_photo" unless @instructor.picture.blank? %>
+    <% else # guess the picture.. %>
+      <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor_photo' %>
+    <% end %>
   </div>
   <div style="float:left;">
     <table id="instructor_info" class="infobox">
-      <tr> <th>Title</th>             <td><%= @instructor.title.blank? ? "Teaching Assistant" : @instructor.title %></td> </tr>
+      <tr> <th>Title</th>             <td><%= @instructor.title %></td> </tr>
       <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
       <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
       <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
@@ -57,8 +63,8 @@
   <div class="clear"></div>
 </div>
 
-<%- unless @instructed_klasses.blank? -%>
 <div id="chart_div"></div> 
+<%- unless @instructed_klasses.blank? -%>
 <div id="table">
   <h3 class="center">Classes Taught</h3>
   <table id="ratings" class="table">
@@ -82,9 +88,10 @@
         <%= rating_bar(worthwhileness.mean/worthwhileness.survey_question.max.to_f) %>
       </td>
       <td>
-      <%- klass.instructors.each do |instructor| -%>
-        <%= link_to instructor.full_name, surveys_instructor_path(instructor) unless instructor == @instructor %>
-      <%- end -%>
+      <%= raw(klass.instructors.where("id!=#{@instructor.id}").collect do |instructor|
+            link_to(instructor.full_name, surveys_instructor_path(instructor))
+          end .join(", "))
+       %>
       </td>
     </tr>
     <%- end -%>

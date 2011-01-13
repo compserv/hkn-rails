@@ -5,8 +5,18 @@ HknRails::Application.routes.draw do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup
     match "success" => "dept_tour#success"
   end
-
+  
   namespace :admin do
+    scope "general", :as => "general" do
+      match "confirm_challenges" => "admin#confirm_challenges"
+      match "confirm_challenge/:id" => "admin#confirm_challenge"
+      match "candidate_announcements" => "admin#candidate_announcements"
+      match "create_announcement" => "admin#create_announcement"
+      match "edit_announcement/:id" => "admin#edit_announcement"
+      match "update_announcement" => "admin#update_announcement"
+      match "delete_announcement/:id" => "admin#delete_announcement"
+    end
+    
     scope "csec", :as => "csec" do
       match "/" => "csec#index"
       get "select_classes" => "csec#select_classes", :as => :select_classes
@@ -20,6 +30,7 @@ HknRails::Application.routes.draw do
     end
     scope "indrel" do
       match "/" => "indrel#indrel_db", :as => "indrel_db"
+
     end
     scope "tutor" do
       match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
@@ -76,6 +87,11 @@ HknRails::Application.routes.draw do
     match "download/:id" => "resumes#download", :as => :resume_download
   end
   resources :resumes
+  scope "resume_books" do
+    match "download_pdf/:id" => "resume_books#download_pdf", :as => :resume_book_download_pdf
+    match "download_iso/:id" => "resume_books#download_iso", :as => :resume_book_download_iso
+  end
+  resources :resume_books
 
   # Course Surveys
   scope "coursesurveys" do
@@ -88,7 +104,7 @@ HknRails::Application.routes.draw do
     match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
     match "rating/:id/edit"                         => "coursesurveys#editrating", :as => :coursesurveys_edit_rating
     match "rating/:id/update"                       => "coursesurveys#updaterating", :as => :coursesurveys_update_rating
-    match "search(/:query)"                         => "coursesurveys#search",     :as => :coursesurveys_search
+    match "search(/:q)"                         => "coursesurveys#search",     :as => :coursesurveys_search
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
     
     match "how-to"                                  => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
@@ -119,7 +135,7 @@ HknRails::Application.routes.draw do
     match "infosessions"              => "indrel#infosessions",                   :as => "infosessions"
     get   "infosessions/registration" => "indrel#infosessions_registration",      :as => "infosessions_registration"
     post  "infosessions/registration" => "indrel#infosessions_registration_post", :as => "infosessions_registration_post"
-    match "resume-books"              => "indrel#resume_books",                   :as => "resume_books"
+    match "resume-books"              => "indrel#resume_books",                   :as => "resume_books_about"
     get   "resume-books/order"        => "indrel#resume_books_order",             :as => "resume_books_order"
     post  "resume-books/order"        => "indrel#resume_books_order_post",        :as => "resume_books_order_post"
     resources :companies
