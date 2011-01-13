@@ -49,6 +49,10 @@ class Person < ActiveRecord::Base
     # the password hash will be automatically converted to SHA512
     c.transition_from_crypto_providers = DjangoSha1
   end
+  
+  def full_name
+    first_name + " " + last_name
+  end
 
   def valid_ldap_or_password?(password)
     return valid_ldap?(password) || valid_password?(password)

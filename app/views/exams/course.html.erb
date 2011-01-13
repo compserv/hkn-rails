@@ -16,7 +16,7 @@
 	<%= semester %>
       </td>
       <td>
-	<%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+	<%= link_to instructor.full_name, surveys_instructor_path(instructor) unless instructor.nil?%>
       </td>
       <%- ['mt1', 'mt2', 'mt3', 'f'].each do |short_type| -%>
 	<td>
