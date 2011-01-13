@@ -24,15 +24,7 @@
 </head>
 <body>
 <div id="bar">
-  <div class="left">
-    <div id="userbar" style="display:none">
-      <%= render "layouts/userbar" %>
-    </div>
-  </div>
-  <div class="right">
-    <div id="user" class="bar-icon"></div>
-    <div id="chat" class="bar-icon"></div>
-  </div>
+  <div id="chat" class="bar-icon"></div>
 </div>
 <div id="chatwindow">
 </div>
@@ -52,8 +44,20 @@
   	      <li><a class="navigation_toplevel_item" id="cand" href="#">Candidate Portal</a></li>
   	    <% end %>
   	    <% if @auth["comms"] %>
-  	      <li><a class="navigation_toplevel_item" id="admin" href="#">Administration</a></li>
+  	      <li><a class="navigation_toplevel_item" id="admin" href="#">Admin</a></li>
   	    <% end %>
+  	      
+  	    <% if @current_user %>
+  	      <span id="userbar" class="userbar">
+  	        Welcome, <%= link_to @current_user.full_name, @current_user %>
+  	      </span>
+  	      <span class="userbar" id="user-dropdown">
+  	        <span class="list-item"><a href="/account-settings"><span class="icon" id="settings"></span>Settings</a></span>
+  	        <span class="list-item"><a href="/logout"><span class="icon" id="logout"></span>Logout</a></span>
+  	      </span>
+  	    <% else %>
+  	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
+  	    <% end %>  
   	  </ul>
   	</div>
   	<div id="lower">

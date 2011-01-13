@@ -128,13 +128,13 @@ h4{
 
 #navigation ul{
   margin: 0px;
-  padding: 8px;
-  padding-left: 50px;
+  padding: 12px 50px;
   font-family: "Cuprum";
   font-size: 1.2em;
 }
 
 #navigation li{
+  
   list-style-type: none;
   display: inline-block;
   padding-right: 1.5em;
@@ -152,6 +152,55 @@ h4{
 
 #navigation li a.current{
   color: #f7e26b;
+}
+
+.userbar{
+  display: inline-block;
+  float: right;
+  color: white;
+  line-height: 1em;
+  text-transform: uppercase;
+}
+
+#userbar{
+  cursor:pointer;
+}
+
+#userbar a{
+  color: #f9df49;
+}
+
+#user-dropdown{
+  z-index: 100;
+  display: none;
+  position: absolute;
+  right: 50px;
+  top: 30px;
+  background: #403f3f url("../images/back_dark.png");
+}
+
+#user-dropdown .icon{
+  display: inline-block;
+  margin: 2px;
+  height: 16px;
+  width: 16px;
+  position: relative;
+  top: 5px;
+}
+
+#user-dropdown .list-item{
+  display: block;
+  width: 100%;
+  padding: 2px 1em;
+}
+
+#settings{
+  background: url("/images/icons/cog.png") no-repeat;
+}
+
+#logout{
+  background: url("/images/icons/shutdown.png") no-repeat;
+  top: 6px;
 }
 
 #lower{
@@ -313,34 +362,6 @@ h4{
   right: 40px;
   height: 50%;
   width: 40%;
-}
-
-#userbar{
-  color: white;
-  padding: 5px;
-  line-height: 1em;
-}
-
-#userbar a{
-  color: #f9df49;
-}
-
-.userbar-link .icon{
-  display: inline-block;
-  margin: 2px;
-  height: 16px;
-  width: 16px;
-  position: relative;
-  top: 5px;
-}
-
-#settings{
-  background: url("/images/icons/cog.png") no-repeat;
-}
-
-#logout{
-  background: url("/images/icons/shutdown.png") no-repeat;
-  top: 6px;
 }
 
 .hbar{
