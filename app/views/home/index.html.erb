@@ -116,7 +116,7 @@
   <div id="sidebar">
   	<div class="section">
       <h2>Upcoming Events</h2>
-      <div class="small infobar_links"><a href="/event/list/">view all events</a> | <a href="/event/calendar/">view events calendar</a></div>
+      <div class="small infobar_links"><%= link_to "view all events", events_path %> | <%= link_to "view events calendar", events_calendar_path %></div>
   	</div>
 	
     <div class="section">
@@ -144,10 +144,10 @@
             Students who need advice or tutoring in EE and CS courses are encouraged to drop by for free assistance. Officers hold <a href="/tutor/">office hours</a> from 11am to 5pm every weekday.
     
             <h2>Exam Preparation</h2>
-            HKN provides a database of <a href="/exam/">past exams</a> and review problems to prepare students for midterms and finals. In addition, look out for exam review sessions for lower-division courses.
+            HKN provides a database of <%= link_to "past exams", exams_browse_path %> and review problems to prepare students for midterms and finals. In addition, look out for exam review sessions for lower-division courses.
 
             <h2>Course Surveys and Peer Advising</h2>
-            HKN conducts course surveys for all classes offered by the EECS department every semester. The results for all professors and TAs who have opted-in are <a href="/student/CourseSurvey/">available online</a>. Students who need more advice in choosing classes are encouraged to consult our officers during <a href="/tutor/">office hours</a>.
+            HKN conducts course surveys for all classes offered by the EECS department every semester. The results for all professors and TAs who have opted-in are <%= link_to "available online", coursesurveys_path %>. Students who need more advice in choosing classes are encouraged to consult our officers during <a href="/tutor/">office hours</a>.
           </div>
           </div>
       </div>
@@ -156,7 +156,7 @@
         <div class="text">
           <div>
             <h1>Industry Relations</h1>
-            HKN has strong ties with industry, linking students with companies by setting up <a href="/indrel/infosessions.php">info sessions</a> where companies can give a presentation about themselves and provide a forum for students to talk to industry and find out more about the work environment. Additionally, we sell <a href="/indrel/rbooks.php">resume books</a> containing the resumes of our members.
+            HKN has strong ties with industry, linking students with companies by setting up <%= link_to "info sessions", infosessions_path %> where companies can give a presentation about themselves and provide a forum for students to talk to industry and find out more about the work environment. Additionally, we sell <%= link_to "resume books", resume_books_path %> containing the resumes of our members.
           </div>
         </div>
       </div>

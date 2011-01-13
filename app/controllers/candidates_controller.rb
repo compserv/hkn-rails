@@ -19,8 +19,9 @@ class CandidatesController < ApplicationController
     @status = requirements[:status]
     @rsvps = requirements[:rsvps]
     @events = Event.order("start_time asc").limit(5)
-    
-    @challenges = @current_user.candidate.challenges
+    @coursesurveys_active = Property.get_or_create.coursesurveys_active
+    @required_surveys = Candidate.required_surveys
+    @coursesurveys = @current_user.coursesurveys
   end
   
   def find_officers #FIXME: what's a more efficient way to do this?
@@ -58,10 +59,10 @@ class CandidatesController < ApplicationController
     #is there a better way to look up a person like this?
     officer = Person.find(:first, :conditions => {:first_name => officer_name[0], :last_name => officer_name[1]})
     if(!officer or !officer.in_group?("officers")) #If officer does not exist
-      render :text => "Invalid officer."
+      render :json => [false, "Invalid officer."]
       return
     elsif(challenge_name == "") #challenge name is blank
-       render :text => "Challenge name is blank."
+       render :json => [false, "Challenge name is blank."]
        return
     end
     
@@ -70,11 +71,15 @@ class CandidatesController < ApplicationController
     saved = challenge.save
     
     if(!saved) #challenge didn't save for some reason
-      render :text => "Oops, something went wrong!"
+      render :json => [false, "Oops, something went wrong!"]
       return
     end
     
-    render :text => true
+    render :json => [true, challenge.id]
+  end
+  
+  def update_challenges
+    render :partial => "challenges"
   end
 
   def submit_quiz
@@ -121,5 +126,30 @@ class CandidatesController < ApplicationController
     
     flash[:notice] = "Your application has been saved."
     redirect_to :back
+  end
+
+  def coursesurvey_signup
+    @remaining_surveys = Candidate.required_surveys - @current_user.coursesurveys.count
+    @coursesurveys = Coursesurvey.current_semester
+  end
+
+  def coursesurvey_signup_post
+    params.keys.reject{|x| !(x =~ /^survey[0-9]*$/)}.each do |param_id|
+      id = param_id[6..-1]
+      coursesurvey = Coursesurvey.find(id)
+      
+      if @current_user.coursesurveys.include? coursesurvey
+        redirect_to(coursesurvey_signup_path, :notice => "You are already signed up for one or more classes you selected.")
+        return
+      end
+
+      if coursesurvey.full?
+        redirect_to(coursesurvey_signup_path, :notice => "One or more classes you selected are full.")
+        return
+      end
+
+      @current_user.coursesurveys << coursesurvey
+    end
+    redirect_to(candidate_portal_path, :notice => "Signed up for surveys.")
   end
 end

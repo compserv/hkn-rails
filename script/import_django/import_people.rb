@@ -92,7 +92,7 @@ people.each do |id, person|
     p.groups << Group.find_by_name('candidates')
   end
 
-  if !person['is_superuser'].nil?
+  if person['is_superuser']
     p.groups << Group.find_by_name('superusers')
   end
 end

@@ -1,12 +1,14 @@
 table#slot_table{}
 
-table#slot_table th {width: 80px; text-align: center}
+table#slot_table th { width: 100px; text-align: center}
+table#slot_table .slider_container { padding: 10px 15px; }
+#big_slider_container { width: 400px; padding: 10px 15px; }
 
-td.slot_preferred {background-color: #00FF00;}
+td.slot_preferred {background-color: #B2F2AA;}
 
-td.slot_available {background-color: #FFFF00;}
+td.slot_available {background-color: #EFF2AA;}
 
-td.slot_unavailable {background-color: #FF0000;}
+td.slot_unavailable {background-color: #EDCACA;}
 
 td.slot {border: 1px solid }
 

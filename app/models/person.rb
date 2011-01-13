@@ -34,10 +34,13 @@ class Person < ActiveRecord::Base
   has_many :challenges
   has_many :resumes
   has_one :suggestion
+  has_and_belongs_to_many :coursesurveys
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
   # Username, password, and email validation is done by AuthLogic
+
+  scope :current_candidates, joins(:groups).where('groups.id' => Group.find_by_name('candidates'))
 
   acts_as_authentic do |c|
     # Options go here if you have any
@@ -52,8 +55,12 @@ class Person < ActiveRecord::Base
   end
 
   def valid_ldap?(password)
-    ldap = Net::LDAP.new( :host => LDAP_SERVER, :port => LDAP_SERVER_PORT )
-    a = ldap.bind( :method => :simple, :username => "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", :password => password )
+    begin
+      ldap = Net::LDAP.new( :host => LDAP_SERVER, :port => LDAP_SERVER_PORT )
+      a = ldap.bind( :method => :simple, :username => "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", :password => password )
+    rescue Net::LDAP::LdapError
+      return false
+    end
     return a
   end
 
