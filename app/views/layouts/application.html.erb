@@ -153,8 +153,13 @@
             <ul class="plain">
               <li><a href="/admin/tutor/signup_slots/" class="navigation_sublevel_item">Tutor Slot Signup</a></li>
 	      <li><a href="/admin/tutor/signup_courses/" class="navigation_sublevel_item">Tutor Course Signup</a></li>
+	            <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
             </ul>
             <ul class="plain">
+              <% if @auth["tutor"] %>
+                <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
+                <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
+              <% end %>
               <% if @auth['csec'] %>
                 <li><a href="/admin/csec" class="navigation_sublevel_item">Csec Admin</a></li>
               <% end %>
@@ -164,9 +169,8 @@
               <% if @auth["indrel"] %>
                 <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel Admin</a></li>
               <% end %>
-              <% if @auth["tutor"] %>
-                <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
-                <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
+              <% if @auth["vp"] %>
+                <li><a href="/admin/general/candidate_announcements/" class="navigation_sublevel_item"> Cand Announcements</a></li>
               <% end %>
             </ul>
           </div>

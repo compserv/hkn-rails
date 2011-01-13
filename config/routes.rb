@@ -5,8 +5,18 @@ HknRails::Application.routes.draw do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup
     match "success" => "dept_tour#success"
   end
-
+  
   namespace :admin do
+    scope "general", :as => "general" do
+      match "confirm_challenges" => "admin#confirm_challenges"
+      match "confirm_challenge" => "admin#confirm_challenge"
+      match "candidate_announcements" => "admin#candidate_announcements"
+      match "create_announcement" => "admin#create_announcement"
+      match "edit_announcement/:id" => "admin#edit_announcement"
+      match "update_announcement" => "admin#update_announcement"
+      match "delete_announcement/:id" => "admin#delete_announcement"
+    end
+    
     scope "csec", :as => "csec" do
       match "/" => "csec#index"
       get "select_classes" => "csec#select_classes", :as => :select_classes

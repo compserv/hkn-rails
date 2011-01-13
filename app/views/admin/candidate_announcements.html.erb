@@ -1,0 +1,33 @@
+<h1>Candidate Announcements</h1>
+<h2>Create an Announcement</h2>
+<% form_tag("create_announcement", :method => "post") do %>
+  <div class="field">
+    <%= label_tag :title %><br />
+    <%= text_field_tag :title %>
+  </div>
+
+  <div class="field">
+    <%= label_tag :body %><br />
+    <%= text_area_tag :body %>
+  </div>
+  <p>
+    <%= submit_tag "Submit" %>
+  </p>
+<% end %>
+
+
+<h2>Current Announcements</h2>
+
+<ul class="plain">
+<% for a in @announcements %>
+  <li class="announcement">
+    <%= link_to "[Edit]", "edit_announcement/" + a.id.to_s %> 
+    <%= link_to "[Delete]", "delete_announcement/" + a.id.to_s %>
+    <span class="title"><%= a.title %></span> - 
+    <span class="body"><%= a.body %></span>
+    
+  </li>
+<% end %>
+</ul>
+
+
