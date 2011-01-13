@@ -3,6 +3,7 @@ db/*.sqlite3
 log/*.log
 tmp/**/*
 private/**/*
+!private/resume_books/templates/
 config/database.yml
 Gemfile.lock
 *.swp

@@ -9,7 +9,7 @@ class ResumeBooksController < ApplicationController
 
   def create
     @resume_book_root = "private/resume_books"
-    @gen_root = "#{@resume_book_root}/generation"
+    @gen_root = "#{@resume_book_root}/templates"
     res_book_params = params[:resume_book]
     @resume_book = ResumeBook.new(res_book_params)
     @hash = get_hash
@@ -28,7 +28,6 @@ class ResumeBooksController < ApplicationController
     temp_pdf_file = generate_pdf(resumes, cutoff_date, indrel_officers)
     temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers, 
                                  temp_pdf_file)
-    # We'll use this for now, hopefully final website will run on 1.9.2
     res_book_directory = "#{@resume_book_root}/#{@hash}_resume_book"
     system "mkdir #{res_book_directory}"
     pdf_file = "#{res_book_directory}/HKNResumeBook.pdf"

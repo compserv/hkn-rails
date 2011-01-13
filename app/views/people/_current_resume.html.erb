@@ -3,10 +3,11 @@
 
 <div class="field">
 	<%= @f.label "Current résumé" %>
+	<div class="tableglue">
 	<table>
 		<% if @current_user.resumes.empty? : %>
 			<tr><td><%= "No résumés on file" %></td></tr>
-			<tr><td><%= link_to "Upload résumé", :resumes_upload %>
+			<tr><td><%= link_to "Upload résumé", :resumes_upload %></td></tr>
 		<% else %>
 	
 		<% current_resume = @current_user.resumes.first %>
@@ -16,4 +17,5 @@
 			<tr><td><%= link_to "Update résumé", :resumes_upload %>
 		<% end %>
 	</table>
+	</div>
 </div>

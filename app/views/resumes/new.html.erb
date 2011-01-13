@@ -10,29 +10,28 @@
     <% end %>
     </ul>
   </div>
-  <%- end -%>
+  <% end %>
 	<% @f = f %>
 	<%= render :partial => "current_resume", :locals => { :f  => @f }%>
 	<% @current_resume = @current_user.resumes.first %>
 	<div class="field">
 		<%= f.label :overall_gpa, "Overall GPA" %>
-		<%= f.text_field :overall_gpa %>
+		<div class="glue"><%= f.text_field :overall_gpa %></div>
 	</div>
 	<div class="field">
 		<%= f.label :major_gpa, "Major GPA (optional)" %>
-		<%= f.text_field :major_gpa %>
+		<div class="glue"><%= f.text_field :major_gpa %></div>
 	</div>
 	<div class="field">
 		<%= f.label :resume_text, "Resume Text" %>
-		<table class="field-layout">
-			<tr><td><%= f.text_area :resume_text %></td></tr>
-			<tr><td>Paste the contents of your résumé (used for searching).</td></tr>
+		<div class="glue">
+			<%= f.text_area :resume_text %><br />
+			Paste the contents of your résumé (used for searching).
 		</div>
 	</div>
 	<div class="field">
 		<!-- Spring should be selected by default unless most recent resume has a fall grad date -->
-		<table class = "field-layout"><tr>
-		<td><%= f.label :graduation_semester %></td>
+    <%= f.label :graduation_semester %>
 		<% if @current_resume && !@resume.graduation_semester && @current_resume.graduation_semester == "fall":
 			   fall_options = {:checked => true}
 			   spring_options = {}
@@ -41,11 +40,11 @@
 				 spring_options = {:checked => true}
 		   end
 		 %>
-		<td><%= f.radio_button :graduation_semester, "spring",
-		 	                     spring_options %></td><td>Spring</td>
-		<td><%= f.radio_button :graduation_semester, "fall",
-		                       fall_options %></td><td>Fall</td>
-		</tr></table>
+	  <div class="glue">
+	  <%= f.radio_button :graduation_semester, "spring", spring_options %> Spring
+		<%= f.radio_button :graduation_semester, "fall",
+		                       fall_options %> Fall
+		</div>
 	</div>
 	<div class="field">
 		<!-- Should have the graduation year of most recent resume as default -->
@@ -59,19 +58,19 @@
 		end
 			%>
 		<%= f.label :graduation_year %>
-		<table>
-		<tr><td><%= f.text_field :graduation_year, grad_year_options %></td></tr>
-		<tr><td>Please provide your intended graduation semester and year e.g. Fall 2015, Spring 2022.</td></tr>
-		</table>
+		<div class ="glue">
+		  <%= f.text_field :graduation_year, grad_year_options %><br />
+		  Please provide your intended graduation semester and year e.g. Fall 2015, Spring 2022.
+		</div>
 	</div>
 	<div class="field">
 		<%= f.label :file, "Resume" %>
-		<table>
-			<tr><td><%= f.file_field(:file, :accept => 'application/pdf') %></td></tr>
-			<tr><td>Please provide a PDF of your résumé.</td></tr>
-		</table>
+		<div class="glue">
+			<%= f.file_field(:file, :accept => 'application/pdf') %><br />
+			Please provide a PDF of your résumé.
+		</div>
 	</div>
-  <div class="actions">
+  <div class="submitglue">
     <%= f.submit "Upload Résumé" %>
   </div>
-<%- end -%>
+<% end %>
