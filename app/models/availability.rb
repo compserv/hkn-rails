@@ -1,5 +1,5 @@
 class Availability < ActiveRecord::Base
-  
+
   # === List of columns ===
   #   id               : integer 
   #   tutor_id         : integer 
@@ -11,6 +11,8 @@ class Availability < ActiveRecord::Base
   #   adjacency        : integer 
   #   room_strength    : integer 
   # =======================
+
+  
   
   belongs_to :tutor
   
