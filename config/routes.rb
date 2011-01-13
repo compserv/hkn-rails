@@ -128,11 +128,16 @@ HknRails::Application.routes.draw do
     resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
     resources :locations
   end
+  
+  #remove later for coming soon pages
+  scope "service" do
+    match "comingsoon" => "static#comingsoon"
+  end
 
   # Static pages
   scope "about" do
     match "contact"   => "static#contact"
-    match "comingsoon" => "static#comingsoon", :as => "comingsoon"
+    match "comingsoon" => "static#comingsoon"
     match "yearbook"  => "static#yearbook"
     match "slideshow" => "static#slideshow"
   end
