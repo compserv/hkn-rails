@@ -34,7 +34,7 @@
 
   <h2>Search For an Instructor or Course</h2>
   <%= form_tag(coursesurveys_search_path, :method=>:get) do %>
-    <%= search_field_tag(:q, "", {:size => 40}) %>
+    <%= text_field_tag(:q, "", {:size => 40}) %>
     <%= submit_tag "Search", :name => nil  %>
   <%- end -%>
 
