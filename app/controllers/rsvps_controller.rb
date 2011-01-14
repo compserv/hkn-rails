@@ -66,7 +66,7 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       if @rsvp.update_attributes(params[:rsvp])
-        format.html { redirect_to(event_rsvp_path(@event, @rsvp), :notice => 'Rsvp was successfully updated.') }
+        format.html { redirect_to(@event, :notice => 'Rsvp was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -80,10 +80,11 @@ class RsvpsController < ApplicationController
   def destroy
     @rsvp = Rsvp.find(params[:id])
     validate_owner!(@rsvp)
+    @event = @rsvp.event
     @rsvp.destroy
 
     respond_to do |format|
-      format.html { redirect_to(event_rsvps_url(@event)) }
+      format.html { redirect_to(@event) }
       format.xml  { head :ok }
     end
   end

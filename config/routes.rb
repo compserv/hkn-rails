@@ -119,6 +119,7 @@ HknRails::Application.routes.draw do
     match ":category" => "events#index", :as => :events_category, :constraints => {:category => /(future|past)/}
 
     match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
+    match "remove_rsvp/:id" => "rsvps#destroy"
 
     #Routes for vp's rsvp confirmation page
     match "vp_confirm" => "events#vp_confirm", :as => :vp_confirm
