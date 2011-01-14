@@ -24,15 +24,7 @@
 </head>
 <body>
 <div id="bar">
-  <div class="left">
-    <div id="userbar" style="display:none">
-      <%= render "layouts/userbar" %>
-    </div>
-  </div>
-  <div class="right">
-    <div id="user" class="bar-icon"></div>
-    <div id="chat" class="bar-icon"></div>
-  </div>
+  <div id="chat" class="bar-icon"></div>
 </div>
 <div id="chatwindow">
 </div>
@@ -52,8 +44,22 @@
   	      <li><a class="navigation_toplevel_item" id="cand" href="#">Candidate Portal</a></li>
   	    <% end %>
   	    <% if @auth["comms"] %>
-  	      <li><a class="navigation_toplevel_item" id="admin" href="#">Administration</a></li>
+  	      <li><a class="navigation_toplevel_item" id="admin" href="#">Admin</a></li>
   	    <% end %>
+  	      
+  	    <% if @current_user %>
+  	      <span id="userbar" class="userbar">
+  	        Welcome, <%= link_to @current_user.full_name, @current_user %>
+  	      </span>
+  	      <span class="userbar" id="user-dropdown">
+  	        <span class="list-item"><a href="/account-settings"><span class="icon" id="settings"></span>Settings</a></span>
+  	        <span class="list-item"><a href="/logout"><span class="icon" id="logout"></span>Logout</a></span>
+  	        <span id="username" style="display:none;"><%= @current_user.username %></span>
+  	      </span>
+  	    <% else %>
+  	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
+  	      <span id="username" style="display:none;">guest</span>
+  	    <% end %>  
   	  </ul>
   	</div>
   	<div id="lower">
@@ -68,16 +74,16 @@
               <li><a href="/exam/browse/">Exam Archive</a></li>
             </ul>
             <ul class="plain">
-              <li><%= link_to "Course Guide", comingsoon_path || "/courseguide/" %></li>
+              <li><%= link_to "Course Guide", "/service/comingsoon" || "/courseguide/" %></li>
               <li><%= link_to "Department Tours", dept_tour_signup_path %>
-              <li><%= link_to "More Services", comingsoon_path || "/services/more" %></li>
+              <li><%= link_to "More Services", "/service/comingsoon" || "/services/more" %></li>
             </ul>
           </div>
 
           <div class="submenu" id ="indrel_submenu">
             <ul class="plain">
               <li><%= link_to "Why HKN?", indrel_path %></li>
-              <li><%= link_to "Resume Books", resume_books_path %></li>
+              <li><%= link_to "Resume Books", resume_books_about_path %></li>
               <li><%= link_to "Infosessions", infosessions_path %></li>
             </ul>
             <ul class="plain">
@@ -109,7 +115,9 @@
 	      <%- if @current_user %>
               <li><%= link_to "My RSVPs", my_rsvps_path %></li>
 	      <%- end %>
+	      <%- if @current_user and @auth["vp"] -%>
 	      <li><%= link_to "Confirm RSVPs", vp_confirm_path %></li>
+	      <%- end %>
             </ul>
           </div>
 
@@ -123,12 +131,12 @@
           <div class="submenu" id ="about_submenu">
             <ul class="plain">
               <li><a href="/about/contact/" class="navigation_sublevel_item">Contact Information</a></li>
-              <li><%= link_to "Photo Gallery", comingsoon_path||"/gallery2/", :class=>"navigation_sublevel_item" %></li>
+              <li><%= link_to "Photo Gallery", "/about/comingsoon" ||"/gallery2/", :class=>"navigation_sublevel_item" %></li>
               <li><%= link_to "Yearbooks",     "/about/yearbook/",            :class=>"navigation_sublevel_item" %></li>
             </ul>
             <ul class="plain">
               <li><a href="/about/slideshow/" class="navigation_sublevel_item">Slideshows</a></li>
-              <li><%= link_to "Current Officers", comingsoon_path||"/about/officers/", :class=>"navigation_sublevel_item" %></li>
+              <li><%= link_to "Current Officers", "/about/comingsoon" ||"/about/officers/", :class=>"navigation_sublevel_item" %></li>
             </ul>
           </div>
 
@@ -147,8 +155,13 @@
             <ul class="plain">
               <li><a href="/admin/tutor/signup_slots/" class="navigation_sublevel_item">Tutor Slot Signup</a></li>
 	      <li><a href="/admin/tutor/signup_courses/" class="navigation_sublevel_item">Tutor Course Signup</a></li>
+	            <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
             </ul>
             <ul class="plain">
+              <% if @auth["tutor"] %>
+                <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
+                <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
+              <% end %>
               <% if @auth['csec'] %>
                 <li><a href="/admin/csec" class="navigation_sublevel_item">Csec Admin</a></li>
               <% end %>
@@ -158,9 +171,8 @@
               <% if @auth["indrel"] %>
                 <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel Admin</a></li>
               <% end %>
-              <% if @auth["tutor"] %>
-                <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
-                <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
+              <% if @auth["vp"] %>
+                <li><a href="/admin/general/candidate_announcements/" class="navigation_sublevel_item"> Cand Announcements</a></li>
               <% end %>
             </ul>
           </div>

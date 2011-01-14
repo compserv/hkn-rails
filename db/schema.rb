@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110112022123) do
+ActiveRecord::Schema.define(:version => 20110113202931) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(:version => 20110112022123) do
     t.datetime "updated_at"
     t.integer  "preference_level"
     t.datetime "time"
-    t.integer  "adjacency",        :default => 0
     t.integer  "room_strength",    :default => 0
   end
 
@@ -122,14 +121,14 @@ ActiveRecord::Schema.define(:version => 20110112022123) do
   end
 
   create_table "courses", :force => true do |t|
-    t.string   "suffix",        :default => ""
-    t.string   "prefix",        :default => ""
+    t.string   "suffix",                       :default => ""
+    t.string   "prefix",                       :default => ""
     t.string   "name"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "units"
-    t.text     "prereqs"
+    t.text     "prereqs",       :limit => 255
     t.integer  "department_id"
     t.integer  "course_number"
   end
@@ -315,6 +314,18 @@ ActiveRecord::Schema.define(:version => 20110112022123) do
     t.datetime "updated_at"
   end
 
+  create_table "resume_books", :force => true do |t|
+    t.string   "title"
+    t.string   "pdf_file"
+    t.string   "iso_file"
+    t.string   "directory"
+    t.string   "remarks"
+    t.text     "details"
+    t.date     "cutoff_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "resumes", :force => true do |t|
     t.decimal  "overall_gpa"
     t.decimal  "major_gpa"
@@ -388,10 +399,11 @@ ActiveRecord::Schema.define(:version => 20110112022123) do
   end
 
   create_table "tutors", :force => true do |t|
-    t.integer  "person_id",  :null => false
+    t.integer  "person_id",                 :null => false
     t.string   "languages"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "adjacency",  :default => 0
   end
 
 end

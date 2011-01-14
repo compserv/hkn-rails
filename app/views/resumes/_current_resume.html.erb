@@ -2,17 +2,18 @@
 <!-- Basically the same thing as the one for people except there's no
      upload link. Hopefully when we replace the tables with css we can
      desiccate this by using the same partial for both -->
+ 
+
 <div class="field">
 	<%= @f.label "Current resume" %>
-	<table>
-		<% if @current_user.resumes.empty? : %>
-			<tr><td><%= "No resume uploaded" %></td></tr>
-		<% else %>
-	
-		<% current_resume = @current_user.resumes.first %>
-		<% upload_time = current_resume.created_at.getlocal.to_datetime.strftime("%A %B %e, %Y %l:%M %p") %>
-			<tr><td><%= "Uploaded #{upload_time}" %></td></tr>
-			<tr><td><%= "GPA #{current_resume.overall_gpa} (overall)" %></td></tr>
+	<div class="glue">
+		<% if @current_user.resumes.empty? %>
+			   <p><%= "No resume uploaded" %></p>
+		   <% else %>
+	       <% current_resume = @current_user.resumes.first %>
+		     <% upload_time = current_resume.created_at.getlocal.to_datetime.strftime("%A %B %e, %Y %l:%M %p") %>
+			   <p> <%= "Uploaded #{upload_time}" %> <br />
+			       <%= "GPA #{current_resume.overall_gpa} (overall)" %></p>
 		<% end %>
-	</table>
+	</div>
 </div>

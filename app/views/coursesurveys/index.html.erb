@@ -1,5 +1,10 @@
-<div id="sidebar">
+<div id="sidebar" class="trans-bg">
   <h1>Quicklinks</h1>
+  <h2>Search For an Instructor or Course</h2>
+  <%= form_tag(coursesurveys_search_path, :method => "post") do %>
+    <%= text_field_tag(:query, "") %>
+    <%= submit_tag("Search") %>
+  <%- end -%>
   <h2>Browse Instructors and Courses</h2>
   <ul class="plain">
     <li><%= link_to "Instructors", coursesurveys_instructors_path("instructors") %></li>
@@ -28,9 +33,9 @@
   </p>
 
   <h2>Search For an Instructor or Course</h2>
-  <%= form_tag(coursesurveys_search_path, :method => "post") do %>
-    <%= text_field_tag(:query, "", {:size => 40}) %>
-    <%= submit_tag("Search") %>
+  <%= form_tag(coursesurveys_search_path, :method=>:get) do %>
+    <%= search_field_tag(:q, "", {:size => 40}) %>
+    <%= submit_tag "Search", :name => nil  %>
   <%- end -%>
 
   <h2>Prerequisite Charts</h2>

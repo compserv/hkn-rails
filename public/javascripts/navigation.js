@@ -36,6 +36,11 @@ $(document).ready(function() {
     //$(id).fadeIn({ duration: 0.2 });		
     $("#" + id).show();
   });
+  $("#userbar").toggle(function(){
+    $("#user-dropdown").slideDown(300);
+  }, function(){
+    $("#user-dropdown").slideUp(300);
+  });
   
 });
 

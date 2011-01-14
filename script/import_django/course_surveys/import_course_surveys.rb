@@ -615,6 +615,7 @@ else
     require 'rubygems'          # needed for activesupport
     require 'active_support'    # needed for json
     require File.expand_path('../../../../config/environment', __FILE__) # needed for hkn-rails classes
+    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)   # fake out sunspot
 
     puts "\n\n"
     @csi.import!(:from => ARGV.first)

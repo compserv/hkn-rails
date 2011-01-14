@@ -1,3 +1,6 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag "coursesurveys" %>
+<% end %>
 <p>
   Instructors: see <a href="info_profs.shtml">Information for professors and TAs</a>.
 </p>
@@ -51,13 +54,26 @@
   A rating looks like this:
 
   <blockquote>
-    <table class="list" cellspacing=0>
-      <tr class="first-row"><th class="first-child-r"><a href="#">Professor Blueberry</a></th>
-
-        <th class="weakcenter" colspan=3>46 Respondents</th></tr>
-      <tr><td>Is enthusiastic about the subject matter</td>
-        <td nowrap class="rating1">4.8</td><td nowrap class="rating2">/ 5 &plusmn; 0.4</td><td nowrap class="rating3"><table class="bar" cellspacing=0><tr class="bar"><td class="left-darkgreen"><img alt="" border=0 src="/images/trans.gif" width=67 height=9></td><td class="right-bg"><img alt="" border=0 src="/images/trans.gif" width=3 height=9></td></tr></table></td>
-      </tr>
+    <table id="ratings" class="table">
+        <tbody><tr>
+          <th>
+            Instructor Blueberry</a>
+          </th>
+          <th>34 respondents</th>
+        </tr>
+        <tr>
+          <td>
+            <strong>
+            Rate the overall teaching effectiveness of this instructor
+            </strong>
+          </td>
+          <td>
+            <span class="rating1">5.7</span>
+            <span class="rating2"> / 7 ± 0.6</span>
+            <span class="rating3"><span class="ratingbar"><span class="subbar" style="width: 81%; background-color: #77c265; margin-left: 0px;"></span></span></span>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </blockquote>
 

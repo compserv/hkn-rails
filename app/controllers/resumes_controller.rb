@@ -14,13 +14,16 @@ class ResumesController < ApplicationController
     # and when(?) we upgrade to 1.9+ it will start writing
     # times with milliseconds
     time_string = Time.new.utc.strftime("%Y%m%d%H%M%S%L")
+    if not Dir.entries("private/").include?("resumes")
+      Dir.mkdir("private/resumes")
+    end
     file_name = "private/resumes/#{time_string}_"+
                 "#{@current_user.last_name}_" +
                 "#{@current_user.first_name}.pdf"
     f = File.open(file_name, "wb")
     resume_constructor_args[:file] = file_name
     @resume = @current_user.resumes.new(resume_constructor_args)
-    if @resume.save and not f.nil? then
+    if @resume.save and not f.nil?
       f.write(resume_file.read)
       flash[:notice] = "Resume Uploaded"
       redirect_to account_settings_path
@@ -52,8 +55,5 @@ class ResumesController < ApplicationController
   end
   
   private
-  
-  def most
-  end
 
 end

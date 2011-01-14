@@ -19,9 +19,20 @@ class CandidatesController < ApplicationController
     @status = requirements[:status]
     @rsvps = requirements[:rsvps]
     @events = Event.order("start_time asc").limit(5)
+    
+    @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
+    
+    @done["events"] = !@status.has_value?(false)
+    @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 5
+    @done["resume"] = @current_user.resumes.length >= 0
+    @done["quiz"] = @current_user.candidate.quiz_responses.length >= 0
+    @done["forms"] = @done["resume"] and @done["quiz"]
+    @done["course_surveys"] = false
+
     @coursesurveys_active = Property.get_or_create.coursesurveys_active
     @required_surveys = Candidate.required_surveys
     @coursesurveys = @current_user.coursesurveys
+
   end
   
   def find_officers #FIXME: what's a more efficient way to do this?
