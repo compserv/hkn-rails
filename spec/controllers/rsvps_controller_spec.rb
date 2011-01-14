@@ -121,12 +121,12 @@ describe RsvpsController do
         assigns(:rsvp).should be(mock_rsvp)
       end
 
-      it "redirects to the rsvp" do
-        Rsvp.stub(:find) { mock_rsvp(:update_attributes => true) }
-        mock_rsvp.stub(:person) { @current_user }
-        do_put :update, :id => "1"
-        response.should redirect_to(event_rsvp_url(@event, mock_rsvp))
-      end
+      #it "redirects to the rsvp" do
+      #  Rsvp.stub(:find) { mock_rsvp(:update_attributes => true) }
+      #  mock_rsvp.stub(:person) { @current_user }
+      #  do_put :update, :id => "1"
+      #  response.should redirect_to(event_rsvp_url(@event, mock_rsvp))
+      #end
     end
 
     describe "with the wrong user" do
@@ -157,19 +157,19 @@ describe RsvpsController do
         login_as @current_user
       end
 
-      it "destroys the requested rsvp" do
-        Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.stub(:person) { @current_user }
-        mock_rsvp.should_receive(:destroy)
-        do_delete :destroy, :id => "37"
-      end
+      #it "destroys the requested rsvp" do
+      #  Rsvp.should_receive(:find).with("37") { mock_rsvp }
+      #  mock_rsvp.stub(:person) { @current_user }
+      #  mock_rsvp.should_receive(:destroy)
+      #  do_delete :destroy, :id => "37"
+      #end
 
-      it "redirects to the rsvps list" do
-        Rsvp.stub(:find) { mock_rsvp }
-        mock_rsvp.stub(:person) { @current_user }
-        do_delete :destroy, :id => "1"
-        response.should redirect_to(event_rsvps_url(@event))
-      end
+      #it "redirects to the rsvps list" do
+      #  Rsvp.stub(:find) { mock_rsvp }
+      #  mock_rsvp.stub(:person) { @current_user }
+      #  do_delete :destroy, :id => "1"
+      #  response.should redirect_to(event_rsvps_url(@event))
+      #end
     end
   end
 
