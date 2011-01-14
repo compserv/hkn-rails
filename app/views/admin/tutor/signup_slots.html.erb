@@ -6,8 +6,8 @@
     function updateSlider(ths,value) {
         $(ths).next().val(value);
         var color = new Array();
-        color[0] = "rgba(51,171,7,0.75)";
-        color[1] = "rgba(51,171,7,0.3)";
+        color[0] = "rgba(224,158,4,0.75)";
+        color[1] = "rgba(224,158,4,0.4)";
         color[2] = "transparent";
         color[3] = "rgba(9,75,189,0.3)";
         color[4] = "rgba(9,75,189,0.75)";
@@ -46,9 +46,21 @@
 <% end %>
 
 <h1>Sign up for tutoring slots</h1>
-<div id="big_slider_container"><div id="big_slider"></div></div>
+<p>For each time slot below, indicate your preference level for office hours. 
+<span style="color:green">Green</span> = "preferred," <span style="color:#E7D701">yellow</span> = "less preferred but can make it," and <span style="color:red">red</span> = "cannot make it."</p>
+<p>You can also indicate your office preference for individual time slots, or simply use the universal bar below to indicate for all slots.</p>
+Note that there are five levels of preference, which roughly translate to "strongly prefer," "slightly prefer," and "no preference." 
+<span style="color:orange">Orange</span> = Cory, <span style="color:blue">blue</span> = Soda.</p>
+<p>Finally, you can also indicate your preference of adjacent time slots below.</p><br />
+
 <form action="" method="post">
 <%= token_tag %>
+<%= label_tag :adjacency, "Adjacent slots?" %>
+<%= select_tag :adjacency, options_for_select([["Don't care", 0], ["Yes", 1], ["No", -1]], @adjacency) %>
+<br /><br />
+
+<div id="big_slider_container"><div id="big_slider"></div></div>
+<pre><h1>Cory                                    Soda</h1></pre>
 <table id="slot_table">
 <% @rows.each do |row| %>
 	<tr>
@@ -60,12 +72,12 @@
 	<% else %>
 		<td  rowspan="4" class="slot"><%= format_hour_slot row.to_i %></td>
 		<% @days.each do |day| %>
-		<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 2 %> value="preferred" /></td>
+		<td  class="slot slot_preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 1 %> value="preferred" /></td>
 		<% end%>
 	</tr>
 	<tr>
 		<% @days.each do |day| %>
-		<td class="slot slot_available"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 1 %> value="available"/></td>
+		<td class="slot slot_available"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 2 %> value="available"/></td>
 		<% end%>
 	</tr>
 	<tr>
@@ -85,5 +97,8 @@
 	</tr>
 <% end %>
 </table>
-<input type="submit" />
+<p>DISCLAIMER: While the scheduler tries to make everyone as happy as possible, it is likely that you won't get exactly the perfect assignment that you were looking for.</p>
+<p>Depending on which is more important to you, keep in mind that a more restrictive office preference may dominate your time slot preferences (or vice-versa).</p>
+<%= submit_tag "Save changes" %>
+<%= submit_tag "Reset all" %>
 </form>
