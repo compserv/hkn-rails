@@ -27,7 +27,8 @@ $(document).ready(function() {
 		$($(".navigation_toplevel_item")[0]).addClass("current");	
 		$(".submenu").first().show();
 	}
-	$(".navigation_toplevel_item").click(function () {
+	$(".navigation_toplevel_item").click(function(e) {
+	  e.preventDefault();
     $(".navigation_toplevel_item").removeClass("current");
     $(this).addClass("current");
     $(this).blur();
