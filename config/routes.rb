@@ -112,13 +112,11 @@ HknRails::Application.routes.draw do
     match "ferpa"                                   => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
   end
 
+  
+  
   scope "events" do
-    match "events/calendar" => "events#calendar", :as => :events_calendar
-    match "events/:category" => "events#index", :as => :events_category, :constraints => {:category => /(future|past)/}
-    resources :events do
-      resources :rsvps
-      resources :blocks
-    end
+    match "calendar" => "events#calendar", :as => :events_calendar
+    match ":category" => "events#index", :as => :events_category, :constraints => {:category => /(future|past)/}
 
     match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
 
@@ -126,6 +124,10 @@ HknRails::Application.routes.draw do
     match "vp_confirm" => "events#vp_confirm", :as => :vp_confirm
     match "confirm_rsvp/:id" => "rsvps#confirm", :as => :confirm_rsvp
     match "unconfirm_rsvp/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
+  end
+  resources :events do
+    resources :rsvps
+    resources :blocks
   end
 
   resources :event_types
