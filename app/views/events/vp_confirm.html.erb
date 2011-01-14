@@ -14,7 +14,7 @@
   <tr>
     <td><%= rsvp.person.fullname %></td>
 
-    <% if rsvp.confirmed == "true" %>
+    <% if rsvp.confirmed == "t" %>
     <td><%= rsvp.confirmed %></td>
     <td><%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id) %></td>
     <% else %>

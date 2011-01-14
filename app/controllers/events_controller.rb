@@ -25,13 +25,13 @@ class EventsController < ApplicationController
 
   def vp_confirm
     types = ["Mandatory for Candidates", "Big Fun", "Fun", "Community Service"]
-    @events = Event.past
+    # @events = Event.past
 
     # Need to find some way to filter out non-candidate events
-    # etypes = EventType.find(:all, :conditions => { :name => types })
-    # @events = Event.past.find(:all, :conditions => { :event_type_id => etypes }, :order => :start_time)
+    candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
+    candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
+    @events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)
     
-
     respond_to do |format|
       format.html # vp_confirm.html.erb
       format.xml  { render :xml => @events }

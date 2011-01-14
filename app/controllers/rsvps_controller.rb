@@ -90,7 +90,7 @@ class RsvpsController < ApplicationController
 
   def confirm
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = "true"
+    @rsvp.confirmed = 't'
 
     respond_to do |format|
       format.html { redirect_to(vp_confirm_path, :notice => 'Rsvp was confirmed.') }
