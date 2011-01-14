@@ -41,7 +41,7 @@ class Candidate < ActiveRecord::Base
     done = Hash.new(0)
     for rsvp in rsvps #Record finished requirements
       type = rsvp.event.event_type.name
-      done[type] = done[type] + 1 if rsvp.confirmed == "true"
+      done[type] = done[type] + 1 if rsvp.confirmed == "t"
       sorted_rsvps[type] = [] if sorted_rsvps[type] == nil
       sorted_rsvps[type] << rsvp
     end

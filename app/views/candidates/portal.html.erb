@@ -175,7 +175,7 @@
           </h4>
           <ul class="semi-plain">
             <% for rsvp in @rsvps[req] %>
-            <li><span class="<%= "event_status " + (rsvp.confirmed == 'true' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+            <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
             <% end %>
           </ul>
         </li>
