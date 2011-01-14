@@ -5,6 +5,14 @@
       margin: auto;
     }
   </style>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#register-button").click(function(e){
+        e.preventDefault();
+        window.location = "/register";
+      });
+    });
+  </script>
 <% end %>
 
 <div class="white-bg" id="contain">
@@ -24,12 +32,14 @@
     </div>
     
     <div class="field">
-    <%= f.label :remember_me %><%= f.check_box :remember_me %>
+      <%= f.label :remember_me %><%= f.check_box :remember_me %>
     </div>
     
     <%= hidden_field_tag(:referer, @referer) %>
+    
+    <div class="field-submit">
     <%= f.submit "Login" %>
+    <%= submit_tag "Register", :id => "register-button" %>
+    </div>
   <% end %>
-
-  <%= link_to "Don't have an account?", register_path %>
 </div>

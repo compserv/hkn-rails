@@ -111,48 +111,48 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br />
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :slug %><br />
+    <%= f.label :slug %>
     <%= f.text_field :slug %>
   </div>
   <div class="field">
-    <%= f.label :location %><br />
+    <%= f.label :location %>
     <%= f.text_field :location %>
   </div>
   <div class="field">
-    <%= f.label :description %><br />
+    <%= f.label :description %>
     <%= f.text_area :description %>
   </div>
   <div class="field">
-    <%= f.label :event_type %><br />
+    <%= f.label :event_type %>
     <%= f.select :event_type_id, EventType.all.map{|x| [x.name, x.id]} %>
   </div>
   <div class="field">
-    <%= f.label :start_time %><br />
+    <%= f.label :start_time %>
     <%= datetime_select :event, :start_time %>
   </div>
   <div class="field">
-    <%= f.label :end_time %><br />
+    <%= f.label :end_time %>
     <%= datetime_select :event, :end_time %>
   </div>
   <div class="field">
-    <%= label_tag :rsvp_type, 'RSVP Type' %><br />
+    <%= label_tag :rsvp_type, 'RSVP Type' %>
     <%= select_tag :rsvp_type, options_for_select(['No RSVPs', 'Whole Event RSVPs', 'Block RSVPs'], :selected => case(@event.blocks.size) when 0 then 'No RSVPs' when 1 then 'Whole Event RSVPs' else 'Block RSVPs' end) %>
   </div>
   <div id="rsvp_cap_div" class="field">
-    <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %><br />
+    <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %>
     <%= number_field_tag :rsvp_cap %>
   </div>
   <div id="rsvp_blocks" class="field">
     <div class="field">
-      <%= label_tag :uniform_blocks, 'Uniform Blocks' %><br />
+      <%= label_tag :uniform_blocks, 'Uniform Blocks' %>
       <%= check_box_tag :uniform_blocks, true, (@event.blocks.size == 0) %>
     </div>
     <div id="num_blocks_div" class="field">
-      <%= label_tag :num_blocks, 'Number of blocks' %><br />
+      <%= label_tag :num_blocks, 'Number of blocks' %>
       <%= number_field_tag :num_blocks, @event.blocks.size %>
     </div>
     <div id="blocks">
@@ -165,15 +165,15 @@
         <div id="block<%= block_num %>" class="form-group">
           <%= hidden_field block_name, :id, :value => block.id %>
           <div class="field">
-            <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %><br />
+            <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %>
             <%= number_field block_name, :rsvp_cap, :value => block.rsvp_cap %>
           </div>
           <div class="field">
-            <%= label_tag :start_time, 'Start Time' %><br />
+            <%= label_tag :start_time, 'Start Time' %>
             <%= datetime_select block_name, :start_time, :default => block.start_time %>
           </div>
           <div class="field">
-            <%= label_tag :end_time, 'End Time' %><br />
+            <%= label_tag :end_time, 'End Time' %>
             <%= datetime_select block_name, :end_time, :default => block.end_time %>
           </div>
           <div>
@@ -190,25 +190,25 @@
     </div>
     <div id="block_template" class="form-group" style="display:none">
       <div class="field">
-        <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %><br />
+        <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %>
         <%= number_field :block, :rsvp_cap %>
       </div>
       <div class="field">
-        <%= label_tag :start_time, 'Start Time' %><br />
+        <%= label_tag :start_time, 'Start Time' %>
         <%= datetime_select :block, :start_time %>
       </div>
       <div class="field">
-        <%= label_tag :end_time, 'End Time' %><br />
+        <%= label_tag :end_time, 'End Time' %>
         <%= datetime_select :block, :end_time %>
       </div>
       <%= link_to_function 'Delete', :onclick => "$(this).parent().remove();" %>
     </div>
   </div>
   <div class="field">
-    <%= f.label :need_transportation %><br />
+    <%= f.label :need_transportation %>
     <%= f.check_box :need_transportation %>
   </div>
-  <div class="actions">
+  <div class="field-submit">
     <%= f.submit %>
   </div>
 <% end %>
