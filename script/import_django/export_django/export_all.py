@@ -11,6 +11,7 @@ import hkn.info.models
 
 def main():
   export(django.contrib.auth.models.User, 'user', filter=lambda user: not user.username.startswith('imported__'))
+  export(django.contrib.auth.models.Permission, 'permission')
   export(hkn.info.models.Person, 'person')
   export(hkn.info.models.ExtendedInfo, 'extendedinfo')
   export(hkn.info.models.Officership, 'officership')

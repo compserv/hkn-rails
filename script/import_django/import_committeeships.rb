@@ -59,6 +59,9 @@ officerships.each do |id, officership|
   if !new_person.in_group?('officers')
     new_person.groups << Group.find_by_name('officers')
   end
+  if !new_person.in_group?('candplus')
+    new_person.groups << Group.find_by_name('candplus')
+  end
   if !new_person.in_group?(commship.committee)
     new_person.groups << Group.find_by_name(commship.committee)
   end
