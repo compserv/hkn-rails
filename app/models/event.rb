@@ -1,31 +1,43 @@
 class Event < ActiveRecord::Base
 
   # === List of columns ===
-  #   id                  : integer 
-  #   name                : string 
-  #   slug                : string 
-  #   location            : string 
-  #   description         : text 
-  #   start_time          : datetime 
-  #   end_time            : datetime 
-  #   created_at          : datetime 
-  #   updated_at          : datetime 
-  #   event_type_id       : integer 
-  #   need_transportation : boolean 
+  #   id                       : integer 
+  #   name                     : string 
+  #   slug                     : string 
+  #   location                 : string 
+  #   description              : text 
+  #   start_time               : datetime 
+  #   end_time                 : datetime 
+  #   created_at               : datetime 
+  #   updated_at               : datetime 
+  #   event_type_id            : integer 
+  #   need_transportation      : boolean 
+  #   view_permission_group_id : integer 
+  #   rsvp_permission_group_id : integer 
   # =======================
 
   has_many :blocks, :dependent => :destroy
   has_many :rsvps, :dependent => :destroy
   belongs_to :event_type
+  belongs_to :view_permission_group, { :class_name => "Group" }
+  belongs_to :rsvp_permission_group, { :class_name => "Group" }
   validates :name, :presence => true
   validates :location, :presence => true
   validates :description, :presence => true
   validates :event_type, :presence => true
   validate :valid_time_range
 
-  scope :past,     joins(:event_type).order(:start_time).where(['start_time < ?', Time.now])
-  scope :upcoming, joins(:event_type).order(:start_time).where(['start_time > ?', Time.now])
-  scope :all,      joins(:event_type).order(:start_time)
+  scope :past,     joins(:event_type).where(['start_time < ?', Time.now])
+  scope :upcoming, joins(:event_type).where(['start_time > ?', Time.now])
+  scope :all,      joins(:event_type)
+
+  scope :with_permission, Proc.new { |user| 
+    if user.nil?
+      where(:view_permission_group_id => nil)
+    else
+      where('view_permission_group_id IN (?) OR view_permission_group_id IS NULL', user.groups.map{|group| group.id})
+    end
+  }
 
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
 
@@ -47,6 +59,10 @@ class Event < ActiveRecord::Base
     "#{hour}#{min}#{ampm}"
   end
 
+  def start_date
+    start_time.strftime('%Y %m/%d')
+  end
+
   def nice_time_range
     if start_time.to_date == end_time.to_date 
       "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%I:%M%p')}"
@@ -54,4 +70,21 @@ class Event < ActiveRecord::Base
       "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%a %m/%d %I:%M%p')}"
     end 
   end
+
+  def can_view? user
+    if user.nil?
+      view_permission_group.nil?
+    else
+      view_permission_group.nil? or user.groups.include? view_permission_group
+    end
+  end
+
+  def can_rsvp? user
+    if user.nil?
+      false
+    else
+      user.groups.include? rsvp_permission_group
+    end
+  end
+
 end

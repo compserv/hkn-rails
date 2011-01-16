@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails'
+gem 'rails', "> 3.0"
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -18,6 +18,7 @@ gem 'nokogiri'
 gem 'will_paginate', "~> 3.0.pre2"
 gem 'yaml_db'
 gem 'sunspot_rails', ">= 1.2.rc4"
+gem 'jquery-rails', '>= 0.2.6'
 
 # Use unicorn as the web server
 # gem 'unicorn'

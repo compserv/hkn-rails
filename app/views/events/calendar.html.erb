@@ -2,7 +2,7 @@
 
 <%= render :partial => 'calendar' %>
 
-<%= ajaxify_links 'calendar-controls' %>
+<%= ajaxify_links %>
 
 <% if @auth["officers"] || @auth["cmembers"] %>
   <%= link_to 'New Event', new_event_path %>

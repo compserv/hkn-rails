@@ -86,10 +86,12 @@ people.each do |id, person|
 
   if person['member_type'] >= 15
     p.groups << Group.find_by_name('members')
+    p.groups << Group.find_by_name('candplus')
   end
 
   if [5, 10].include? person['member_type']
     p.groups << Group.find_by_name('candidates')
+    p.groups << Group.find_by_name('candplus')
   end
 
   if person['is_superuser']

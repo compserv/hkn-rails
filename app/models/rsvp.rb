@@ -22,6 +22,9 @@ class Rsvp < ActiveRecord::Base
 
   validates_uniqueness_of :event_id, :scope => :person_id, :message => "has already been signed up for."
 
+  scope :ordered, joins(:event).order('events.start_time ASC')
+  scope :ordered_desc, joins(:event).order('events.start_time DESC')
+
   TRANSPORT_ENUM = [
     [ 'I need a ride', -1 ],
     [ "Don't worry about me", 0 ],

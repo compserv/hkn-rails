@@ -1,0 +1,43 @@
+<div id="ajax-wrapper">
+<%= spinner %>
+<%= will_paginate @events, :class => "ajax-controls ajax" %>
+
+<table class="table">
+  <tr class="ajax-controls">
+    <th><%= sort_link 'Time', 'time' %></th>
+    <th><%= sort_link 'Company', 'companies.name' %></th>
+    <th>Food</th>
+    <th>Contact</th>
+    <th><%= sort_link 'Turnout', 'turnout' %></th>
+    <th rowspan="2">Comments</th>
+  </tr>
+  <tr class="ajax-controls">
+    <th><%= sort_link 'Location', 'locations.name' %></th>
+    <th><%= sort_link 'Event Type', 'indrel_event_types.name' %></th>
+    <th>Prizes</th>
+    <th><%= sort_link 'Officer', 'officer' %></th>
+    <th>Feedback</th>
+  </tr>
+
+<% for event in @events %>
+  <tr>
+    <td><%=h event.time.strftime("%b %d, %Y, %I:%M:%S%p") %></td>
+    <td><%=h event.company %></td>
+    <td><%=h event.food %></td>
+    <td><%=h event.contact %></td>
+    <td><%=h event.turnout %></td>
+    <td rowspan="2"><%=h event.comments %></td>
+    <td><%= link_to 'Show', event %></td>
+    <td><%= link_to 'Edit', edit_indrel_event_path(event) %></td>
+  </tr>
+  <tr>
+    <td><%=h event.location %></td>
+    <td><%=h event.indrel_event_type %></td>
+    <td><%=h event.prizes %></td>
+    <td><%=h event.officer %></td>
+    <td><%=h event.feedback %></td>
+    <td colspan="2"><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+</div>

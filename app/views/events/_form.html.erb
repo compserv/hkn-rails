@@ -3,12 +3,15 @@
     var value = $('#rsvp_type option:selected')[0].value
     if (value == 'No RSVPs') {
       $('#rsvp_blocks').hide();
+      $('#rsvp_permission_group_id_div').hide();
       $('#rsvp_cap_div').hide();
     } else if (value == 'Whole Event RSVPs') {
       $('#rsvp_blocks').hide();
+      $('#rsvp_permission_group_id_div').show();
       $('#rsvp_cap_div').show();
     } else if (value == 'Block RSVPs') {
       $('#rsvp_blocks').show();
+      $('#rsvp_permission_group_id_div').show();
       if ($('#uniform_blocks').attr('checked')) {
         $('#rsvp_cap_div').show();
       } else {
@@ -55,15 +58,6 @@
         $('#blocks').show();
         $('#rsvp_cap_div').hide();
         $('#num_blocks_div').hide();
-        //var num_blocks = parseInt($('#num_blocks')[0].value);
-        //if (!isNaN(num_blocks) && (num_blocks != $('#blocks > div').length)) {
-        //  $('#blocks div').remove();
-        //  for (var i = 0; i < num_blocks; i+=1) {
-        //    $('#blocks').append(new_block_form(i));
-        //  }
-        //}
-        //$('#blocks').show();
-        //$('#rsvp_cap_div').hide();
       }
     }
   }
@@ -78,14 +72,6 @@
     update_blocks();
     $('#rsvp_type').change(update_rsvp_type);
     $('#uniform_blocks').change(update_blocks);
-    //$('#num_blocks').change(update_blocks);
-    //$('#num_blocks').keydown(function(e) {
-    //  // Update number of block forms when Enter is pressed
-    //  if (e.keyCode == '13') {
-    //    $(this).blur();
-    //    $(this).change();
-    //  }
-    //});
   });
 </script>
 
@@ -138,13 +124,27 @@
     <%= f.label :end_time %>
     <%= datetime_select :event, :end_time %>
   </div>
+  <% permission_options = options_for_select([['All', nil]]+['candplus', 'candidates', 'members', 'comms'].map{|name| g = Group.find_by_name(name); [g.description, g.id]}, @event.view_permission_group_id) %>
+  <div class="field">
+    <%= f.label :view_permission_group_id, 'View Permission' %>
+    <%= f.select :view_permission_group_id, permission_options%>
+  </div>
   <div class="field">
     <%= label_tag :rsvp_type, 'RSVP Type' %>
     <%= select_tag :rsvp_type, options_for_select(['No RSVPs', 'Whole Event RSVPs', 'Block RSVPs'], :selected => case(@event.blocks.size) when 0 then 'No RSVPs' when 1 then 'Whole Event RSVPs' else 'Block RSVPs' end) %>
   </div>
+  <% rsvp_permission_options = options_for_select(['candplus', 'candidates', 'members', 'comms'].map{|name| g = Group.find_by_name(name); [g.description, g.id]}, @event.rsvp_permission_group_id) %>
+  <div id="rsvp_permission_group_id_div" class="field">
+    <%= f.label :rsvp_permission_group_id, 'RSVP Permission' %>
+    <%= f.select :rsvp_permission_group_id, rsvp_permission_options%>
+  </div>
   <div id="rsvp_cap_div" class="field">
     <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %>
-    <%= number_field_tag :rsvp_cap %>
+    <% if @event.blocks.size == 1 %>
+      <%= number_field_tag :rsvp_cap, @event.blocks.first.rsvp_cap %>
+    <% else %>
+      <%= number_field_tag :rsvp_cap %>
+    <% end %>
   </div>
   <div id="rsvp_blocks" class="field">
     <div class="field">

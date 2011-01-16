@@ -1,0 +1,32 @@
+<div id="ajax-wrapper">
+  <%= spinner %>
+  <%= will_paginate @events, :class => 'ajax-controls' %>
+  <table>
+    <tbody>
+      <tr class="ajax-controls">
+        <th><%= sort_link 'Start Time', 'start_time' %></th>
+        <th><%= sort_link 'Name', 'name' %></th>
+        <th><%= sort_link 'Location', 'location' %></th>
+        <th>Event Type</th>
+        <%# th for edit/delete %>
+        <% if @auth['comms'] %>
+          <th></th>
+          <th></th>
+        <% end %>
+      </tr>
+
+      <% @events.each do |event| %>
+        <tr>
+          <td><%= event.start_time.strftime('%a %m/%d/%y %I:%M%p') %></td>
+          <td><%= link_to event.name, event %></td>
+          <td><%= event.location %></td>
+          <td><%= event.event_type.name %></td>
+          <% if @auth['comms'] %>
+            <td><%= link_to 'Edit', edit_event_path(event) %></td>
+            <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

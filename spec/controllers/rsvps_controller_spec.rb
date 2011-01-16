@@ -3,7 +3,7 @@ require 'spec_helper'
 describe RsvpsController do
 
   before(:each) do
-    @event ||= mock_model(Event, :blocks => [])
+    @event ||= mock_model(Event, :blocks => [], :can_rsvp? => true)
     Event.stub(:find).and_return(@event)
   end
 
@@ -40,6 +40,13 @@ describe RsvpsController do
       Rsvp.stub(:find).with("37") { mock_rsvp }
       do_get :show, :id => "37"
       assigns(:rsvp).should be(mock_rsvp)
+    end
+
+    it "when current user does not have permission, redirects to root" do
+      Rsvp.stub(:find).with("37") { mock_rsvp }
+      @event.stub(:can_rsvp?) { false }
+      do_get :show, :id => "37"
+      response.should redirect_to :root
     end
   end
 

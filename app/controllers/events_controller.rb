@@ -1,41 +1,60 @@
 class EventsController < ApplicationController
   before_filter :authorize_comms, :except => [:index, :calendar, :show]
+
   # GET /events
   # GET /events.xml
   def index
+    per_page = 20
+    order = params[:sort] || "start_time"
+    params[:sort_direction] ||= 'down'
+    sort_direction = case params[:sort_direction]
+                     when "up" then "ASC"
+                     when "down" then "DESC"
+                     else "DESC"
+                     end
+    @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
+    # Maintains start_time as secondary sort column
+    opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}, start_time #{sort_direction}" }
+
     category = params[:category] || 'all'
+    event_finder = Event.with_permission(@current_user)
     # We should paginate this
     if category == 'past'
-      @events = Event.past
+      @events = event_finder.past
       @heading = "Past Events"
     elsif category == 'future'
-      @events = Event.upcoming
+      @events = event_finder.upcoming
       @heading = "Upcoming Events"
     else
       #@events = Event.includes(:event_type).order(:start_time)
-      @events = Event.all
+      @events = event_finder.all
       @heading = "All Events"
     end
+
+    @events = @events.paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
+      format.js { render :partial => 'list' }
     end
   end
 
+  #Controller action for main confirmation page that links to each event confirmation page
   def vp_confirm
     types = ["Mandatory for Candidates", "Big Fun", "Fun", "Community Service"]
-    # @events = Event.past
 
-    # Need to find some way to filter out non-candidate events
+    #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
-    @events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)
-    
-    respond_to do |format|
-      format.html # vp_confirm.html.erb
-      format.xml  { render :xml => @events }
-    end
+    @events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
+  end
+
+  #Rsvp confirmation for an individual event
+  def confirm
+    @event = Event.find(params[:id])
+    @event.rsvps.sort_by! { |rsvp| rsvp.person.last_name }
+    @event.save
   end
         
   def calendar
@@ -43,7 +62,7 @@ class EventsController < ApplicationController
     year = (params[:year] || Time.now.year).to_i
     @start_date = Date.civil(year, month).beginning_of_month
     @end_date = Date.civil(year, month).end_of_month
-    @events = Event.find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
+    @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
     @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
@@ -53,9 +72,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html
       format.js {
-        render :update do |page|
-          page.replace 'calendar-wrapper', :partial => 'calendar'
-        end
+        render :partial => 'calendar'
       }
     end
   end
@@ -63,7 +80,13 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.xml
   def show
-    @event = Event.find(params[:id])
+    begin
+      # Only show event if user has permission to
+      @event = Event.with_permission(@current_user).find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to :root, :notice => "Event not found"
+      return
+    end
     @blocks = @event.blocks
     @current_user_rsvp = @event.rsvps.find_by_person_id(@current_user.id) if @current_user
     respond_to do |format|

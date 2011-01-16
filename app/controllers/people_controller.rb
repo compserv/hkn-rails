@@ -32,9 +32,7 @@ class PeopleController < ApplicationController
     respond_to do |format|
       format.html
       format.js {
-        render :update do |page|
-          page.replace 'results', :partial => 'list_results'
-        end
+        render :partial => 'list_results'
       }
     end
   end
@@ -48,6 +46,7 @@ class PeopleController < ApplicationController
     @person = Person.new(params[:person])
     if params[:candidate] == "true"
       @person.groups << Group.find_by_name("candidates")
+      @person.groups << Group.find_by_name("candplus")
       
       #Create new candidate corresponding to this person
       @candidate = Candidate.new
@@ -55,6 +54,7 @@ class PeopleController < ApplicationController
       @candidate.save
     else
       @person.groups << Group.find_by_name("members")
+      @person.groups << Group.find_by_name("candplus")
     end
 
     if @person.save

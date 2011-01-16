@@ -1,28 +1,8 @@
 <%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <h1>Listing event_types</h1>
 
-<div id="results">
-<div id="spinner">&nbsp;</div>
-<%= will_paginate @event_types, :class => "pagination ajax" %>
-
-<table class="table">
-  <tr class="pagination">
-    <th><%= sort_link 'Name', 'name' %></th>
-  </tr>
-
-<% for event_type in @event_types %>
-  <tr>
-    <td><%= event_type.name %></td>
-    <td><%= link_to 'Show', event_type %></td>
-    <td><%= link_to 'Edit', edit_indrel_event_type_path(event_type) %></td>
-    <td><%= link_to 'Destroy', event_type, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-</div>
-
-<br />
+<%= render :partial => 'list' %>
 
 <%= link_to 'New event_type', new_indrel_event_type_path %>
 
-<%= ajaxify_links('pagination') %>
+<%= ajaxify_links %>

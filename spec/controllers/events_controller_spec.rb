@@ -16,7 +16,7 @@ describe EventsController do
 
   describe "GET index" do
     it "assigns all events as @events" do
-      Event.stub(:all) { [mock_event] }
+      Event.stub_chain(:with_permission, :all) { [mock_event] }
       get :index
       assigns(:events).should eq([mock_event])
     end
@@ -24,9 +24,15 @@ describe EventsController do
 
   describe "GET show" do
     it "assigns the requested event as @event" do
-      Event.stub(:find).with("37") { mock_event }
+      Event.stub_chain(:with_permission, :find) { mock_event }
       get :show, :id => "37"
       assigns(:event).should be(mock_event)
+    end
+
+    it "when current user does not have permission, redirects to root" do
+      Event.stub(:with_permission).and_raise(ActiveRecord::RecordNotFound)
+      get :show, :id => "37"
+      response.should redirect_to(:root)
     end
   end
 

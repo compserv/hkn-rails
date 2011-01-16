@@ -28,9 +28,7 @@ class IndrelEventsController < ApplicationController
       format.html # index.html.erb
       format.xml  { render :xml => @events }
       format.js {
-        render :update do |page|
-          page.replace 'results', :partial => 'list_results'
-        end
+        render :partial => 'list'
       }
     end
   end
@@ -103,7 +101,7 @@ class IndrelEventsController < ApplicationController
     @event.destroy
 
     respond_to do |format|
-      format.html { redirect_to(events_url) }
+      format.html { redirect_to(indrel_events_url) }
       format.xml  { head :ok }
     end
   end

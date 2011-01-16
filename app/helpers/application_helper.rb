@@ -19,9 +19,10 @@ module ApplicationHelper
     return output_array.join
   end
 
+  # This is for the pagination sort links
+  # This could probably be cleaned up a bit more...
   def sort_link(inner_text, sort_variable, opts = {})
     sort_direction = 'up'
-    puts @search_opts.to_json
     if sort_variable == @search_opts['sort'] and @search_opts['sort_direction'] != 'down'
       sort_direction = 'down'
     end
@@ -30,36 +31,39 @@ module ApplicationHelper
   end
 
   # http://wiki.github.com/mislav/will_paginate/ajax-pagination
+  # http://brandonaaron.net/blog/2009/02/24/jquery-rails-and-ajax
   # Embedding this in a view will automatically make links which are descendants
   # of an element with the class 'class_name' into AJAX links
   # Note: You need to have an element with the id "spinner" for for spinner
   # graphic. If you don't, then the script will error out and won't perform an
   # AJAX request.
-  def ajaxify_links(class_name)
-    javascript_tag "document.observe('dom:loaded', function() {
-  // the element in which we will observe all clicks and capture
-  // ones originating from pagination links
+  def ajaxify_links(class_name='ajax-controls')
+    javascript_tag \
+"$(document).ready( function() {
   var container = $(document.body)
 
   if (container) {
-
-    var img = new Image
-    img.src = '/images/site/spinner.gif'
-
-    function createSpinner() {
-      return new Element('img', { src: img.src, 'class': 'spinner' })
-    }
-
-    container.observe('click', function(e) {
-      var el = e.element()
-      if (el.match('.#{class_name} a')) {
-        $('spinner').insert(createSpinner())
-        new Ajax.Request(el.href, { method: 'get' })
-        e.stop()
+    container.click( function(e) {
+      var el = e.target
+      if ($(el).is('.#{class_name} a')) {
+        $('#spinner').show();
+        $.ajax({ 
+          url: el.href, 
+          method: 'get', 
+          dataType: 'script', 
+          success: function(data) {
+            $('#ajax-wrapper').html(data);
+          } 
+        });
+        e.preventDefault();
       }
     })
   }
 })"
+  end
+
+  def spinner
+    raw '<div id="spinner"><img src="/images/site/spinner.gif" alt="Loading..."/></div>'
   end
 end
 

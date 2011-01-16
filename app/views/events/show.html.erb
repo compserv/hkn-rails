@@ -34,11 +34,11 @@
 <% if @auth["act"] %>
   <%= link_to 'Edit', edit_event_path(@event) %> |
 <% end %>
-<% if @auth["members"] or @auth["candidates"] %>
+<% if @event.blocks.size > 0 and @auth["candplus"] %>
   <% if @current_user_rsvp %>
     <%= link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp) %> |
-    <%= link_to 'Remove My RSVP', '/events/remove_rsvp/' + @current_user_rsvp.id.to_s%> |
-  <% else %>
+    <%= link_to 'Remove My RSVP', event_rsvp_path(@event, @current_user_rsvp), :confirm => 'Are you sure?', :method => :delete %> |
+  <% elsif @event.can_rsvp? @current_user and ((@event.blocks.size == 1 and @event.blocks.first.rsvp_cap > @event.blocks.first.rsvps.size) or (@event.blocks.size > 1))%>
     <%= link_to 'RSVP', '/events/' + @event.id.to_s + '/rsvps/new' %> |
   <% end %>
 <% end %>

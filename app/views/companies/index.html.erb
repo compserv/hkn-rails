@@ -1,34 +1,8 @@
 <%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <h1>Listing companies</h1>
 
-<div id="results">
-<div id="spinner">&nbsp;</div>
-<%= will_paginate @companies, :class => "pagination ajax" %>
-
-<table class="table">
-  <tr class="pagination">
-    <th><%= sort_link 'Name', 'name' %></th>
-    <th>Address</th>
-    <th>Website</th>
-    <th>Comments</th>
-  </tr>
-
-<% for company in @companies %>
-  <tr>
-    <td><%=h company.name %></td>
-    <td><%=h company.address %></td>
-    <td><%=h company.website %></td>
-    <td><%=h company.comments %></td>
-    <td><%= link_to 'Show', company %></td>
-    <td><%= link_to 'Edit', edit_company_path(company) %></td>
-    <td><%= link_to 'Destroy', company, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-</div>
-
-<br />
+<%= render :partial => 'list' %>
 
 <%= link_to 'New company', new_company_path %>
 
-<%= ajaxify_links('pagination') %>
+<%= ajaxify_links %>

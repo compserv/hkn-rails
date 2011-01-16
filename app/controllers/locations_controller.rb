@@ -4,16 +4,16 @@ class LocationsController < ApplicationController
   # GET /locations
   # GET /locations.xml
   def index
-    per_page = 10
-	order = params[:sort] || "name"
-	sort_direction = case params[:sort_direction]
-						when "up" then "ASC"
-						when "down" then "DESC"
-						else "ASC"
-						end
+    per_page = 20
+    order = params[:sort] || "name"
+    sort_direction = case params[:sort_direction]
+                     when "up" then "ASC"
+                     when "down" then "DESC"
+                     else "ASC"
+                     end
 
-	@search_opts = {'sort' => "name"}.merge params
-	opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
+    @search_opts = {'sort' => "name"}.merge params
+    opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
 
     @locations = Location.paginate opts
 
@@ -21,9 +21,7 @@ class LocationsController < ApplicationController
       format.html # index.html.erb
       format.xml  { render :xml => @locations }
       format.js {
-        render :update do |page|
-          page.replace 'results', :partial => 'list_results'
-        end
+        render :partial => 'list'
       }
     end
   end

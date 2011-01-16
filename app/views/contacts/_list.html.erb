@@ -1,0 +1,29 @@
+<div id="ajax-wrapper">
+  <%= spinner %>
+  <%= will_paginate @contacts, :class => "ajax-controls ajax" %>
+
+  <table class="table">
+   <tr class="ajax-controls">
+      <th><%= sort_link 'Name', 'name' %></th>
+      <th><%= sort_link 'Email', 'email' %></th>
+      <th>Office Phone</th>
+      <th>Cell Phone</th>
+      <th><%= sort_link 'Company', 'companies.name' %></th>
+      <th>Comments</th>
+    </tr>
+
+  <% for contact in @contacts %>
+    <tr>
+      <td><%=h contact.name %></td>
+      <td><%=h contact.email %></td>
+      <td><%=h contact.phone %></td>
+      <td><%=h contact.cellphone %></td>
+      <td><%=h contact.company.name if contact.company %></td>
+      <td><%=h contact.comments %></td>
+      <td><%= link_to 'Show', contact %></td>
+      <td><%= link_to 'Edit', edit_contact_path(contact) %></td>
+      <td><%= link_to 'Destroy', contact, :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+</div>

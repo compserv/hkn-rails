@@ -1,4 +1,3 @@
-
 class Group < ActiveRecord::Base
 
   # === List of columns ===

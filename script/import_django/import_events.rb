@@ -4,6 +4,8 @@ require File.expand_path('../../../config/environment', __FILE__)
 
 f = File.open('dumps/event.json', 'r')
 events = ActiveSupport::JSON::decode(f)
+f = File.open('dumps/permission.json', 'r')
+permissions = ActiveSupport::JSON::decode(f)
 
 def new_event_type(event_type)
   event_map = {
@@ -29,8 +31,43 @@ events.each do |id, event|
   new_event['event_type_id'] = EventType.find_by_name(new_event_type(event['event_type'])).id
   new_event['need_transportation'] = event['rsvp_transportation_necessary']
 
-  #new_event['view_permission'] = 
-  #new_event['rsvp_permission'] = 
+  view_permission = permissions[event['view_permission_id'].to_s]
+  case view_permission['codename']
+  when 'hkn_everyone'
+    new_event['view_permission_group'] = nil
+  when 'hkn_candidate_plus'
+    new_event['view_permission_group'] = Group.find_by_name('candplus')
+  when 'hkn_member_plus'
+    new_event['view_permission_group'] = Group.find_by_name('members')
+  when 'hkn_officer'
+    new_event['view_permission_group'] = Group.find_by_name('comms')
+  when 'hkn_current_officer'
+    new_event['view_permission_group'] = Group.find_by_name('comms')
+  when 'hkn_candidate'
+    new_event['view_permission_group'] = Group.find_by_name('candidates')
+  else
+    # Default to comms only
+    new_event['view_permission_group'] = Group.find_by_name('comms')
+  end
+
+  rsvp_permission = permissions[event['rsvp_permission_id'].to_s]
+  case rsvp_permission['codename']
+  when 'hkn_everyone'
+    new_event['rsvp_permission_group'] = nil
+  when 'hkn_candidate_plus'
+    new_event['rsvp_permission_group'] = Group.find_by_name('candplus')
+  when 'hkn_member_plus'
+    new_event['rsvp_permission_group'] = Group.find_by_name('members')
+  when 'hkn_officer'
+    new_event['rsvp_permission_group'] = Group.find_by_name('comms')
+  when 'hkn_current_officer'
+    new_event['rsvp_permission_group'] = Group.find_by_name('comms')
+  when 'hkn_candidate'
+    new_event['rsvp_permission_group'] = Group.find_by_name('candidates')
+  else
+    # Default to comms only
+    new_event['rsvp_permission_group'] = Group.find_by_name('comms')
+  end
 
   e = Event.create(new_event)
   if not e.valid?

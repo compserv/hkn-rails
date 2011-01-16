@@ -70,6 +70,7 @@ class ApplicationController < ActionController::Base
     end
     unless groups.nil? or @current_user.admin? or @current_user.groups.map{|x| groups.include? x.name}.reduce{|x,y| x || y}
       redirect_to :root, :notice => "Insufficient privileges to access this page."
+      return
     end
   end
 

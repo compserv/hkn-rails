@@ -1,32 +1,8 @@
 <%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <h1>Listing locations</h1>
 
-<div id="results">
-<div id="spinner">&nbsp;</div>
-<%= will_paginate @locations, :class => "pagination ajax" %>
-
-<table class="table">
-  <tr class="pagination">
-    <th><%= sort_link 'Name', 'name' %></th>
-    <th><%= sort_link 'Capacity', 'capacity' %></th>
-    <th>Comments</th>
-  </tr>
-
-<% for location in @locations %>
-  <tr>
-    <td><%=h location.name %></td>
-    <td><%=h location.capacity %></td>
-    <td><%=h location.comments %></td>
-    <td><%= link_to 'Show', location %></td>
-    <td><%= link_to 'Edit', edit_location_path(location) %></td>
-    <td><%= link_to 'Destroy', location, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-</div>
-
-<br />
+<%= render :partial => 'list' %>
 
 <%= link_to 'New location', new_location_path %>
 
-<%= ajaxify_links('pagination') %>
+<%= ajaxify_links %>

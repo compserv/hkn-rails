@@ -1,35 +1,8 @@
 <h1><%= @heading %></h1>
 
-<table>
-  <tbody>
-  <tr>
-    <th>Name</th>
-    <th>Location</th>
-    <th>Start Time</th>
-    <th>Event Type</th>
-    <%# th for edit/delete %>
-    <% if @auth['comms'] %>
-      <th></th>
-      <th></th>
-    <% end %>
-  </tr>
+<%= render :partial => 'list' %>
 
-<% @events.each do |event| %>
-  <tr>
-    <td><%= link_to event.name, event %></td>
-    <td><%= event.location %></td>
-    <td><%= event.start_time.strftime('%a %m/%d %I:%M%p') %></td>
-    <td><%= event.event_type.name %></td>
-    <% if @auth['comms'] %>
-      <td><%= link_to 'Edit', edit_event_path(event) %></td>
-      <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
-  </tr>
-<% end %>
-</tbody>
-</table>
-
-<br />
+<%= ajaxify_links %>
 
 <% if @auth['comms'] %>
   <%= link_to 'New Event', new_event_path %>
