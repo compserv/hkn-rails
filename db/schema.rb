@@ -121,14 +121,14 @@ ActiveRecord::Schema.define(:version => 20110113202931) do
   end
 
   create_table "courses", :force => true do |t|
-    t.string   "suffix",                       :default => ""
-    t.string   "prefix",                       :default => ""
+    t.string   "suffix",        :default => ""
+    t.string   "prefix",        :default => ""
     t.string   "name"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "units"
-    t.text     "prereqs",       :limit => 255
+    t.text     "prereqs"
     t.integer  "department_id"
     t.integer  "course_number"
   end
