@@ -1,0 +1,19 @@
+<div id="ajax-wrapper">
+  <%= spinner %>
+  <%= will_paginate @event_types, :class => "ajax-controls ajax" %>
+
+  <table class="table">
+    <tr class="ajax-controls">
+      <th><%= sort_link 'Name', 'name' %></th>
+    </tr>
+
+  <% for event_type in @event_types %>
+    <tr>
+      <td><%= event_type.name %></td>
+      <td><%= link_to 'Show', event_type %></td>
+      <td><%= link_to 'Edit', edit_indrel_event_type_path(event_type) %></td>
+      <td><%= link_to 'Destroy', event_type, :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+</div>

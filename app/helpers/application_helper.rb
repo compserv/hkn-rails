@@ -30,6 +30,7 @@ module ApplicationHelper
   end
 
   # http://wiki.github.com/mislav/will_paginate/ajax-pagination
+  # http://brandonaaron.net/blog/2009/02/24/jquery-rails-and-ajax
   # Embedding this in a view will automatically make links which are descendants
   # of an element with the class 'class_name' into AJAX links
   # Note: You need to have an element with the id "spinner" for for spinner

@@ -28,9 +28,7 @@ class IndrelEventsController < ApplicationController
       format.html # index.html.erb
       format.xml  { render :xml => @events }
       format.js {
-        render :update do |page|
-          page.replace 'results', :partial => 'list_results'
-        end
+        render :partial => 'list'
       }
     end
   end

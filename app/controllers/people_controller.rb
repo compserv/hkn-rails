@@ -32,9 +32,7 @@ class PeopleController < ApplicationController
     respond_to do |format|
       format.html
       format.js {
-        render :update do |page|
-          page.replace 'results', :partial => 'list_results'
-        end
+        render :partial => 'list_results'
       }
     end
   end

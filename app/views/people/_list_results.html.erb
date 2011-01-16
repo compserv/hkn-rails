@@ -1,15 +1,15 @@
 <%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
-<div id="results">
-<div id="spinner">&nbsp;</div>
-<%= will_paginate @people, :class => "pagination ajax" %>
+<div id="ajax-wrapper">
+<%= spinner %>
+<%= will_paginate @people, :class => "ajax-controls ajax" %>
 
 <table class="table">
-  <tr class="pagination">
+  <tr class="ajax-controls">
     <th>Image</th>
     <th>Name (<%= sort_link 'First', 'first_name' %> <%= sort_link 'Last', 'last_name' %>)</th>
     <th><%= sort_link 'Email', 'email' %></th>
     <th>Phone</th></tr>
-<%- @people.each do |person| -%>
+<% @people.each do |person| %>
   <tr>
     <td>
       <%= image_tag person.picture unless person.picture.blank? %>
@@ -21,7 +21,7 @@
     <td><%= raw html_obfuscate person.email unless person.private %></td>
     <td><%= person.phone_number unless person.private %></td>
   </tr>
-<%- end -%>
+<% end %>
 </table>
 
 </div>

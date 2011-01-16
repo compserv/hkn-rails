@@ -1,0 +1,23 @@
+<div id="ajax-wrapper">
+  <%= spinner %>
+  <%= will_paginate @locations, :class => "ajax-controls ajax" %>
+
+  <table class="table">
+    <tr class="ajax-controls">
+      <th><%= sort_link 'Name', 'name' %></th>
+      <th><%= sort_link 'Capacity', 'capacity' %></th>
+      <th>Comments</th>
+    </tr>
+
+  <% for location in @locations %>
+    <tr>
+      <td><%=h location.name %></td>
+      <td><%=h location.capacity %></td>
+      <td><%=h location.comments %></td>
+      <td><%= link_to 'Show', location %></td>
+      <td><%= link_to 'Edit', edit_location_path(location) %></td>
+      <td><%= link_to 'Destroy', location, :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+</div>
