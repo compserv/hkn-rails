@@ -102,7 +102,7 @@ class RsvpsController < ApplicationController
 
   def unconfirm
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = nil
+    @rsvp.confirmed = "f"
     @rsvp.save
     
     respond_to do |format|
