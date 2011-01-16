@@ -1,22 +1,26 @@
 class Event < ActiveRecord::Base
 
   # === List of columns ===
-  #   id                  : integer 
-  #   name                : string 
-  #   slug                : string 
-  #   location            : string 
-  #   description         : text 
-  #   start_time          : datetime 
-  #   end_time            : datetime 
-  #   created_at          : datetime 
-  #   updated_at          : datetime 
-  #   event_type_id       : integer 
-  #   need_transportation : boolean 
+  #   id                       : integer 
+  #   name                     : string 
+  #   slug                     : string 
+  #   location                 : string 
+  #   description              : text 
+  #   start_time               : datetime 
+  #   end_time                 : datetime 
+  #   created_at               : datetime 
+  #   updated_at               : datetime 
+  #   event_type_id            : integer 
+  #   need_transportation      : boolean 
+  #   view_permission_group_id : integer 
+  #   rsvp_permission_group_id : integer 
   # =======================
 
   has_many :blocks, :dependent => :destroy
   has_many :rsvps, :dependent => :destroy
   belongs_to :event_type
+  belongs_to :view_permission_group, { :class_name => "Group" }
+  belongs_to :rsvp_permission_group, { :class_name => "Group" }
   validates :name, :presence => true
   validates :location, :presence => true
   validates :description, :presence => true

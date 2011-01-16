@@ -25,6 +25,7 @@ def initialize_groups
     # Member types
     {"name"=>"members",   "description"=>"Members"},
     {"name"=>"candidates","description"=>"Candidates"},
+    {"name"=>"candplus",  "description"=>"Candidates and Members"},
     {"name"=>"officers",  "description"=>"Officers"},
     {"name"=>"comms",     "description"=>"Committee Members and Officers"},
     {"name"=>"cmembers",  "description"=>"Committee Members"},
