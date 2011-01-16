@@ -23,19 +23,21 @@ class EventsController < ApplicationController
     end
   end
 
+  #Controller action for main confirmation page that links to each event confirmation page
   def vp_confirm
     types = ["Mandatory for Candidates", "Big Fun", "Fun", "Community Service"]
-    # @events = Event.past
 
-    # Need to find some way to filter out non-candidate events
+    #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
-    @events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)
-    
-    respond_to do |format|
-      format.html # vp_confirm.html.erb
-      format.xml  { render :xml => @events }
-    end
+    @events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
+  end
+
+  #Rsvp confirmation for an individual event
+  def confirm
+    @event = Event.find(params[:id])
+    @event.rsvps.sort_by! { |rsvp| rsvp.person.last_name }
+    @event.save
   end
         
   def calendar
