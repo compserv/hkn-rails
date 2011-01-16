@@ -1,5 +1,6 @@
 class RsvpsController < ApplicationController
   before_filter :get_event
+  before_filter :rsvp_permission, :except => :my_rsvps
 
   # GET /rsvps
   # GET /rsvps.xml
@@ -130,6 +131,12 @@ class RsvpsController < ApplicationController
       @rsvp.block_ids = params[:block] && params[:block].keys || []
     else
       @rsvp.blocks = @event.blocks
+    end
+  end
+
+  def rsvp_permission
+    if !@event.can_rsvp? @current_user
+      redirect_to :root, :notice => "You do not have permissionto RSVP for this event"
     end
   end
 end

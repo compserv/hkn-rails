@@ -35,7 +35,7 @@ class Event < ActiveRecord::Base
     if user.nil?
       where(:view_permission_group_id => nil)
     else
-      where('view_permission_group_id IN (?)', user.groups.map{|group| group.id})
+      where('view_permission_group_id IN (?) OR view_permission_group_id IS NULL', user.groups.map{|group| group.id})
     end
   }
 
@@ -66,4 +66,21 @@ class Event < ActiveRecord::Base
       "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%a %m/%d %I:%M%p')}"
     end 
   end
+
+  def can_view? user
+    if user.nil?
+      view_permission_group.nil?
+    else
+      user.groups.include? view_permission_group
+    end
+  end
+
+  def can_rsvp? user
+    if user.nil?
+      false
+    else
+      user.groups.include? rsvp_permission_group
+    end
+  end
+
 end
