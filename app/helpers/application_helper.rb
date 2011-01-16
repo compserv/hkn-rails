@@ -35,31 +35,33 @@ module ApplicationHelper
   # Note: You need to have an element with the id "spinner" for for spinner
   # graphic. If you don't, then the script will error out and won't perform an
   # AJAX request.
-  def ajaxify_links(class_name)
-    javascript_tag "document.observe('dom:loaded', function() {
-  // the element in which we will observe all clicks and capture
-  // ones originating from pagination links
+  def ajaxify_links(class_name='ajax-controls')
+    javascript_tag \
+"$(document).ready( function() {
   var container = $(document.body)
 
   if (container) {
-
-    var img = new Image
-    img.src = '/images/site/spinner.gif'
-
-    function createSpinner() {
-      return new Element('img', { src: img.src, 'class': 'spinner' })
-    }
-
-    container.observe('click', function(e) {
-      var el = e.element()
-      if (el.match('.#{class_name} a')) {
-        $('spinner').insert(createSpinner())
-        new Ajax.Request(el.href, { method: 'get' })
-        e.stop()
+    container.click( function(e) {
+      var el = e.target
+      if ($(el).is('.#{class_name} a')) {
+        $('#spinner').show();
+        $.ajax({ 
+          url: el.href, 
+          method: 'get', 
+          dataType: 'script', 
+          success: function(data) {
+            $('#ajax-wrapper').html(data);
+          } 
+        });
+        e.preventDefault();
       }
     })
   }
 })"
+  end
+
+  def spinner
+    raw '<div id="spinner"><img src="/images/site/spinner.gif" alt="Loading..."/></div>'
   end
 end
 

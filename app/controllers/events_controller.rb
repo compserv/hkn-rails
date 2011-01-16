@@ -56,9 +56,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html
       format.js {
-        render :update do |page|
-          page.replace 'calendar-wrapper', :partial => 'calendar'
-        end
+        render :partial => 'calendar'
       }
     end
   end
