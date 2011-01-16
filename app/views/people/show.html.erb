@@ -1,24 +1,59 @@
-<h1><%= @person.fullname %>'s Profile</h1>
+<% content_for :header do %>
+  <style type="text/css"> 
+    .admin{
+      padding: 0.5em;
+      background: #ccc;
+    }
+    
+    span.label{
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 0.8em;
+      color: #999;
+      width: 6em;
+    }
+    
+    .user-field{
+      display: block;
+    }
+  </style>
+<% end %>
 
-<div id="infobar">
-  <h1><%= @person.fullname %>'s RSVPs</h1>
+<div id="photo">
+  <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
 </div>
 
-<div>
+<div id="info">
+  <h1><%= @person.fullname %>'s Profile</h1>
   <div class="admin">
     <% if @auth["superusers"] %>
-      <%= link_to "Edit", edit_person_path(@person) %>
-      <%= link_to "Delete", person_path(@person) %>
+      Admin Bar: 
+      <%= link_to "[Edit]", edit_person_path(@person) %>
+      <%= link_to "[Delete]", person_path(@person) %>
     <% end %>
   </div>
-  <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
-  <table id="person_info" class="infobox">
-    <%- unless @person.email.blank? or @person.private -%>       <tr> <th>Email</th>             <td><%= @person.email %></td> </tr><%- end -%>
-    <%- unless @person.phone_number.blank? or @person.private -%><tr> <th>Phone Number</th>      <td><%= @person.phone_number %></td> </tr><%- end -%>
-    <tr> <th>Status</th><td><%= @person.status %></td> </tr>
-  </table>
+  
+  
+    <%- unless @person.email.blank? or @person.private -%>
+    <span class="user-field">
+      <span class="label">Email</span><%= @person.email %>
+    </span>
+    <%- end -%>
+    <%- unless @person.phone_number.blank? or @person.private -%>
+    <span class="user-field">
+      <span class="label">Phone Number</span><%= @person.phone_number %>
+    </span>
+    <%- end -%>
+    <span class="user-field">
+      <span class="label">Status</span><%= @person.status %>
+    </span>
+
   <h2>Additional Membership Information</h2>
   <% @person.committeeships.order(:semester).each do |committeeship| %>
     <p><%=@person.first_name%> had the position of <%=committeeship.nice_position%> in <%=committeeship.nice_semester%>.</p>
+    
+  <h2><%= @person.fullname %>'s RSVPs</h2>
   <% end %>
 </div>
+
+
