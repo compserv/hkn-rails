@@ -31,6 +31,14 @@ class Event < ActiveRecord::Base
   scope :upcoming, joins(:event_type).order(:start_time).where(['start_time > ?', Time.now])
   scope :all,      joins(:event_type).order(:start_time)
 
+  scope :with_permission, Proc.new { |user| 
+    if user.nil?
+      where(:view_permission_group_id => nil)
+    else
+      where('view_permission_group_id IN (?)', user.groups.map{|group| group.id})
+    end
+  }
+
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
 
   def valid_time_range

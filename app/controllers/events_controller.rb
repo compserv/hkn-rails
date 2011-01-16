@@ -1,19 +1,20 @@
 class EventsController < ApplicationController
   before_filter :authorize_comms, :except => [:index, :calendar, :show]
+
   # GET /events
   # GET /events.xml
   def index
     category = params[:category] || 'all'
     # We should paginate this
     if category == 'past'
-      @events = Event.past
+      @events = Event.with_permission(@current_user).past
       @heading = "Past Events"
     elsif category == 'future'
-      @events = Event.upcoming
+      @events = Event.with_permission(@current_user).upcoming
       @heading = "Upcoming Events"
     else
       #@events = Event.includes(:event_type).order(:start_time)
-      @events = Event.all
+      @events = Event.with_permission(@current_user).all
       @heading = "All Events"
     end
 
@@ -45,7 +46,7 @@ class EventsController < ApplicationController
     year = (params[:year] || Time.now.year).to_i
     @start_date = Date.civil(year, month).beginning_of_month
     @end_date = Date.civil(year, month).end_of_month
-    @events = Event.find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
+    @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
     @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
@@ -65,7 +66,13 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.xml
   def show
-    @event = Event.find(params[:id])
+    begin
+      # Only show event if user has permission to
+      @event = Event.with_permission(@current_user).find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to :root, :notice => "Event not found"
+      return
+    end
     @blocks = @event.blocks
     @current_user_rsvp = @event.rsvps.find_by_person_id(@current_user.id) if @current_user
     respond_to do |format|

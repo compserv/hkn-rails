@@ -18,7 +18,7 @@ class CandidatesController < ApplicationController
     requirements = @current_user.candidate.requirements_status
     @status = requirements[:status]
     @rsvps = requirements[:rsvps]
-    @events = Event.order("start_time asc").limit(5)
+    @events = Event.with_permission(@current_user).order("start_time asc").limit(5)
     
     @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
     
