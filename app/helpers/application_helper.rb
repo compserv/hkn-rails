@@ -19,9 +19,10 @@ module ApplicationHelper
     return output_array.join
   end
 
+  # This is for the pagination sort links
+  # This could probably be cleaned up a bit more...
   def sort_link(inner_text, sort_variable, opts = {})
     sort_direction = 'up'
-    puts @search_opts.to_json
     if sort_variable == @search_opts['sort'] and @search_opts['sort_direction'] != 'down'
       sort_direction = 'down'
     end

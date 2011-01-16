@@ -4,23 +4,39 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
+    per_page = 20
+    order = params[:sort] || "start_time"
+    params[:sort_direction] ||= 'down'
+    sort_direction = case params[:sort_direction]
+                     when "up" then "ASC"
+                     when "down" then "DESC"
+                     else "DESC"
+                     end
+    @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
+    # Maintains start_time as secondary sort column
+    opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}, start_time #{sort_direction}" }
+
     category = params[:category] || 'all'
+    event_finder = Event.with_permission(@current_user)
     # We should paginate this
     if category == 'past'
-      @events = Event.with_permission(@current_user).past
+      @events = event_finder.past
       @heading = "Past Events"
     elsif category == 'future'
-      @events = Event.with_permission(@current_user).upcoming
+      @events = event_finder.upcoming
       @heading = "Upcoming Events"
     else
       #@events = Event.includes(:event_type).order(:start_time)
-      @events = Event.with_permission(@current_user).all
+      @events = event_finder.all
       @heading = "All Events"
     end
+
+    @events = @events.paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
+      format.js { render :partial => 'list' }
     end
   end
 

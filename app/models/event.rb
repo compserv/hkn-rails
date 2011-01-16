@@ -27,9 +27,9 @@ class Event < ActiveRecord::Base
   validates :event_type, :presence => true
   validate :valid_time_range
 
-  scope :past,     joins(:event_type).order(:start_time).where(['start_time < ?', Time.now])
-  scope :upcoming, joins(:event_type).order(:start_time).where(['start_time > ?', Time.now])
-  scope :all,      joins(:event_type).order(:start_time)
+  scope :past,     joins(:event_type).where(['start_time < ?', Time.now])
+  scope :upcoming, joins(:event_type).where(['start_time > ?', Time.now])
+  scope :all,      joins(:event_type)
 
   scope :with_permission, Proc.new { |user| 
     if user.nil?
