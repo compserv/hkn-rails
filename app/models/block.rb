@@ -32,4 +32,8 @@ class Block < ActiveRecord::Base
       "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%a %m/%d %I:%M%p')}"
     end 
   end
+
+  def full?
+    rsvps.count >= rsvp_cap
+  end
 end

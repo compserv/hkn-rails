@@ -43,8 +43,8 @@
       <ul class="plain" style="display: table">
     <% @event.blocks.each do |block| %>
       <li>
-        <%= check_box_tag "block[#{block.id}]", true, @rsvp.blocks.include?(block), :disabled => block.rsvps.size >= block.rsvp_cap %> 
-        <% if block.rsvps.size >= block.rsvp_cap %>
+        <%= check_box_tag "block[#{block.id}]", true, @rsvp.blocks.include?(block), :disabled => block.full? %> 
+        <% if block.full? %>
           <s><%= block.nice_time_range %></s>
           <b>FULL</b>
         <% else %>

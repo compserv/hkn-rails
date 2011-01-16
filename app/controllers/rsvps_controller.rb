@@ -29,7 +29,7 @@ class RsvpsController < ApplicationController
   def new
     if @event.blocks.size == 1
       block = @event.blocks.first
-      if block.rsvps.size >= block.rsvp_cap
+      if block.full?
         redirect_to @event, :notice => 'Event is full.'
         return
       end
@@ -56,13 +56,13 @@ class RsvpsController < ApplicationController
 
     if @event.blocks.size == 1
       block = @event.blocks.first
-      if block.rsvps.size >= block.rsvp_cap
+      if block.full?
         redirect_to @event, :notice => 'Event is full.'
         return
       end
     elsif @event.blocks.size > 1
       @event.blocks.each do |block|
-        if block.rsvps.size >= block.rsvp_cap and @rsvp.blocks.include? block
+        if block.full? and @rsvp.blocks.include? block
           @rsvp.errors[:base] << "One or more RSVP blocks you selected is full."
           render :action => "new"
           return
