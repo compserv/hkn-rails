@@ -59,6 +59,10 @@ class Event < ActiveRecord::Base
     "#{hour}#{min}#{ampm}"
   end
 
+  def start_date
+    start_time.strftime('%Y %m/%d')
+  end
+
   def nice_time_range
     if start_time.to_date == end_time.to_date 
       "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%I:%M%p')}"
@@ -71,7 +75,7 @@ class Event < ActiveRecord::Base
     if user.nil?
       view_permission_group.nil?
     else
-      user.groups.include? view_permission_group
+      view_permission_group.nil? or user.groups.include? view_permission_group
     end
   end
 
