@@ -1,7 +1,51 @@
 <% if slot.tutors.any? %>
 <% slot.tutors.each do |tutor| %>
 <div title="<%= tutor.person.fullname %>" rel="#tutor-<%= tutor.id %>" class="infobox person"><%= tutor.person.abbr_name %></div>
+
+<!-- popup begins here -->
+<div width=400 id=tutor.person_id class="infodiv">
+<div><%= tutor.person.fullname %></div>
+<div class="imgdiv"><img src="tutor.person.picture"></div>
+
+<div class="hours">
+<label>Tutoring Office Hours:</label><br/>
+<% for slot in tutor.slots.sort_by { |a| [a.room, a.time] } %>
+	<span style="font-style: italic">
+	<%= slot.time.strftime("%A, %I-") + (slot.hour % 12 + 1).to_s + " @ " + slot.get_room() %>
+	</span><br/>
 <% end %>
+</div>
+<hr/>
+<div style="clear: both"></div>
+<% preferred_courses = tutor.courses.select{|course| course.course_preferences.find_by_tutor_id(tutor.id).level == 2} %>
+<% if not preferred_courses.empty? %>
+	<span class="small" style="font-style: italic">
+	<%= "Preferred: " %></span>
+	<% for course in preferred_courses %>
+		<%= course.to_s %>
+	<% end %><br/>
+<% end %>
+
+<% completed_courses = tutor.courses.select{|course| course.course_preferences.find_by_tutor_id(tutor.id).level == 1} %>
+<% if not completed_courses.empty? %>
+	<span class="small" style="font-style: italic">
+	<%= "Completed: " %></span>
+	<% for course in completed_courses %>
+		<%= course.to_s %>
+	<% end %><br/>
+<% end %>
+
+<% current_courses = tutor.courses.select{|course| course.course_preferences.find_by_tutor_id(tutor.id).level == 0} %>
+<% if not current_courses.empty? %>
+	<span class="small" style="font-style: italic">
+	<%= "Current: " %></span>
+	<% for course in current_courses %>
+		<%= course.to_s %>
+	<% end %>
+<% end %>
+</div>
+<% end %>
+
 <% else %>
 <div class="infobox person">No Tutoring!</div>
 <% end %>
