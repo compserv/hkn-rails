@@ -27,6 +27,13 @@ class RsvpsController < ApplicationController
   # GET /rsvps/new
   # GET /rsvps/new.xml
   def new
+    if @event.blocks.size == 1
+      block = @event.blocks.first
+      if block.rsvps.size >= block.rsvp_cap
+        redirect_to @event, :notice => 'Event is full.'
+        return
+      end
+    end
     @rsvp = Rsvp.new
 
     respond_to do |format|
@@ -46,6 +53,22 @@ class RsvpsController < ApplicationController
   def create
     @rsvp = Rsvp.new(params[:rsvp])
     assign_blocks
+
+    if @event.blocks.size == 1
+      block = @event.blocks.first
+      if block.rsvps.size >= block.rsvp_cap
+        redirect_to @event, :notice => 'Event is full.'
+        return
+      end
+    elsif @event.blocks.size > 1
+      @event.blocks.each do |block|
+        if block.rsvps.size >= block.rsvp_cap and @rsvp.blocks.include? block
+          @rsvp.errors[:base] << "One or more RSVP blocks you selected is full."
+          render :action => "new"
+          return
+        end
+      end
+    end
 
     respond_to do |format|
       if @rsvp.save
@@ -139,4 +162,5 @@ class RsvpsController < ApplicationController
       redirect_to :root, :notice => "You do not have permissionto RSVP for this event"
     end
   end
+
 end

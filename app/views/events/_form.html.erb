@@ -140,7 +140,11 @@
   </div>
   <div id="rsvp_cap_div" class="field">
     <%= label_tag :rsvp_cap, 'Maximum # of RSVPs' %>
-    <%= number_field_tag :rsvp_cap %>
+    <% if @event.blocks.size == 1 %>
+      <%= number_field_tag :rsvp_cap, @event.blocks.first.rsvp_cap %>
+    <% else %>
+      <%= number_field_tag :rsvp_cap %>
+    <% end %>
   </div>
   <div id="rsvp_blocks" class="field">
     <div class="field">
