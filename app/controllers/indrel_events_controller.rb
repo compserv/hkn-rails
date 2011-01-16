@@ -103,7 +103,7 @@ class IndrelEventsController < ApplicationController
     @event.destroy
 
     respond_to do |format|
-      format.html { redirect_to(events_url) }
+      format.html { redirect_to(indrel_events_url) }
       format.xml  { head :ok }
     end
   end
