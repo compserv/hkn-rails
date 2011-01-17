@@ -1,6 +1,9 @@
+<script type="text/javascript" src="/javascripts/tutoring.js"></script>
+
 <h2>Tutoring</h2>
 <% if @tutoring_enabled %>
 <h3><%= @tutor_title %></h3>
+<% tutors = [] %>
 <table id="daily_tutoring_schedule" class="landing tutoring small">
   <tr>
     <th></th>
@@ -12,9 +15,33 @@
     <td class="time"><%= format_hour_slot hour %></td>
     <td class="pcell"><%= render Slot.get_from_string(@day + hour.to_s + "C") %></td>
     <td class="pcell"><%= render Slot.get_from_string(@day + hour.to_s + "S") %></td>
+    <% tutors.concat(Slot.get_from_string(@day + hour.to_s + "C").tutors) %>
+    <% tutors.concat(Slot.get_from_string(@day + hour.to_s + "S").tutors) %>
   </tr>
 <% end %>
 </table>
+
+<div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 10px; line-height: 1.75em;">
+	<div class="small">
+	<% courses = CoursePreference.all_courses(tutors.uniq) %>
+	<% for key in courses.keys %>
+	<span class="dept_heading"><%= key %></span>
+		<% for course in courses[key] %>
+		<% c = "'" + key + course + "'" %>
+		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
+		onclick="return locklight(<%= c %>)"><%= course %></a>
+		<% end %>
+	<br/>
+	<% end %>
+	<br/>
+
+	<span class="small"><span class="preferred">&nbsp;&nbsp;&nbsp;</span> = preferred</span><br/>
+	<span class="small"><span class="completed">&nbsp;&nbsp;&nbsp;</span> = completed</span><br/>
+	<span class="small"><span class="current">&nbsp;&nbsp;&nbsp;</span> = in progress</span><br/>
+
+	</div>
+</div>
+
 <% else %>
 <p><%= @tutoring_message %></p>
 <% end %>

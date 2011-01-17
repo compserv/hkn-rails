@@ -1,6 +1,9 @@
 <% if slot.tutors.any? %>
 <% slot.tutors.each do |tutor| %>
-<div title="<%= tutor.person.fullname %>" rel="#tutor-<%= tutor.id %>" class="infobox person"><%= tutor.person.abbr_name %></div>
+<div title="<%= tutor.person.fullname %>" rel="#tutor-<%= tutor.id %>" class="infobox person 
+<% for pref in tutor.course_preferences %>
+<%= pref.course.course_abbr + '_' + pref.level.to_s %>
+<% end %>"><%= tutor.person.abbr_name %></div>
 
 <!-- popup begins here -->
 <div width=400 id=tutor.person_id class="infodiv">

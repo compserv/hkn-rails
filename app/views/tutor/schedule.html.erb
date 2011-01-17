@@ -1,7 +1,10 @@
+<script type="text/javascript" src="/javascripts/tutoring.js"></script>
+
 <h1>Tutoring Schedule</h1>
 <% stylesheet_link_tag "tutor.css" %>
 <div style="float: left; width: 80%; text-align: center; margin-bottom: 30px;">
 
+<% tutors = [] %>
 <h1>290 Cory</h1>
 <table class="tutoring" id="cory_schedule">
 <% @rows.each do |row| %>
@@ -16,6 +19,7 @@
 		<% @days.each do |day| %>
 		<td  class="slot cory pcell" id="<%= formatslot day, row.to_s + "C" %>">
 			<%= render Slot.get_from_string(formatslot day, row.to_s + "C") %>
+			<% tutors.concat(Slot.get_from_string(formatslot day, row.to_s + "C").tutors) %>
 		</td>
 		<% end%>
 	<% end %>
@@ -37,10 +41,32 @@
 		<% @days.each do |day| %>
 		<td  class="slot soda pcell" id="<%= formatslot day, row.to_s + "S" %>">
 			<%= render Slot.get_from_string(formatslot day, row.to_s + "S") %>
+			<% tutors.concat(Slot.get_from_string(formatslot day, row.to_s + "C").tutors) %>
 		</td>
 		<% end%>
 	<% end %>
 	</tr>
 <% end %>
 </table>
+</div>
+
+<div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 70px; line-height: 1.75em;">
+	<div class="small">
+	<% courses = CoursePreference.all_courses(tutors.uniq) %>
+	<% for key in courses.keys %>
+	<span class="dept_heading"><%= key %></span>
+		<% for course in courses[key] %>
+		<% c = "'" + key + course + "'" %>
+		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
+		onclick="return locklight(<%= c %>)"><%= course %></a>
+		<% end %>
+	<br/>
+	<% end %>
+	<br/>
+
+	<span class="small"><span class="preferred">&nbsp;&nbsp;&nbsp;</span> = preferred</span><br/>
+	<span class="small"><span class="completed">&nbsp;&nbsp;&nbsp;</span> = completed</span><br/>
+	<span class="small"><span class="current">&nbsp;&nbsp;&nbsp;</span> = in progress</span>
+
+	</div>
 </div>
