@@ -51,7 +51,7 @@ class EventsController < ApplicationController
   end
 
   #Rsvp confirmation for an individual event
-  def confirm
+  def rsvps_confirm
     @event = Event.find(params[:id])
     @event.rsvps.sort_by! { |rsvp| rsvp.person.last_name }
     @event.save
