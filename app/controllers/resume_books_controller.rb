@@ -152,6 +152,7 @@ private
     system "cp -R #{@gen_root}/skeleton/ResumeBookISO #{iso_dir}"
     system "sed \"s/SEMESTER/#{nice_semester}/g\" #{iso_dir}/Welcome.html > #{iso_dir}/Welcome.html.tmp"
     system "mv #{iso_dir}/Welcome.html.tmp #{iso_dir}/Welcome.html"
+    system "mkdir #{iso_dir}/Resumes"
     resumes.each_key do |year|
       year_dir_name = "#{iso_dir}/Resumes/#{dir_name_fn.call(year)}"
       system "mkdir #{year_dir_name}"
