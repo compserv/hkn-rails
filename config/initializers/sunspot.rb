@@ -4,7 +4,7 @@ Sunspot.config.pagination.default_per_page = 50
 # Otherwise, model save/destroy will throw an error.
 unless RAILS_ENV.eql?('production')
   begin
-    File.file?(pidfile=Sunspot::Server.new.pid_path)
+    File.file?(pidfile=Sunspot::Rails::Server.new.pid_path)
     pid=IO.read(pidfile).to_i
     Process.kill(0,pid) # check if running (doesn't actually kill)
     # must be running...
