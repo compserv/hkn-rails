@@ -15,17 +15,19 @@ $(document).ready(function() {
   $("#logo").click(function(){
     window.location = "/";
   });
+  $(".submenu").hide();
 	current = location.pathname.replace('/','');
   if (current.indexOf('/') != -1)
     current = current.substring(0,current.indexOf('/'));
 	id = current;	
 	if (id.length != 0 && id != "coursesurveys" && $("#" + id).length != 0) {
 		$("#" + id).addClass("current");
-		$("#" + current + "_submenu").show();
+		$("." + current + "_submenu").show();
 	}
 	else {
 		$($(".navigation_toplevel_item")[0]).addClass("current");	
-		$(".submenu").first().show();
+		$("#submenu .submenu").first().show();
+		$("#submenu-thin .submenu").first().show();
 	}
 	$(".navigation_toplevel_item").click(function(e) {
 	  e.preventDefault();
@@ -35,7 +37,7 @@ $(document).ready(function() {
     $(".submenu").hide();
     id = $(this).attr("id") + "_submenu";
     //$(id).fadeIn({ duration: 0.2 });		
-    $("#" + id).show();
+    $("." + id).show();
   });
   $("#userbar").toggle(function(){
     $("#user-dropdown").slideDown(300);
