@@ -14,31 +14,6 @@
     #main{
       max-width: 968px;
     }
-    #top{
-      height: 400px;
-    }
-    
-    #bot{
-      background: #403f3f;
-    }
-    
-    #top .section{
-      display: none;
-      width: 100%;
-      height: 100%;
-    }
-    
-    #top .text{
-      background: rgba(0,0,0, 0.6);
-      color: white;
-      height: 100%;
-      width: 60%;
-      float: left;
-    }
-    
-    #top .text div{
-      padding: 1em;
-    }
     
     #main h1{
       text-shadow: none;
@@ -58,46 +33,66 @@
       font-weight: normal;
     }
     
-    #top .text a{
+    #main .section-header{
+      background: #403f3f;
+    }
+    
+    #main .section{
+      width: 100%;
+      height: 400px;
+    }
+    
+    #main .section .text{
+      background: rgba(0,0,0, 0.6);
+      color: white;
+      height: 100%;
+      width: 60%;
+      float: left;
+    }
+    
+    #main .section .text div{
+      padding: 1em;
+    }
+    
+    #main .section .text a{
       color: #f7e26b;
     }
     
-    #top .current{
+    #main .current{
       display: block;
     }
     
-    #bot .section{
-      float: left;
+    #main .section-header{
       color: white;
       cursor: pointer;
     }
 
-    #bot .text{
+    #main .section-header .text{
       padding: 0.8em;
     }
     
-    #bot h1{
+    #main .section-header h1{
       margin: 0px;
     }
     
-    #bot .current, #bot .section:hover{
+    #main .current-header, .section-header:hover{
       color: #403f3f;
       background: #f7e26b;
     }
     
-    #what_sec{
+    #main #what_sec{
       background: url('../images/site/hkn_members.png');
     }
     
-    #services_sec{
+    #main #services_sec{
       background: url('../images/site/hkn_tutoring.png');
     }
     
-    #ind_rel_sec{
+    #main #ind_rel_sec{
       background: url('../images/site/hkn_faculty.png');
     }
     
-    #membership_sec{
+    #main #membership_sec{
       background: url('../images/site/hkn_banquet.png');
     }
     
@@ -111,11 +106,15 @@
   </style>
   <script type="text/javascript">
     $(document).ready(function(){
-      $("#bot .section").click(function(){
-        $("#bot .current").removeClass("current");
-        $(this).addClass("current");
-        $("#top .current").removeClass("current");
-        $("#" + $(this).attr("id") + "_sec").addClass("current");
+      $("#main .section").hide();
+      $(".current").show();
+      $(".section-header").click(function(){
+        $(".current-header").removeClass("current-header");
+        $(this).addClass("current-header");
+        $(".current").hide();
+        $(".current").removeClass("current");
+        $("#" + $(this).attr("id") + "_sec").addClass("current")
+        $(".current").show();
       })
     });
   </script>
@@ -134,37 +133,27 @@
     </div>
   </div>
   <div id="main">
-    <div id="bot">
-      <div id="what" class="section current">
+
+    
+      <div id="what" class="section-header current-header">
         <div class="text"><h1>What is HKN?</h1></div>
       </div>
-      <div id="services" class="section">
-        <div class="text"><h1>Student Services</h1></div>
-      </div>
-      <div id="ind_rel" class="section">
-        <div class="text"><h1>Industrial Relations</h1></div>
-      </div>
-      <div id="membership" class="section">
-        <div class="text"><h1>Membership</h1></div>
-      </div>
-      <div class="clear"></div>
-    </div>
-    <div id="top">
       <div id="what_sec" class="section current">
         <div class="text">
           <div>
-          <h1>What is HKN?</h1>
             Eta Kappa Nu (HKN) is the <a href="http://www.hkn.org/">national Electrical Engineering honor society</a>.
             The Berkeley chapter is among the most active engineering societies at Berkeley, providing academic services to fellow undergraduates.
             Our two offices are located in 290 Cory and 345 Soda near the <a href="http://berkeley.edu/map/maps/AB45.html">northeastern corner of the UC Berkeley campus</a>.
           </div>
         </div>
       </div>
-  
+    
+      <div id="services" class="section-header">
+        <div class="text"><h1>Student Services</h1></div>
+      </div>
       <div id="services_sec" class="section">
         <div class="text">
           <div>
-            <h1>Student Services</h1>
             <h2>Tutoring</h2>
             Students who need advice or tutoring in EE and CS courses are encouraged to drop by for free assistance. Officers hold <a href="/tutor/">office hours</a> from 11am to 5pm every weekday.
     
@@ -177,25 +166,28 @@
           </div>
       </div>
 
+      <div id="ind_rel" class="section-header">
+        <div class="text"><h1>Industrial Relations</h1></div>
+      </div>
       <div id="ind_rel_sec" class="section">
         <div class="text">
           <div>
-            <h1>Industry Relations</h1>
             HKN has strong ties with industry, linking students with companies by setting up <%= link_to "info sessions", infosessions_path %> where companies can give a presentation about themselves and provide a forum for students to talk to industry and find out more about the work environment. Additionally, we sell <%= link_to "resume books", resume_books_path %> containing the resumes of our members.
           </div>
         </div>
       </div>
-  
+    
+      <div id="membership" class="section-header">
+        <div class="text"><h1>Membership</h1></div>
+      </div>
       <div id="membership_sec" class="section">
         <div class="text">
           <div>
-          <h1>Membership</h1>
           <p>Membership in Eta Kappa Nu is extended to undergraduates in the top fourth of the junior class and the top third of the senior class in EECS, and all continuing EE graduate students. Interested students should watch for the list of eligible names, which is posted around Cory Hall at about a month after the beginning of each semester. </p>
           <p>After being invited to join, prospective members participate in projects and social activities that demonstrate their dedication to serving fellow members of the EECS community, the ultimate goal of HKN.</p>
           </div>
         </div>
       </div>
-    </div>
   </div>
 
   <div class="clear"></div>
