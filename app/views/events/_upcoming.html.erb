@@ -1,0 +1,18 @@
+<ul id="upcoming_events" class="plain">
+<% for event in @events %>
+  <li class="event">
+    <span class="name">
+      <%= link_to event.name, event %> (<span class="location"><%= event.location %></span>)
+      <% if event.can_rsvp? @current_user %>
+        [<%= link_to "RSVP", "/events/" + event.id.to_s + "/rsvps/new" %>]
+      <% end %>
+    </span>
+    <span>
+      <span class="time">
+        <%= event.nice_time_range %>
+      </span>
+    </span>
+    <span class="description"><%= event.description %></span>
+  </li>
+<% end %>
+</ul>

@@ -4,18 +4,16 @@ table#slot_table th { width: 100px; text-align: center}
 table#slot_table .slider_container { padding: 10px 15px; }
 #big_slider_container { width: 400px; padding: 10px 15px; }
 
-td.slot_preferred {background-color: #B2F2AA;}
+td.slot_preferred {background-color: #77c265;}
 
-td.slot_available {background-color: #EFF2AA;}
+td.slot_available {background-color: #f6e68b;}
 
-td.slot_unavailable {background-color: #EDCACA;}
-
-td.slot {border: 1px solid }
+td.slot_unavailable {background-color: #ed8d86;}
 
 td.slot input {margin-left: 10px; margin-right: 3px; width:70%}
 
 html table.tutoring { width: 100%; text-align: center; }
-html table.tutoring td.pcell { width: 18%; background-color: #EDF3FE; padding: 3px; }
+html table.tutoring td.pcell { width: 18%; padding: 3px; }
 html table.tutoring td.pcell div.person { margin: 0px 3px 0px 3px; }
 html table.landing td.pcell { width: 45% !important; }
 html .dept_heading { font-weight: bold; }
