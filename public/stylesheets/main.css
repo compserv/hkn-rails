@@ -401,6 +401,24 @@ h4{
   background: rgba(10, 10, 30, 0.03);
 }
 
+/*Upcoming Events Sidebar*/
+ul#upcoming_events{
+  -webkit-padding-start: 0px;
+  padding-left: 0px;
+  text-indent: 0px;
+}
+li.event .time{
+  display: block;
+}
+li.event .description{
+  display: none;
+}
+
+.event {
+  padding: 0.5em 0px;
+  margin: 5px 0px;
+}
+
 
 
 /* Two-column Layout */

@@ -40,7 +40,13 @@ class Event < ActiveRecord::Base
   }
 
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
-
+  
+  def self.upcoming_events(num)
+    self.with_permission(@current_user).find(:all, :conditions => ['start_time>= ?',
+    Time.now], :order => "start_time asc", :limit => num)
+    
+  end
+  
   def valid_time_range
     if !start_time.blank? and !end_time.blank?
       errors[:end_time] << "must be after start time" unless start_time < end_time

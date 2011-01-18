@@ -15,16 +15,38 @@ ul.courses li {
     font-size: small;
     text-indent: 1em;
 }
+
+.exam_table{
+  width: 48%;
+  padding-right: 0.5em;
+  float:left;
+}
+
+.exam_table th.dept_name{
+  padding: 4px;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+table.table{
+  width: 100%;
+}
 </style>
 
 <% @dept_courses.each do |dept_name, courses| %>
-<div style="float:left; margin-right: 30px; margin-top: 30px;">
-  <h1><%= dept_name %></h1>
-  <ul class="courses">
-    <% courses.each do |course| %>
-	    <li><%= link_to "#{course.dept_abbr} #{course.course_number}#{course.suffix} - #{course.exams.length} exam(s)", exams_course_path(course.dept_abbr, course.full_course_number) %>
-    <% end %>
-  </ul>
+<div class="exam_table">
+  <table class="table">
+    <tbody>
+      <tr>
+        <th class="dept_name"><%= dept_name %></th>
+      </tr>
+      <% courses.each do |course| %>
+	    <tr>
+	      <td><%= link_to "#{course.dept_abbr} #{course.course_number}#{course.suffix} - #{course.exams.length} exam(s)", exams_course_path(course.dept_abbr, course.full_course_number) %></td>
+	    </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 <% end %>
-<br />
+<div class="clear"></div>
