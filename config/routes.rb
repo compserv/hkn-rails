@@ -123,8 +123,8 @@ HknRails::Application.routes.draw do
     #Routes for vp's rsvp confirmation page
     match "confirm_rsvps" => "events#vp_confirm", :as => :vp_confirm
     match "confirm_rsvps/event/:id" => "events#rsvps_confirm", :as => :confirm_event_rsvps
-    match "rsvp/:id/confirm" => "rsvps#confirm", :as => :confirm_rsvp
-    match "rsvp/:id/unconfirm" => "rsvps#unconfirm", :as => :unconfirm_rsvp
+    match "confirm/:id" => "rsvps#confirm", :as => :confirm_rsvp
+    match "unconfirm/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
   end
   resources :events do
     resources :rsvps

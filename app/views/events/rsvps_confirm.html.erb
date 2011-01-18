@@ -7,7 +7,7 @@
     <th>Action</th>
   </tr>
 
-  <% @event.rsvps.each do |rsvp| %>
+  <% @rsvps.each do |rsvp| %>
   <% if rsvp.person.in_group?("candidates") %>
   <tr>
     <td><%= rsvp.person.fullname %></td>

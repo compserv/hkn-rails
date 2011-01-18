@@ -1,6 +1,6 @@
 class RsvpsController < ApplicationController
   before_filter :get_event
-  before_filter :rsvp_permission, :except => :my_rsvps
+  before_filter :rsvp_permission, :except => [:my_rsvps, :confirm, :unconfirm]
 
   # GET /rsvps
   # GET /rsvps.xml
@@ -115,7 +115,7 @@ class RsvpsController < ApplicationController
 
   def confirm
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = 't'
+    @rsvp.confirmed = "t"
     @rsvp.save
 
     respond_to do |format|
@@ -159,7 +159,7 @@ class RsvpsController < ApplicationController
 
   def rsvp_permission
     if !@event.can_rsvp? @current_user
-      redirect_to :root, :notice => "You do not have permissionto RSVP for this event"
+      redirect_to :root, :notice => "You do not have permission to RSVP for this event"
     end
   end
 
