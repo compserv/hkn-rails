@@ -8,7 +8,7 @@
   </tr>
 
   <% @event.rsvps.each do |rsvp| %>
-  <%  if rsvp.person.in_group?("candidates") %>
+  <% if rsvp.person.in_group?("candidates") %>
   <tr>
     <td><%= rsvp.person.fullname %></td>
 
@@ -16,7 +16,7 @@
     <td>Confirmed</td>
     <td><%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id) %></td>
     <% else %>
-    <td>Not Confirmed </td>
+    <td>Not Confirmed</td>
     <td><%= link_to "Confirm", confirm_rsvp_path(rsvp.id) %></td>
     <% end %>
   </tr>
