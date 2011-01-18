@@ -5,12 +5,27 @@
       background: #ccc;
     }
     
+    div#photo{
+      width: 125px;
+      height: 100px;
+      float:left;
+    }
+    
+    #info{
+      padding-left: 1em;
+      float:left;
+    }
+    
+    div.no-photo{
+      background: url("../images/person_placeholder.png");
+    }
+    
     span.label{
       display: inline-block;
       text-transform: uppercase;
       font-size: 0.8em;
       color: #999;
-      width: 6em;
+      width: 12em;
     }
     
     .user-field{
@@ -18,22 +33,21 @@
     }
   </style>
 <% end %>
-
-<div id="photo">
-  <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
+<div class="admin">
+  <% if @auth["superusers"] %>
+    Admin Bar: 
+    <%= link_to "[Edit]", edit_person_path(@person) %>
+    <%= link_to "[Delete]", person_path(@person) %>
+  <% end %>
 </div>
+<div style="float: left; padding-right: 1em; width: 49%">
+  <h1><%= @person.fullname %></h1>
 
-<div id="info">
-  <h1><%= @person.fullname %>'s Profile</h1>
-  <div class="admin">
-    <% if @auth["superusers"] %>
-      Admin Bar: 
-      <%= link_to "[Edit]", edit_person_path(@person) %>
-      <%= link_to "[Delete]", person_path(@person) %>
-    <% end %>
+  <div id="photo" <%= "class=no-photo" if @person.picture.blank? %>>
+    <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
   </div>
-  
-  
+
+  <div id="info">
     <% unless @person.email.blank? or @person.private %>
     <span class="user-field">
       <span class="label">Email</span><%= @person.email %>
@@ -47,22 +61,28 @@
     <span class="user-field">
       <span class="label">Status</span><%= @person.status %>
     </span>
+  </div>
+  <div class="clear"></div>
+  
+  <h2>Badges Earned</h2>
+  
+</div>
+<div style="float: left; width: 49%">
+<h2>Additional Membership Information</h2>
+<% @person.committeeships.order(:semester).each do |committeeship| %>
+  <p><%=@person.first_name%> had the position of <%=committeeship.nice_position%> in <%=committeeship.nice_semester%>.</p>
+<% end %>
 
-  <h2>Additional Membership Information</h2>
-  <% @person.committeeships.order(:semester).each do |committeeship| %>
-    <p><%=@person.first_name%> had the position of <%=committeeship.nice_position%> in <%=committeeship.nice_semester%>.</p>
-  <% end %>
-
-  <% if @person.rsvps.count > 0 %>
-    <h2><%= @person.fullname %>'s RSVPs</h2>
-    <ul>
-    <% @person.rsvps.ordered_desc.limit(10).each do |rsvp| %>
-      <% if rsvp.event.can_view? @current_user %>
-        <li><%= link_to "#{rsvp.event.start_date} - #{rsvp.event.name}", rsvp.event %></li>
-      <% end %>
+<% if @person.rsvps.count > 0 %>
+  <h2><%= @person.fullname %>'s RSVPs</h2>
+  <ul>
+  <% @person.rsvps.ordered_desc.limit(10).each do |rsvp| %>
+    <% if rsvp.event.can_view? @current_user %>
+      <li><%= link_to "#{rsvp.event.start_date} - #{rsvp.event.name}", rsvp.event %></li>
     <% end %>
-    </ul>
   <% end %>
+  </ul>
+<% end %>
 </div>
 
 
