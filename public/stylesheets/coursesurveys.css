@@ -11,7 +11,6 @@
   background-image: -moz-linear-gradient( center left, #FFDD44 0%, #EEFF33 100% );
 }
 .infobox th { text-align: left; }
-#rating_info { margin: auto; width: auto; }
 #rating-info { margin: auto; display: table; }
 .info-row { display: table-row; }
 .info-label { display: table-cell; text-align: right; font-weight: bold; padding: 5px; }
@@ -21,16 +20,16 @@
 #ratings { width: 85%; border: 1px solid #ddd; border-collapse: collapse; margin: 1em auto; }
 #ratings th, #ratings td { text-align: center;}
 
-.instructor_photo { background: white; border: 1px solid #ccc; padding: 3px; }
+.instructor-photo { background: white; border: 1px solid #ccc; padding: 3px; }
 #instructorbox { float: left; width: 20%; }
 #instructorbox ul { list-style: none }
-#klass_table{
+#klass-table{
   padding: 0px 2em;
   width: 70%;
   float:left;
 }
 
-#klass_table #ratings{
+#klass-table #ratings{
   width: 100%;
 }
 

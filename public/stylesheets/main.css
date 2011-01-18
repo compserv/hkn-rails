@@ -81,8 +81,8 @@ tr:nth-child(odd)  { background-color: #fff; }
 
 td { border: 1px dashed #ddd; padding: 2px 4px; }
 .infodiv { width: 300px; text-align: left; }
-.two_column { width: 45%; float: left; }
-.right_column { float: right; }
+.two-column { width: 45%; float: left; }
+.right-column { float: right; }
 ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1em; text-indent: -1em; }
 .center { text-align: center; }
 .clear{
@@ -439,7 +439,7 @@ h4{
 }
 
 /*Upcoming Events Sidebar*/
-ul#upcoming_events{
+ul#upcoming-events{
   -webkit-padding-start: 0px;
   padding-left: 0px;
   text-indent: 0px;

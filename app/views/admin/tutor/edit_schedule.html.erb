@@ -12,7 +12,7 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 	<% if row == "Hours" %>
 		<th>Hours</th>
 		<% @days.each do |day| %>
-		<th class="slot_table_header"><%= day %></th>
+		<th class="slot-table-header"><%= day %></th>
 		<% end %>
 	<% else %>
 		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>

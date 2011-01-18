@@ -1,19 +1,19 @@
-table#slot_table{}
+table#slot-table{}
 
-table#slot_table th { width: 100px; text-align: center}
-table#slot_table .slider_container { padding: 10px 15px; }
-#big_slider_container { width: 400px; padding: 10px 15px; }
+table#slot-table th { width: 100px; text-align: center}
+table#slot-table .slider-container { padding: 10px 15px; }
+#big-slider-container { width: 400px; padding: 10px 15px; }
 
-td.slot_preferred {background-color: #77c265;}
+td.slot-preferred {background-color: #77c265;}
 
-td.slot_available {background-color: #f6e68b;}
+td.slot-available {background-color: #f6e68b;}
 
-td.slot_unavailable {background-color: #ed8d86;}
+td.slot-unavailable {background-color: #ed8d86;}
 
-td.slot input {margin-left: 10px; margin-right: 3px; width:70%}
+td.slot input { margin: auto; display: block; }
 
 html table.tutoring { width: 100%; text-align: center; }
 html table.tutoring td.pcell { width: 18%; padding: 3px; }
-html table.tutoring td.pcell div.person { margin: 0px 3px 0px 3px; }
+html table.tutoring td.pcell div.person { margin: 0px auto; }
 html table.landing td.pcell { width: 45% !important; }
-html .dept_heading { font-weight: bold; }
+html .dept-heading { font-weight: bold; }

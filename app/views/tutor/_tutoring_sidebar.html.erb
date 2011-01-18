@@ -23,7 +23,7 @@
 	<div class="small">
 	<% courses = CoursePreference.all_courses(tutors.uniq) %>
 	<% for key in courses.keys %>
-	<span class="dept_heading"><%= key %></span>
+	<span class="dept-heading"><%= key %></span>
 		<% for course in courses[key] %>
 		<% c = "'" + key + course + "'" %>
 		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
