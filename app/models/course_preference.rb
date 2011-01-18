@@ -21,18 +21,20 @@ class CoursePreference < ActiveRecord::Base
   validates_inclusion_of :level, :in => 0..2, :message => "invalid value." 
 
   #For scheduler class view
-  def CoursePreference.all_courses
+  def CoursePreference.all_courses(tutors)
     ret = Hash.new()
-    for cpref in CoursePreference.all
-      course = cpref.course
-      if ret[course.dept_abbr].nil?
-        ret[course.dept_abbr] = []
-      end
-      if not ret[course.dept_abbr].include?(course.full_course_number)
-        ret[course.dept_abbr] << course.full_course_number
+    for tutor in tutors
+      for cpref in tutor.course_preferences
+        course = cpref.course
+        if ret[course.dept_abbr].nil?
+          ret[course.dept_abbr] = []
+        end
+        if not ret[course.dept_abbr].include?(course.full_course_number)
+          ret[course.dept_abbr] << course.full_course_number
+        end
       end
     end
-    return ret
+    return ret.each_value { |list| list.sort! }
   end
 
 end
