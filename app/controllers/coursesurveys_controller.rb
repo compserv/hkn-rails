@@ -349,7 +349,7 @@ class CoursesurveysController < ApplicationController
     @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
 
     # Query
-    params[:q] = sanitize_query(params[:q]) ||= ''
+    params[:q] = sanitize_query(params[:q]) || ''
 
     # Department
     unless params[:dept].blank?
