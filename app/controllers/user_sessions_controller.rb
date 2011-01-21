@@ -22,6 +22,7 @@ class UserSessionsController < ApplicationController
         redirect_to root_url
       end
     else
+      flash[:notice] = "Login was unsuccessful."
       render :action => :new
     end
   end
