@@ -1,0 +1,60 @@
+<h1>Search Exams<%= "for '#{@query}'" unless @query.blank? %></h1>
+<style type="text/css">
+
+ul.courses {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    list-style-position: outside;
+}
+ul.courses li {
+    padding: 5px 0 0 0;
+    border-top: solid 1px #000000;
+    margin: 0;
+    line-height: 1.3em;
+    font-size: small;
+    text-indent: 1em;
+}
+
+.exam_table{
+  width: 98%;
+  padding-right: 0.5em;
+  float:left;
+}
+
+.exam_table th,td {
+  text-align: center;
+}
+
+.exam_table th.dept_name{
+  padding: 4px;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+table.table{
+  width: 100%;
+}
+</style>
+
+<div class="exam_table">
+  <table class="table">
+    <tbody>
+      <tr>
+        <th>Course</th>
+        <th>Description</th>
+        <th>Exams Available</th>
+      </tr>
+      <% @results[:courses].each do |course| %>
+        <%# ideally, i'd like to have the whole row be a link, with some fancy hover color. %>
+        <%- cpath = exams_course_path(course.dept_abbr, course.full_course_number) -%>
+        <tr>
+          <td><%= link_to "#{course.dept_abbr} #{course.course_number}#{course.suffix}", cpath %></td>
+          <td><%= link_to course.name, cpath %></td>
+          <td><%= link_to "#{course.exams.length} #{'exam'.pluralize_for(course.exams.length)}", cpath %></td>
+        </tr>
+     <% end %>
+    </tbody>
+  </table>
+</div>
+<div class="clear"></div>
