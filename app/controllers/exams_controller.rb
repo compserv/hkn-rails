@@ -47,7 +47,7 @@ class ExamsController < ApplicationController
       dept = Department.find_by_nice_abbr(dept_abbr)
       dept_name = dept.name
       #courses = Course.find_all_with_exams_by_department_id(dept.id)
-      courses = Course.find(:all, :conditions => {:department_id=>dept.id}, :include => [:exams], :order => :course_number)
+      courses = Course.find(:all, :conditions => {:department_id=>dept.id}, :include => [:exams], :order => :course_number).reject {|course| course.exams.empty?}
       [dept_name, courses]
     end
 
