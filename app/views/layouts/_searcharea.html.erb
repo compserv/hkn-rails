@@ -1,18 +1,16 @@
 <div id="searcharea">
   <div id="examfiles" class="searchcontrol">
-    <form action="/exam/list/" method="get">
-      <div>
-        <input type="text" id="id_exam_course" name="exam_course" placeholder="Search Exams" class="text autoclear" />
-        <input class="button" type="submit" value="Search" />
-      </div>
-    </form>
+    <%= form_tag(exams_search_path, :method => :get) do %>
+      <%= text_field_tag :q, params[:controller].eql?('exams') ? h(params[:q]) : '', :placeholder=>"Search Exams", :class=>"text autoclear" %>
+      <%= submit_tag "Search", :name=>nil %>
+    <%- end -%>
     <div class="small searchhelp">
       example: CS 61a, ee 20, cs 188
     </div>
   </div>
   <div id="coursesurvey" class="searchcontrol">
     <%= form_tag(coursesurveys_search_path, :method => :get) do %>
-      <%= text_field_tag(:q, h(params[:q]), :class => "text", :placeholder=>"Search Course Surveys") %>
+      <%= text_field_tag(:q, params[:controller].eql?('coursesurveys') ? h(params[:q]) : '', :class => "text", :placeholder=>"Search Course Surveys") %>
       <%= submit_tag "Search", :name=>nil  %>
     <%- end -%>
     <div class="small searchhelp">

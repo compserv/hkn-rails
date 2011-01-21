@@ -173,6 +173,8 @@ HknRails::Application.routes.draw do
   # Exams
   scope "exam" do
     resources :exams
+    match "search"                                => "exams#search",
+      :as => :exams_search
     match "browse"                                => "exams#browse",
       :as => :exams_browse
     match "course/:dept_abbr"                     => "exams#department",
