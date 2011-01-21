@@ -40,6 +40,14 @@ class ApplicationController < ActionController::Base
   def num_deprel_requests
     DeptTourRequest.all.count
   end
+  
+  #Custom error pages
+  def render_optional_error_file(status_code)
+    respond_to do |type| 
+        type.html { render :template => "static/error", :layout => 'application'} 
+        type.all  { render :nothing => true } 
+      end
+  end
 
   #-----------------------------------------------------------------------
   # Private Methods
@@ -87,4 +95,5 @@ class ApplicationController < ActionController::Base
       @auth['comms'] = @auth['cmembers'] || @auth['officers']
     end
   end
+  
 end
