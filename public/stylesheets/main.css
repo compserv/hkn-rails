@@ -233,13 +233,16 @@ h4{
 
 #submenu-thin{
   display:block;
+  position: relative;
+  top: -6px;
+  margin: auto;
+  height: auto;
 }
 
 #submenu{
   display: none;
   font-size: 1.3em;
   line-height: 1.3em;
-  padding-left: 20px;
   padding-top: 10px;
   float: left;
 }
@@ -280,16 +283,9 @@ h4{
 
 /*Submenu - thin*/
 
-#submenu-thin{
-  position: relative;
-  top: -6px;
-  margin: auto;
-  height: auto;
-}
-
 #submenu-thin ul{
   display: inline-block;
-  padding-left: 1em;
+  padding-right: 1em;
 }
 
 #submenu-thin li{
@@ -300,7 +296,7 @@ h4{
 
 /*Submenu - regular size*/
 #submenu .submenu ul{
-  padding-right: 1.5em;
+  padding-left: 1.5em;
   float:left;
 }
 

@@ -14,24 +14,29 @@ class CandidatesController < ApplicationController
   end
 
   def portal
-    @announcements = Announcement.order("created_at desc").limit(10)
-    requirements = @current_user.candidate.requirements_status
-    @status = requirements[:status]
-    @rsvps = requirements[:rsvps]
-    @events = Event.upcoming_events(5)
+    if(@current_user.candidate)
+      @announcements = Announcement.order("created_at desc").limit(10)
+      requirements = @current_user.candidate.requirements_status
+      @status = requirements[:status]
+      @rsvps = requirements[:rsvps]
+      @events = Event.upcoming_events(5)
     
-    @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
+      @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
     
-    @done["events"] = !@status.has_value?(false)
-    @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 5
-    @done["resume"] = @current_user.resumes.length >= 0
-    @done["quiz"] = @current_user.candidate.quiz_responses.length >= 0
-    @done["forms"] = @done["resume"] and @done["quiz"]
-    @done["course_surveys"] = false
+      @done["events"] = !@status.has_value?(false)
+      @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 5
+      @done["resume"] = @current_user.resumes.length >= 0
+      @done["quiz"] = @current_user.candidate.quiz_responses.length >= 0
+      @done["forms"] = @done["resume"] and @done["quiz"]
+      @done["course_surveys"] = false
 
-    @coursesurveys_active = Property.get_or_create.coursesurveys_active
-    @required_surveys = Candidate.required_surveys
-    @coursesurveys = @current_user.coursesurveys
+      @coursesurveys_active = Property.get_or_create.coursesurveys_active
+      @required_surveys = Candidate.required_surveys
+      @coursesurveys = @current_user.coursesurveys
+    else
+      flash[:notice] = "Oops, there's no candidate information for your account."
+      redirect_to :back
+    end
 
   end
   
@@ -40,16 +45,22 @@ class CandidatesController < ApplicationController
   end
 
   def application
-    @app_details = {
-      :aim => @current_user.aim, 
-      :phone => @current_user.phone_number,
-      :local_address => @current_user.local_address,
-      :perm_address => @current_user.perm_address,
-      :grad_sem => @current_user.grad_semester,
-      :release => @current_user.candidate.release,
-      :committee_prefs => !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
-      :suggestion => @current_user.suggestion ? @current_user.suggestion.suggestion : ""
-    }
+    if(@current_user.candidate)
+      @app_details = {
+        :aim => @current_user.aim, 
+        :phone => @current_user.phone_number,
+        :local_address => @current_user.local_address,
+        :perm_address => @current_user.perm_address,
+        :grad_sem => @current_user.grad_semester,
+        :release => @current_user.candidate.release,
+        :committee_prefs => !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
+        :suggestion => @current_user.suggestion ? @current_user.suggestion.suggestion : ""
+      }
+    else
+      flash[:notice] = "Oops, there's no candidate information for your account."
+      redirect_to :back
+    end
+    
   end
 
   def quiz
