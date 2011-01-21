@@ -198,6 +198,8 @@ HknRails::Application.routes.draw do
   end
   #resources :user_session
 
+  match "factorial/:id" => "home#factorial"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

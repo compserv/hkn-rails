@@ -20,4 +20,10 @@ class HomeController < ApplicationController
     end
   end
 
+  def factorial
+    x = params[:x].to_i
+    y = x.downto(1).inject(:*)
+    redirect_to :root, :notice => y
+  end
+
 end
