@@ -385,8 +385,14 @@ class CoursesurveysController < ApplicationController
 
       @results[:courses].results = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
       @results[:instructors].results = Instructor.find(:all, :select=>[:id,:first_name,:last_name,:private,:title], :conditions => ["(first_name||' '||last_name) LIKE ?", str])
+
       flash[:notice] = "Solr isn't started, so your results are probably lacking." if RAILS_ENV.eql?('development')
     end
+
+    # redirect if only one result
+    redirect_to surveys_instructor_path(@results[:instructors].results.first) if @results[:instructors].results.length == 1 && @results[:courses].results.empty?
+    redirect_to surveys_course_path(@results[:courses].results.first) if @results[:courses].results.length == 1 && @results[:instructors].results.empty?
+
 end
 
 ##  def search_BY_SQL
