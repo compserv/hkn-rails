@@ -32,7 +32,6 @@
             level: preference_level,
           },
           function(data) {
-            console.log(data);
             if(data[0] == 1){ //OK submission
               course_name = data[1];
               $("input[name=course_query]").val(""); //clear fields
