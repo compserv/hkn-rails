@@ -3,12 +3,51 @@ class ExamsController < ApplicationController
   def index
   end
 
+  def search
+    return if strip_params
+    query = @query = sanitize_query(params[:q]) || ''
+
+    @results = {}
+
+    if $SUNSPOT_ENABLED
+      @results[:courses] = Course.search do
+        with(:invalid, false)
+        keywords query
+        order_by :score, :desc
+        order_by :department_id
+      end.results
+    else
+      # Solr isn't started, hack together some results
+      logger.warn "Solr isn't started, falling back to lame search"
+
+      str = "%#{@query}%"
+
+      @results[:courses] = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
+      flash[:notice] = "Solr isn't started, so your results are probably lacking." if RAILS_ENV.eql?('development')
+     end
+
+    # if very likely have a single match, just go to it
+    if @results[:courses].length == 1 then
+      c = @results[:courses].first
+      redirect_to exams_course_path(c.dept_abbr, c.full_course_number)
+      return
+    end
+
+    # multiple results
+    respond_to do |format|
+      format.html { render :action => :search }
+      format.xml { render :xml => @results }
+    end
+  end
+
   # GET /exams/browse
   # GET /exams/browse.xml
   def browse
     @dept_courses = ['CS', 'EE'].collect do |dept_abbr|
-      dept_name = Department.find_by_nice_abbr(dept_abbr).name
-      courses = Course.find_all_with_exams_by_department_abbr(dept_abbr)
+      dept = Department.find_by_nice_abbr(dept_abbr)
+      dept_name = dept.name
+      #courses = Course.find_all_with_exams_by_department_id(dept.id)
+      courses = Course.find(:all, :conditions => {:department_id=>dept.id}, :include => [:exams], :order => :course_number).reject {|course| course.exams.empty?}
       [dept_name, courses]
     end
 

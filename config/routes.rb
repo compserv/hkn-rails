@@ -173,6 +173,8 @@ HknRails::Application.routes.draw do
   # Exams
   scope "exam" do
     resources :exams
+    match "search"                                => "exams#search",
+      :as => :exams_search
     match "browse"                                => "exams#browse",
       :as => :exams_browse
     match "course/:dept_abbr"                     => "exams#department",
@@ -195,6 +197,8 @@ HknRails::Application.routes.draw do
     post "coursesurvey_signup" => "candidates#coursesurvey_signup_post", :as => "coursesurvey_signup_post"
   end
   #resources :user_session
+
+  match "factorial/:x" => "home#factorial"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

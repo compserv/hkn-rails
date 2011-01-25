@@ -343,18 +343,13 @@ class CoursesurveysController < ApplicationController
   end
 
   def search
-    # hack.. remove annoying utf8 param
-    if request.url =~ /utf8=/i
-      new_url = request.url.gsub(/&?utf8=[^&]+&?/i, '')
-      redirect_to new_url
-      return
-    end
+    return if strip_params
 
     @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
     @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
 
     # Query
-    params[:q] ||= ''
+    params[:q] = sanitize_query(params[:q]) || ''
 
     # Department
     unless params[:dept].blank?
@@ -364,7 +359,7 @@ class CoursesurveysController < ApplicationController
 
     @results = {} # [instructor, courses, rating]
 
-    begin
+    if $SUNSPOT_ENABLED
       # Search courses
       @results[:courses] = Course.search do
         with(:department_id, @dept.id) if @dept
@@ -379,7 +374,7 @@ class CoursesurveysController < ApplicationController
       @results[:instructors] = Instructor.search do
         keywords params[:q] unless params[:q].blank?
       end
-    rescue Errno::ECONNREFUSED
+    else
       # Solr isn't started, hack together some results
       logger.warn "Solr isn't started, falling back to lame search"
 

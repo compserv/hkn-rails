@@ -17,7 +17,7 @@ class Coursesurvey < ActiveRecord::Base
   validates :max_surveyors, :numericality => true
   validates :status, :presence => true, :numericality => true
 
-  scope :current_semester, joins(:klass => :course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section')
+  scope :current_semester, lambda{ joins(:klass => :course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section') }
 
   @@statusmap = { 0 => "Not Done", 1 => "Contacted", 2 => "Scheduled", 3 => "Done" }
 

@@ -79,3 +79,36 @@ end
 class FakeSearch
   attr_accessor :results
 end
+
+module ActionController
+  module Helpers
+    # Removes unwanted params from your GET request.
+    # Arguments:
+    #  params: array of params you want to remove. default: [:utf8]
+    # Returns:
+    #  true if redirected (in controller, say 'return if strip_params')
+    #
+    # Note: this is a HACK.
+    #
+    def strip_params(params=[:utf8])
+      retval = false
+      params.each do |p|
+        p = p.to_s
+        if request.url =~ /#{p}=/i
+          new_url = request.url.gsub(/&?#{p}=[^&]*&?/i, '')
+          redirect_to new_url
+          retval = true
+        end
+      end
+      return retval
+    end
+
+    # Removes the badness from a query, by allowing only common chars.
+    # For example, you could break a query by searching for ".
+    #
+    def sanitize_query(q)
+      return '' if q.nil?
+      q.gsub(/\s+/, ' ').gsub(/[^a-zA-Z 0-9]/i, '?')
+    end
+  end
+end
