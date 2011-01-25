@@ -108,7 +108,7 @@ module ActionController
     #
     def sanitize_query(q)
       return '' if q.nil?
-      q.gsub(/\s+/, ' ').gsub(/[^a-zA-Z 0-9]/i, '?')
+      q.gsub(/\s+/, ' ').gsub(/[^a-zA-Z 0-9\*\?\"]/i, '?')
     end
   end
 end

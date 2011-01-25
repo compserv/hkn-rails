@@ -30,9 +30,9 @@ class Course < ActiveRecord::Base
   # Sunspot
   searchable do
     text :name, :stored => true, :boost => 2.0
-    text :description, :stored => true, :boost => 0.5
+    text :description, :stored => true
     integer :course_number, :stored => true
-    text :course_string do |c|
+    text :course_string, :boost => 2.0 do |c|
       [c.prefix, c.course_number.to_s, c.suffix].join
     end
     string :course_abbr

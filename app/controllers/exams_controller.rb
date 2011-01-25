@@ -5,14 +5,14 @@ class ExamsController < ApplicationController
 
   def search
     return if strip_params
-    query = @query = sanitize_query(params[:q]) || ''
+    query = @query = sanitize_query(params[:q])
 
     @results = {}
 
     if $SUNSPOT_ENABLED
       @results[:courses] = Course.search do
         with(:invalid, false)
-        keywords query
+        keywords query   # this needs to be a local var, not an instance var, b/c of scoping issues
         order_by :score, :desc
         order_by :department_id
       end.results
