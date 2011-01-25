@@ -20,7 +20,9 @@ class Committeeship < ActiveRecord::Base
   
   belongs_to :person
 
-  scope :current, :conditions => { :semester => Property.semester }
+  # We have this argumentless lambda because we don't want to evaluate 
+  # Property.semester until we call the scope, not when we define it
+  scope :current, lambda{ { :conditions => { :semester => Property.semester } } }
   scope :committee, lambda{|x| { :conditions => { :committee => x } } }
   scope :officers, :conditions => { :title => "officer" }
   scope :cmembers, :conditions => { :title => "cmember" }
