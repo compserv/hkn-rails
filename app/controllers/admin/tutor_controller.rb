@@ -319,7 +319,7 @@ class Admin::TutorController < Admin::AdminController
       if not tutor.courses.include? course
         cp = CoursePreference.create
         cp.course_id = course_id
-        cp.tutor_id = tutor.id
+        cp.tutor_id = tutor.person_id
         cp.level = level
         cp.save
         #tutor.courses << course
