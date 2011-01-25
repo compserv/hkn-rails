@@ -7,20 +7,34 @@
       $.ajax({
         url: '/admin/tutor/find_courses',
         success: function(data) {
-          $("#course_query").autocomplete(data);
+          d = []
+          for(var item in data){
+            d[item] = {text: data[item]["text"], url: data[item]["url"]}
+          }
+        
+          $("#course_query").autocomplete(data, {
+            formatItem: function(item) {
+              return item.text;
+            }
+          }).result(function(event, item) {
+            $("#course_id").val(item.url);
+          });
+          
         }
       });
       
       $("#form").submit(function(){
-        course_name = $("input[name=course_query]").val();
+        course_id = $("#course_id").val();
         preference_level = $("input[name=preference_level]:checked").val();
-
+        
         $.post("/admin/tutor/add_course",
-          { course: course_name,
+          { course: course_id,
             level: preference_level,
-            authenticity_token: "<%= form_authenticity_token %>"},
+          },
           function(data) {
-            if(!isNaN(data)){ //OK submission
+            console.log(data);
+            if(data[0] == 1){ //OK submission
+              course_name = data[1];
               $("input[name=course_query]").val(""); //clear fields
               $("input[name=preference_level]:checked").removeAttr("checked");
               //ajax
@@ -30,7 +44,7 @@
               $("#courses_"+preference_level).append(ch);
               $("#messages").hide("slow");
             } else{
-              $("#add_course_errors").html(data);
+              $("#add_course_errors").html(data[1]);
             }
             
           }
@@ -53,8 +67,9 @@
         <!-- <%= select_tag(:class, options_for_select(@course_options)) %> -->
 	<%= label_tag "Search for class:" %>
 	<%= text_field_tag "course_query", "", :id => "course_query" %><br/>
+	<%= hidden_field_tag "course_id", "", :id => "course_id" %>
 	<%= label_tag "Mark as:" %>
-	<%= radio_button_tag "preference_level", "current" %> Current
+	<%= radio_button_tag "preference_level", "current", :checked => true %> Current
 	<%= radio_button_tag "preference_level", "completed" %> Completed
 	<%= radio_button_tag "preference_level", "preferred" %> Preferred<br/>
 
@@ -78,39 +93,39 @@
 	<div id="classes_container" style="border: 1px solid gray; width: 40%; margin-right: 10%; float: right; height: 25em; overflow: auto;">
 	  <h2>Current Courses</h2>
 	  <table id="courses_current" style="border: 1px gray solid; width: 80%; margin-left: auto; margin-right: auto;">
-	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.id).level == 0}.each do |course| %>
+	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 0}.each do |course| %>
 	    <tr class="course" style="border: 1px gray solid;">
 	      <td class="course_name">
 		<%= course.course_abbr %>
 	      </td>
 	      <td class="course_buttons">
-		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
+		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
 	      </td>
 	    </tr>
 	    <% end %>
 	  </table>
 	  <h2>Completed Courses</h2>
 	  <table id="courses_completed" style="border: 1px gray solid; width: 80%; margin-left: auto; margin-right: auto;">
-	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.id).level == 1}.each do |course| %>
+	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 1}.each do |course| %>
 	    <tr class="course" style="border: 1px gray solid;">
 	      <td class="course_name">
 		<%= course.course_abbr %>
 	      </td>
 	      <td class="course_buttons">
-		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
+		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
 	      </td>
 	    </tr>
 	    <% end %>
 	  </table>
 	  <h2>Preferred Courses</h2>
 	  <table id="courses_preferred" style="border: 1px gray solid; width: 80%; margin-left: auto; margin-right: auto;">
-	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.id).level == 2}.each do |course| %>
+	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 2}.each do |course| %>
 	    <tr class="course" style="border: 1px gray solid;">
 	      <td class="course_name">
 		<%= course.course_abbr %>
 	      </td>
 	      <td class="course_buttons">
-		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
+		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
 	      </td>
 	    </tr>
 	    <% end %>

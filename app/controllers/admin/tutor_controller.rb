@@ -63,16 +63,6 @@ class Admin::TutorController < Admin::AdminController
     @course_options = Course.all.map {|x| [x.course_abbr, x.id]}
     tutor = @current_user.get_tutor
     @courses_added = tutor.courses
-    if params[:authenticity_token]  #The form was submitted
-      course = Course.find(params[:class].to_i)
-      @debug << course
-      if not tutor.courses.include? course
-        tutor.courses << course
-        redirect_to :admin_tutor_signup_courses, :notice=>"Successfully added #{course}"
-      else
-        redirect_to :admin_tutor_signup_courses, :notice=>"You were already signed up for #{course}."
-      end
-    end
   end
 
   def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False')
@@ -290,47 +280,42 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def find_courses
-    render :json => Course.all.map {|c| c.course_abbr }
+    render :json => Course.all.map {|c| {:text => c.course_abbr, :url => c.id } }
   end
 
   def add_course
-    course_name = params[:course]
+    course = Course.find(params[:course].to_i)
     preference_level = params[:level]
-    @course_options = Hash[Course.all.map {|x| [x.course_abbr, x.id]}]
     @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
-
-    if !@course_options.include?(course_name)
-      render :text => "Course not found."
+    
+    if !course
+      render :json => [0, "Course not found."]
       return
     end
     if !@preference_options.include?(preference_level)
-      render :text => "Please select a preference level."
+      render :json => [0, "Please select a preference level."]
       return
     end
 
-    course_id = @course_options[course_name]
     level = @preference_options[preference_level]
     tutor = @current_user.get_tutor
     @courses_added = tutor.courses
-
-    if params[:authenticity_token]  #The form was submitted
-      course = Course.find(course_id)
-      @debug << course
-      if not tutor.courses.include? course
-        cp = CoursePreference.create
-        cp.course_id = course_id
-        cp.tutor_id = tutor.person_id
-        cp.level = level
-        cp.save
-        #tutor.courses << course
-        #cp = tutor.course_preferences.find_by_course_id(course_id)
-        #cp.level = level
-        #cp.save
-        render :text => cp.id.to_s()
-      else
-        render :text => "You were already signed up for #{course}."
-      end
+   
+    if not tutor.courses.include? course
+      cp = CoursePreference.create
+      cp.course_id = course.id
+      cp.tutor_id = tutor.id
+      cp.level = level
+      cp.save
+      #tutor.courses << course
+      #cp = tutor.course_preferences.find_by_course_id(course.id)
+      #cp.level = level
+      #cp.save
+      render :json => [1, course.course_abbr]
+    else
+      render :json => [0, "You were already signed up for #{course}."]
     end
+    
   end
 
 end
