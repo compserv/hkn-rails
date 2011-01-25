@@ -86,7 +86,7 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 <h2>Slots by Officer</h2>
 <% for officer in Group.find_by_name("officers").people %>
 <%= officer.full_name + ': ' %>
-<% for slot in officer.tutor.slots %>
+<% for slot in officer.get_tutor.slots %>
 <%= slot.to_s %>
 <% end %><br/>
 <% end %></div>
@@ -95,7 +95,7 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 <h2>Slots by Committee Member</h2>
 <% for officer in Group.find_by_name("cmembers").people %>
 <%= officer.full_name + ': ' %>
-<% for slot in officer.tutor.slots %>
+<% for slot in officer.get_tutor.slots %>
 <%= slot.to_s %>
 <% end %><br/>
 <% end %></div>
