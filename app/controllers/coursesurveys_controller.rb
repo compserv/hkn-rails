@@ -70,6 +70,12 @@ class CoursesurveysController < ApplicationController
 
   def course
     @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
+
+    if @course.nil? then
+      redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}")
+      return
+    end
+
     @course = Course.find(@course.id, :include => [:klasses => :instructors]) unless @course.nil?  # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
