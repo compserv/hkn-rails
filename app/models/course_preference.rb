@@ -15,7 +15,7 @@ class CoursePreference < ActiveRecord::Base
   belongs_to :tutor
 
   validates :course, :presence => true
-  validates :tutor_id, :presence => true
+  validates :tutor, :presence => true
   validates :level, :presence => true
   validates_numericality_of :level, :only_integer => true, :message => "can only be whole number."
   validates_inclusion_of :level, :in => 0..2, :message => "invalid value." 
