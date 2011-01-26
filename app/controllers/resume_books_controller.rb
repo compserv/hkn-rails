@@ -1,50 +1,45 @@
-
 class ResumeBooksController < ApplicationController
   
-  before_filter :authorize_indrel
+  before_filter :authorize_indrel, :except => [:download_pdf]
   
   def new
     @resume_book = ResumeBook.new
   end
 
   def create
-    begin
-      @resume_book_root = "private/resume_books"
-      @gen_root = "#{@resume_book_root}/templates"
-      res_book_params = params[:resume_book]
-      @resume_book = ResumeBook.new(res_book_params)
-      @hash = get_hash
-      @scratch_dir = "#{@resume_book_root}/#{@hash}_scratch"
-      system "mkdir #{@scratch_dir}"
-      cutoff_date = @resume_book.cutoff_date
-      current_semester = Property.semester
-      if current_semester[-1..-1] == 3 # Fall
-        graduating_class = current_semester[0..3].to_i + 1
-      else  # Spring or Summer
-        graduating_class = current_semester[0..3].to_i
-      end
-      resumes = group_resumes(cutoff_date, graduating_class)
-      indrel_officers = indrel_officer_names
-      description = generate_description(resumes, cutoff_date, indrel_officers)
-      temp_pdf_file = generate_pdf(resumes, cutoff_date, indrel_officers)
-      temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers, 
-                                   temp_pdf_file)
-      res_book_directory = "#{@resume_book_root}/#{@hash}_resume_book"
-      system "mkdir #{res_book_directory}"
-      pdf_file = "#{res_book_directory}/HKNResumeBook.pdf"
-      iso_file = "#{res_book_directory}/HKNResumeBook.iso"
-      system "cp #{temp_pdf_file} #{pdf_file}"
-      system "cp #{temp_iso_file} #{iso_file}"
-  #    cleanup
-      @resume_book.details   = description
-      @resume_book.directory = res_book_directory
-      @resume_book.pdf_file  = pdf_file
-      @resume_book.iso_file  = iso_file
-      @resume_book.save!
-      redirect_to resume_book_path(@resume_book.id)
-    rescue Exception => e
-      @debug << e.to_s
+    @resume_book_root = "private/resume_books"
+    @gen_root = "#{@resume_book_root}/templates"
+    res_book_params = params[:resume_book]
+    @resume_book = ResumeBook.new(res_book_params)
+    @hash = get_hash
+    @scratch_dir = "#{@resume_book_root}/#{@hash}_scratch"
+    system "mkdir #{@scratch_dir}"
+    cutoff_date = @resume_book.cutoff_date
+    current_semester = Property.semester
+    if current_semester[-1..-1] == 3 # Fall
+      graduating_class = current_semester[0..3].to_i + 1
+    else  # Spring or Summer
+      graduating_class = current_semester[0..3].to_i
     end
+    resumes = group_resumes(cutoff_date, graduating_class)
+    indrel_officers = indrel_officer_names
+    description = generate_description(resumes, cutoff_date, indrel_officers)
+    temp_pdf_file = generate_pdf(resumes, cutoff_date, indrel_officers)
+    temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers, 
+                                 temp_pdf_file)
+    res_book_directory = "#{@resume_book_root}/#{@hash}_resume_book"
+    system "mkdir #{res_book_directory}"
+    pdf_file = "#{res_book_directory}/HKNResumeBook.pdf"
+    iso_file = "#{res_book_directory}/HKNResumeBook.iso"
+    system "cp #{temp_pdf_file} #{pdf_file}"
+    system "cp #{temp_iso_file} #{iso_file}"
+#    cleanup
+    @resume_book.details   = description
+    @resume_book.directory = res_book_directory
+    @resume_book.pdf_file  = pdf_file
+    @resume_book.iso_file  = iso_file
+    @resume_book.save!
+    redirect_to resume_book_path(@resume_book.id)
   end
 
   def index
@@ -52,6 +47,9 @@ class ResumeBooksController < ApplicationController
   
   def show
     @resume_book = ResumeBook.find(params[:id])
+    @companies = Company.ordered
+
+    @company = Company.find(params[:company_id]) if params[:company_id]
   end
   
   
@@ -61,7 +59,7 @@ class ResumeBooksController < ApplicationController
   # Shows resume (PDF, not model data) after authorization
   def download_pdf
     @resume_book = ResumeBook.find(params[:id])
-    if @current_user and (@current_user.in_groups?(['superusers', 'indrel']))
+    if @current_user and (@current_user.in_groups?(['superusers', 'indrel'])) or CompanySession.find(params[:access_key])
       send_file @resume_book.pdf_file, :type => 'application/pdf', :x_sendfile => true
     else
       redirect_to :root, :notice => "Insufficient privileges to access this page."
@@ -71,11 +69,7 @@ class ResumeBooksController < ApplicationController
   # Shows resume (PDF, not model data) after authorization
   def download_iso
     @resume_book = ResumeBook.find(params[:id])
-    if @current_user and (@current_user.in_groups?(['superusers', 'indrel']))
-      send_file @resume_book.iso_file, :type => 'application/octet-stream', :x_sendfile => true
-    else
-      redirect_to :root, :notice => "Insufficient privileges to access this page."
-    end
+    send_file @resume_book.iso_file, :type => 'application/octet-stream', :x_sendfile => true
   end
 
 private
