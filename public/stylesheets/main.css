@@ -11,11 +11,8 @@ a:hover { text-decoration: underline; }
 /*Forms*/
 input { border: 1px solid #ccc; background: white; border-radius: 3px; -moz-border-radius: 3px; -moz-border-radius: 3px;font-size: 1.1em; margin: 2px 0; padding: 2px 3px; outline: none;}
 input:focus { border: 1px solid black; }
-/*input[type=submit] { background: #EEEEEE; margin: 4px;  }
-input[type=submit]:hover {  }*/
 input[type=submit]{
   font-size: 0.8em;
-  background: #222 url(/images/alert-overlay.png) repeat-x;
   background-color: #888;
   display: inline-block;
   padding: 5px 10px 6px;
