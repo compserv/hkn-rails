@@ -83,19 +83,19 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 <% end %><br/>
 
 <div style="float: left; line-height: 1.5em;">
-<h2>Slots by Officer</h2>
+<h2>Availabilities by Officer</h2>
 <% for officer in Group.find_by_name("officers").people %>
 <%= officer.full_name + ': ' %>
-<% for slot in officer.get_tutor.slots %>
-<%= slot.to_s %>
+<% for avail in officer.get_tutor.availabilities.sort_by {|a| a.time} %>
+<%= avail.to_s %>
 <% end %><br/>
 <% end %></div>
 
 <div style="float: left; padding-left: 5%; line-height: 1.5em;">
-<h2>Slots by Committee Member</h2>
+<h2>Availabilities by Committee Member</h2>
 <% for officer in Group.find_by_name("cmembers").people %>
 <%= officer.full_name + ': ' %>
-<% for slot in officer.get_tutor.slots %>
-<%= slot.to_s %>
+<% for avail in officer.get_tutor.availabilities.sort_by {|a| a.time} %>
+<%= avail.to_s %>
 <% end %><br/>
 <% end %></div>

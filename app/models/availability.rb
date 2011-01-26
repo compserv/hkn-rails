@@ -58,4 +58,8 @@ class Availability < ActiveRecord::Base
     end
   end
 
+  def to_s
+    time.utc.strftime('%a%H')
+  end
+
 end
