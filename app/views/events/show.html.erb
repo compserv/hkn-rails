@@ -33,6 +33,7 @@
 
 <% if @auth["act"] %>
   <%= link_to 'Edit', edit_event_path(@event) %> |
+  <%= link_to 'Destroy', event_path(@event), :confirm => "Are you sure?", :method => :delete %> |
 <% end %>
 <% if @event.blocks.size > 0 and @auth["candplus"] %>
   <% if @current_user_rsvp %>
