@@ -19,7 +19,7 @@
 <% end %>
 </table>
 
-<div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 10px; line-height: 1.75em;">
+<div style="float: left; padding-top: 10px; line-height: 1.75em;">
 	<div class="small">
 	<% courses = CoursePreference.all_courses(tutors.uniq) %>
 	<% for key in courses.keys %>
@@ -33,9 +33,9 @@
 	<% end %>
 	<br/>
 
-	<span class="small"><span class="preferred">&nbsp;&nbsp;&nbsp;</span> = preferred</span><br/>
-	<span class="small"><span class="completed">&nbsp;&nbsp;&nbsp;</span> = completed</span><br/>
-	<span class="small"><span class="current">&nbsp;&nbsp;&nbsp;</span> = in progress</span><br/>
+	<span class="small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = preferred</span><br/>
+	<span class="small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = completed</span><br/>
+	<span class="small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = in progress</span><br/>
 
 	</div>
 </div>
