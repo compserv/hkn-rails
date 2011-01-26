@@ -16,6 +16,8 @@ class Company < ActiveRecord::Base
   validates_presence_of :name
 
   acts_as_authentic
+
+  scope :ordered, order('name ASC')
   
   def to_s
     name

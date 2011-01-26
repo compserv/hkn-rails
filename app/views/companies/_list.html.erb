@@ -8,6 +8,7 @@
       <th>Address</th>
       <th>Website</th>
       <th>Comments</th>
+      <th>Access Key</th>
     </tr>
 
   <% for company in @companies %>
@@ -16,6 +17,7 @@
       <td><%=h company.address %></td>
       <td><%=h company.website %></td>
       <td><%=h company.comments %></td>
+      <td><%=h company.single_access_token %></td>
       <td><%= link_to 'Show', company %></td>
       <td><%= link_to 'Edit', edit_company_path(company) %></td>
       <td><%= link_to 'Destroy', company, :confirm => 'Are you sure?', :method => :delete %></td>
