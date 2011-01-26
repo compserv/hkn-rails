@@ -3,6 +3,7 @@ class IndrelController < ApplicationController
 
   def index
     @indrel_officers = Committeeship.current.committee("indrel").officers.map{|x|x.person}
+    @officers_count = Committeeship.current.officers.count
   end
 
   def contact_us
