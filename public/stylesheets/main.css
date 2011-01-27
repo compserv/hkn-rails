@@ -15,7 +15,7 @@ input:focus { border: 1px solid black; }
 input[type=submit]:hover {  }*/
 input[type=submit]{
   font-size: 0.8em;
-  background: #222 url(/images/alert-overlay.png) repeat-x;
+  background: #222;
   background-color: #888;
   display: inline-block;
   padding: 5px 10px 6px;
