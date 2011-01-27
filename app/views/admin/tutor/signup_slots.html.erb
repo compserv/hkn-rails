@@ -53,7 +53,7 @@ Note that there are five levels of preference, which roughly translate to "stron
 <span style="color:orange">Orange</span> = Cory, <span style="color:blue">blue</span> = Soda.</p>
 <p>Finally, you can also indicate your preference of adjacent time slots below.</p><br />
 
-<form action="" method="post">
+<form action="/admin/tutor/update_slots" method="post">
 <%= token_tag %>
 <%= label_tag :adjacency, "Adjacent slots?" %>
 <%= select_tag :adjacency, options_for_select([["Don't care", 0], ["Yes", 1], ["No", -1]], @adjacency) %>

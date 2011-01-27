@@ -13,50 +13,40 @@ class Admin::TutorController < Admin::AdminController
     @rows = ["Hours"] + @hours
     @adjacency = tutor.adjacency
 
-    if params[:authenticity_token]  #The form was submitted
-      if params[:commit] == "Save changes"
-        changed = false
-        if @adjacency != params[:adjacency].to_i
-          changed = true
-          tutor.adjacency = params[:adjacency].to_i
-          tutor.save
-        end
+  end
+  
+  def update_slots
+    tutor = @current_user.get_tutor
+    @prefs = Hash.new 0
+    
+    #Save adjacency information
+    tutor.adjacency = params[:adjacency].to_i
+    tutor.save
 
-        params.keys.each do |x|
-          daytime = Slot.extract_day_time(x)
-          if daytime
-            pref = Availability.prefstr_to_int[params[x]]
-            slider = params["slider-#{x}"].to_i
-            room, strength = Availability.slider_to_room_strength(slider)
-            if @prefs[x] != pref or (pref != 0 and (@sliders[x].nil? ? 2 : @sliders[x]) != slider) #This slot changed
-              changed = true
-              availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id).first
-              if availability.nil?
-                tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level => pref, :preferred_room => room, :room_strength => strength)
-              elsif pref == 0 #delete the existing availability for this slot
-                availability.destroy
-              else
-                availability.preference_level = pref
-                availability.preferred_room = room
-                availability.room_strength = strength
-                availability.save
-              end
-              @prefs[x] = pref
-            end
+    params.keys.each do |x|
+      daytime = Slot.extract_day_time(x)
+      if daytime
+        pref = Availability.prefstr_to_int[params[x]]
+        slider = params["slider-#{x}"].to_i
+        room, strength = Availability.slider_to_room_strength(slider)
+        if @prefs[x] != pref or (pref != 0 and (@sliders[x].nil? ? 2 : @sliders[x]) != slider) #This slot changed
+          availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id).first
+          if availability.nil?
+            tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level => pref, :preferred_room => room, :room_strength => strength)
+          elsif pref == 0 #delete the existing availability for this slot
+            availability.destroy
+          else
+            availability.preference_level = pref
+            availability.preferred_room = room
+            availability.room_strength = strength
+            availability.save
           end
+          @prefs[x] = pref
         end
-
-      else
-        changed = true
-        tutor.availabilities.delete_all
-      end
-
-      if changed
-        redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
-      else
-        redirect_to :admin_tutor_signup_slots, :notice=>"You haven't changed anything in your tutoring preferences."
       end
     end
+  
+      redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
   end
   
   def signup_courses

@@ -41,6 +41,7 @@ HknRails::Application.routes.draw do
       match "settings" => "tutor#settings", :as=>:tutor_settings
       match "find_courses" => "tutor#find_courses"
       match "add_course" => "tutor#add_course"
+      match "update_slots" => "tutor#update_slots"
     end
   end
   resources :course_preferences
