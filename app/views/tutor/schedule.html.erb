@@ -31,7 +31,7 @@
 	<% if row == "Hours" %>
 		<th>Hours</th>
 		<% @days.each do |day| %>
-		<th class="slot_table_header"><%= day %></th>
+		<th class="slot-table-header"><%= day %></th>
 		<% end %>
 	<% else %>
 		<td class="time"><%= format_hour_slot row %></td>
@@ -51,7 +51,7 @@
 	<div class="small">
 	<% courses = CoursePreference.all_courses(tutors.uniq) %>
 	<% for key in courses.keys %>
-	<span class="dept_heading"><%= key %></span>
+	<span class="dept-heading"><%= key %></span>
 		<% for course in courses[key] %>
 		<% c = "'" + key + course + "'" %>
 		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
@@ -61,9 +61,9 @@
 	<% end %>
 	<br/>
 
-	<span class="small"><span class="preferred">&nbsp;&nbsp;&nbsp;</span> = preferred</span><br/>
-	<span class="small"><span class="completed">&nbsp;&nbsp;&nbsp;</span> = completed</span><br/>
-	<span class="small"><span class="current">&nbsp;&nbsp;&nbsp;</span> = in progress</span>
+	<span class="small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = preferred</span><br/>
+	<span class="small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = completed</span><br/>
+	<span class="small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = in progress</span><br/>
 
 	</div>
 </div>

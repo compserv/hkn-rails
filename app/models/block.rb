@@ -10,7 +10,8 @@ class Block < ActiveRecord::Base
   #   event_id   : integer 
   # =======================
 
-  # Nonpositive rsvp_cap implies no limit
+  # Nonpositive rsvp_cap implies no limit (since there's no reason to set an 
+  # rsvp_cap of 0, you might as well not have rsvps enabled)
   has_and_belongs_to_many :rsvps
   belongs_to :event
 
@@ -34,6 +35,7 @@ class Block < ActiveRecord::Base
   end
 
   def full?
-    rsvps.count >= rsvp_cap
+    # rsvp_cap < 1 implies no limit
+    !rsvp_cap.nil? and (rsvp_cap < 1 or rsvps.count >= rsvp_cap)
   end
 end

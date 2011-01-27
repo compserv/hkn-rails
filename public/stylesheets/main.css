@@ -11,11 +11,8 @@ a:hover { text-decoration: underline; }
 /*Forms*/
 input { border: 1px solid #ccc; background: white; border-radius: 3px; -moz-border-radius: 3px; -moz-border-radius: 3px;font-size: 1.1em; margin: 2px 0; padding: 2px 3px; outline: none;}
 input:focus { border: 1px solid black; }
-/*input[type=submit] { background: #EEEEEE; margin: 4px;  }
-input[type=submit]:hover {  }*/
 input[type=submit]{
   font-size: 0.8em;
-  background: #222;
   background-color: #888;
   display: inline-block;
   padding: 5px 10px 6px;
@@ -81,8 +78,8 @@ tr:nth-child(odd)  { background-color: #fff; }
 
 td { border: 1px dashed #ddd; padding: 2px 4px; }
 .infodiv { width: 300px; text-align: left; }
-.two_column { width: 45%; float: left; }
-.right_column { float: right; }
+.two-column { width: 45%; float: left; }
+.right-column { float: right; }
 ul.plain { list-style: none; margin-top: 0; margin-left: 0; padding-left: 1em; text-indent: -1em; }
 .center { text-align: center; }
 .clear{
@@ -439,7 +436,7 @@ h4{
 }
 
 /*Upcoming Events Sidebar*/
-ul#upcoming_events{
+ul#upcoming-events{
   -webkit-padding-start: 0px;
   padding-left: 0px;
   text-indent: 0px;
