@@ -144,7 +144,7 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def edit_schedule
-    expire_page :controller => :tutor, :action => :schedule
+    #expire_page :controller => :tutor, :action => :schedule
     
     @cory_preferred = Hash.new
     @cory_available = Hash.new
