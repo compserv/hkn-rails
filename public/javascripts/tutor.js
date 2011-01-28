@@ -8,11 +8,14 @@ var highlighted = false;
 $(document).ready(function() {
     $(".tutorbox").hide();
     $(".person").hover(function(){
-        $(".tutorbox").hide();
+        //$(".tutorbox").hide();
         box = $("#box" + $(this).attr("id"));
         box.show();
-        box.css("left", $(this).offset().left);
-        box.css("top", $(this).offset().top);
+        box.css("left", $(this).offset().left + 20);
+        box.css("top", $(this).offset().top + 20);
+    }, function(){
+        box = $("#box" + $(this).attr("id"));
+        box.hide();
     });
 });
       

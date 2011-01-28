@@ -46,5 +46,6 @@ html .dept-heading { font-weight: bold; }
 }
   
 .person{
+    padding: 3px;
     cursor: pointer;
 }
