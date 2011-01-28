@@ -1,21 +1,15 @@
-<% content_for :header do %>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $(".tutorbox").hide();
-      
-    });
-  </script>
-<% end %>
+
 
 <% if slot.tutors.any? %>
 <% slot.tutors.each do |tutor| %>
+
 <div title="<%= tutor.person.fullname %>" id="tutor-<%= tutor.id %>" class="person 
 <% for pref in tutor.course_preferences %>
 <%= pref.course.course_abbr + '_' + pref.level.to_s %>
 <% end %>"><%= tutor.person.abbr_name %></div>
 
 <!-- popup begins here -->
-<div width=400 id="tutorbox-<%= tutor.id %>" class="tutorbox">
+<div width=400 id="boxtutor-<%= tutor.id %>" class="tutorbox">
 <div><%= tutor.person.fullname %></div>
 <div class="imgdiv"><img src="<%= tutor.person.picture %>"></div>
 
@@ -56,6 +50,8 @@
 	<% end %>
 <% end %>
 </div>
+<!--popup ends here -->
+
 <% end %>
 
 <% else %>

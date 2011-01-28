@@ -5,6 +5,17 @@ var curr_color = "#fc0";
 var locked = false;
 var highlighted = false;
 
+$(document).ready(function() {
+    $(".tutorbox").hide();
+    $(".person").hover(function(){
+        $(".tutorbox").hide();
+        box = $("#box" + $(this).attr("id"));
+        box.show();
+        box.css("left", $(this).offset().left);
+        box.css("top", $(this).offset().top);
+    });
+});
+      
 function getObjectCss () {
 	var css = null;
 	try {
