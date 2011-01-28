@@ -1,3 +1,7 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "tutor" %>
+<% end %>
+
 <h2>Today's Tutoring Schedule</h2>
 <div class="small infobar_links"><%= link_to "weekly schedule", "/tutor" %></div>
 <% if @tutoring_enabled %>
