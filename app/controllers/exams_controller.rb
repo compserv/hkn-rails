@@ -1,5 +1,7 @@
 class ExamsController < ApplicationController
 
+  caches_page :index, :browse, :course
+  
   def index
   end
 

@@ -1,4 +1,7 @@
 class TutorController < ApplicationController
+
+  caches_page :schedule
+  
   def schedule
     prop = Property.get_or_create
     @days = %w(Monday Tuesday Wednesday Thursday Friday)

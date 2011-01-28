@@ -1,6 +1,8 @@
 class PeopleController < ApplicationController
   before_filter :authorize, :only => [:list, :show, :edit, :update]
   before_filter :authorize_superuser, :only => [:destroy]
+  
+  caches_action :list, :show
 
   def list
     @category = params[:category] || "all"
@@ -43,6 +45,9 @@ class PeopleController < ApplicationController
   end
 
   def create
+    expire_action :action => :list
+    expire_action :action => :show
+    
     @person = Person.new(params[:person])
     if params[:candidate] == "true"
       @person.groups << Group.find_by_name("candidates")
@@ -78,6 +83,9 @@ class PeopleController < ApplicationController
   end
 
   def update
+    expire_action :action => :list
+    expire_action :action => :show
+    
     @person = Person.find(params[:id])
     if @person.id != @current_user.id and !@current_user.in_group?("superusers")
       flash[:notice] = "Could not update settings."
@@ -106,5 +114,7 @@ class PeopleController < ApplicationController
   end
 
   def destroy
+    expire_action :action => :list
+    expire_action :action => :show
   end
 end

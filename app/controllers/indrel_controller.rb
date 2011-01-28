@@ -1,5 +1,7 @@
 class IndrelController < ApplicationController
   before_filter :authorize_indrel, :only => :indrel_db
+  
+  caches_page :index, :contact_us
 
   def index
     @indrel_officers = Committeeship.current.committee("indrel").officers.map{|x|x.person}
