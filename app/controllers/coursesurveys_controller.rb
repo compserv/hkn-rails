@@ -4,8 +4,6 @@ class CoursesurveysController < ApplicationController
   before_filter :show_searcharea
   before_filter :require_admin, :only => [:editrating, :updaterating]
   
-  caches_page :index, :department, :course, :klass, :instructors, :instructor, :rating
-  
   def require_admin
     return if @current_user.admin?
     flash[:error] = "You must be an admin to do that."

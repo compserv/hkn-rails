@@ -1,3 +1,4 @@
+<% cache do %>
 <h1><%= @department.name %> Courses</h1>
 
 <%- if params[:full_list].blank? -%>
@@ -10,3 +11,5 @@
     <%= render :partial => 'department_row', :locals => {:courses => courses} %>
   <%- end -%>
 </table>
+
+<% end %>

@@ -1,3 +1,4 @@
+<% cache do %>
 <%- unless @instructed_klasses.blank? -%>
 <% content_for :header do %>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -181,3 +182,5 @@
   <%= render :partial => 'emailhkn' %>
   <a href="/student/howtouse.shtml">[Info about this page]</a>
 </div>
+
+<% end %>

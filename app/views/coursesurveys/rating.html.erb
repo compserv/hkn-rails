@@ -1,3 +1,4 @@
+
 <h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> - <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %></h1>
 
 <h2><%= @answer.survey_question.text %></h2>
@@ -6,6 +7,8 @@
   <%= link_to '[Edit]', coursesurveys_edit_rating_path(@answer) %>
 <%- end -%>
 </span>
+
+<% cache do %>
 
 <div id="rating-info" class="infobox">
   <div class="info-row">
@@ -77,3 +80,5 @@
 </table>
 
 <%= render :partial => 'emailhkn' %>
+
+<% end %>
