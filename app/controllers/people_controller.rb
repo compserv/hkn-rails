@@ -2,7 +2,7 @@ class PeopleController < ApplicationController
   before_filter :authorize, :only => [:list, :show, :edit, :update]
   before_filter :authorize_superuser, :only => [:destroy]
   
-  [:list, :show].each {|a| caches_action a, :layout => true}
+  [:list, :show].each {|a| caches_action a, :layout => false}
 
   def list
     @category = params[:category] || "all"
