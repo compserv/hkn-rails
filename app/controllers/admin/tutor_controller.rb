@@ -3,7 +3,7 @@ class Admin::TutorController < Admin::AdminController
   
   
   def expire_schedule
-    expire_action(:namespace=> nil, :controller => :tutor, :action => :schedule)
+    #expire_action(:controller => :tutor, :action => :schedule)
   end
   
   def signup_slots
