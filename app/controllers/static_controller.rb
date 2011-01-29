@@ -1,5 +1,6 @@
 class StaticController < ApplicationController
-  caches_page :coursesurveys_how_to, :coursesurveys_info_profs, :coursesurveys_ferpa, :contact, :comingsoon, :yearbook, :slideshow
+  tocache = [:coursesurveys_how_to, :coursesurveys_info_profs, :coursesurveys_ferpa, :contact, :comingsoon, :yearbook, :slideshow]
+  tocache.each {|a| caches_action a, :layout => true}
   
 	def coursesurveys_how_to
 	end

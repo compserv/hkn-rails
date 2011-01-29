@@ -1,7 +1,7 @@
 class ExamsController < ApplicationController
 
-  caches_page :index, :browse, :course
-  
+  [:index, :browse, :course].each {|a| caches_action a, :layout => true}
+    
   def index
   end
 
