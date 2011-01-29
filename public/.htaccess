@@ -1,0 +1,18 @@
+RewriteEngine On
+Options FollowSymLinks
+
+# Remove utf8 parameter
+RewriteCond %{THE_REQUEST} ^(GET|HEAD)
+RewriteCond %{QUERY_STRING} ^(.*)&?utf8[^&]*(?:&(.*))?$
+RewriteRule . %{REQUEST_URI}?%1%2 [R,L]
+
+# Redirect to cache, if exists
+RewriteCond %{THE_REQUEST} ^(GET|HEAD)
+RewriteCond %{REQUEST_URI} ^/?([^.]+?)/?$
+RewriteCond %{DOCUMENT_ROOT}/cache/%1.html -f
+RewriteRule ^/?[^.]+/?$ /cache/%1.html [QSA,L]
+
+# Cache / (this may or may not work...)
+RewriteCond %{THE_REQUEST} ^(GET|HEAD)
+RewriteCond %{DOCUMENT_ROOT}/cache/index.html -f
+RewriteRule ^/$ /cache/index.html [QSA,L]
