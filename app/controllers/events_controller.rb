@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_filter :authorize_comms, :except => [:index, :calendar, :show]
   
-  caches_page :index, :calendar, :show
+  [:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
   # GET /events
   # GET /events.xml
