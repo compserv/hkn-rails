@@ -1,6 +1,11 @@
 class Admin::TutorController < Admin::AdminController
   before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :add_course, :find_courses]
   
+  
+  def expire_schedule
+    expire_action(:namespace=> nil, :controller => :tutor, :action => :schedule)
+  end
+  
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
@@ -144,8 +149,8 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def edit_schedule
-    #expire_page :controller => :tutor, :action => :schedule
-    
+    expire_schedule
+        
     @cory_preferred = Hash.new
     @cory_available = Hash.new
     @soda_preferred = Hash.new
