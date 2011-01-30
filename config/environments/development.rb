@@ -14,9 +14,9 @@ HknRails::Application.configure do
   config.action_view.debug_rjs             = true
 
   if ENV['CACHING'] =~ /true|1|on|yes/ then
+    config.action_controller.perform_caching = true
     config.action_controller.page_cache_directory = File.join Rails.root, 'public', 'cache'
     config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
-    config.action_controller.perform_caching = true
     puts "Caching is ON"
   else
     config.action_controller.perform_caching = false
