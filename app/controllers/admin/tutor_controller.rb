@@ -259,14 +259,8 @@ class Admin::TutorController < Admin::AdminController
 
   def settings
     prop = Property.get_or_create
-    @enabled = prop.tutoring_enabled
-    @message = prop.tutoring_message
-    @start = prop.tutoring_start
-    @end = prop.tutoring_end
-    @year = prop.semester[0..3]
-    @semester = prop.semester[4..4]
     
-    if params[:authenticity_token]
+    if request.post?
       prop.tutoring_enabled = params[:enabled] == "true"
       prop.tutoring_message = params[:message]
       prop.tutoring_start = params[:start]
@@ -274,6 +268,14 @@ class Admin::TutorController < Admin::AdminController
       prop.semester = params[:year] + params[:semester]
       prop.save
     end
+
+    # You need to set these variables after saving
+    @enabled = prop.tutoring_enabled
+    @message = prop.tutoring_message
+    @start = prop.tutoring_start
+    @end = prop.tutoring_end
+    @year = prop.semester[0..3]
+    @semester = prop.semester[4..4]
   end
 
   def find_courses
