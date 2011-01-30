@@ -109,7 +109,7 @@ HknRails::Application.routes.draw do
     match ":category"                               => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
     
     match "how-to"                                  => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
-    match "info-profs"                              => "static#coursesurveys_info_profs", :as => :coursesurveys_info_profs
+    match "info-profs"                              => "coursesurveys#coursesurveys_info_profs", :as => :coursesurveys_info_profs
     match "ferpa"                                   => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
   end
 
@@ -138,7 +138,7 @@ HknRails::Application.routes.draw do
   scope "indrel" do
     match "/"                         => "indrel#index",                          :as => "indrel"
     match "career-fair"               => "indrel#career_fair",                    :as => "career_fair"
-    match "contact-us"                => "indrel#contact_us",                     :as => "indrel_contact_us"
+    match "contact-us"                => "indrel#contact_us",              :as => "indrel_contact_us"
     match "infosessions"              => "indrel#infosessions",                   :as => "infosessions"
     get   "infosessions/registration" => "indrel#infosessions_registration",      :as => "infosessions_registration"
     post  "infosessions/registration" => "indrel#infosessions_registration_post", :as => "infosessions_registration_post"

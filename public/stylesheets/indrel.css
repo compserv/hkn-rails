@@ -5,3 +5,24 @@ tr:nth-child(4n+1) { background-color: #fff; }
 tr:nth-child(4n+2) { background-color: #fff; }
 tr:nth-child(4n+3) { background-color: #f9f9f9; }
 tr:nth-child(4n)   { background-color: #f9f9f9; }
+
+#contain{     
+      width: 60%;
+      margin: auto;
+}
+
+@media screen and (max-width: 800px){
+  #contain{     
+    width: 100%;
+    margin: auto;
+  }
+}
+
+.big {
+  font-size: 2.0em;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+}
