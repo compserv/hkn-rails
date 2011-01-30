@@ -23,13 +23,9 @@ class Tutor < ActiveRecord::Base
   end
 
   def get_availability_by_day_hour(weekday,hour)
-    weekdays = {"Monday" => 5, "Tuesday" => 6, "Wednesday" => 7, "Thursday" => 1, "Friday" => 2, "Saturday" => 3, "Sunday" => 4}
-    t = Time.gm(1970,1,weekdays[weekday],hour,0,0).in_time_zone
-    a = Availability.find(:all, :conditions => { :time => t, :tutor_id => self.id })
-    if a.empty?
-      return nil
-    else
-      return a[0]
-    end
+    #weekdays = {"Monday" => 5, "Tuesday" => 6, "Wednesday" => 7, "Thursday" => 1, "Friday" => 2, "Saturday" => 3, "Sunday" => 4}
+    #t = Time.gm(1970,1,weekdays[weekday],hour,0,0).in_time_zone
+    t = Availability.time_for_weekday_and_hour(weekday,hour)
+    return Availability.find(:first, :conditions => { :time => t, :tutor_id => self.id })
   end
 end

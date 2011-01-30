@@ -21,7 +21,7 @@ class ResumesController < ApplicationController
     # So it will just put in an "L" in resume names for now
     # and when(?) we upgrade to 1.9+ it will start writing
     # times with milliseconds
-    time_string = Time.new.utc.strftime("%Y%m%d%H%M%S%L")
+    time_string = Time.new.strftime("%Y%m%d%H%M%S%L")
     if not Dir.entries("private/").include?("resumes")
       Dir.mkdir("private/resumes")
     end
