@@ -3,9 +3,20 @@ class CoursesurveysController < ApplicationController
 
   before_filter :show_searcharea
   before_filter :require_admin, :only => [:editrating, :updaterating]
+
+  begin # caching
+    [:index, :instructors, :klass].each {|a| caches_action a, :layout => false}
+
+    # Cache full/partial department lists
+    caches_action :department, :layout => false, :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"}
+
+    # Separate for admins
+    caches_action_for_admins([:instructor], :groups => %w(csec compserv))
+  end
+
   
   def require_admin
-    return if @current_user.admin?
+    return if current_user_can_admin? #@current_user.admin?
     flash[:error] = "You must be an admin to do that."
     redirect_to coursesurveys_path
   end
@@ -369,10 +380,12 @@ class CoursesurveysController < ApplicationController
       @results[:courses] = Course.search do
         with(:department_id, @dept.id) if @dept
         with(:invalid, false)
+
         keywords params[:q] unless params[:q].blank?
+
         order_by :score, :desc
-        order_by :department_id
-        order_by :course_number
+        order_by(:department_id, :desc) unless @dept    # hehe put CS results on top
+        order_by :course_number, :asc
       end
 
       # Search instructors

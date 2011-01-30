@@ -110,5 +110,38 @@ module ActionController
       return '' if q.nil?
       q.gsub(/\s+/, ' ').gsub(/[^a-zA-Z 0-9\*\?\"]/i, '?')
     end
-  end
-end
+
+    # Returns true if the user is logged in and authorized for the
+    # specified groups (superusers always have permission).
+    def current_user_can_admin?(groups=[])
+      groups ||= []
+      @current_user && (%w(superusers) | groups).any?{|g| @auth[g]}
+    end
+
+    module ClassMethods
+
+    # This method will automagically cache admin and non-admin versions
+    # of the actions specified, as determined by current_user_can_admin?.
+    #
+    # This should be used for actions that render significantly differently
+    # for admins than for the general public.
+    #
+    # Options:
+    #  cache_suffix: Cache tag suffix for admin pages [default '_admin']
+    #  groups      : Array of group names to pass to current_user_can_admin?
+    #  layout      : default false
+    #  other params: passed directly to caches_action
+    #
+    def caches_action_for_admins(actions=[], options={})
+      actions      = [actions] unless actions.is_a? Array
+      cache_suffix = options.delete(:cache_suffix) || '_admin'
+      groups       = options.delete(:groups) || []
+
+      actions.each do |a|
+        caches_action a, {:layout => false, :cache_path => Proc.new {|c| {:admin_tag => cache_suffix} if c.current_user_can_admin?(groups)}}.merge(options)
+      end
+    end
+    end # ClassMethods
+    
+  end #Helpers
+end #ApplicationController

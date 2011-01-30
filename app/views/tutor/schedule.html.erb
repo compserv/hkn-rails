@@ -1,4 +1,5 @@
 <h1>Tutoring Schedule</h1>
+<% if @tutoring_enabled %>
 <div style="float: left; width: 80%; text-align: center; margin-bottom: 30px;">
 
 <% tutors = [] %>
@@ -67,3 +68,7 @@
 
 	</div>
 </div>
+<%# End tutoring enabled %>
+<% else %>
+  <p><%= @tutoring_message %></p>
+<% end %>

@@ -1,5 +1,6 @@
 .bundle
 db/*.sqlite3
+db/goodprofornot_dump/
 log/*.log
 tmp/**/*
 private/**/*
@@ -9,3 +10,5 @@ Gemfile.lock
 *.swp
 *.pyc
 nbproject
+public/cache/
+public/examfiles/

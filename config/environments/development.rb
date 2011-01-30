@@ -12,7 +12,15 @@ HknRails::Application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_view.debug_rjs             = true
-  config.action_controller.perform_caching = false
+
+  if ENV['CACHING'] =~ /true|1|on|yes/ then
+    config.action_controller.perform_caching = true
+    config.action_controller.page_cache_directory = File.join Rails.root, 'public', 'cache'
+    config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
+    puts "Caching is ON"
+  else
+    config.action_controller.perform_caching = false
+  end
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
