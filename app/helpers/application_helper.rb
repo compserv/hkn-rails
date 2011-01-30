@@ -111,14 +111,14 @@ module ActionController
       q.gsub(/\s+/, ' ').gsub(/[^a-zA-Z 0-9\*\?\"]/i, '?')
     end
 
-    module ClassMethods
-
     # Returns true if the user is logged in and authorized for the
     # specified groups (superusers always have permission).
     def current_user_can_admin?(groups=[])
       groups ||= []
       @current_user && (%w(superusers) | groups).any?{|g| @auth[g]}
     end
+
+    module ClassMethods
 
     # This method will automagically cache admin and non-admin versions
     # of the actions specified, as determined by current_user_can_admin?.

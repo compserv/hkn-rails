@@ -1,6 +1,5 @@
 class CoursesurveysController < ApplicationController
   include CoursesurveysHelper
-  include ActionController::Helpers
 
   before_filter :show_searcharea
   before_filter :require_admin, :only => [:editrating, :updaterating]
@@ -12,7 +11,7 @@ class CoursesurveysController < ApplicationController
     caches_action :department, :layout => false, :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"}
 
     # Separate for admins
-    cache_for_admins([:instructor], :groups => %w(csec compserv))
+    caches_action_for_admins([:instructor], :groups => %w(csec compserv))
   end
 
   
