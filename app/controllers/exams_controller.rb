@@ -1,6 +1,6 @@
 class ExamsController < ApplicationController
 
-  [:index, :browse, :course].each {|a| caches_action a, :layout => false}
+  [:browse, :course].each {|a| caches_action a, :layout => false}
     
   def index
   end

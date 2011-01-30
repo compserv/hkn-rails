@@ -1,37 +1,4 @@
 <h1>Browse Exams by Department</h1>
-<style type="text/css">
-
-ul.courses {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    list-style-position: outside;
-}
-ul.courses li {
-    padding: 5px 0 0 0;
-    border-top: solid 1px #000000;
-    margin: 0;
-    line-height: 1.3em;
-    font-size: small;
-    text-indent: 1em;
-}
-
-.exam_table{
-  width: 48%;
-  padding-right: 0.5em;
-  float:left;
-}
-
-.exam_table th.dept_name{
-  padding: 4px;
-  font-size: 1.2em;
-  text-align: center;
-}
-
-table.table{
-  width: 100%;
-}
-</style>
 
 <% @dept_courses.each do |dept_name, courses| %>
 <div class="exam_table">
