@@ -117,6 +117,7 @@ HknRails::Application.routes.draw do
   
   scope "events" do
     match "calendar" => "events#calendar", :as => :events_calendar
+    match "hkn" => "events#hkn", :as => :events_ical
     match ":category" => "events#index", :as => :events_category, :constraints => {:category => /(future|past)/}
 
     match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps

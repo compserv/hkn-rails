@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authorize_comms, :except => [:index, :calendar, :show]
+  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn]
   
   [:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
@@ -62,8 +62,8 @@ class EventsController < ApplicationController
     month = (params[:month] || Time.now.month).to_i
     year = (params[:year] || Time.now.year).to_i
     # TODO: Fix this, I think we have timezone issues
-    @start_date = Date.civil(year, month).beginning_of_month.to_time+8.hours
-    @end_date = Date.civil(year, month).end_of_month.to_time+8.hours
+    @start_date = Time.utc(year, month).beginning_of_month
+    @end_date = Time.utc(year, month).end_of_month
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
@@ -319,6 +319,48 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(events_url) }
       format.xml  { head :ok }
+    end
+  end
+
+  def hkn
+    # WE NEED A SEMESTER CLASS
+    semester = params[:semester] || Property.semester
+    semester = semester.to_s
+    semester_year = semester[0..3]
+
+    # 1 = Spring, 2 = Summer, 3 = Fall
+    case semester[4..4]
+    when "1"
+      semester_start_month = 1
+      semester_end_month = 5
+    when "2"
+      semester_start_month = 6
+      semester_end_month = 7
+    when "3"
+      semester_start_month = 8
+      semester_end_month = 12
+    else
+      raise "Error!"
+    end
+
+    start_month = ( params[:start_month] || semester_start_month ).to_i
+    start_year = ( params[:start_year] || semester_year ).to_i
+
+    end_month = ( params[:end_month] || semester_end_month ).to_i
+    end_year = ( params[:end_year] || semester_year ).to_i
+
+    @start_date = Time.utc(start_year, start_month).beginning_of_month
+    @end_date = Time.utc(end_year, end_month).end_of_month
+
+    @now = Time.now
+
+    @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
+    # Really convoluted way of getting the first Sunday of the calendar, 
+    # which usually lies in the previous month
+
+    respond_to do |format|
+      format.html { render :hkn, :layout => false }
+      format.ics
     end
   end
 end

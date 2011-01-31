@@ -1,0 +1,24 @@
+BEGIN:VCALENDAR
+PRODID:-//HKN//Cal//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:HKN Events
+X-WR-TIMEZONE:America/Los_Angeles
+X-WR-CALDESC:HKN Events
+<% @events.each do |event| %>
+BEGIN:VEVENT
+DTSTART:<%= icaldate event.start_time %>
+DTEND:<%= icaldate event.end_time %>
+DTSTAMP:<%= icaldate @now %>
+UID:pk-<%= event.id %>@hkn.eecs.berkeley.edu
+LOCATION:<%= icalify event.location, 10 %>
+STATUS:CONFIRMED
+SUMMARY:<%= icalify event.name, 8 %>
+CLASS:PUBLIC
+TRANSP:OPAQUE
+SEQUENCE:0
+DESCRIPTION:<%= icalify event.description, 12 %>
+END:VEVENT
+<% end %>
+END:VCALENDAR
