@@ -1,4 +1,4 @@
-table#slot-table{}
+table#slot-table{ width: auto;}
 
 table#slot-table th { width: 100px; text-align: center}
 table#slot-table .slider-container { padding: 10px 15px; }
