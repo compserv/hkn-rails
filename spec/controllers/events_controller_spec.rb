@@ -16,7 +16,7 @@ describe EventsController do
 
   describe "GET index" do
     it "assigns all events as @events" do
-      Event.stub_chain(:with_permission, :all) { [mock_event] }
+      Event.stub_chain(:with_permission, :paginate) { [mock_event] }
       get :index
       assigns(:events).should eq([mock_event])
     end

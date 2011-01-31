@@ -29,7 +29,7 @@ class EventsController < ApplicationController
       @heading = "Upcoming Events"
     else
       #@events = Event.includes(:event_type).order(:start_time)
-      @events = event_finder.all
+      @events = event_finder
       @heading = "All Events"
     end
 
