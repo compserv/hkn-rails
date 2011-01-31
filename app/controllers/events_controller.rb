@@ -61,8 +61,9 @@ class EventsController < ApplicationController
   def calendar
     month = (params[:month] || Time.now.month).to_i
     year = (params[:year] || Time.now.year).to_i
-    @start_date = Date.civil(year, month).beginning_of_month
-    @end_date = Date.civil(year, month).end_of_month
+    # TODO: Fix this, I think we have timezone issues
+    @start_date = Date.civil(year, month).beginning_of_month.to_time+8.hours
+    @end_date = Date.civil(year, month).end_of_month.to_time+8.hours
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
