@@ -1,0 +1,62 @@
+<%= link_to "Indrel Résumé admin", resume_books_path %>
+
+<h1> List of Officers, Candidates, and Everyone Else, and their Résumé Statuses </h1>
+
+Use this page to upload a résumé for a particular person.
+<!-- Yeah this is pretty wet code.... 
+
+      Partial coming soon?-->
+
+<h2>Officers</h2>
+<table>
+<tr><th>Name</th><th>Current Résumé</th><th>Upload a new résumé for this person</th></tr>
+<% @officers.each do |p| %>
+  <tr>
+    <td><%= p.full_name %></td>
+    <td><% if not p.resumes.empty? %>
+	  <% resume = p.resumes.first %>
+	  <%= link_to "Uploaded at #{resume.created_at}", resume_download_path(resume) %>
+	<% else %>
+	  No resume uploaded
+	<% end %>
+    </td>
+    <td> <%= link_to "Upload resume for #{p.full_name}", resumes_upload_for_path(p) %> </td>
+  </tr>
+<% end %>
+</table>
+
+<h2>Candidates</h2>
+<table>
+<tr><th>Name</th><th>Current Résumé</th><th>Upload a new résumé for this person</th></tr>
+<% @candidates.each do |p| %>
+  <tr>
+    <td><%= p.full_name %></td>
+    <td><% if not p.resumes.empty? %>
+	  <% resume = p.resumes.first %>
+	  <%= link_to "Uploaded at #{resume.created_at}", resume_download_path(resume) %>
+	<% else %>
+	  No resume uploaded
+	<% end %>
+    </td>
+    <td> <%= link_to "Upload resume for #{p.full_name}", resumes_upload_for_path(p) %> </td>
+  </tr>
+<% end %>
+</table>
+
+<h2>Everyone Else</h2>
+<table>
+<tr><th>Name</th><th>Current Résumé</th><th>Upload a new résumé for this person</th></tr>
+<% @everyone_else.each do |p| %>
+  <tr>
+    <td><%= p.full_name %></td>
+    <td><% if not p.resumes.empty? %>
+	  <% resume = p.resumes.first %>
+	  <%= link_to "Uploaded at #{resume.created_at}", resume_download_path(resume) %>
+	<% else %>
+	  No resume uploaded
+	<% end %>
+    </td>
+    <td> <%= link_to "Upload resume for #{p.full_name}", resumes_upload_for_path(p) %> </td>
+  </tr>
+<% end %>
+</table>

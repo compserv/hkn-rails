@@ -1,0 +1,13 @@
+<%= link_to "Back to Résumé book Admin", resume_books_path %>
+
+
+<h1> People to bug! </h1>
+<h2>Emails of officers who did not submit a resume since <%= @cutoff_date %></h2>
+<% @officers_without_resumes.each do |officer| %>
+    <%= officer.full_name %>
+<% end %>
+
+<h2>Emails of candidates who did not submit a resume since <%= @cutoff_date %></h2>
+<% @candidates_without_resumes.each do |candidate| %>
+    "<%=candidate.full_name%>" &lt;<%= candidate.email %>&gt;;
+<% end %>

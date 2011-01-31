@@ -4,9 +4,17 @@ class ResumesController < ApplicationController
   
   def new
     @resume = Resume.new
+    @person = @current_user
+  end
+
+  def upload_for
+    @resume = Resume.new
+    @person = Person.find(params[:id])
   end
   
   def create
+    @person = Person.find(params[:resume][:person].to_i)
+    params[:resume][:person] = @person
     resume_file = params[:resume][:file]
     resume_constructor_args = params[:resume]
     # strftime doesn't have milliseconds in ruby 1.8.7
@@ -18,18 +26,22 @@ class ResumesController < ApplicationController
       Dir.mkdir("private/resumes")
     end
     file_name = "private/resumes/#{time_string}_"+
-                "#{@current_user.last_name}_" +
-                "#{@current_user.first_name}.pdf"
+                "#{@person.last_name}_" +
+                "#{@person.first_name}.pdf"
     f = File.open(file_name, "wb")
     resume_constructor_args[:file] = file_name
-    @resume = @current_user.resumes.new(resume_constructor_args)
+    @resume = @person.resumes.new(resume_constructor_args)
     if @resume.save and not f.nil?
       f.write(resume_file.read)
       flash[:notice] = "Resume Uploaded"
-      redirect_to account_settings_path
+      if @resume.person == @current_user
+	redirect_to account_settings_path
+      else # if this is an indrel officer uploading a resume on behalf of someone
+	redirect_to resumes_path
+      end
       # Delete all older resuems:
-      old_resumes = @current_user.resumes[(1..-1)] # All but most recent res.
-      old_resumes.each { |resume| @current_user.resumes.destroy(resume.id) }
+      old_resumes = @person.resumes[(1..-1)] # All but most recent res.
+      old_resumes.each { |resume| @person.resumes.destroy(resume.id) }
     else
       render :action => "new"
     end
@@ -37,9 +49,14 @@ class ResumesController < ApplicationController
       f.close
     end
 
-    
   end
   
+  def status_list
+    @officers = Person.find(:all).find_all {|p| p.in_group?("officers")}
+    @candidates = Person.find(:all).find_all {|p| p.in_group?("candidates")}
+    @everyone_else = Person.find(:all).find_all {|p| not (@officers.include?(p) or @candidates.include?(p))}
+  end
+
   def index
     @resumes = Resume.find(:all)
   end

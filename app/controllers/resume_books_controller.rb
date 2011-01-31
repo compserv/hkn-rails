@@ -52,11 +52,24 @@ class ResumeBooksController < ApplicationController
     @company = Company.find(params[:company_id]) if params[:company_id]
   end
   
-  
+  # Missing gives the emails of officers and current candidates who are missing
+  # a resume book so indrel can bug them.
+  def missing
+    @cutoff_date = Date.new(params[:post]["cutoff_date(1i)"].to_i,params[:post]["cutoff_date(2i)"].to_i,params[:post]["cutoff_date(3i)"].to_i)
+    officers = Person.find(:all).find_all {|p| p.in_group?("officers")}
+    candidates = Person.find(:all).find_all {|p| p.in_group?("candidates")}
+    @officers_without_resumes = officers.find_all do |officer|
+      did_not_upload_a_resume_after @cutoff_date, officer
+    end
+    @candidates_without_resumes = candidates.find_all do |candidate|
+      did_not_upload_a_resume_after @cutoff_date, candidate
+    end
+  end
+
   # Copied from richardxia's code in the resume file
   # I'm not sure if this is secure
   
-  # Shows resume (PDF, not model data) after authorization
+  # Shows resumebook (PDF, not model data) after authorization
   def download_pdf
     @resume_book = ResumeBook.find(params[:id])
     if @current_user and (@current_user.in_groups?(['superusers', 'indrel'])) or CompanySession.find(params[:access_key])
@@ -66,13 +79,17 @@ class ResumeBooksController < ApplicationController
     end
   end
   
-  # Shows resume (PDF, not model data) after authorization
+  # Shows resumebook (ISO) after authorization
   def download_iso
     @resume_book = ResumeBook.find(params[:id])
     send_file @resume_book.iso_file, :type => 'application/octet-stream', :x_sendfile => true
   end
 
 private
+
+  def did_not_upload_a_resume_after(cutoff_date,officer)
+    officer.resumes.empty? or (officer.resumes.first.created_at < cutoff_date)
+  end
 
   def generate_pdf(resumes, cutoff_date, indrel_officers)
     # @scratch_dir is the scratch work directory

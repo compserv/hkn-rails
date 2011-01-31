@@ -1,7 +1,16 @@
 <h1> Résumé Books </h1>
 
-<%= link_to "Generate a new resume book", new_resume_book_path  %>
-
+<ul>
+<li><%= link_to "Generate a new resume book", new_resume_book_path  %></li>
+<li><%= form_tag(resume_book_missing_path, :method => "get") do %>
+  <%= label_tag(:cutoff_date, "See a list of people who haven't submitted a résumé since ") %>
+  <%= date_select("post", :cutoff_date) %>
+  <%= submit_tag("Go") %>
+<% end %></li>
+<li><%= link_to "list of all HKN Members and their resume upload statuses.", resumes_status_list_path %>
+ (You can also use this page to upload a resume for a certain person)
+</li>
+</ul>
 <table class="table">
 	<tr><th>Creation Date</th><th>Remarks</th><th>PDF File</th><th>ISO File</th></tr>
 <% ResumeBook.find(:all).reverse.each do |resume_book| %>

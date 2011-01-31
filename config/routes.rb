@@ -84,13 +84,16 @@ HknRails::Application.routes.draw do
   # Resumes, this is kind of just a prototype test right now
   get "resumes/new"
   scope "resumes" do
+    match "status_list" => "resumes#status_list", :as => :resumes_status_list
     match "upload" => "resumes#new", :as => :resumes_upload
+    match "upload_for/:id" => "resumes#upload_for", :as => :resumes_upload_for
     match "download/:id" => "resumes#download", :as => :resume_download
   end
   resources :resumes
   scope "resume_books" do
     match "download_pdf/:id" => "resume_books#download_pdf", :as => :resume_book_download_pdf
     match "download_iso/:id" => "resume_books#download_iso", :as => :resume_book_download_iso
+    match "missing" => "resume_books#missing", :as => :resume_book_missing
   end
   resources :resume_books
 
