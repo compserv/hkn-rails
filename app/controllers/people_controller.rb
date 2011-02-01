@@ -101,7 +101,7 @@ class PeopleController < ApplicationController
 	    params[:person][:password] = params[:password][:new]
       params[:person][:password_confirmation] = params[:password][:confirm]
 	  else
-	    raise "Incorrect password"#Figure out how to send this message along as an error
+	    redirect_to(path, :notice => "You must enter in your current password to make any changes.")
 	  end
 	end
     if @person.update_attributes(params[:person])
