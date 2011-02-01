@@ -1,7 +1,7 @@
 <% stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
 <%= form_tag do %>
-<input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
+<input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time.</label>
 <p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
 <p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
 <p>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit. Then add them back in the right places, and submit again. 
@@ -34,9 +34,9 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 				<% end %>
 				</optgroup>
                             <% end %>
-                            <% if not @others[formatslot day, row].blank? %>
+                            <% if @cory_others[formatslot day, row] %>
 				<optgroup label="Others">
-				<% @others[formatslot day, row].each do |tutor| %>
+				<% @cory_others[formatslot day, row].each do |tutor| %>
 				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
@@ -64,10 +64,10 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 				<% end %>
 				</optgroup>
 				<% end %>
-                            <% if not @others[formatslot day, row].blank? %>
+                            <% if @soda_others[formatslot day, row] %>
 				<optgroup label="Others">
-				<% @others[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
+				<% @soda_others[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
@@ -82,20 +82,22 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 <%= submit_tag "Reset all" %>
 <% end %><br/>
 
-<div style="float: left; line-height: 1.5em;">
+<div style="float: left; line-height: 1.5em; max-width: 45%;">
 <h2>Availabilities by Officer</h2>
-<% for officer in Group.find_by_name("officers").people %>
+<% for officer in Group.find_by_name("officers").people.sort_by {|o| [-o.get_tutor.availabilities.count, o.full_name]} %>
 <%= officer.full_name + ': ' %>
 <% for avail in officer.get_tutor.availabilities.sort_by {|a| a.time} %>
 <%= avail.to_s %>
-<% end %><br/>
+<% end %>
+<%= '. TOTAL: ' + officer.get_tutor.availabilities.count.to_s %><br/>
 <% end %></div>
 
-<div style="float: left; padding-left: 5%; line-height: 1.5em;">
+<div style="float: left; padding-left: 5%; line-height: 1.5em; max-width: 45%;">
 <h2>Availabilities by Committee Member</h2>
-<% for officer in Group.find_by_name("cmembers").people %>
+<% for officer in Group.find_by_name("cmembers").people.sort_by {|o| [-o.get_tutor.availabilities.count, o.full_name]} %>
 <%= officer.full_name + ': ' %>
 <% for avail in officer.get_tutor.availabilities.sort_by {|a| a.time} %>
 <%= avail.to_s %>
-<% end %><br/>
+<% end %>
+<%= '. TOTAL: ' + officer.get_tutor.availabilities.count.to_s %><br/>
 <% end %></div>

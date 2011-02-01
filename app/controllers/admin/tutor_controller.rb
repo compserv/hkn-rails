@@ -48,7 +48,7 @@ class Admin::TutorController < Admin::AdminController
           @prefs[x] = pref
         end
       end
-    else
+    elsif params[:commit] == "Reset all"
       tutor.availabilities.destroy_all
     end
   
@@ -156,64 +156,80 @@ class Admin::TutorController < Admin::AdminController
     @cory_available = Hash.new
     @soda_preferred = Hash.new
     @soda_available = Hash.new
-
-    @others = Hash.new
-    if params[:all_tutors]
-      for slot in Slot.find(:all, :conditions => "room=0")
-        time = slot.time.utc.strftime('%a%H')
-        for tutor in Tutor.all
-          @others[time] ||= []; @others[time] << tutor
-        end
-      end
-    end
-
-    for tutor in Tutor.all
-      tutor.availabilities.each do |a|
-        cory_str = ' ('; soda_str = ' ('
-
-        if a.room_strength == 0
-          cory_str += 'p'; soda_str += 'p'
-        elsif a.room_strength == 1
-          if a.preferred_room == 0
-            cory_str += 'P'; soda_str += 'p'
-          else
-            cory_str += 'p'; soda_str += 'P'
-          end
-        else
-          if a.preferred_room == 0
-            cory_str += 'P'
-          else
-            soda_str += 'P'
-          end
-        end
-
-        if tutor.adjacency == 1
-          cory_str += 'A'; soda_str += 'A'
-        elsif tutor.adjacency == -1
-          cory_str += 'a'; soda_str += 'a'
-        end
-
-        cory_str += ')'; soda_str += ')'
-
-        time = a.time.utc.strftime('%a%H')
-        if params[:all_tutors]
-          @others[time].delete(tutor)
-        end
-        if a.preference_level==1
-          @cory_preferred[time] ||= []; @cory_preferred[time] << [tutor, cory_str]
-          @soda_preferred[time] ||= []; @soda_preferred[time] << [tutor, soda_str]
-        else
-          @cory_available[time] ||= []; @cory_available[time] << [tutor, cory_str]
-          @soda_available[time] ||= []; @soda_available[time] << [tutor, soda_str]
-        end
-      end
-    end
+    @cory_others = Hash.new
+    @soda_others = Hash.new
 
     @assignments = Hash.new
-    slots = Hash.new
+    @slots = Hash.new
+
     for slot in Slot.all
       @assignments[slot.to_s] = slot.tutors
-      slots[slot.to_s] = slot
+      @slots[slot.to_s] = slot
+      slot_tutors = []
+      time = slot.time.utc.strftime('%a%H')
+
+      for a in slot.availabilities
+        tutor = a.tutor
+
+        str = ' ('
+        if a.room_strength == 0
+          str += 'p'
+        elsif a.room_strength == 1
+          if a.preferred_room == slot.room
+            str += 'P'
+          else
+            str += 'p'
+          end
+        elsif a.preferred_room == slot.room
+          str += 'P'
+        end
+        if tutor.adjacency == 1
+          str += 'A'
+        elsif tutor.adjacency == -1
+          str += 'a'
+        end
+        str += ')'
+
+        if slot.room == 0 
+          if a.preference_level == 1
+            @cory_preferred[time] ||= []; @cory_preferred[time] << [tutor, str]
+          else
+            @cory_available[time] ||= []; @cory_available[time] << [tutor, str]
+          end
+        else
+          if a.preference_level == 1
+            @soda_preferred[time] ||= []; @soda_preferred[time] << [tutor, str]
+          else
+            @soda_available[time] ||= []; @soda_available[time] << [tutor, str]
+          end
+        end
+        slot_tutors << tutor
+      end
+
+      for tutor in slot.tutors
+        if not slot_tutors.include?(tutor)
+          if slot.room == 0
+            @cory_others[time] ||= []; @cory_others[time] << tutor
+          else
+            @soda_others[time] ||= []; @soda_others[time] << tutor
+          end
+          slot_tutors << tutor
+        end
+      end
+
+      if params[:all_tutors]
+        for tutor in Tutor.all
+          if not slot_tutors.include?(tutor)
+            if slot.room == 0
+              @cory_others[time] ||= []; @cory_others[time] << tutor
+            else
+              @soda_others[time] ||= []; @soda_others[time] << tutor
+            end
+            slot_tutors << tutor
+          end
+        end
+      end
+
     end
 
     prop = Property.get_or_create
@@ -231,17 +247,17 @@ class Admin::TutorController < Admin::AdminController
           new = params[x] || []
           for removed in old - new
             changed = true
-            slots[x].tutors.delete Tutor.find(Integer(removed))
+            @slots[x].tutors.delete Tutor.find(Integer(removed))
           end
           for added in new - old
             changed = true
-            slots[x].tutors << Tutor.find(Integer(added))
+            @slots[x].tutors << Tutor.find(Integer(added))
           end
         end
-      else
+      elsif params[:commit] == "Reset all"
         changed = true
         @assignments.keys.each do |x|
-          slots[x].tutors.delete_all
+          @slots[x].tutors.delete_all
         end
       end
 
