@@ -27,10 +27,8 @@ class Event < ActiveRecord::Base
   validates :event_type, :presence => true
   validate :valid_time_range
 
-  # Hack for PST, since event times are stored as UTC even though they 
-  # represent times in PST. We should resolve this eventually...
-  scope :past,     joins(:event_type).where(['start_time < ?', Time.now-8.hours])
-  scope :upcoming, joins(:event_type).where(['start_time > ?', Time.now-8.hours])
+  scope :past,     joins(:event_type).where(['start_time < ?', Time.now])
+  scope :upcoming, joins(:event_type).where(['start_time > ?', Time.now])
   scope :all,      joins(:event_type)
 
   scope :with_permission, Proc.new { |user| 

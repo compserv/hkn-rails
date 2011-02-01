@@ -62,8 +62,8 @@ class EventsController < ApplicationController
     month = (params[:month] || Time.now.month).to_i
     year = (params[:year] || Time.now.year).to_i
     # TODO: Fix this, I think we have timezone issues
-    @start_date = Time.utc(year, month).beginning_of_month
-    @end_date = Time.utc(year, month).end_of_month
+    @start_date = Time.local(year, month).beginning_of_month
+    @end_date = Time.local(year, month).end_of_month
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
@@ -349,8 +349,8 @@ class EventsController < ApplicationController
     end_month = ( params[:end_month] || semester_end_month ).to_i
     end_year = ( params[:end_year] || semester_year ).to_i
 
-    @start_date = Time.utc(start_year, start_month).beginning_of_month
-    @end_date = Time.utc(end_year, end_month).end_of_month
+    @start_date = Time.local(start_year, start_month).beginning_of_month
+    @end_date = Time.local(end_year, end_month).end_of_month
 
     @now = Time.now
 
