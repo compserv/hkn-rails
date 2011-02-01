@@ -1,5 +1,7 @@
 HknRails::Application.routes.draw do
 
+  match "test_exception_notification" => "application#test_exception_notification"
+
   #Department tours
   scope "dept_tour" do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup

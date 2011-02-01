@@ -49,6 +49,10 @@ class ApplicationController < ActionController::Base
       end
   end
 
+  def test_exception_notification
+    raise 'This is a test. This is only a test.'
+  end
+
   #-----------------------------------------------------------------------
   # Private Methods
   #-----------------------------------------------------------------------
