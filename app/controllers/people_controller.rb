@@ -102,6 +102,7 @@ class PeopleController < ApplicationController
       params[:person][:password_confirmation] = params[:password][:confirm]
 	  else
 	    redirect_to(path, :notice => "You must enter in your current password to make any changes.")
+        return
 	  end
 	end
     if @person.update_attributes(params[:person])
