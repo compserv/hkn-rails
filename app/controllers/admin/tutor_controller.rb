@@ -17,7 +17,6 @@ class Admin::TutorController < Admin::AdminController
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
     @rows = ["Hours"] + @hours
     @adjacency = tutor.adjacency
-
   end
   
   def update_slots
@@ -28,19 +27,19 @@ class Admin::TutorController < Admin::AdminController
     tutor.adjacency = params[:adjacency].to_i
     tutor.save
 
-    params.keys.each do |x|
-      daytime = Slot.extract_day_time(x)
-      if daytime
-        pref = Availability.prefstr_to_int[params[x]]
-        slider = params["slider-#{x}"].to_i
-        room, strength = Availability.slider_to_room_strength(slider)
-        if @prefs[x] != pref or (pref != 0 and (@sliders[x].nil? ? 2 : @sliders[x]) != slider) #This slot changed
+    if params[:commit] == "Save changes"
+      params.keys.each do |x|
+        daytime = Slot.extract_day_time(x)
+        if daytime
+          pref = Availability.prefstr_to_int[params[x]]
+          slider = params["slider-#{x}"].to_i
+          room, strength = Availability.slider_to_room_strength(slider)
           availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id).first
-          if availability.nil?
+          if availability.nil? and pref != 0
             tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level => pref, :preferred_room => room, :room_strength => strength)
-          elsif pref == 0 #delete the existing availability for this slot
+          elsif availability and pref == 0
             availability.destroy
-          else
+          elsif availability
             availability.preference_level = pref
             availability.preferred_room = room
             availability.room_strength = strength
@@ -49,6 +48,8 @@ class Admin::TutorController < Admin::AdminController
           @prefs[x] = pref
         end
       end
+    else
+      tutor.availabilities.destroy_all
     end
   
       redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
