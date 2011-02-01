@@ -43,5 +43,12 @@ module HknRails
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+
+    #Exception Notification
+    config.middleware.use ExceptionNotifier,
+      :email_prefix => "[hkn-rails Exception] ",
+      :sender_address => '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
+      :exception_recipients => ['amber.feng@gmail.com']
+
   end
 end
