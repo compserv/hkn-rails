@@ -55,7 +55,8 @@ class ResumeBooksController < ApplicationController
   # Missing gives the emails of officers and current candidates who are missing
   # a resume book so indrel can bug them.
   def missing
-    @cutoff_date = Date.new(params[:post]["cutoff_date(1i)"].to_i,params[:post]["cutoff_date(2i)"].to_i,params[:post]["cutoff_date(3i)"].to_i)
+    # Getting the components of the cutoff date doesn't really work...
+    @cutoff_date = Date.new(params[:date]["cutoff_date(1i)"].to_i,params[:date]["cutoff_date(2i)"].to_i,params[:date]["cutoff_date(3i)"].to_i)
     officers = Person.find(:all).find_all {|p| p.in_group?("officers")}
     candidates = Person.find(:all).find_all {|p| p.in_group?("candidates")}
     @officers_without_resumes = officers.find_all do |officer|
