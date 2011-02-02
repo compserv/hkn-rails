@@ -24,6 +24,7 @@
 <h2><%= committee[0] %></h2>
 <% for person in committee[1] %>
 <div class="officer">
+  <% person.picture ||= "http://hkn.eecs.berkeley.edu/files/officerpics/#{person.username}.png" %>
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>
   </div>
