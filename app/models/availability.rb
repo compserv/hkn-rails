@@ -34,6 +34,18 @@ class Availability < ActiveRecord::Base
       end
       return room, strength
     end
+
+    def time_for_weekday_and_hour(wdaystr, h)
+      wday = 1
+      case
+      when wdaystr.is_a?(String)
+        wday = %w(Monday Tuesday Wednesday Thursday Friday).index(wdaystr.capitalize)+1
+      when wdaystr.is_a?(Integer)
+        wday = wdaystr
+      else raise "Availability.time_for_weekday_and_hour: Bad weekday #{wdaystr}"
+      end
+      Time.local(1,1,wday,h,0)  # jan 2001 => wday == day
+    end
   end
   
   def get_preferred_room()
@@ -59,7 +71,7 @@ class Availability < ActiveRecord::Base
   end
 
   def to_s
-    time.utc.strftime('%a%H')
+    time.strftime('%a%H')
   end
 
 end

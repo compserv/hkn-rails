@@ -169,6 +169,7 @@ HknRails::Application.routes.draw do
     match "comingsoon" => "static#comingsoon"
     match "yearbook"  => "static#yearbook"
     match "slideshow" => "static#slideshow"
+    match "officers" => "static#officers"
   end
 
   #Tutoring pages

@@ -9,9 +9,9 @@ class Admin::TutorController < Admin::AdminController
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
-    tutor.availabilities.each {|a| @prefs[a.time.utc.strftime('%a%H')] = a.preference_level}
+    tutor.availabilities.each {|a| @prefs[a.time.strftime('%a%H')] = a.preference_level}
     @sliders = Hash.new
-    tutor.availabilities.each {|a| @sliders[a.time.utc.strftime('%a%H')] = a.get_slider_value}
+    tutor.availabilities.each {|a| @sliders[a.time.strftime('%a%H')] = a.get_slider_value}
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     prop = Property.get_or_create
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
@@ -166,7 +166,7 @@ class Admin::TutorController < Admin::AdminController
       @assignments[slot.to_s] = slot.tutors
       @slots[slot.to_s] = slot
       slot_tutors = []
-      time = slot.time.utc.strftime('%a%H')
+      time = slot.time.strftime('%a%H')
 
       for a in slot.availabilities
         tutor = a.tutor
