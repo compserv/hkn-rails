@@ -25,14 +25,19 @@ namespace :zones do
 
     ActiveRecord::Base.transaction do
       models.each_pair do |c, cols|
-        c.all.each do |m|
+        c.find(:all, :readonly=>false).each do |m|   # why readonly? no idea. that's just the way it is. Event has issues.
           puts "Updating #{c.to_s} #{m.id}"
           m.update_attributes cols.zip((cols+[:created_at,:updated_at]).collect {|col| m.send(col)+offset})
         end
       end
+
+      Availability.all.each do |a|
+        a.update_attribute(:time, Availability.time_for_weekday_and_hour(a.time.wday, a.time.hour)  )#Time.local(1,1,a.time.wday,a.time.hour,0))
+      end
     end #transaction
 
     puts "\nMigrated to #{dest_tz.to_s.upcase!}\n"
+    puts "Availabilities might not be showing up. If they're not, check for an off-by-8-hour error, and fix in console manually."
   end # migrate_timezones
 
   desc "Migrates from UTC => PST"
