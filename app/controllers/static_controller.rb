@@ -43,5 +43,7 @@ class StaticController < ApplicationController
     @committees = [ ["Service"] << @serv, ["Industrial Relations"] << @indrel, ["Bridge"] << @bridge, ["Activities"] << @act, ["Computing Services"] << @compserv, ["Student Relations"] << @studrel, ["Tutoring"] << @tutoring, ["Alumni Relations"] <<@alumrel ]
 
     @execs = [ ["President"] << @pres, ["Vice President"] << @vp, ["Recording Secretary"] << @rsec, ["Treasurer"] << @treas, ["Corresponding Secretary"] << @csec, ["Department Relations"] << @deprel ]
+
+    @committees.each {|g| g.last.compact!}
   end
 end

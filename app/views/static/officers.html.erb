@@ -4,7 +4,7 @@
 <% for position in @execs %>
 <div class="position">
 <h2><%= position[0] %></h2>
-<% person = position[1] %>
+<% if person = position[1] %>
 <div class="officer">
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>
@@ -12,6 +12,7 @@
   <span class="name"><%= person.full_name %></span>
   <span class="email"><%= person.username %>@hkn</span>
 </div>
+<% end %>
 </div>
 <% end %>
 </div>
