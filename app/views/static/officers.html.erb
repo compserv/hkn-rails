@@ -6,7 +6,7 @@
 <h2><%= position[0] %></h2>
 <% if person = position[1] %>
 <div class="officer">
-  <% person.picture ||= "http://hkn.eecs.berkeley.edu/files/officerpics/#{person.username}.png" %>
+  <% person.picture = "http://hkn.eecs.berkeley.edu/files/officerpics/#{person.username}.png" if person.picture.blank? %>
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>
   </div>
@@ -24,7 +24,7 @@
 <h2><%= committee[0] %></h2>
 <% for person in committee[1] %>
 <div class="officer">
-  <% person.picture ||= "http://hkn.eecs.berkeley.edu/files/officerpics/#{person.username}.png" %>
+  <% person.picture = "http://hkn.eecs.berkeley.edu/files/officerpics/#{person.username}.png" if person.picture.blank? %>
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>
   </div>
