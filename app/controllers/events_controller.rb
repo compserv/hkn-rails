@@ -118,9 +118,6 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.xml
   def create
-    expire_page :action => :index
-    expire_page :action => :calendar
-    expire_page :action => :show
     
     @event = Event.new(params[:event])
     duration = @event.end_time - @event.start_time
@@ -200,9 +197,6 @@ class EventsController < ApplicationController
   # PUT /events/1
   # PUT /events/1.xml
   def update
-    expire_page :action => :index
-    expire_page :action => :calendar
-    expire_page :action => :show
     
     @event = Event.find(params[:id])
     @blocks = @event.blocks
@@ -309,9 +303,6 @@ class EventsController < ApplicationController
   # DELETE /events/1
   # DELETE /events/1.xml
   def destroy
-    expire_page :action => :index
-    expire_page :action => :calendar
-    expire_page :action => :show
     
     @event = Event.find(params[:id])
     @event.destroy
