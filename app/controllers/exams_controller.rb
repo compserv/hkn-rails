@@ -1,9 +1,6 @@
 class ExamsController < ApplicationController
 
-  [:browse, :course].each {|a| caches_action a, :layout => false}
-    
-  def index
-  end
+  #[:browse, :course].each {|a| caches_action a, :layout => false}
 
   def search
     return if strip_params
