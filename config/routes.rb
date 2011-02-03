@@ -119,11 +119,6 @@ HknRails::Application.routes.draw do
   end
 
   
-  resources :events do
-    resources :rsvps
-    resources :blocks
-  end
-
   scope "events" do
     match "calendar" => "events#calendar", :as => :events_calendar
     match "hkn" => "events#hkn", :as => :events_ical
@@ -138,6 +133,10 @@ HknRails::Application.routes.draw do
     match "unconfirm/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
   end
   
+  resources :events do
+    resources :rsvps
+    resources :blocks
+  end
 
   resources :event_types
 
