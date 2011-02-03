@@ -180,14 +180,18 @@ HknRails::Application.routes.draw do
   end
   
   # Exams
-  scope "exam" do
+  scope "exams" do
+    match '/'                                     => "exams#index",
+      :as => :exams_index
     match "search"                                => "exams#search",
       :as => :exams_search
-    match "browse"                                => "exams#browse",
-      :as => :exams_browse
+    match "course/:dept_abbr"                     => "exams#department",
+      :as => :exams_department
     match "course/:dept_abbr/:full_course_number" => "exams#course",
       :as => :exams_course
+    match 'course'                                => redirect('/exams')
   end
+  #resources :exams
 
   #Candidates
   scope "cand" do
