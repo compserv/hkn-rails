@@ -240,7 +240,7 @@ private
   end
   
   def get_hash
-    Time.new.utc.strftime("%Y%m%d%H%M%S%L")
+    Time.new.strftime("%Y%m%d%H%M%S%L")
   end
 
     

@@ -4,14 +4,16 @@
 <% for position in @execs %>
 <div class="position">
 <h2><%= position[0] %></h2>
-<% person = position[1] %>
+<% if person = position[1] %>
 <div class="officer">
+  <% person.picture = "http://hkn.eecs.berkeley.edu/files/officerpics/#{person.username}.png" if person.picture.blank? %>
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>
   </div>
   <span class="name"><%= person.full_name %></span>
   <span class="email"><%= person.username %>@hkn</span>
 </div>
+<% end %>
 </div>
 <% end %>
 </div>
@@ -22,6 +24,7 @@
 <h2><%= committee[0] %></h2>
 <% for person in committee[1] %>
 <div class="officer">
+  <% person.picture = "http://hkn.eecs.berkeley.edu/files/officerpics/#{person.username}.png" if person.picture.blank? %>
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>
   </div>

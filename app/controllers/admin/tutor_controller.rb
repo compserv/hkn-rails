@@ -9,9 +9,9 @@ class Admin::TutorController < Admin::AdminController
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
-    tutor.availabilities.each {|a| @prefs[a.time.utc.strftime('%a%H')] = a.preference_level}
+    tutor.availabilities.each {|a| @prefs[a.time.strftime('%a%H')] = a.preference_level}
     @sliders = Hash.new
-    tutor.availabilities.each {|a| @sliders[a.time.utc.strftime('%a%H')] = a.get_slider_value}
+    tutor.availabilities.each {|a| @sliders[a.time.strftime('%a%H')] = a.get_slider_value}
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     prop = Property.get_or_create
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
@@ -166,7 +166,7 @@ class Admin::TutorController < Admin::AdminController
       @assignments[slot.to_s] = slot.tutors
       @slots[slot.to_s] = slot
       slot_tutors = []
-      time = slot.time.utc.strftime('%a%H')
+      time = slot.time.strftime('%a%H')
 
       for a in slot.availabilities
         tutor = a.tutor
@@ -236,6 +236,62 @@ class Admin::TutorController < Admin::AdminController
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = prop.tutoring_start .. prop.tutoring_end
     @rows = ["Hours"] + @hours.to_a.map! {|x| x.to_s}
+
+    # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
+    @officer_stats = Hash.new; @cmember_stats = Hash.new
+    officer_happiness = 0; cmember_happiness = 0
+    for tutor in Tutor.all
+      happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
+
+      for slot in tutor.slots
+        if slot.get_preferred_tutors.include?(tutor)
+          first_choice += 1
+        elsif slot.get_available_tutors.include?(tutor)
+          second_choice += 1
+        else
+          wrong_assign += 1
+        end      
+
+        avail = tutor.availabilities.find(:all, :conditions => ["time=?", slot.time]).first
+        if not avail.nil?
+          if slot.room == avail.preferred_room or avail.room_strength == 0
+            correct_office += 2
+          elsif avail.room_strength == 1
+            correct_office += 1
+          end
+        end
+
+        adj_closed_list = []
+        if tutor.adjacency != 0 and tutor.person.in_group?("officers")
+          for other_slot in tutor.slots
+            if not adj_closed_list.include?(other_slot)            
+              if other_slot.wday == slot.wday and (other_slot.hour - slot.hour == 1 or other_slot.hour - slot.hour == -1)
+                if tutor.adjacency == 1 or tutor.adjacency == 0
+                  adjacencies += 1
+                end
+              else
+                if tutor.adjacency == -1 or tutor.adjacency == 0
+                  adjacencies += 1
+                end
+              end
+            end
+          end
+        end
+        adj_closed_list << slot
+      end
+
+      happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
+      ostats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
+      cstats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
+      if tutor.person.in_group?("officers")
+        @officer_stats[tutor] ||= []; @officer_stats[tutor] << ostats; officer_happiness += happiness
+      end
+      if tutor.person.in_group?("cmembers")
+        @cmember_stats[tutor] ||= []; @cmember_stats[tutor] << cstats; cmember_happiness += happiness
+      end
+    end
+    @officer_stats['happiness'] ||= []; @officer_stats['happiness'] << officer_happiness
+    @cmember_stats['happiness'] ||= []; @cmember_stats['happiness'] << cmember_happiness
     
     if params[:authenticity_token]  #The form was submitted
 

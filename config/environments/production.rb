@@ -39,6 +39,9 @@ HknRails::Application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
 
+  # HACK for hkn-rails on hkn.eecs: with tls, it complains about hostname
+  config.action_mailer.smtp_settings = {:enable_starttls_auto => false}
+
   # Enable threaded mode
   # config.threadsafe!
 
