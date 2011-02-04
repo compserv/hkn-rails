@@ -43,8 +43,6 @@ class PeopleController < ApplicationController
   end
 
   def create
-    expire_action :action => :list
-    expire_action :action => :show
     
     @person = Person.new(params[:person])
     if params[:candidate] == "true"
@@ -81,8 +79,6 @@ class PeopleController < ApplicationController
   end
 
   def update
-    expire_action :action => :list
-    expire_action :action => :show
     
     @person = Person.find(params[:id])
     if @person.id != @current_user.id and !@current_user.in_group?("superusers")
@@ -113,7 +109,5 @@ class PeopleController < ApplicationController
   end
 
   def destroy
-    expire_action :action => :list
-    expire_action :action => :show
   end
 end
