@@ -23,6 +23,7 @@ class Person < ActiveRecord::Base
   #   local_address       : string 
   #   perm_address        : string 
   #   grad_semester       : string 
+  #   approved            : boolean 
   # =======================
 
   has_one :candidate, :dependent => :destroy

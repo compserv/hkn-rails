@@ -13,18 +13,26 @@ class UserSessionsController < ApplicationController
   end
 
   def create
+    
+    user = Person.find_by_username(params[:user_session][:username])
     @user_session = UserSession.new(params[:user_session])
-    if @user_session.save
-      flash[:notice] = "Login successful!"
-      if params[:referer]
-        redirect_to params[:referer]
-      else
-        redirect_to root_url
+    
+    if user and user.approved
+      if @user_session.save
+        flash[:notice] = "Login successful!"
+        if params[:referer]
+          redirect_to params[:referer]
+          return
+        else
+          redirect_to root_url
+          return
+        end
       end
-    else
-      flash[:notice] = "Login was unsuccessful."
-      render :action => :new
     end
+
+    flash[:notice] = "Login was unsuccessful."
+    render :action => :new
+    
   end
 
   def destroy
