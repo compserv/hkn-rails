@@ -2,7 +2,7 @@ class AlumnisController < ApplicationController
   before_filter :alumni_login_check
   before_filter :alumni_duplication_filtration, :only => [:new,:create]
   before_filter :alumni_modification_authorization_filtration, :only=> [:edit, :update, :destroy]
-  #before_filter :authorize_alumrel, :only => :index
+  before_filter :authorize_alumrel, :only => :index
   
   def alumni_login_check
     redirect_to(login_url, :notice=>"You must log in to edit alumni information.") if not @current_user
