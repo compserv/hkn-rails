@@ -1,6 +1,7 @@
 namespace :tutoring do
   namespace :availabilities do
     AvailabilityFields = [:preferred_room, :preference_level, :time, :room_strength] 
+    CoursePrefFields   = [:level]
     FieldSeparator = ';'
 
     ##########
@@ -16,12 +17,20 @@ namespace :tutoring do
 
       Tutor.all.each do |tooter|
         next if tooter.availabilities.empty?
+        
+        tHash = {}
 
-        data[tooter.person.username] = tooter.availabilities.collect do |avail|
+        tHash[:availabilities] = tooter.availabilities.collect do |avail|
           h = {}
-          AvailabilityFields.each {|field| h[field.to_s] = avail.send(field) }
+          AvailabilityFields.each {|field| h[field] = avail.send(field) }
           h
         end
+
+        tHash[:courseprefs] = tooter.course_preferences.collect do |cp|
+          {:level => cp.level, :coursename => "#{cp.course.dept_abbr} #{cp.course.full_course_number}"} 
+        end
+
+        data[tooter.person.username] = tHash 
       end
 
       File.open(filename, "w") do |f|
@@ -45,7 +54,7 @@ namespace :tutoring do
       
       puts "Found #{y.length} tutors."
 
-      y.each_pair do |username, avails|
+      y.each_pair do |username, data|
         p = Person.find_by_username(username)
         if p.nil? then
           puts "WARNING: Couldn't find user #{username}"
@@ -53,18 +62,41 @@ namespace :tutoring do
         end
         
         t = p.get_tutor
-        puts "#{username}: #{avails.length} availabilities"
+        puts "#{username}:", " #{data[:availabilities].length} availabilities"
 
-        # Convert keys from str => symbol
-        avails.each do |avail_with_str|
-          avail = {}
-          avail_with_str.each_pair do |k, v|
-            avail[k.to_sym] = v
+        data[:availabilities].each do |avail|
+          avail[:tutor_id] = t.id
+
+          if Availability.exists?(:tutor_id => t.id, :time => avail[:time]) then
+            puts "  Skipping existing #{avail[:time].localtime.strftime('%a %I%P')}"
+            next 
           end
 
-          next if Availability.exists?(:tutor_id => t.id, :time => avail[:time])
-          new_a = Availability.create(avail.merge :tutor_id => t.id)
-          puts "  #{new_a.inspect} -- #{new_a.save}: #{new_a.errors}"
+          puts "  #{avail[:time].localtime.strftime('%a %I%P')}"
+          new_a = Availability.create(avail)
+          puts "  #{new_a.inspect}: #{new_a.errors}" unless new_a.save
+        end
+
+        puts " #{data[:courseprefs].length} course prefs"
+
+        data[:courseprefs].each do |cp|
+          args = cp[:coursename].split
+          c = Course.find_by_short_name(args[0], args[1])
+          puts "WARNING: unknown course #{cp[:coursename]}" and next if c.nil?
+
+          cp[:tutor_id]  = t.id
+          cp[:course_id] = c.id
+
+          if CoursePreference.exists?(:tutor_id => t.id, :course_id => c.id) then
+            puts "  Skipping existing #{c.course_abbr}"
+            next
+          end
+
+          cp.delete(:coursename)
+
+          puts "  #{c.course_abbr}"
+          new_cp = CoursePreference.create(cp)
+          puts "  #{new_cp.inspect}: #{new_cp.errors}" unless new_cp.save
         end
       end
 

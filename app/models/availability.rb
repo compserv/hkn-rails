@@ -18,6 +18,7 @@ class Availability < ActiveRecord::Base
   validate :valid_room
   validates :tutor, :presence => true
   validates :preference_level, :presence => true
+  validates_uniqueness_of :time, :scope => :tutor_id
   
   @prefstr_to_int = {"unavailable"=>0, "preferred"=>1, "available"=>2}
 
