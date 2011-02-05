@@ -17,7 +17,7 @@ class AlumnisController < ApplicationController
   
   def alumni_modification_authorization_filtration
     @alumni = Alumni.find_by_id(params[:id])
-    unless @alumni and @current_user.alumni == @alumni
+    unless @alumni and @current_user.alumni == @alumni or @auth['alumrel']
       redirect_to(if @current_user.alumni then edit_alumni_url(@current_user.alumni) 
                     else new_alumni_url end, 
                   :notice => "You're not authorized to modify someone else's alumni information!")
