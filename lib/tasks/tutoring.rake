@@ -44,6 +44,7 @@ namespace :tutoring do
     ##########
     desc "Imports availabilities from a file created by :export."
     task :import, :filename do |t, args|
+      ActiveRecord::Base.transaction do
       raise "Please provide a filename to import from." if args[:filename].blank?
 
       y = {}
@@ -100,6 +101,7 @@ namespace :tutoring do
         end
       end
 
+      end #transaction
     end # import
 
   end # availabilities
