@@ -10,14 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110204033915) do
+ActiveRecord::Schema.define(:version => 20110205020437) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
     t.string   "grad_school"
     t.string   "job_title"
     t.string   "company"
-    t.integer  "salary"
+    t.integer  "salary",        :limit => 8
     t.integer  "person_id"
     t.datetime "created_at"
     t.datetime "updated_at"
