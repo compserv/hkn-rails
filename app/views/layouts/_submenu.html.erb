@@ -57,7 +57,11 @@
 
 <div class="submenu alumni_submenu">
   <ul class="plain">
-    <li><a href="/alumni/registration/" class="navigation_sublevel_item">Registration</a></li>
+    <% unless @current_user and @current_user.alumni %>
+      <li><a href="/alumni/registration/" class="navigation_sublevel_item">Registration</a></li>
+    <% else %>
+      <%= link_to "View My Alumni Information", me_alumnis_url %>
+    <% end %>
   </ul>
 </div>
 

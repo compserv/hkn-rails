@@ -24,6 +24,15 @@ class AlumnisController < ApplicationController
     end
   end
   
+  def me 
+    if @current_user.alumni
+      @alumni = @current_user.alumni
+      render "show"
+    else
+      redirect_to new_alumni_url
+    end
+  end
+  
   # GET /alumnis
   # GET /alumnis.xml
   def index
@@ -103,7 +112,8 @@ class AlumnisController < ApplicationController
     @alumni.destroy
 
     respond_to do |format|
-      format.html { redirect_to(alumnis_url) }
+      format.html { redirect_to (if @auth['alumrel'] then alumnis_url else root_url end), 
+                      :notice=> "Alumni information for #{@alumni.person.full_name} destroyed."}
       format.xml  { head :ok }
     end
   end
