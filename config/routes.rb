@@ -79,7 +79,7 @@ HknRails::Application.routes.draw do
   # Alumni
   resources :alumnis
   scope "alumni" do
-    match "registration" => "alumnis#edit"
+    match "registration" => "alumnis#new"
     match "newsletter" => "alumnis#newsletter"
   end
 

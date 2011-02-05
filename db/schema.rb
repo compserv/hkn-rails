@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110115221912) do
+ActiveRecord::Schema.define(:version => 20110204033915) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -295,6 +295,7 @@ ActiveRecord::Schema.define(:version => 20110115221912) do
     t.string   "local_address",       :default => ""
     t.string   "perm_address",        :default => ""
     t.string   "grad_semester",       :default => ""
+    t.boolean  "approved"
   end
 
   create_table "properties", :force => true do |t|
