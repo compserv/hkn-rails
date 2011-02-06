@@ -1,5 +1,5 @@
 class Admin::AdminController < ApplicationController
-  before_filter :authorize_officers
+  before_filter :authorize_officers, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
   
   def candidate_announcements
     @announcements = Announcement.order("created_at desc")

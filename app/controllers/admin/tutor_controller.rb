@@ -1,5 +1,6 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :add_course, :find_courses]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
+  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses]
   
   
   def expire_schedule
@@ -389,5 +390,12 @@ class Admin::TutorController < Admin::AdminController
     end
     
   end
+
+  private
+
+  def authorize_tutoring_signup
+    authorize(['officers', 'cmembers'])
+  end
+
 
 end
