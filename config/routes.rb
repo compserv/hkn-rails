@@ -77,9 +77,14 @@ HknRails::Application.routes.draw do
   resources :people, :except => [:new, :create, :index]
 
   # Alumni
-  resources :alumnis
+  resources :alumnis do
+    collection do
+      get 'me'
+    end
+  end
+  
   scope "alumni" do
-    match "registration" => "alumnis#edit"
+    match "registration" => "alumnis#new"
     match "newsletter" => "alumnis#newsletter"
   end
 
