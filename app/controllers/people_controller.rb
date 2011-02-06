@@ -20,8 +20,8 @@ class PeopleController < ApplicationController
                      end
 
     @search_opts = {'sort' => "first_name"}.merge params
-    opts = { :page => params[:page], :per_page => 10, :order => "people.#{order} #{sort_direction}" }
-    if %w[officers cmembers].include? @category
+    opts = { :page => params[:page], :per_page => 20, :order => "people.#{order} #{sort_direction}" }
+    if %w[officers].include? @category
       opts.merge!( { :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title = ?", Property.semester, @category[0..-2]] } )
     elsif @category != "all"
       @group = Group.find_by_name(@category)
