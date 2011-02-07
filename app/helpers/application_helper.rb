@@ -145,3 +145,11 @@ module ActionController
     
   end #Helpers
 end #ApplicationController
+
+module ActionView
+  module Helpers
+    def captcha
+      recaptcha_tags :ssl=>true, :display=>{:theme=>'clean'}
+    end
+  end # Helpers
+end # ActionView
