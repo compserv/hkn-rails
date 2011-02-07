@@ -1,9 +1,10 @@
 class AddApprovedToPerson < ActiveRecord::Migration
+  class Person < ActiveRecord::Base
+  end
+
   def self.up
-    change_table :people do |t|
-      t.boolean :approved, :default => nil
-    end
-    Person.update_all ["approved = ?", true]
+    add_column :people, :approved, :boolean, :default=>nil
+    Person.update_all :approved => true
   end
 
   def self.down
