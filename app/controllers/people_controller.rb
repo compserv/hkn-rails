@@ -43,7 +43,6 @@ class PeopleController < ApplicationController
   end
 
   def create
-    
     @person = Person.new(params[:person])
     if params[:candidate] == "true"
       @person.groups << Group.find_by_name("candidates")
@@ -58,7 +57,7 @@ class PeopleController < ApplicationController
       @person.groups << Group.find_by_name("candplus")
     end
 
-    if @person.save
+    if verify_recaptcha(:message=>"Captcha validation failed", :model=>@person) && @person.save
       flash[:notice] = "Account registered!"
       redirect_to root_url
     else

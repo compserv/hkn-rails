@@ -24,6 +24,8 @@ gem "exception_notification",
         :git => "git://github.com/rails/exception_notification.git",
         :require => "exception_notifier"
 
+gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

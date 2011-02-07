@@ -42,6 +42,12 @@
     </div>
     
     <%= hidden_field_tag(:referer, @referer) %>
+
+    <%- if @use_captcha -%>
+    <div class="field">
+      <%= recaptcha_tags :display=>{:theme=>'clean'}, :use_ssl=>true %>
+    </div>
+    <%- end -%>
     
     <div class="field-submit">
     <%= f.submit "Login" %>

@@ -40,6 +40,11 @@
     <%= check_box_tag :candidate, "true" %> Check this box if you are a new HKN candidate
   </div>
 
+  <div class="field">
+    <br />
+    <%= recaptcha_tags :display=>{:theme=>'clean'}  %>
+  </div>
+
   <div class="field-submit">
     <%= f.submit "Register" %>
   </div>
