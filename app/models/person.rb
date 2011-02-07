@@ -52,6 +52,11 @@ class Person < ActiveRecord::Base
     c.transition_from_crypto_providers = DjangoSha1
   end
   
+  def picture
+    # HACK: dynamically guesses user's picture
+    super.blank? ? "http://hkn.eecs.berkeley.edu/files/officerpics/#{username}.png" : super
+  end
+
   def full_name
     first_name + " " + last_name
   end
