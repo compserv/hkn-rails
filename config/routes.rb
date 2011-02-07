@@ -46,7 +46,7 @@ HknRails::Application.routes.draw do
       match "update_slots" => "tutor#update_slots"
     end
   end
-  resources :course_preferences
+  resources :course_preferences, :only => [:destroy]
 
   resources :dept_tour_requests do
     member do

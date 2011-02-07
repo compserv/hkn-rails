@@ -39,7 +39,7 @@
               //ajax
               ch = $("<tr></tr>");
               ch.append($("<td class=\"course_name\"></td>").html(course_name));
-              ch.append($('<td class="course_buttons"></td>').html('<form method="post" action="/course_preferences/'+data+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'))
+              ch.append($('<td class="course_buttons"></td>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'))
               $("#courses_"+preference_level).append(ch);
               $("#messages").hide("slow");
             } else{

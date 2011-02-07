@@ -384,7 +384,7 @@ class Admin::TutorController < Admin::AdminController
       #cp = tutor.course_preferences.find_by_course_id(course.id)
       #cp.level = level
       #cp.save
-      render :json => [1, course.course_abbr]
+      render :json => [1, course.course_abbr, cp.id]
     else
       render :json => [0, "You were already signed up for #{course}."]
     end
