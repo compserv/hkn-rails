@@ -8,7 +8,7 @@ namespace :committees do
       puts "#{p.username}: #{pic}"
 
       if pic.blank?
-          pic = p.picture
+          pic = p.picture(true)
           puts "  Guessing #{pic}"
       end
 
