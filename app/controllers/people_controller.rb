@@ -67,7 +67,16 @@ class PeopleController < ApplicationController
   end
 
   def show
-    @person = Person.find(params[:id])
+    @person = Person.find_by_username(params[:login])
+    if @person == nil
+      if params[:login].to_i != 0
+        @person = Person.find(params[:login].to_i) #Find by id
+      end
+      if @person == nil        
+        redirect_to :root, :notice => "The person you tried to view does not exist."
+        return
+      end
+    end
     @badges = @person.badges
   end
 

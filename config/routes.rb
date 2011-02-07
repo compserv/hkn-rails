@@ -74,6 +74,7 @@ HknRails::Application.routes.draw do
     match "list(/:category)" => "people#list", :as => :people_list
   end
   match "account-settings" => "people#edit", :as => :account_settings
+  match "people/:login" => "people#show", :as => :profile
   resources :people, :except => [:new, :create, :index]
 
   # Alumni
