@@ -68,6 +68,7 @@ class PeopleController < ApplicationController
 
   def show
     @person = Person.find(params[:id])
+    @badges = @person.badges
   end
 
   def edit

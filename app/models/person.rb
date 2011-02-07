@@ -36,6 +36,7 @@ class Person < ActiveRecord::Base
   has_many :resumes, :dependent => :destroy
   has_one :suggestion
   has_and_belongs_to_many :coursesurveys
+  has_and_belongs_to_many :badges
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
