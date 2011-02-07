@@ -52,7 +52,7 @@ class Person < ActiveRecord::Base
     c.transition_from_crypto_providers = DjangoSha1
   end
   
-  def picture(guess=true)
+  def picture(guess=false)
     # HACK: dynamically guesses user's picture
     p = method_missing(:picture)
     p.blank? && guess ? "http://hkn.eecs.berkeley.edu/files/officerpics/#{username}.png" : p

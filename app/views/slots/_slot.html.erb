@@ -9,7 +9,7 @@
 <!-- popup begins here -->
 <div width=400 id="boxtutor-<%= tutor.id %>" class="tutorbox">
 <div><%= tutor.person.fullname %></div>
-<div class="imgdiv"><img src="<%= tutor.person.picture %>"></div>
+<div class="imgdiv"><div class="photo <%= 'no-photo' if tutor.person.picture.blank? %>"><%= image_tag tutor.person.picture unless tutor.person.picture.blank? %></div></div>
 
 <div class="hours">
 <label>Tutoring Office Hours:</label><br/>

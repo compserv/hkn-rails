@@ -29,6 +29,16 @@ td.slot-unavailable {background-color: #ed8d86;}
     top: 2px;
 }
 
+div.photo{
+  width: 125px;
+  height: 100px;
+  float:left;
+  margin-right: 1em;
+}
+div.no-photo{
+  background: url("../images/person_placeholder.png");
+}
+
 td.slot input { margin: auto; display: block; }
 
 html table.tutoring { width: 100%; text-align: center; }
