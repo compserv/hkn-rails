@@ -32,7 +32,7 @@ class Person < ActiveRecord::Base
   has_many :committeeships, :dependent => :destroy
   has_and_belongs_to_many :groups
   has_many :rsvps, :dependent => :destroy
-  has_many :challenges, :dependent => :destroy
+  has_many :challenges, :through => :candidate
   has_many :resumes, :dependent => :destroy
   has_one :suggestion
   has_and_belongs_to_many :coursesurveys
