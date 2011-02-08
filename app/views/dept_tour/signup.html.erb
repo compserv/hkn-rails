@@ -4,7 +4,7 @@
   Sign up here, and your request will be sent to the HKN officer corps.
 </p>
 
-  <% if @errors.any? %>
+  <% if @errors && @errors.any? %>
   <div id="errorExplanation">
     <h2>There are <%= pluralize(@errors.count, "error") %> with the information entered:</h2>
     <ul>
