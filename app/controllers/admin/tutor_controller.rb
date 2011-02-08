@@ -284,7 +284,7 @@ class Admin::TutorController < Admin::AdminController
       happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
       ostats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
       cstats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
-      if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
+      if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).empty?
         @officer_stats[tutor] ||= []; @officer_stats[tutor] << ostats; officer_happiness += happiness
       elsif tutor.person.in_group?("cmembers")
         @cmember_stats[tutor] ||= []; @cmember_stats[tutor] << cstats; cmember_happiness += happiness
