@@ -356,7 +356,19 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def add_course
-    course = Course.find(params[:course].to_i)
+    course = Course.find(params[:course].to_i) unless params[:course].blank?
+    if (course.nil? || !course.course_abbr.eql?(params[:course_query]) ) && $SUNSPOT_ENABLED then
+      results = Course.search {keywords params[:course_query]}.results
+      if results.length == 1 then
+        course = results.first
+      else
+        msg = results.empty? ? "No courses matched your query." : "Multiple courses matched your query: #{results.collect(&:course_abbr).join(', ')}<br/>Select one from the autocomplete."
+        render :json => [0, msg]
+        return
+      end
+    else
+      # nothing found...
+    end
     preference_level = params[:level]
     @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
     
