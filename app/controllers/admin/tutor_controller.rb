@@ -1,6 +1,6 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
-  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule]
+  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule]
   
   
   def expire_schedule
@@ -293,7 +293,7 @@ class Admin::TutorController < Admin::AdminController
     @officer_stats['happiness'] ||= []; @officer_stats['happiness'] << officer_happiness
     @cmember_stats['happiness'] ||= []; @cmember_stats['happiness'] << cmember_happiness
     
-    if params[:authenticity_token]  #The form was submitted
+    if params[:authenticity_token] and @current_user.in_group?("officers") and @current_user.in_group?("tutoring")
 
       if params[:commit] == "Save changes"
         changed = false
