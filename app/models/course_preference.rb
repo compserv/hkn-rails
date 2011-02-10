@@ -25,7 +25,7 @@ class CoursePreference < ActiveRecord::Base
   def CoursePreference.all_courses(tutors)
     ret = Hash.new()
 
-    Course.joins(:course_preferences).where(:course_preferences => {:tutor_id=>tutors.collect(&:id)}).ordered.uniq!.each do |c|
+    Course.joins(:course_preferences).where(:course_preferences => {:tutor_id=>tutors.collect(&:id)}).ordered.uniq.each do |c|
       ret[c.dept_abbr] ||= []
       ret[c.dept_abbr] << c.full_course_number
     end
