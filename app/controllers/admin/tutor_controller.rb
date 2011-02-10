@@ -293,7 +293,12 @@ class Admin::TutorController < Admin::AdminController
     @officer_stats['happiness'] ||= []; @officer_stats['happiness'] << officer_happiness
     @cmember_stats['happiness'] ||= []; @cmember_stats['happiness'] << cmember_happiness
     
-    if params[:authenticity_token] and @current_user.in_group?("officers") and @current_user.in_group?("tutoring")
+    #if params[:authenticity_token] and @current_user.in_group?("officers") and @current_user.in_group?("tutoring")
+    if request.post?
+      unless @auth['superusers'] || (@auth['officers'] && @auth['tutoring'])
+        flash[:notice] = "Segfault! You're not authorized to modify the tutoring schedule."
+        return
+      end
 
       if params[:commit] == "Save changes"
         changed = false
