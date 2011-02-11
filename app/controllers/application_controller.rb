@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   ssl_required :all
 
   def ssl_required?
-    return true if request.remote_ip.eql?('127.0.0.1') || ['development','test'].include?(RAILS_ENV)
+    return true unless request.remote_ip.eql?('127.0.0.1') || ['development','test'].include?(RAILS_ENV)
     super
   end
 

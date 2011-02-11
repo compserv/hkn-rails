@@ -163,7 +163,7 @@ module ActionDispatch
         url_for_without_secure_default(options) 
       end
 
-      alias_method_chain :url_for, :secure_default
+      alias_method_chain :url_for, :secure_default unless defined? url_for_without_secure_default
     end
   end
 end
