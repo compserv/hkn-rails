@@ -4,15 +4,13 @@ class HomeController < ApplicationController
     @show_searcharea = true
     prop = Property.get_or_create
     @tutoring_enabled = prop.tutoring_enabled
+    @hours = prop.tutoring_start .. prop.tutoring_end
+    time = Time.now
+    time = time.tomorrow if time.hour > prop.tutoring_end
+    time = time.next_week unless (1..5).include? time.wday
+    @day = time.strftime("%a")
+    @tutor_title = "#{time.strftime("%A")}'s Tutoring Schedule"
     if @tutoring_enabled
-      @hours = prop.tutoring_start .. prop.tutoring_end
-      if (1..5) === Time.now.wday
-        @day = Time.now.strftime("%a")
-        @tutor_title = "Today's tutoring schedule"
-      else
-        @day = "Mon"
-        @tutor_title = "Monday's tutoring schedule"
-      end
       @course_mapping = {}
       @slots = Slot.find_by_wday(Time.now.wday)
     else
