@@ -23,8 +23,9 @@
       <%= image_tag officer.picture, :class => "indrel-officer-photo" unless officer.picture.nil? %>
       <div>
         <b><%= officer.fullname %></b><br />
-        <%= mail_to "#{officer.username}@hkn.eecs.berkeley.edu", "#{officer.username}@hkn", :encode => :hex %>
+        <%= officer.username %>@hkn
       </div>
     </div>
+    <div class="clear"></div>
   <% end %>
 </div>
