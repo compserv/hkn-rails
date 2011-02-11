@@ -25,7 +25,7 @@ gem "exception_notification",
         :require => "exception_notifier"
 
 gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
-gem 'bartt-ssl_requirement', :require => 'ssl_requirement'
+#gem 'bartt-ssl_requirement', :require => 'ssl_requirement'
 
 # Use unicorn as the web server
 # gem 'unicorn'
