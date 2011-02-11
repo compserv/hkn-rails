@@ -12,7 +12,7 @@ $(document).ready(function() {
         }
         $("#chatwindow").toggle("fast");
 	*/
-	url = "http://localhost:9090?nick=" + username + "&channels=hkn&prompt=0";
+	url = "https://hkn.eecs.berkeley.edu:9090?nick=" + username + "&channels=hkn&prompt=0";
 	settings = "status=no, toolbar=no, menubar=no, location=no, width=400, height=400";
 	window.open(url, "chatwindow", settings);
         return false;
