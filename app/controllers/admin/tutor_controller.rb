@@ -1,6 +1,6 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
-  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule]
+  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule]
   
   
   def expire_schedule
@@ -284,17 +284,21 @@ class Admin::TutorController < Admin::AdminController
       happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
       ostats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
       cstats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
-      if tutor.person.in_group?("officers")
+      if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
         @officer_stats[tutor] ||= []; @officer_stats[tutor] << ostats; officer_happiness += happiness
-      end
-      if tutor.person.in_group?("cmembers")
+      elsif tutor.person.in_group?("cmembers")
         @cmember_stats[tutor] ||= []; @cmember_stats[tutor] << cstats; cmember_happiness += happiness
       end
     end
     @officer_stats['happiness'] ||= []; @officer_stats['happiness'] << officer_happiness
     @cmember_stats['happiness'] ||= []; @cmember_stats['happiness'] << cmember_happiness
     
-    if params[:authenticity_token]  #The form was submitted
+    #if params[:authenticity_token] and @current_user.in_group?("officers") and @current_user.in_group?("tutoring")
+    if request.post?
+      unless @auth['superusers'] || (@auth['officers'] && @auth['tutoring'])
+        flash[:notice] = "Segfault! You're not authorized to modify the tutoring schedule."
+        return
+      end
 
       if params[:commit] == "Save changes"
         changed = false
@@ -357,7 +361,19 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def add_course
-    course = Course.find(params[:course].to_i)
+    course = Course.find(params[:course].to_i) unless params[:course].blank?
+    if (course.nil? || !course.course_abbr.eql?(params[:course_query]) ) && $SUNSPOT_ENABLED then
+      results = Course.search {keywords params[:course_query]}.results
+      if results.length == 1 then
+        course = results.first
+      else
+        msg = results.empty? ? "No courses matched your query." : "Multiple courses matched your query: #{results.collect(&:course_abbr).join(', ')}<br/>Select one from the autocomplete."
+        render :json => [0, msg]
+        return
+      end
+    else
+      # nothing found...
+    end
     preference_level = params[:level]
     @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
     

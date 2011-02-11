@@ -32,7 +32,7 @@ class Person < ActiveRecord::Base
   has_many :committeeships, :dependent => :destroy
   has_and_belongs_to_many :groups
   has_many :rsvps, :dependent => :destroy
-  has_many :challenges, :dependent => :destroy
+  has_many :challenges, :through => :candidate
   has_many :resumes, :dependent => :destroy
   has_one :suggestion
   has_and_belongs_to_many :coursesurveys
@@ -52,6 +52,12 @@ class Person < ActiveRecord::Base
     c.transition_from_crypto_providers = DjangoSha1
   end
   
+  def picture(guess=false)
+    # HACK: dynamically guesses user's picture
+    p = method_missing(:picture)
+    p.blank? && guess ? "http://hkn.eecs.berkeley.edu/files/officerpics/#{username}.png" : p
+  end
+
   def full_name
     first_name + " " + last_name
   end

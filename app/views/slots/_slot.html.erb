@@ -9,7 +9,7 @@
 <!-- popup begins here -->
 <div width=400 id="boxtutor-<%= tutor.id %>" class="tutorbox">
 <div><%= tutor.person.fullname %></div>
-<div class="imgdiv"><img src="<%= tutor.person.picture %>"></div>
+<div class="imgdiv"><div class="photo <%= 'no-photo' if tutor.person.picture.blank? %>"><%= image_tag tutor.person.picture unless tutor.person.picture.blank? %></div></div>
 
 <div class="hours">
 <label>Tutoring Office Hours:</label><br/>
@@ -21,32 +21,21 @@
 </div>
 <hr/>
 <div style="clear: both"></div>
-<% preferred_courses = tutor.courses.select{|course| course.course_preferences.find_by_tutor_id(tutor.id).level == 2} %>
-<% if not preferred_courses.empty? %>
-	<span class="small" style="font-style: italic">
-	<%= "Preferred: " %></span>
-	<% for course in preferred_courses %>
-		<%= course.to_s %>
-	<% end %><br/>
-<% end %>
 
-<% completed_courses = tutor.courses.select{|course| course.course_preferences.find_by_tutor_id(tutor.id).level == 1} %>
-<% if not completed_courses.empty? %>
-	<span class="small" style="font-style: italic">
-	<%= "Completed: " %></span>
-	<% for course in completed_courses %>
-		<%= course.to_s %>
-	<% end %><br/>
-<% end %>
+<% courses = {:preferred=>[], :completed=>[], :current=>[]}
+   tutor.courses.ordered.each do |c|
+     label = [:current, :completed, :preferred][CoursePreference.find_by_tutor_id_and_course_id(tutor.id, c.id).level]
+     courses[label] << c
+   end
+%>
+<% [:preferred, :completed, :current].each do |label| %>
+  <% unless courses[label].empty? %>
+    <span class="small" style="font-style: italic">
+    <%= "#{label.to_s.humanize.titleize}: " %></span>
+    <%= courses[label].collect(&:to_s).join(", ") %>
+  <% end %><br/>
+<% end # each label %>
 
-<% current_courses = tutor.courses.select{|course| course.course_preferences.find_by_tutor_id(tutor.id).level == 0} %>
-<% if not current_courses.empty? %>
-	<span class="small" style="font-style: italic">
-	<%= "Current: " %></span>
-	<% for course in current_courses %>
-		<%= course.to_s %>
-	<% end %>
-<% end %>
 </div>
 <!--popup ends here -->
 

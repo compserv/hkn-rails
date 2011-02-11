@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110205020437) do
+ActiveRecord::Schema.define(:version => 20110207002106) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -39,6 +39,18 @@ ActiveRecord::Schema.define(:version => 20110205020437) do
     t.integer  "preference_level"
     t.datetime "time"
     t.integer  "room_strength",    :default => 0
+  end
+
+  create_table "badges", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "badges_people", :id => false, :force => true do |t|
+    t.integer "badge_id"
+    t.integer "person_id"
   end
 
   create_table "blocks", :force => true do |t|

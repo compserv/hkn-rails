@@ -42,6 +42,12 @@
     </div>
     
     <%= hidden_field_tag(:referer, @referer) %>
+
+    <%- if @use_captcha -%>
+    <div class="field">
+      <%= captcha %>
+    </div>
+    <%- end -%>
     
     <div class="field-submit">
     <%= f.submit "Login" %>

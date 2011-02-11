@@ -79,7 +79,7 @@
     <%= text_area_tag 'pref_date', @fields['pref_date'] %>
   </div>
   <div class="field">
-    <p>Please let us know what type food, if any, you would prefer to have offered and your budget. We will handle the ordering and delivery.</p>
+    <p>Please let us know what type of food, if any, you would prefer to have offered and your budget. We will handle the ordering and delivery.</p>
     <%= text_area_tag 'pref_food', @fields['pref_food'] %>
   </div>
   <div class="field">
@@ -89,6 +89,11 @@
   <div class="field">
     <p>Any comments, special accomodations, or specific requests</p>
     <%= text_area_tag 'comments', @fields['comments'] %>
+  </div>
+
+  <br />
+  <div class="field">
+    <%= captcha %>
   </div>
 
   <p>With our infosession package, you will receieve:</p>
