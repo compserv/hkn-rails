@@ -1,12 +1,13 @@
 class PeopleController < ApplicationController
   before_filter :authorize, :only => [:list, :show, :edit, :update]
   before_filter :authorize_superuser, :only => [:destroy]
+  before_filter :authorize_vp, :only => [:approve]
 
   def list
     @category = params[:category] || "all"
 
     # Prevent people from seeing members of any group
-    unless %w[officers cmembers members candidates all].include? @category
+    if not %w[officers cmembers members candidates all].include? @category
       @messages << "No category named #{@category}. Displaying all people."
       @category = "all"
     end
@@ -27,7 +28,13 @@ class PeopleController < ApplicationController
       @group = Group.find_by_name(@category)
       opts.merge!( { :joins => "JOIN groups_people ON groups_people.person_id = people.id", :conditions => ["groups_people.group_id = ?", @group.id] } )
     end
-    @people = Person.paginate opts
+
+    person_selector = Person
+    if @auth["vp"] and params[:not_approved]
+      person_selector = person_selector.where(:approved => nil )
+    end
+
+    @people = person_selector.paginate opts
 
     respond_to do |format|
       format.html
@@ -85,6 +92,13 @@ class PeopleController < ApplicationController
     else
       @person = @current_user
     end
+  end
+
+  def approve
+    @person = Person.find(params[:id])
+    @person.approved = true
+    @person.save
+    redirect_to :action => "show"
   end
 
   def update
