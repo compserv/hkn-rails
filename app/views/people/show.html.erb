@@ -1,8 +1,13 @@
 <div class="admin">
-  <% if @auth["superusers"] %>
+  <% if @auth["vp"] %>
     Admin Bar: 
-    <%= link_to "[Edit]", edit_person_path(@person) %>
-    <%= link_to "[Delete]", person_path(@person) %>
+    <% if !@person.approved %>
+      <%= link_to "[Approve Account]", approve_path(@person) %>
+    <% end %>
+    <% if @auth["superusers"] %>
+      <%= link_to "[Edit]", edit_person_path(@person) %>
+      <%= link_to "[Delete]", person_path(@person) %>
+    <% end %>
   <% end %>
 </div>
 <div style="float: left; padding-right: 1em; width: 49%">

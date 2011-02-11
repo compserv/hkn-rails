@@ -74,6 +74,8 @@ HknRails::Application.routes.draw do
     match "list(/:category)" => "people#list", :as => :people_list
   end
   match "account-settings" => "people#edit", :as => :account_settings
+  match "people/:id/edit" => "people#edit"
+  match "people/:id/approve" => "people#approve", :as => :approve
   match "people/:login" => "people#show", :as => :profile, :constraints => {:login => /.+/}
   resources :people, :except => [:new, :create, :index]
 
