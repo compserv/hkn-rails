@@ -72,7 +72,7 @@ class ExamsController < ApplicationController
       exams = {}
       solutions = {}
       klass.exams.each do |exam|
-        if exam.is_solution
+        if not exam.is_solution
           exams[exam.short_type] = exam
         else
           solutions[exam.short_type] = exam
