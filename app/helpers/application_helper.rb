@@ -65,7 +65,7 @@ module ApplicationHelper
   def spinner
     raw '<div id="spinner"><img src="/images/site/spinner.gif" alt="Loading..."/></div>'
   end
-end
+end # ApplicationHelper
 
 
 # Other general helpers
@@ -158,12 +158,13 @@ end # ActionView
 module ActionDispatch
   module Routing
     class RouteSet
+      $__SECURE_DEFAULT_ = true    # C++ style ftw
       def url_for_with_secure_default(options = {})
         options[:secure] ||= true
         url_for_without_secure_default(options) 
       end
 
-      alias_method_chain :url_for, :secure_default unless defined? url_for_without_secure_default
+      alias_method_chain :url_for, :secure_default unless $__SECURE_DEFAULT_ #defined? url_for_without_secure_default
     end
   end
 end
