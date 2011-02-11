@@ -1,6 +1,6 @@
 class TutorController < ApplicationController
 
-  caches_action :schedule, :layout => false
+  #caches_action :schedule, :layout => false
     
   def schedule
     prop = Property.get_or_create

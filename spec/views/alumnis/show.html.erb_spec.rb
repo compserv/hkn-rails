@@ -8,7 +8,7 @@ describe "alumnis/show.html.erb" do
       :job_title => "Job Title",
       :company => "Company",
       :salary => 1,
-      :person => nil
+      :person => stub_model(Person, :first_name => "FARTY", :last_name=>"MCFARTERSON")
     ))
   end
 

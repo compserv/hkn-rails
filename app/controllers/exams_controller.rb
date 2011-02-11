@@ -1,8 +1,27 @@
 class ExamsController < ApplicationController
 
-  [:browse, :course].each {|a| caches_action a, :layout => false}
-    
+# [:index, :department, :course].each {|a| caches_action a, :layout => false}
+
+  # GET /exams
+  # GET /exams.xml
   def index
+    @dept_courses = ['CS', 'EE'].collect do |dept_abbr|
+      Exam.get_dept_name_courses_tuples(dept_abbr)
+    end
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @exams }
+    end
+  end
+
+  def department
+    @dept_name, @courses = Exam.get_dept_name_courses_tuples(params[:dept_abbr])
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @exams }
+    end
   end
 
   def search
@@ -42,25 +61,10 @@ class ExamsController < ApplicationController
     end
   end
 
-  # GET /exams/browse
-  # GET /exams/browse.xml
-  def browse
-    @dept_courses = ['CS', 'EE'].collect do |dept_abbr|
-      dept = Department.find_by_nice_abbr(dept_abbr)
-      dept_name = dept.name
-      #courses = Course.find_all_with_exams_by_department_id(dept.id)
-      courses = Course.find(:all, :conditions => {:department_id=>dept.id}, :include => [:exams], :order => :course_number).reject {|course| course.exams.empty?}
-      [dept_name, courses]
-    end
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @exams }
-    end
-  end
-
   def course
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:full_course_number])
+    dept_abbr = params[:dept_abbr].upcase
+    full_course_num = params[:full_course_number].upcase
+    @course = Course.find_by_short_name(dept_abbr, full_course_num)
     klasses = Klass.where(:course_id => @course.id).order('semester DESC').reject {|klass| klass.exams.empty?}
     @exam_path = '/examfiles/' # TODO clean up
 
@@ -68,7 +72,7 @@ class ExamsController < ApplicationController
       exams = {}
       solutions = {}
       klass.exams.each do |exam|
-        if exam.is_solution
+        if not exam.is_solution
           exams[exam.short_type] = exam
         else
           solutions[exam.short_type] = exam

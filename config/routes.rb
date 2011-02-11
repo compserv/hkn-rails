@@ -1,5 +1,7 @@
 HknRails::Application.routes.draw do
 
+  match "test_exception_notification" => "application#test_exception_notification"
+
   #Department tours
   scope "dept_tour" do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup
@@ -44,7 +46,7 @@ HknRails::Application.routes.draw do
       match "update_slots" => "tutor#update_slots"
     end
   end
-  resources :course_preferences
+  resources :course_preferences, :only => [:destroy]
 
   resources :dept_tour_requests do
     member do
@@ -72,12 +74,20 @@ HknRails::Application.routes.draw do
     match "list(/:category)" => "people#list", :as => :people_list
   end
   match "account-settings" => "people#edit", :as => :account_settings
+  match "people/:id/edit" => "people#edit"
+  match "people/:id/approve" => "people#approve", :as => :approve
+  match "people/:login" => "people#show", :as => :profile, :constraints => {:login => /.+/}
   resources :people, :except => [:new, :create, :index]
 
   # Alumni
-  resources :alumnis
+  resources :alumnis do
+    collection do
+      get 'me'
+    end
+  end
+  
   scope "alumni" do
-    match "registration" => "alumnis#edit"
+    match "registration" => "alumnis#new"
     match "newsletter" => "alumnis#newsletter"
   end
 
@@ -117,7 +127,6 @@ HknRails::Application.routes.draw do
   end
 
   
-  
   scope "events" do
     match "calendar" => "events#calendar", :as => :events_calendar
     match "hkn" => "events#hkn", :as => :events_ical
@@ -131,6 +140,7 @@ HknRails::Application.routes.draw do
     match "confirm/:id" => "rsvps#confirm", :as => :confirm_rsvp
     match "unconfirm/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
   end
+  
   resources :events do
     resources :rsvps
     resources :blocks
@@ -167,6 +177,7 @@ HknRails::Application.routes.draw do
     match "comingsoon" => "static#comingsoon"
     match "yearbook"  => "static#yearbook"
     match "slideshow" => "static#slideshow"
+    match "officers" => "static#officers"
   end
 
   #Tutoring pages
@@ -176,17 +187,18 @@ HknRails::Application.routes.draw do
   end
   
   # Exams
-  scope "exam" do
-    resources :exams
+  scope "exams" do
+    match '/'                                     => "exams#index",
+      :as => :exams
     match "search"                                => "exams#search",
       :as => :exams_search
-    match "browse"                                => "exams#browse",
-      :as => :exams_browse
     match "course/:dept_abbr"                     => "exams#department",
       :as => :exams_department
     match "course/:dept_abbr/:full_course_number" => "exams#course",
       :as => :exams_course
+    match 'course'                                => redirect('/exams')
   end
+  #resources :exams
 
   #Candidates
   scope "cand" do

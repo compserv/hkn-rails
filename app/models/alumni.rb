@@ -13,4 +13,6 @@ class Alumni < ActiveRecord::Base
   # =======================
 
   belongs_to :person
+  validates_uniqueness_of :person_id
+  validates_inclusion_of :salary, :in => 0...5000000000000000000, :message=>"must be within 0 and 5 quintillion"
 end

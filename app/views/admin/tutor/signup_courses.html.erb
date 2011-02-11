@@ -30,6 +30,7 @@
         $.post("/admin/tutor/add_course",
           { course: course_id,
             level: preference_level,
+            course_query: $("#course_query").val(),
           },
           function(data) {
             if(data[0] == 1){ //OK submission
@@ -39,9 +40,10 @@
               //ajax
               ch = $("<tr></tr>");
               ch.append($("<td class=\"course_name\"></td>").html(course_name));
-              ch.append($('<td class="course_buttons"></td>').html('<form method="post" action="/course_preferences/'+data+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'))
+              ch.append($('<td class="course_buttons"></td>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'))
               $("#courses_"+preference_level).append(ch);
               $("#messages").hide("slow");
+              $("#add_course_errors").html("");
             } else{
               $("#add_course_errors").html(data[1]);
             }

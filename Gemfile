@@ -20,6 +20,13 @@ gem 'yaml_db'
 gem 'sunspot_rails', ">= 1.2.rc4"
 gem 'jquery-rails', '>= 0.2.6'
 
+gem "exception_notification",
+        :git => "git://github.com/rails/exception_notification.git",
+        :require => "exception_notifier"
+
+gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
+#gem 'bartt-ssl_requirement', :require => 'ssl_requirement'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

@@ -3,7 +3,7 @@
   <%= stylesheet_link_tag "tutor" %>
 <% end %>
 
-<h2>Today's Tutoring Schedule</h2>
+<h2><%= @tutor_title %></h2>
 <div class="small infobar_links"><%= link_to "weekly schedule", "/tutor" %></div>
 <% if @tutoring_enabled %>
 <% tutors = [] %>
@@ -33,6 +33,7 @@
 		<% c = "'" + key + course + "'" %>
 		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
 		onclick="return locklight(<%= c %>)"><%= course %></a>
+                <%= ', ' unless course == courses[key].last %>
 		<% end %>
 	<br/>
 	<% end %>

@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn]
   
-  [:index, :calendar, :show].each {|a| caches_action a, :layout => false}
+  #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
   # GET /events
   # GET /events.xml
@@ -49,7 +49,10 @@ class EventsController < ApplicationController
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
-    @events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
+    #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
+    # Sorry, this is kind of a bad query
+    @events = Event.past.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "rsvps.confirmed IS NULL AND groups.id = #{Group.find_by_name('candidates').id}").uniq
+    @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
 
   #Rsvp confirmation for an individual event
@@ -62,8 +65,8 @@ class EventsController < ApplicationController
     month = (params[:month] || Time.now.month).to_i
     year = (params[:year] || Time.now.year).to_i
     # TODO: Fix this, I think we have timezone issues
-    @start_date = Time.utc(year, month).beginning_of_month
-    @end_date = Time.utc(year, month).end_of_month
+    @start_date = Time.local(year, month).beginning_of_month
+    @end_date = Time.local(year, month).end_of_month
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
@@ -118,9 +121,6 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.xml
   def create
-    expire_page :action => :index
-    expire_page :action => :calendar
-    expire_page :action => :show
     
     @event = Event.new(params[:event])
     duration = @event.end_time - @event.start_time
@@ -200,9 +200,6 @@ class EventsController < ApplicationController
   # PUT /events/1
   # PUT /events/1.xml
   def update
-    expire_page :action => :index
-    expire_page :action => :calendar
-    expire_page :action => :show
     
     @event = Event.find(params[:id])
     @blocks = @event.blocks
@@ -309,9 +306,6 @@ class EventsController < ApplicationController
   # DELETE /events/1
   # DELETE /events/1.xml
   def destroy
-    expire_page :action => :index
-    expire_page :action => :calendar
-    expire_page :action => :show
     
     @event = Event.find(params[:id])
     @event.destroy
@@ -349,8 +343,8 @@ class EventsController < ApplicationController
     end_month = ( params[:end_month] || semester_end_month ).to_i
     end_year = ( params[:end_year] || semester_year ).to_i
 
-    @start_date = Time.utc(start_year, start_month).beginning_of_month
-    @end_date = Time.utc(end_year, end_month).end_of_month
+    @start_date = Time.local(start_year, start_month).beginning_of_month
+    @end_date = Time.local(end_year, end_month).end_of_month
 
     @now = Time.now
 

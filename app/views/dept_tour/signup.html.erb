@@ -3,6 +3,18 @@
   HKN provides tours of the Berkeley EECS department.
   Sign up here, and your request will be sent to the HKN officer corps.
 </p>
+
+  <% if @errors && @errors.any? %>
+  <div id="errorExplanation">
+    <h2>There are <%= pluralize(@errors.count, "error") %> with the information entered:</h2>
+    <ul>
+    <% @errors.each_pair do |field, msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <%- end -%>
+
 <%= form_tag("", :method => :post) do%>
   <div class="field">
     <%= label_tag :name, "Name:" %>
@@ -29,7 +41,15 @@
     <%= text_area_tag :comments %>
   </div>
   
+  <div class="field">
+    <br />
+    <%# dirty hack to get captcha to align properly %>
+    <label>&nbsp;</label>
+    <%= captcha %>
+  </div>
+
   <div class="field-submit">
     <%= submit_tag "Submit" %>
   </div>
+
 <% end %>

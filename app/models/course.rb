@@ -24,6 +24,7 @@ class Course < ActiveRecord::Base
   validates :department_id, :presence => true
   validates :course_number, :presence => true
 
+  #scope :all, order("prefix, courses.course_number, suffix")
   scope :ordered, order("prefix, courses.course_number, suffix")
   scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
 

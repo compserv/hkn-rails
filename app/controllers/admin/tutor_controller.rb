@@ -1,5 +1,6 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :add_course, :find_courses]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule]
+  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule]
   
   
   def expire_schedule
@@ -9,9 +10,9 @@ class Admin::TutorController < Admin::AdminController
   def signup_slots
     tutor = @current_user.get_tutor
     @prefs = Hash.new 0
-    tutor.availabilities.each {|a| @prefs[a.time.utc.strftime('%a%H')] = a.preference_level}
+    tutor.availabilities.each {|a| @prefs[a.time.strftime('%a%H')] = a.preference_level}
     @sliders = Hash.new
-    tutor.availabilities.each {|a| @sliders[a.time.utc.strftime('%a%H')] = a.get_slider_value}
+    tutor.availabilities.each {|a| @sliders[a.time.strftime('%a%H')] = a.get_slider_value}
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     prop = Property.get_or_create
     @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
@@ -48,7 +49,7 @@ class Admin::TutorController < Admin::AdminController
           @prefs[x] = pref
         end
       end
-    else
+    elsif params[:commit] == "Reset all"
       tutor.availabilities.destroy_all
     end
   
@@ -156,72 +157,148 @@ class Admin::TutorController < Admin::AdminController
     @cory_available = Hash.new
     @soda_preferred = Hash.new
     @soda_available = Hash.new
-
-    @others = Hash.new
-    if params[:all_tutors]
-      for slot in Slot.find(:all, :conditions => "room=0")
-        time = slot.time.utc.strftime('%a%H')
-        for tutor in Tutor.all
-          @others[time] ||= []; @others[time] << tutor
-        end
-      end
-    end
-
-    for tutor in Tutor.all
-      tutor.availabilities.each do |a|
-        cory_str = ' ('; soda_str = ' ('
-
-        if a.room_strength == 0
-          cory_str += 'p'; soda_str += 'p'
-        elsif a.room_strength == 1
-          if a.preferred_room == 0
-            cory_str += 'P'; soda_str += 'p'
-          else
-            cory_str += 'p'; soda_str += 'P'
-          end
-        else
-          if a.preferred_room == 0
-            cory_str += 'P'
-          else
-            soda_str += 'P'
-          end
-        end
-
-        if tutor.adjacency == 1
-          cory_str += 'A'; soda_str += 'A'
-        elsif tutor.adjacency == -1
-          cory_str += 'a'; soda_str += 'a'
-        end
-
-        cory_str += ')'; soda_str += ')'
-
-        time = a.time.utc.strftime('%a%H')
-        if params[:all_tutors]
-          @others[time].delete(tutor)
-        end
-        if a.preference_level==1
-          @cory_preferred[time] ||= []; @cory_preferred[time] << [tutor, cory_str]
-          @soda_preferred[time] ||= []; @soda_preferred[time] << [tutor, soda_str]
-        else
-          @cory_available[time] ||= []; @cory_available[time] << [tutor, cory_str]
-          @soda_available[time] ||= []; @soda_available[time] << [tutor, soda_str]
-        end
-      end
-    end
+    @cory_others = Hash.new
+    @soda_others = Hash.new
 
     @assignments = Hash.new
-    slots = Hash.new
+    @slots = Hash.new
+
     for slot in Slot.all
       @assignments[slot.to_s] = slot.tutors
-      slots[slot.to_s] = slot
+      @slots[slot.to_s] = slot
+      slot_tutors = []
+      time = slot.time.strftime('%a%H')
+
+      for a in slot.availabilities
+        tutor = a.tutor
+
+        str = ' ('
+        if a.room_strength == 0
+          str += 'p'
+        elsif a.room_strength == 1
+          if a.preferred_room == slot.room
+            str += 'P'
+          else
+            str += 'p'
+          end
+        elsif a.preferred_room == slot.room
+          str += 'P'
+        end
+        if tutor.adjacency == 1
+          str += 'A'
+        elsif tutor.adjacency == -1
+          str += 'a'
+        end
+        str += ')'
+
+        if slot.room == 0 
+          if a.preference_level == 1
+            @cory_preferred[time] ||= []; @cory_preferred[time] << [tutor, str]
+          else
+            @cory_available[time] ||= []; @cory_available[time] << [tutor, str]
+          end
+        else
+          if a.preference_level == 1
+            @soda_preferred[time] ||= []; @soda_preferred[time] << [tutor, str]
+          else
+            @soda_available[time] ||= []; @soda_available[time] << [tutor, str]
+          end
+        end
+        slot_tutors << tutor
+      end
+
+      for tutor in slot.tutors
+        if not slot_tutors.include?(tutor)
+          if slot.room == 0
+            @cory_others[time] ||= []; @cory_others[time] << tutor
+          else
+            @soda_others[time] ||= []; @soda_others[time] << tutor
+          end
+          slot_tutors << tutor
+        end
+      end
+
+      if params[:all_tutors]
+        for tutor in Tutor.all
+          if not slot_tutors.include?(tutor)
+            if slot.room == 0
+              @cory_others[time] ||= []; @cory_others[time] << tutor
+            else
+              @soda_others[time] ||= []; @soda_others[time] << tutor
+            end
+            slot_tutors << tutor
+          end
+        end
+      end
+
     end
 
     prop = Property.get_or_create
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @hours = prop.tutoring_start .. prop.tutoring_end
     @rows = ["Hours"] + @hours.to_a.map! {|x| x.to_s}
+
+    # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
+    @officer_stats = Hash.new; @cmember_stats = Hash.new
+    officer_happiness = 0; cmember_happiness = 0
+    for tutor in Tutor.all
+      happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
+
+      for slot in tutor.slots
+        if slot.get_preferred_tutors.include?(tutor)
+          first_choice += 1
+        elsif slot.get_available_tutors.include?(tutor)
+          second_choice += 1
+        else
+          wrong_assign += 1
+        end      
+
+        avail = tutor.availabilities.find(:all, :conditions => ["time=?", slot.time]).first
+        if not avail.nil?
+          if slot.room == avail.preferred_room or avail.room_strength == 0
+            correct_office += 2
+          elsif avail.room_strength == 1
+            correct_office += 1
+          end
+        end
+
+        adj_closed_list = []
+        if tutor.adjacency != 0 and tutor.person.in_group?("officers")
+          for other_slot in tutor.slots
+            if not adj_closed_list.include?(other_slot)            
+              if other_slot.wday == slot.wday and (other_slot.hour - slot.hour == 1 or other_slot.hour - slot.hour == -1)
+                if tutor.adjacency == 1 or tutor.adjacency == 0
+                  adjacencies += 1
+                end
+              else
+                if tutor.adjacency == -1 or tutor.adjacency == 0
+                  adjacencies += 1
+                end
+              end
+            end
+          end
+        end
+        adj_closed_list << slot
+      end
+
+      happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
+      ostats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
+      cstats = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
+      if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
+        @officer_stats[tutor] ||= []; @officer_stats[tutor] << ostats; officer_happiness += happiness
+      elsif tutor.person.in_group?("cmembers")
+        @cmember_stats[tutor] ||= []; @cmember_stats[tutor] << cstats; cmember_happiness += happiness
+      end
+    end
+    @officer_stats['happiness'] ||= []; @officer_stats['happiness'] << officer_happiness
+    @cmember_stats['happiness'] ||= []; @cmember_stats['happiness'] << cmember_happiness
     
-    if params[:authenticity_token]  #The form was submitted
+    #if params[:authenticity_token] and @current_user.in_group?("officers") and @current_user.in_group?("tutoring")
+    if request.post?
+      unless @auth['superusers'] || (@auth['officers'] && @auth['tutoring'])
+        flash[:notice] = "Segfault! You're not authorized to modify the tutoring schedule."
+        return
+      end
 
       if params[:commit] == "Save changes"
         changed = false
@@ -231,17 +308,17 @@ class Admin::TutorController < Admin::AdminController
           new = params[x] || []
           for removed in old - new
             changed = true
-            slots[x].tutors.delete Tutor.find(Integer(removed))
+            @slots[x].tutors.delete Tutor.find(Integer(removed))
           end
           for added in new - old
             changed = true
-            slots[x].tutors << Tutor.find(Integer(added))
+            @slots[x].tutors << Tutor.find(Integer(added))
           end
         end
-      else
+      elsif params[:commit] == "Reset all"
         changed = true
         @assignments.keys.each do |x|
-          slots[x].tutors.delete_all
+          @slots[x].tutors.delete_all
         end
       end
 
@@ -284,7 +361,19 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def add_course
-    course = Course.find(params[:course].to_i)
+    course = Course.find(params[:course].to_i) unless params[:course].blank?
+    if (course.nil? || !course.course_abbr.eql?(params[:course_query]) ) && $SUNSPOT_ENABLED then
+      results = Course.search {keywords params[:course_query]}.results
+      if results.length == 1 then
+        course = results.first
+      else
+        msg = results.empty? ? "No courses matched your query." : "Multiple courses matched your query: #{results.collect(&:course_abbr).join(', ')}<br/>Select one from the autocomplete."
+        render :json => [0, msg]
+        return
+      end
+    else
+      # nothing found...
+    end
     preference_level = params[:level]
     @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
     
@@ -311,11 +400,18 @@ class Admin::TutorController < Admin::AdminController
       #cp = tutor.course_preferences.find_by_course_id(course.id)
       #cp.level = level
       #cp.save
-      render :json => [1, course.course_abbr]
+      render :json => [1, course.course_abbr, cp.id]
     else
       render :json => [0, "You were already signed up for #{course}."]
     end
     
   end
+
+  private
+
+  def authorize_tutoring_signup
+    authorize(['officers', 'cmembers'])
+  end
+
 
 end

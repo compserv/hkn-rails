@@ -15,7 +15,7 @@
       <%= image_tag person.picture unless person.picture.blank? %>
     </td>
     <td>
-      <%= link_to person.fullname, person %>
+      <%= link_to person.fullname, profile_path(:login => person.username) %>
       <div class="small"><%= person.status %></div>
     </td>
     <td><%= raw html_obfuscate person.email unless person.private %></td>

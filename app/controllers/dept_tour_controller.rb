@@ -8,6 +8,7 @@ class DeptTourController < ApplicationController
       if params[:name].length == 0
         @errors[:name] = "Name must not be blank"
       end
+      @errors[:recaptcha] = "Captcha validation failed" unless verify_recaptcha
       if @errors.empty?
         @messages << params[:date]
         date = params[:date][:month] + "/" + params[:date][:day] + "/" + params[:date][:year]

@@ -2,10 +2,10 @@
   <ul class="plain">
     <li><a href="/tutor/">Tutoring</a></li>
     <li><%= link_to "Course Surveys", coursesurveys_path %></li>
-    <li><a href="/exam/browse/">Exam Archive</a></li>
+    <li><a href="/exams/">Exam Archive</a></li>
   </ul>
   <ul class="plain">
-    <li><%= link_to "Course Guide", "/service/comingsoon" || "/courseguide/" %></li>
+    <li><%= link_to "Course Guide", "https://hkn.eecs.berkeley.edu/courseguide/index.php" %></li>
     <li><%= link_to "Department Tours", dept_tour_signup_path %>
     <li><%= link_to "More Services", "/service/comingsoon" || "/services/more" %></li>
   </ul>
@@ -57,8 +57,11 @@
 
 <div class="submenu alumni_submenu">
   <ul class="plain">
-    <li><a href="/alumni/registration/" class="navigation_sublevel_item">Registration</a></li>
-    <li><a href="/alumni/newsletter/" class="navigation_sublevel_item">Alumni Newsletter</a></li>
+    <% unless @current_user and @current_user.alumni %>
+      <li><a href="/alumni/registration/" class="navigation_sublevel_item">Registration</a></li>
+    <% else %>
+      <%= link_to "View My Alumni Information", me_alumnis_url %>
+    <% end %>
   </ul>
 </div>
 
@@ -70,7 +73,7 @@
   </ul>
   <ul class="plain">
     <li><a href="/about/slideshow/" class="navigation_sublevel_item">Slideshows</a></li>
-    <li><%= link_to "Current Officers", "/about/comingsoon" ||"/about/officers/", :class=>"navigation_sublevel_item" %></li>
+    <li><%= link_to "Current Officers", "/about/officers/", :class=>"navigation_sublevel_item" %></li>
   </ul>
 </div>
 
@@ -88,12 +91,13 @@
 <div class="submenu admin_submenu">
   <ul class="plain">
     <li><a href="/admin/tutor/signup_slots/" class="navigation_sublevel_item">Tutor Slot Signup</a></li>
-<li><a href="/admin/tutor/signup_courses/" class="navigation_sublevel_item">Tutor Course Signup</a></li>
+    <li><a href="/admin/tutor/signup_courses/" class="navigation_sublevel_item">Tutor Course Signup</a></li>
+    <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
     <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
+    <% if @auth["vp"] %><li><%= link_to "Confirm Candidate Accounts", people_list_path(:category => "candidates", :not_approved=> true) %></li><% end %>
   </ul>
   <ul class="plain">
     <% if @auth["tutoring"] %>
-      <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
       <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
     <% end %>
     <% if @auth['csec'] %>

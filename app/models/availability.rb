@@ -18,6 +18,7 @@ class Availability < ActiveRecord::Base
   validate :valid_room
   validates :tutor, :presence => true
   validates :preference_level, :presence => true
+  validates_uniqueness_of :time, :scope => :tutor_id
   
   @prefstr_to_int = {"unavailable"=>0, "preferred"=>1, "available"=>2}
 
@@ -33,6 +34,18 @@ class Availability < ActiveRecord::Base
         when 4 then room,strength = 1,2
       end
       return room, strength
+    end
+
+    def time_for_weekday_and_hour(wdaystr, h)
+      wday = 1
+      case
+      when wdaystr.is_a?(String)
+        wday = %w(Monday Tuesday Wednesday Thursday Friday).index(wdaystr.capitalize)+1
+      when wdaystr.is_a?(Integer)
+        wday = wdaystr
+      else raise "Availability.time_for_weekday_and_hour: Bad weekday #{wdaystr}"
+      end
+      Time.local(1,1,wday,h,0)  # jan 2001 => wday == day
     end
   end
   
@@ -59,7 +72,7 @@ class Availability < ActiveRecord::Base
   end
 
   def to_s
-    time.utc.strftime('%a%H')
+    time.strftime('%a%H')
   end
 
 end

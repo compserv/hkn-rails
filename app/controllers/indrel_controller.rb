@@ -38,6 +38,7 @@ class IndrelController < ApplicationController
 
     @errors << "Phone is not well-formatted." if params['phone'].match(/[a-zA-Z]/)
     @errors << "Email is not well-formatted." unless params['email'].match(/.*@.*\..*/)
+    @errors << "Captcha validation failed." unless verify_recaptcha
 
     unless @errors.empty?
       render :action => :infosessions_registration and return
@@ -72,6 +73,7 @@ class IndrelController < ApplicationController
 
     @errors << "Phone is not well-formatted." if params['phone'].match(/[a-zA-Z]/)
     @errors << "Email is not well-formatted." unless params['email'].match(/.*@.*\..*/)
+    @errors << "Captcha validation failed." unless verify_recaptcha
 
     unless @errors.empty?
       render :action => :resume_books_order and return

@@ -1,11 +1,12 @@
 <% stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
 <%= form_tag do %>
-<input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time</label>
+<input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time.</label>
 <p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
 <p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
-<p>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit. Then add them back in the right places, and submit again. 
-If you don't do that exactly, the schedule may not end up in the right state.</p>
+<p> Only tutoring officers have sufficient privileges to change the schedule.</p>
+<p>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit.</p>
+<p>Then add them back in the right places, and submit again. If you don't do that exactly, the schedule may not end up in the right state.</p>
 <table id="edit_schedule">
 <% @rows.each do |row| %>
 	<tr>
@@ -34,9 +35,9 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 				<% end %>
 				</optgroup>
                             <% end %>
-                            <% if not @others[formatslot day, row].blank? %>
+                            <% if @cory_others[formatslot day, row] %>
 				<optgroup label="Others">
-				<% @others[formatslot day, row].each do |tutor| %>
+				<% @cory_others[formatslot day, row].each do |tutor| %>
 				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
@@ -64,10 +65,10 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 				<% end %>
 				</optgroup>
 				<% end %>
-                            <% if not @others[formatslot day, row].blank? %>
+                            <% if @soda_others[formatslot day, row] %>
 				<optgroup label="Others">
-				<% @others[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
+				<% @soda_others[formatslot day, row].each do |tutor| %>
+				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
 				<% end %>
 				</optgroup>
 				<% end %>
@@ -82,20 +83,40 @@ If you don't do that exactly, the schedule may not end up in the right state.</p
 <%= submit_tag "Reset all" %>
 <% end %><br/>
 
-<div style="float: left; line-height: 1.5em;">
-<h2>Availabilities by Officer</h2>
-<% for officer in Group.find_by_name("officers").people %>
-<%= officer.full_name + ': ' %>
-<% for avail in officer.get_tutor.availabilities.sort_by {|a| a.time} %>
-<%= avail.to_s %>
-<% end %><br/>
-<% end %></div>
+<p>Each of the following categories are simple counts, except for (Non)Adjacencies and Correct Office.</p>
+<p>1 is added to the former if a tutor's slots match the adjacency preference, or if the tutor has no preference.</p>
+<p>For the latter, a 'P' on a slot adds 2, while a 'p' adds 1.</p>
+<p>Finally, Happiness is a linear combination of each factor, with the following weights:</p>
+<p>Availabilities = 0</p>
+<p>First Choices = 6</p>
+<p>Second Choices = 0</p>
+<p>Wrong Times = -10000</p>
+<p>(Non)Adjacencies = 1 (officers only)</p>
+<p>Correct Office = 2</p>
 
-<div style="float: left; padding-left: 5%; line-height: 1.5em;">
-<h2>Availabilities by Committee Member</h2>
-<% for officer in Group.find_by_name("cmembers").people %>
-<%= officer.full_name + ': ' %>
-<% for avail in officer.get_tutor.availabilities.sort_by {|a| a.time} %>
-<%= avail.to_s %>
-<% end %><br/>
-<% end %></div>
+<% [@officer_stats, @cmember_stats].each do |stats| %>
+<table>
+<tr>
+<% if stats == @officer_stats %>
+<td><h3>Officers</h3></td>
+<% else %> <td><h3>Committee members</h3></td><% end %>
+<td><h3>Availabilities</h3></td>
+<td><h3>First Choices</h3></td>
+<td><h3>Second Choices</h3></td>
+<td><h3>Wrong Times</h3></td>
+<% if stats == @officer_stats %>
+<td><h3>(Non)Adjacencies</h3></td><% end %>
+<td><h3>Correct Office</h3></td>
+<td><h3>Total Happiness = <%= stats['happiness'] %></h3></td>
+</tr>
+<% Tutor.all.sort_by{|t| [-t.availabilities.count, t.person.fullname]}.each do |tutor| %>
+<tr>
+<% if stats.keys.include?(tutor) %>
+<td><%= tutor.person.fullname %></td>
+<% stats[tutor][0].each do |entry| %>
+<td><%= entry %></td>
+<% end %>
+</tr><% end %><% end %>
+</table>
+<br/>
+<% end %>

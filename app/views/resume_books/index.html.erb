@@ -4,7 +4,7 @@
 <li><%= link_to "Generate a new resume book", new_resume_book_path  %></li>
 <li><%= form_tag(resume_book_missing_path, :method => "get") do %>
   <%= label_tag(:cutoff_date, "See a list of people who haven't submitted a résumé since ") %>
-  <%= date_select("post", :cutoff_date) %>
+  <%= date_select("date", :cutoff_date) %>
   <%= submit_tag("Go") %>
 <% end %></li>
 <li><%= link_to "list of all HKN Members and their resume upload statuses.", resumes_status_list_path %>

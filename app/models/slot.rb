@@ -33,35 +33,33 @@ class Slot < ActiveRecord::Base
       daytime = extract_day_time(str)
       time = get_time(daytime[0], daytime[1])
       room = room_to_int[str[5..8]] || {"C"=>0, "S"=>1}[str[5..5]]
-      return find_by_time_and_room(time, room)
+      return find_by_time_and_room(time, room) || (raise "Nil slot for time #{time.to_s} and room #{room}")
     end
     def get_time(wday, hour)
-      base = Time.at(0).utc
-      thetime = hour.hours + ((wday - base.wday) % 7).days
-      Time.at(thetime.value)
+#      base = Time.at(0).utc
+#      thetime = hour.hours + ((wday - base.wday) % 7).days
+#      Time.at(thetime.value)
+      
+      #Time.local(0,1,wday+1,hour,0)
+      Availability.time_for_weekday_and_hour(wday,hour)
     end
 
     def get_time_str(wday, hour)
-      base = Time.at(0)
-      thetime = hour.hours + ((wday - base.wday) % 7).days
-      Time.at(thetime.value).strftime('%a%H')
+     get_time.strftime('%a%H')
     end
     def find_by_wday(wday)
-      slots = all
-      slots.select {|slot| slot.wday == wday}
+      all.select {|slot| slot.wday == wday}
     end
     def find_by_wday_and_room(wday, room)
-      slots = find_by_wday(wday)
-      slots.select {|slot| slot.room == room}
+      find_by_wday(wday).select {|slot| slot.room == room}
     end
    def find_by_wday_hour_and_room(wday, hour, room)
-      slots = all
-      slots.select {|slot| slot.wday == wday and slot.hour == hour and slot.room == room}
+      all.select {|slot| slot.wday == wday && slot.hour == hour && slot.room == room}
     end
   end
 
   def to_s
-    time.utc.strftime('%a%H') + get_room()[0..0]
+    time.strftime('%a%H') + get_room()[0..0]
   end
 
   def get_room()
@@ -75,11 +73,11 @@ class Slot < ActiveRecord::Base
   end
 
   def hour
-    time.utc.hour
+    time.hour
   end
 
   def wday
-    time.utc.wday
+    time.wday
   end
 
   def valid_room
@@ -104,12 +102,12 @@ class Slot < ActiveRecord::Base
     return Availability.where(:time=>time)
   end
   def get_all_tutors
-    return Availability.where(:time=>time).map{|x| x.tutor}
+    return Availability.where(:time=>time).collect(&:tutor)
   end
   def get_available_tutors
-    return Availability.where(:time=>time, :preference_level=>1).map{|x| x.tutor}
+    return Availability.where(:time=>time, :preference_level=>2).collect(&:tutor)
   end
   def get_preferred_tutors
-    return Availability.where(:time=>time, :preference_level=>2).map{|x| x.tutor}
+    return Availability.where(:time=>time, :preference_level=>1).collect(&:tutor)
   end
 end

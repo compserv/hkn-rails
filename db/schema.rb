@@ -10,14 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110115221912) do
+ActiveRecord::Schema.define(:version => 20110207002106) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
     t.string   "grad_school"
     t.string   "job_title"
     t.string   "company"
-    t.integer  "salary"
+    t.integer  "salary",        :limit => 8
     t.integer  "person_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -39,6 +39,18 @@ ActiveRecord::Schema.define(:version => 20110115221912) do
     t.integer  "preference_level"
     t.datetime "time"
     t.integer  "room_strength",    :default => 0
+  end
+
+  create_table "badges", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "badges_people", :id => false, :force => true do |t|
+    t.integer "badge_id"
+    t.integer "person_id"
   end
 
   create_table "blocks", :force => true do |t|
@@ -295,6 +307,7 @@ ActiveRecord::Schema.define(:version => 20110115221912) do
     t.string   "local_address",       :default => ""
     t.string   "perm_address",        :default => ""
     t.string   "grad_semester",       :default => ""
+    t.boolean  "approved"
   end
 
   create_table "properties", :force => true do |t|

@@ -1,12 +1,13 @@
 class PeopleController < ApplicationController
   before_filter :authorize, :only => [:list, :show, :edit, :update]
   before_filter :authorize_superuser, :only => [:destroy]
+  before_filter :authorize_vp, :only => [:approve]
 
   def list
     @category = params[:category] || "all"
 
     # Prevent people from seeing members of any group
-    unless %w[officers cmembers members candidates all].include? @category
+    if not %w[officers cmembers members candidates all].include? @category
       @messages << "No category named #{@category}. Displaying all people."
       @category = "all"
     end
@@ -20,14 +21,20 @@ class PeopleController < ApplicationController
                      end
 
     @search_opts = {'sort' => "first_name"}.merge params
-    opts = { :page => params[:page], :per_page => 10, :order => "people.#{order} #{sort_direction}" }
-    if %w[officers cmembers].include? @category
+    opts = { :page => params[:page], :per_page => 20, :order => "people.#{order} #{sort_direction}" }
+    if %w[officers].include? @category
       opts.merge!( { :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title = ?", Property.semester, @category[0..-2]] } )
     elsif @category != "all"
       @group = Group.find_by_name(@category)
       opts.merge!( { :joins => "JOIN groups_people ON groups_people.person_id = people.id", :conditions => ["groups_people.group_id = ?", @group.id] } )
     end
-    @people = Person.paginate opts
+
+    person_selector = Person
+    if @auth["vp"] and params[:not_approved]
+      person_selector = person_selector.where(:approved => nil )
+    end
+
+    @people = person_selector.paginate opts
 
     respond_to do |format|
       format.html
@@ -43,9 +50,6 @@ class PeopleController < ApplicationController
   end
 
   def create
-    expire_action :action => :list
-    expire_action :action => :show
-    
     @person = Person.new(params[:person])
     if params[:candidate] == "true"
       @person.groups << Group.find_by_name("candidates")
@@ -60,7 +64,7 @@ class PeopleController < ApplicationController
       @person.groups << Group.find_by_name("candplus")
     end
 
-    if @person.save
+    if verify_recaptcha(:message=>"Captcha validation failed", :model=>@person) && @person.save
       flash[:notice] = "Account registered!"
       redirect_to root_url
     else
@@ -69,7 +73,17 @@ class PeopleController < ApplicationController
   end
 
   def show
-    @person = Person.find(params[:id])
+    @person = Person.find_by_username(params[:login])
+    if @person == nil
+      if params[:login].to_i != 0
+        @person = Person.find(params[:login].to_i) #Find by id
+      end
+      if @person == nil        
+        redirect_to :root, :notice => "The person you tried to view does not exist."
+        return
+      end
+    end
+    @badges = @person.badges
   end
 
   def edit
@@ -80,9 +94,14 @@ class PeopleController < ApplicationController
     end
   end
 
+  def approve
+    @person = Person.find(params[:id])
+    @person.approved = true
+    @person.save
+    redirect_to :action => "show"
+  end
+
   def update
-    expire_action :action => :list
-    expire_action :action => :show
     
     @person = Person.find(params[:id])
     if @person.id != @current_user.id and !@current_user.in_group?("superusers")
@@ -101,7 +120,8 @@ class PeopleController < ApplicationController
 	    params[:person][:password] = params[:password][:new]
       params[:person][:password_confirmation] = params[:password][:confirm]
 	  else
-	    raise "Incorrect password"#Figure out how to send this message along as an error
+	    redirect_to(path, :notice => "You must enter in your current password to make any changes.")
+        return
 	  end
 	end
     if @person.update_attributes(params[:person])
@@ -112,7 +132,5 @@ class PeopleController < ApplicationController
   end
 
   def destroy
-    expire_action :action => :list
-    expire_action :action => :show
   end
 end

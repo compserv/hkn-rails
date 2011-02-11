@@ -9,6 +9,12 @@ HknRails::Application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
   config.action_controller.page_cache_directory = File.join Rails.root, 'public', 'cache'
+  # SSL
+  config.after_initialize do
+    #SslRequirement.ssl_host = 'hkn.eecs.berkeley.edu:8079'
+    #SslRequirement.non_ssl_host = 'hkn.eecs.berkeley.edu:8080'
+  end
+
 
   # Specifies the header that your server uses for sending files
   config.action_dispatch.x_sendfile_header = "X-Sendfile"
@@ -38,6 +44,9 @@ HknRails::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
+
+  # HACK for hkn-rails on hkn.eecs: with tls, it complains about hostname
+  config.action_mailer.smtp_settings = {:enable_starttls_auto => false}
 
   # Enable threaded mode
   # config.threadsafe!

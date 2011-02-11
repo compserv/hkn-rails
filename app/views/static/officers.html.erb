@@ -1,0 +1,39 @@
+<h1>HKN Officers, Spring 2011</h1>
+
+<div id="execs">
+<% for position in @execs %>
+<div class="position">
+<h2><%= position[0] %></h2>
+<% if person = position[1] %>
+<div class="officer">
+  <div class="photo <%= "no-photo" if person.picture.blank? %>">
+    <%= image_tag person.picture  unless person.picture.blank? %>
+  </div>
+  <span class="name"><%= person.full_name %></span>
+  <span class="email"><%= person.username %>@hkn</span>
+</div>
+<% end %>
+</div>
+<% end %>
+</div>
+
+<div id="committees">
+<% for committee in @committees %>
+<div class="committee">
+<h2><%= committee[0] %></h2>
+<% for person in committee[1] %>
+<div class="officer">
+  <div class="photo <%= "no-photo" if person.picture.blank? %>">
+    <%= image_tag person.picture  unless person.picture.blank? %>
+  </div>
+  <span class="name"><%= person.full_name %></span>
+  <span class="email"><%= person.username %>@hkn</span>
+</div>
+
+<% end %>
+</div>
+<% end %>
+<br>
+<div class="hbar"></div>
+To send an email, fill out the full domain name (hkn=>hkn.eecs.berkeley.edu)
+</div>

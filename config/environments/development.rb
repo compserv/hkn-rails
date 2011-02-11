@@ -9,6 +9,9 @@ HknRails::Application.configure do
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
 
+  # Don't show SQL spam
+  config.log_level = :info
+
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_view.debug_rjs             = true
@@ -24,6 +27,7 @@ HknRails::Application.configure do
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.perform_deliveries = false
 
   config.active_support.deprecation = :notify
   

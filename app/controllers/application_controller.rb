@@ -3,6 +3,15 @@ class ApplicationController < ActionController::Base
   before_filter :get_current_user, :merge_messages, :check_authorizations
   layout 'application'
 
+  include ::SslRequirement
+  ssl_allowed :all
+  ssl_required :all
+
+  def ssl_required?
+    return true if request.remote_ip.eql?('127.0.0.1') || ['development','test'].include?(RAILS_ENV)
+    super
+  end
+
   #This is a bit of dynamic code that allows you to use methods like
   #authorize_foo to call authorize with a group as an argument. It might be
   #good to clean it up a little and put the matching in a separate class.
@@ -49,6 +58,10 @@ class ApplicationController < ActionController::Base
       end
   end
 
+  def test_exception_notification
+    raise 'This is a test. This is only a test.'
+  end
+
   #-----------------------------------------------------------------------
   # Private Methods
   #-----------------------------------------------------------------------
@@ -70,13 +83,14 @@ class ApplicationController < ActionController::Base
 
   def authorize(group_or_groups=nil)
     # group_or_groups must be either a single Group name or an array of Group names
-    # If user is in any of the groups, then he has access
+    # If user is in any of the groups, then s/he has access
     groups = (group_or_groups.class == String) ? [group_or_groups] : group_or_groups
+    groups = groups | ["superusers"]
     if @current_user.nil?
       redirect_to :login, :notice => "Please log in to access this page.", :flash => {:referer => request.fullpath}
       return
     end
-    unless groups.nil? or @current_user.admin? or @current_user.groups.map{|x| groups.include? x.name}.reduce{|x,y| x || y}
+    unless groups.nil? || (groups & @current_user.groups.collect(&:name)).present?
       redirect_to :root, :notice => "Insufficient privileges to access this page."
       return
     end

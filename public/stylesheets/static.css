@@ -15,10 +15,6 @@
   text-align: center;
 }
 
-p {
-  text-align: center;
-}
-
 /*Slideshows and Yearbooks*/
 #slideshows {
     -webkit-padding-start: 0px;
@@ -60,4 +56,48 @@ p {
   top: 3px;
   display: inline-block;
   background: url("/images/icons/pdf.png");
+}
+
+/*Officers*/
+div.photo{
+  width: 125px;
+  height: 100px;
+  float:left;
+  margin-right: 1em;
+}
+
+div.no-photo{
+  background: url("../images/person_placeholder.png");
+}
+
+span.label{
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  color: #999;
+  width: 12em;
+}
+
+.user-field{
+  display: block;
+}
+
+.officer{
+    display: inline-block;
+    width: 40%;
+    min-height: 100px;
+    padding: 5px;
+}
+
+.officer .email{
+    display: block;
+}
+
+#execs .position{
+    display: inline-block;
+    width: 40%;
+}
+
+#execs .officer{
+    width: 100%;
 }
