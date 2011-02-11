@@ -382,6 +382,7 @@ h4{
 }
 
 #chat{
+  display: none;
   background: url("/images/icons/chat.png");
 }
 
