@@ -11,8 +11,8 @@ HknRails::Application.configure do
   config.action_controller.page_cache_directory = File.join Rails.root, 'public', 'cache'
   # SSL
   config.after_initialize do
-    SslRequirement.ssl_host = 'hkn.eecs.berkeley.edu:8079'
-    SslRequirement.non_ssl_host = 'hkn.eecs.berkeley.edu:8080'
+    #SslRequirement.ssl_host = 'hkn.eecs.berkeley.edu:8079'
+    #SslRequirement.non_ssl_host = 'hkn.eecs.berkeley.edu:8080'
   end
 
 
