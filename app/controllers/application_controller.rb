@@ -3,6 +3,9 @@ class ApplicationController < ActionController::Base
   before_filter :get_current_user, :merge_messages, :check_authorizations
   layout 'application'
 
+  include ::SslRequirement
+  ssl_required :all
+
   #This is a bit of dynamic code that allows you to use methods like
   #authorize_foo to call authorize with a group as an argument. It might be
   #good to clean it up a little and put the matching in a separate class.

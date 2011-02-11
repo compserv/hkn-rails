@@ -9,6 +9,11 @@ HknRails::Application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
   config.action_controller.page_cache_directory = File.join Rails.root, 'public', 'cache'
+  # SSL
+  config.after_initialize do
+    SslRequirement.ssl_host = 'hkn.eecs.berkeley.edu:8079'
+  end
+
 
   # Specifies the header that your server uses for sending files
   config.action_dispatch.x_sendfile_header = "X-Sendfile"
