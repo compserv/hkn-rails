@@ -31,7 +31,7 @@
   <tr><th>Description</th><td><%= @event.description %></td></tr>
 </table>
 
-<% if @auth["act"] %>
+<% if @auth["comms"] %>
   <%= link_to 'Edit', edit_event_path(@event) %> |
   <%= link_to 'Destroy', event_path(@event), :confirm => "Are you sure?", :method => :delete %> |
 <% end %>
