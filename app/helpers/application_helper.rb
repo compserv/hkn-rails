@@ -153,3 +153,17 @@ module ActionView
     end
   end # Helpers
 end # ActionView
+
+# SSL links by default
+module ActionDispatch
+  module Routing
+    class RouteSet
+      def url_for_with_secure_default(options = {})
+        options[:secure] ||= true
+        url_for_without_secure_default(options) 
+      end
+
+      alias_method_chain :url_for, :secure_default
+    end
+  end
+end

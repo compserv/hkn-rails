@@ -12,6 +12,7 @@ HknRails::Application.configure do
   # SSL
   config.after_initialize do
     SslRequirement.ssl_host = 'hkn.eecs.berkeley.edu:8079'
+    SslRequirement.non_ssl_host = 'hkn.eecs.berkeley.edu:8080'
   end
 
 

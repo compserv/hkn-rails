@@ -4,7 +4,13 @@ class ApplicationController < ActionController::Base
   layout 'application'
 
   include ::SslRequirement
+  ssl_allowed :all
   ssl_required :all
+
+  def ssl_required?
+    return true if request.remote_ip.eql?('127.0.0.1') || ['development','test'].include?(RAILS_ENV)
+    super
+  end
 
   #This is a bit of dynamic code that allows you to use methods like
   #authorize_foo to call authorize with a group as an argument. It might be
