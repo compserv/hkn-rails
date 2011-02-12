@@ -38,6 +38,7 @@ module CoursesurveysHelper
   end
 
   def frequency_bar(rating)
+    rating = 0 if rating.to_f.nan? || rating.to_f.infinite?
     width = (rating*100).to_int
 
     outer_html_options = { :class => "frequencybar" }
