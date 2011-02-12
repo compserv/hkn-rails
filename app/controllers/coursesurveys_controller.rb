@@ -328,7 +328,7 @@ class CoursesurveysController < ApplicationController
     @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
     @mode = @frequencies.values.max # TODO: i think this is wrong and always returns the highest score...
     # Someone who understands statistics, please make sure the following line is correct
-    @conf_intrvl = 1.96*@answer.deviation/Math.sqrt(@total_responses)
+    @conf_intrvl = @total_responses > 0 ? 1.96*@answer.deviation/Math.sqrt(@total_responses) : 0
   end
   
   def editrating

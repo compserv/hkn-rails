@@ -76,6 +76,7 @@ class SurveyAnswer < ActiveRecord::Base
     v = Rails.cache.read(k)
     return v if v
     v = 1.96*self.deviation/Math.sqrt(ActiveSupport::JSON.decode(frequencies).values.reduce{|x,y| x.to_i+y.to_i})
+    v = 0 if v.to_f.nan? || v.to_f.infinite?
     Rails.cache.write(k, v)
     v
   end
