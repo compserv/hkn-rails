@@ -53,6 +53,10 @@
     <% end %>
   </div>
   <div style="float:left;">
+  <% if @can_edit %>
+  <%= link_to '[Edit]', coursesurveys_edit_instructor_path(@instructor) %>
+  <% end %>
+
     <table id="instructor_info" class="infobox">
       <tr> <th>Title</th>             <td><%= @instructor.title %></td> </tr>
       <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
@@ -62,6 +66,7 @@
       <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
     </table>
   </div>
+
   <div class="clear"></div>
 </div>
 

@@ -3,7 +3,7 @@
 
 <h2><%= @answer.survey_question.text %></h2>
 <span class="edit">
-<%- if @current_user and @current_user.admin? -%>
+<%- if @can_edit -%>
   <%= link_to '[Edit]', coursesurveys_edit_rating_path(@answer) %>
 <%- end -%>
 </span>

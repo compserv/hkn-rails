@@ -2,7 +2,7 @@ class CoursesurveysController < ApplicationController
   include CoursesurveysHelper
 
   before_filter :show_searcharea
-  before_filter :require_admin, :only => [:editrating, :updaterating]
+  before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor]
 
   begin # caching
     [:index, :instructors, :klass].each {|a| caches_action a, :layout => false}
@@ -11,12 +11,15 @@ class CoursesurveysController < ApplicationController
     caches_action :department, :layout => false, :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"}
 
     # Separate for admins
-    caches_action_for_admins([:instructor], :groups => %w(csec compserv))
+    caches_action_for_admins([:instructor], :groups => %w(csec superusers))
   end
 
+  def authorize_coursesurveys
+    @current_user && (@auth['csec'] || @auth['superusers'])
+  end
   
   def require_admin
-    return if current_user_can_admin? #@current_user.admin?
+    return if authorize_coursesurveys
     flash[:error] = "You must be an admin to do that."
     redirect_to coursesurveys_path
   end
@@ -315,8 +318,29 @@ class CoursesurveysController < ApplicationController
   end
   @grad_totals = temp
 
+  @can_edit = @current_user && authorize_coursesurveys
 
   end #instructor
+
+  def editinstructor
+    @instructor = Instructor.find_by_id(params[:id].to_i)
+    if @instructor.nil?
+      redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}."
+    end
+  end
+
+  def updateinstructor
+    @instructor = Instructor.find(params[:id].to_i)
+    if @instructor.nil?
+      redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}."
+    end
+
+    unless @instructor.update_attributes(params[:instructor])
+      redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}"
+    end
+
+    redirect_to surveys_instructor_path(@instructor), :notice => "Successfully updated #{@instructor.full_name}."
+  end
 
   def rating
     @answer = SurveyAnswer.find(params[:id])
@@ -329,6 +353,7 @@ class CoursesurveysController < ApplicationController
     @mode = @frequencies.values.max # TODO: i think this is wrong and always returns the highest score...
     # Someone who understands statistics, please make sure the following line is correct
     @conf_intrvl = @total_responses > 0 ? 1.96*@answer.deviation/Math.sqrt(@total_responses) : 0
+    @can_edit = @current_user && authorize_coursesurveys
   end
   
   def editrating
