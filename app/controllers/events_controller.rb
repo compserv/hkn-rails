@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn]
+  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical]
   
   #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
@@ -78,22 +78,6 @@ class EventsController < ApplicationController
       format.html
       format.js {
         render :partial => 'calendar'
-      }
-    end
-  end
-  
-  def icals
-    now = Time.now
-    @start_date = Time.local(now.year,now.month,now.day)
-    # y10k bug here... gotta be a better way to do this
-    events = Event.with_permission(@current_user).find(:all, :conditions=> {:start_time => @start_date..Time.gm(9999)})
-    
-    respond_to do |format|
-      format.html {
-        render :text => generate_ical(events)
-      }
-      format.ics {
-        render :text => generate_ical(events)
       }
     end
   end
@@ -367,16 +351,22 @@ class EventsController < ApplicationController
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
-
+    
     respond_to do |format|
       format.html { render :hkn, :layout => false }
-      format.ics
+      format.ics {
+        render :text => generate_ical_text(@events)
+      }
     end
+  end
+  
+  def ical
+    return self.hkn
   end
   
   private
   
-  def generate_ical(events)
+  def generate_ical_text(events)
     cal = RiCal.Calendar do |cal|
       events.each do |event|
         cal.event do |iCalEvent|
@@ -387,6 +377,9 @@ class EventsController < ApplicationController
           iCalEvent.location = event.location
         end
       end
+      # the following are x-properties and so are set manually
+      cal.add_x_property "X-WR-CALNAME","HKN Events"
+      cal.add_x_property "X-WR-CALDESC","HKN Events"
     end
     headers['Content-Type'] = "text/calendar; charset=UTF-8"
     cal.to_s

@@ -143,7 +143,7 @@ HknRails::Application.routes.draw do
   
   resources :events do
     collection do
-      get 'icals'
+      get 'ical'
     end
     resources :rsvps
     resources :blocks

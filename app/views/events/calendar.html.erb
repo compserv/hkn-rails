@@ -4,6 +4,14 @@
 
 <%= ajaxify_links %>
 
+<div style="float:right;text-align:right"> 
+  <%= link_to "public event feed", events_ical_url({:format => :ics, :protocol => "webcal"}) %>
+  <% if @current_user %>
+    <!-- figure out auth for feeds later -->
+    <br/><%= link_to "download my visible events", ical_events_url({:format => :ics})%>
+  <% end %>
+</div>
+
 <% if @auth["officers"] || @auth["cmembers"] %>
-  <%= link_to 'New Event', new_event_path %>
+  <span style="float:left"><%= link_to 'New Event', new_event_path %></span>
 <% end %>
