@@ -17,6 +17,7 @@
 # To generate your own SSL certificate for testing purposes, follow the directions at
 #  <http://www.akadia.com/services/ssh_test_certificate.html>
 #
+ENV['SSL'] = "none" if File.file? ".nossl"
 unless ENV['SSL'].nil? || ENV['SSL'].empty?
   # From http://www.nearinfinity.com/blogs/chris_rohr/configuring_webrick_to_use_ssl.html
   require 'rubygems'
