@@ -12,7 +12,7 @@ HknRails::Application.configure do
   # SSL
   unless defined? Rails::Configuration::SSL
     module Rails module Configuration
-      SSL = true
+      SSL = ! File.file?(".nossl")
     end end
   end
   puts "SSL = #{Rails::Configuration::SSL}"
