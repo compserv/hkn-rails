@@ -81,6 +81,22 @@ class EventsController < ApplicationController
       }
     end
   end
+  
+  def icals
+    now = Time.now
+    @start_date = Time.local(now.year,now.month,now.day)
+    # y10k bug here... gotta be a better way to do this
+    events = Event.with_permission(@current_user).find(:all, :conditions=> {:start_time => @start_date..Time.gm(9999)})
+    
+    respond_to do |format|
+      format.html {
+        render :text => generate_ical(events)
+      }
+      format.ics {
+        render :text => generate_ical(events)
+      }
+    end
+  end
 
   # GET /events/1
   # GET /events/1.xml

@@ -142,6 +142,9 @@ HknRails::Application.routes.draw do
   end
   
   resources :events do
+    collection do
+      get 'icals'
+    end
     resources :rsvps
     resources :blocks
   end
