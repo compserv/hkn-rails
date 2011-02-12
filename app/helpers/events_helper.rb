@@ -13,20 +13,4 @@ module EventsHelper
     end
     return str
   end
-  
-  def generate_ical(events)
-    cal = RiCal.Calendar do |cal|
-      events.each do |event|
-        cal.event do |iCalEvent|
-          iCalEvent.description = event.description
-          iCalEvent.summary = event.name
-          iCalEvent.dtstart = event.start_time
-          iCalEvent.dtend   = event.end_time
-          iCalEvent.location = event.location
-        end
-      end
-    end
-    headers['Content-Type'] = "text/calendar; charset=UTF-8"
-    cal.to_s
-  end
 end
