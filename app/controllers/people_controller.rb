@@ -102,28 +102,33 @@ class PeopleController < ApplicationController
   end
 
   def update
-    
     @person = Person.find(params[:id])
+
+    # Permissions
     if @person.id != @current_user.id and !@current_user.in_group?("superusers")
       flash[:notice] = "Could not update settings."
       redirect_to account_settings_path
     end
 
+    # Superusers can edit anyone
     if @current_user.in_group?("superusers")
       path = edit_person_path(@person)
     else
       path = account_settings_path
     end
 	
-	if params[:password][:current]
-	  if @current_user.valid_ldap_or_password?(params[:password][:current])
-	    params[:person][:password] = params[:password][:new]
-      params[:person][:password_confirmation] = params[:password][:confirm]
-	  else
-	    redirect_to(path, :notice => "You must enter in your current password to make any changes.")
+    # Verify password
+    if params[:password][:current]
+      if @current_user.valid_ldap_or_password?(params[:password][:current])
+        params[:person][:password] = params[:password][:new]
+        params[:person][:password_confirmation] = params[:password][:confirm]
+      else
+        redirect_to(path, :notice => "You must enter in your current password to make any changes.")
         return
-	  end
-	end
+      end
+    end
+
+    # DO IT
     if @person.update_attributes(params[:person])
       redirect_to(path, :notice => 'Settings successfully updated.')
     else

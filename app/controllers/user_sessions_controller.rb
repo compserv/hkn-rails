@@ -2,6 +2,8 @@ class UserSessionsController < ApplicationController
   #before_filter :require_no_user, :only => [:new, :create]
   #before_filter :require_user, :only => :destroy
 
+  #ssl_required :new, :create, :destroy
+
   private
   def use_recaptcha?
     session[:login_attempts] && session[:login_attempts] > 3

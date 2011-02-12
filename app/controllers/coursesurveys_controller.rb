@@ -2,7 +2,7 @@ class CoursesurveysController < ApplicationController
   include CoursesurveysHelper
 
   before_filter :show_searcharea
-  before_filter :require_admin, :only => [:editrating, :updaterating]
+  before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor]
 
   begin # caching
     [:index, :instructors, :klass].each {|a| caches_action a, :layout => false}
@@ -11,12 +11,16 @@ class CoursesurveysController < ApplicationController
     caches_action :department, :layout => false, :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"}
 
     # Separate for admins
-    caches_action_for_admins([:instructor], :groups => %w(csec compserv))
+    #caches_action_for_admins([:instructor], :groups => %w(csec superusers))
   end
+  cache_sweeper :instructor_sweeper
 
+  def authorize_coursesurveys
+    @current_user && (@auth['csec'] || @auth['superusers'])
+  end
   
   def require_admin
-    return if current_user_can_admin? #@current_user.admin?
+    return if authorize_coursesurveys
     flash[:error] = "You must be an admin to do that."
     redirect_to coursesurveys_path
   end
@@ -208,15 +212,12 @@ class CoursesurveysController < ApplicationController
       redirect_to coursesurveys_search_path([first_name,last_name].join(' '))
       return
     end
-    
-    cache_key = "#{@instructor.cache_key}/controllerdata"
-  
-    # TODO: fragment caching is disabled here
-    unless true #(cached_values = Rails.cache.read(cache_key)).nil?
-      @instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total = Marshal.load(cached_values)
-    else # no cached data loaded
-    
-    
+   
+    @can_edit = @current_user && authorize_coursesurveys
+ 
+    # Don't do any heavy computation if cache exists
+    return if fragment_exist? instructor_cache_path(@instructor)
+
     @instructed_klasses = []
     @tad_klasses = []
 
@@ -290,33 +291,48 @@ class CoursesurveysController < ApplicationController
       end
     end
     
-    Rails.cache.write(cache_key, Marshal.dump([@instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total]))
-  end # cache
+    # Unwrap from id to object, for the view
+    [@instructed_klasses, @tad_klasses].each do |a|
+      a.each do |k|
+        k[0] =        Klass.find(k[0])
+        k[1] =   Instructor.find(k[1])
+        k[2] = SurveyAnswer.find(k[2])
+        k[3] = SurveyAnswer.find(k[3]) unless k[3].blank?
+      end
+    end
+    
+    temp = {}
+    @undergrad_totals.each do |course_id,tuple|
+      temp[Course.find(course_id)] = tuple
+    end
+    @undergrad_totals = temp
 
-  # Unwrap from id to object, for the view
-  [@instructed_klasses, @tad_klasses].each do |a|
-    a.each do |k|
-      k[0] =        Klass.find(k[0])
-      k[1] =   Instructor.find(k[1])
-      k[2] = SurveyAnswer.find(k[2])
-      k[3] = SurveyAnswer.find(k[3]) unless k[3].blank?
+    temp = {}
+    @grad_totals.each do |course_id,tuple|
+      temp[Course.find(course_id)] = tuple
+    end
+    @grad_totals = temp
+  end #instructor
+
+  def editinstructor
+    @instructor = Instructor.find_by_id(params[:id].to_i)
+    if @instructor.nil?
+      redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}."
     end
   end
-  
-  temp = {}
-  @undergrad_totals.each do |course_id,tuple|
-    temp[Course.find(course_id)] = tuple
+
+  def updateinstructor
+    @instructor = Instructor.find(params[:id].to_i)
+    if @instructor.nil?
+      redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}."
+    end
+
+    unless @instructor.update_attributes(params[:instructor])
+      redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}"
+    end
+
+    redirect_to surveys_instructor_path(@instructor), :notice => "Successfully updated #{@instructor.full_name}."
   end
-  @undergrad_totals = temp
-
-  temp = {}
-  @grad_totals.each do |course_id,tuple|
-    temp[Course.find(course_id)] = tuple
-  end
-  @grad_totals = temp
-
-
-  end #instructor
 
   def rating
     @answer = SurveyAnswer.find(params[:id])
@@ -328,7 +344,8 @@ class CoursesurveysController < ApplicationController
     @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
     @mode = @frequencies.values.max # TODO: i think this is wrong and always returns the highest score...
     # Someone who understands statistics, please make sure the following line is correct
-    @conf_intrvl = 1.96*@answer.deviation/Math.sqrt(@total_responses)
+    @conf_intrvl = @total_responses > 0 ? 1.96*@answer.deviation/Math.sqrt(@total_responses) : 0
+    @can_edit = @current_user && authorize_coursesurveys
   end
   
   def editrating

@@ -3,7 +3,7 @@
 
 <h2><%= @answer.survey_question.text %></h2>
 <span class="edit">
-<%- if @current_user and @current_user.admin? -%>
+<%- if @can_edit -%>
   <%= link_to '[Edit]', coursesurveys_edit_rating_path(@answer) %>
 <%- end -%>
 </span>
@@ -38,7 +38,7 @@
         <%- @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key| -%>
           <tr>
             <th><%= key %></th>
-            <td><%= frequency_bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %> (<%= sprintf "%.1f", 100.0*@frequencies[key]/@total_responses %>%)</td>
+            <td><%= frequency_bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %> (<%= @total_responses > 0 ? sprintf("%.1f", 100.0*@frequencies[key]/@total_responses) : 0 %>%)</td>
           </tr>
         <%- end -%>
       </table>

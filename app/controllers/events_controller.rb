@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn]
+  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical]
   
   #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
@@ -49,7 +49,10 @@ class EventsController < ApplicationController
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
-    @events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
+    #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
+    # Sorry, this is kind of a bad query
+    @events = Event.past.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "rsvps.confirmed IS NULL AND groups.id = #{Group.find_by_name('candidates').id}").uniq
+    @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
 
   #Rsvp confirmation for an individual event
@@ -348,10 +351,37 @@ class EventsController < ApplicationController
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
-
+    
     respond_to do |format|
       format.html { render :hkn, :layout => false }
-      format.ics
+      format.ics {
+        render :text => generate_ical_text(@events)
+      }
     end
+  end
+  
+  def ical
+    return self.hkn
+  end
+  
+  private
+  
+  def generate_ical_text(events)
+    cal = RiCal.Calendar do |cal|
+      events.each do |event|
+        cal.event do |iCalEvent|
+          iCalEvent.description = event.description
+          iCalEvent.summary = event.name
+          iCalEvent.dtstart = event.start_time
+          iCalEvent.dtend   = event.end_time
+          iCalEvent.location = event.location
+        end
+      end
+      # the following are x-properties and so are set manually
+      cal.add_x_property "X-WR-CALNAME","HKN Events"
+      cal.add_x_property "X-WR-CALDESC","HKN Events"
+    end
+    headers['Content-Type'] = "text/calendar; charset=UTF-8"
+    cal.to_s
   end
 end

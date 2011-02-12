@@ -1,6 +1,64 @@
 #!/usr/bin/env ruby1.8
 # This command will automatically be run when you run "rails" with Rails 3 gems installed from the root of your application.
 
+# SSL is controlled via the SSL environment variable as follows:
+# - SSL=<none|no>
+#   Explicitly disables SSL.
+
+# - SSL=<some path>
+#   Explicitly enables SSL, using specified path to .key and .crt.
+#   Example usage:
+#     export SSL=../ssl/myserver rails server => "../ssl/myserver.key", "../ssl/myserver.crt"
+#   Btw, working dir = RAILS_ROOT.
+#
+# - no SSL specified, or SSL=   [blank]
+#   Use default behavior: SSL for production, and non SSL for other environments.
+#
+# To generate your own SSL certificate for testing purposes, follow the directions at
+#  <http://www.akadia.com/services/ssh_test_certificate.html>
+#
+ENV['SSL'] = "none" if File.file? ".nossl"
+unless ENV['SSL'].nil? || ENV['SSL'].empty?
+  # From http://www.nearinfinity.com/blogs/chris_rohr/configuring_webrick_to_use_ssl.html
+  require 'rubygems'
+  require 'rails/commands/server'
+  require 'rack'
+  require 'webrick'
+  require 'webrick/https'
+
+  module Rails
+    module Configuration
+      SSL = !(ENV['SSL'] =~ /none|no/)
+    end
+  end
+
+  if Rails::Configuration::SSL
+    module Rails
+      class Server < ::Rack::Server
+        def default_options
+          puts "SSL using certificate #{ENV['SSL']}.crt"
+          super.merge({
+  #                :Port => 3000,
+  #                :environment => (ENV['RAILS_ENV'] || "development").dup,
+  #                :daemonize => false,
+  #                :debugger => false,
+  #                :pid => File.expand_path("tmp/pids/server.pid"),
+  #                :config => File.expand_path("config.ru"),
+              :SSLEnable => true,
+              :SSLVerifyClient => OpenSSL::SSL::VERIFY_NONE,
+              :SSLPrivateKey => OpenSSL::PKey::RSA.new(
+                     File.open("#{ENV['SSL']}.key").read),
+              :SSLCertificate => OpenSSL::X509::Certificate.new(
+                     File.open("#{ENV['SSL']}.crt").read),
+              :SSLCertName => [["CN", WEBrick::Utils::getservername]]
+          })
+        end
+      end
+    end
+  end
+end
+# end custom SSL config
+
 ENV_PATH  = File.expand_path('../../config/environment',  __FILE__)
 BOOT_PATH = File.expand_path('../../config/boot',  __FILE__)
 APP_PATH  = File.expand_path('../../config/application',  __FILE__)

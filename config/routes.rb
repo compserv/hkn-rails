@@ -73,10 +73,10 @@ HknRails::Application.routes.draw do
   scope "people" do
     match "list(/:category)" => "people#list", :as => :people_list
   end
-  match "account-settings" => "people#edit", :as => :account_settings
-  match "people/:id/edit" => "people#edit"
+  match "account-settings"   => "people#edit",    :as => :account_settings
+  match "people/:id/edit"    => "people#edit"
   match "people/:id/approve" => "people#approve", :as => :approve
-  match "people/:login" => "people#show", :as => :profile, :constraints => {:login => /.+/}
+  get   "people/:login"      => "people#show",    :as => :profile, :constraints => {:login => /.+/}
   resources :people, :except => [:new, :create, :index]
 
   # Alumni
@@ -114,8 +114,10 @@ HknRails::Application.routes.draw do
     match "course/:dept_abbr/:short_name"           => "coursesurveys#course",     :as => :coursesurveys_course
     match "course/:dept_abbr/:short_name/:semester(/:section)" => "coursesurveys#klass",      :as => :coursesurveys_klass
     # This is a hack to allow periods in the parameter. Otherwise, Rails automatically splits on periods
-    match "instructor/:name"                        => "coursesurveys#instructor", :as => :coursesurveys_instructor, :constraints => {:name => /.+/}
-    match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
+    get "instructor/:id/edit"                     => "coursesurveys#editinstructor", :as => :coursesurveys_edit_instructor
+    match "instructor/:id/update"                     => "coursesurveys#updateinstructor", :as => :coursesurveys_update_instructor
+     get "instructor/:name"                        => "coursesurveys#instructor", :as => :coursesurveys_instructor, :constraints => {:name => /.+/}
+   match "rating/:id"                              => "coursesurveys#rating",     :as => :coursesurveys_rating
     match "rating/:id/edit"                         => "coursesurveys#editrating", :as => :coursesurveys_edit_rating
     match "rating/:id/update"                       => "coursesurveys#updaterating", :as => :coursesurveys_update_rating
     match "search(/:q)"                         => "coursesurveys#search",     :as => :coursesurveys_search
@@ -142,6 +144,9 @@ HknRails::Application.routes.draw do
   end
   
   resources :events do
+    collection do
+      get 'ical'
+    end
     resources :rsvps
     resources :blocks
   end
