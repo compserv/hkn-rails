@@ -14,6 +14,9 @@
 # - no SSL specified, or SSL=   [blank]
 #   Use default behavior: SSL for production, and non SSL for other environments.
 #
+# To generate your own SSL certificate for testing purposes, follow the directions at
+#  <http://www.akadia.com/services/ssh_test_certificate.html>
+#
 unless ENV['SSL'].nil? || ENV['SSL'].empty?
   # From http://www.nearinfinity.com/blogs/chris_rohr/configuring_webrick_to_use_ssl.html
   require 'rubygems'
