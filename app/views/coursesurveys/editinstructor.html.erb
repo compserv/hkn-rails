@@ -10,21 +10,15 @@
       <%# no picture %>
     <% end %>
   </div>
-
-  <div style="float:left;">
-    <table id="instructor_info" class="infobox">
-      <tr> <th>Title</th>             <td><%= @instructor.title %></td> </tr>
-      <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
-      <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
-      <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
-      <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
-      <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
-    </table>
-  </div>
   <div class="clear"></div>
 </div>
 
 <%- form_for @instructor, :url=>coursesurveys_update_instructor_path(@instructor) do |f| -%>
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :first_name %><%= f.text_field :last_name %>
+  </div>
+
   <%- %w(title office phone_number email home_page interests).each do |field| -%>
     <div class="field">
       <%= f.label field.to_sym %>

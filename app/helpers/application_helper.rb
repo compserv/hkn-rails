@@ -136,11 +136,20 @@ module ActionController
       actions      = [actions] unless actions.is_a? Array
       cache_suffix = options.delete(:cache_suffix) || '_admin'
       groups       = options.delete(:groups) || []
+      custom_key   = options.delete(:key)
 
       actions.each do |a|
-        caches_action a, {:layout => false, :cache_path => Proc.new {|c| {:admin_tag => cache_suffix} if c.current_user_can_admin?(groups)}}.merge(options)
+        caches_action a, {:layout => false, :cache_path => Proc.new do |c|
+            can_admin = c.current_user_can_admin?(groups)
+            case when custom_key.present?
+              can_admin ? custom_key.to_s+cache_suffix : custom_key
+            else
+              can_admin ? {:admin_tag => cache_suffix} : nil
+            end #case
+          end }.merge(options)
       end
     end
+
     end # ClassMethods
     
   end #Helpers

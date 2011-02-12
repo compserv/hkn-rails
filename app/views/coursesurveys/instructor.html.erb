@@ -1,3 +1,35 @@
+<div id="instructor_box" class="trans-bg">
+  <h1><%= @instructor.full_name %></h1>
+
+  <div style="float:left; margin-right: 1em;">
+    <% if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank? %>
+      <%= image_tag @instructor.picture, :class=>"instructor-photo" unless @instructor.picture.blank? %>
+    <% elsif @instructor.instructor? # guess the picture, but only if instructor.. %>
+      <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor-photo' %>
+    <% else %>
+      <%# no picture %>
+    <% end %>
+  </div>
+  <div style="float:left;">
+  <% if @can_edit %>
+  <%= link_to '[Edit]', coursesurveys_edit_instructor_path(@instructor) %>
+  <% end %>
+
+    <table id="instructor_info" class="infobox">
+      <tr> <th>Title</th>             <td><%= @instructor.title %></td> </tr>
+      <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
+      <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
+      <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
+      <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
+      <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
+    </table>
+  </div>
+
+  <div class="clear"></div>
+</div>
+
+<%- cache instructor_cache_path(@instructor) do -%>
+
 <%- unless @instructed_klasses.blank? -%>
 <%# content_for :header do %>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -40,35 +72,6 @@
 <%# end %>
 <% end %>
 
-<div id="instructor_box" class="trans-bg">
-  <h1><%= @instructor.full_name %></h1>
-
-  <div style="float:left; margin-right: 1em;">
-    <% if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank? %>
-      <%= image_tag @instructor.picture, :class=>"instructor-photo" unless @instructor.picture.blank? %>
-    <% elsif @instructor.instructor? # guess the picture, but only if instructor.. %>
-      <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor-photo' %>
-    <% else %>
-      <%# no picture %>
-    <% end %>
-  </div>
-  <div style="float:left;">
-  <% if @can_edit %>
-  <%= link_to '[Edit]', coursesurveys_edit_instructor_path(@instructor) %>
-  <% end %>
-
-    <table id="instructor_info" class="infobox">
-      <tr> <th>Title</th>             <td><%= @instructor.title %></td> </tr>
-      <%- unless @instructor.office.blank? -%>      <tr> <th>Office</th>            <td><%= @instructor.office %></td> </tr><%- end -%>
-      <%- unless @instructor.phone_number.blank? -%><tr> <th>Phone Number</th>      <td><%= @instructor.phone_number %></td> </tr><%- end -%>
-      <%- unless @instructor.email.blank? -%>       <tr> <th>Email</th>             <td><%= @instructor.email %></td> </tr><%- end -%>
-      <%- unless @instructor.home_page.blank? -%>   <tr> <th>Home Page</th>         <td><%= link_to @instructor.home_page, @instructor.home_page %></td> </tr><%- end -%>
-      <%- unless @instructor.interests.blank? -%>   <tr> <th>Research Interests</th><td><%= @instructor.interests %></td> </tr><%- end -%>
-    </table>
-  </div>
-
-  <div class="clear"></div>
-</div>
 
 <div id="chart_div"></div> 
 <%- unless @instructed_klasses.blank? -%>
@@ -186,3 +189,5 @@
   <%= render :partial => 'emailhkn' %>
   <a href="/student/howtouse.shtml">[Info about this page]</a>
 </div>
+
+<%- end #cache -%>

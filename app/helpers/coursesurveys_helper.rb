@@ -1,8 +1,6 @@
 module CoursesurveysHelper
   # rating should be a float that represents the rating out of 1.00
   def rating_bar(rating, url=nil, inverted=nil)
-
-
     outer_html_options = { :class => "ratingbar" }
     if inverted
       width = 100-(rating*100).to_int
@@ -46,6 +44,10 @@ module CoursesurveysHelper
     content_tag(:span, outer_html_options) do
       content_tag("span", "", inner_html_options)
     end
+  end
+
+  def instructor_cache_path(instructor)
+    "instructor_#{instructor.id}"
   end
 
   def surveys_klass_path(klass)

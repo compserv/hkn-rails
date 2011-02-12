@@ -11,8 +11,9 @@ class CoursesurveysController < ApplicationController
     caches_action :department, :layout => false, :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"}
 
     # Separate for admins
-    caches_action_for_admins([:instructor], :groups => %w(csec superusers))
+    #caches_action_for_admins([:instructor], :groups => %w(csec superusers))
   end
+  cache_sweeper :instructor_sweeper
 
   def authorize_coursesurveys
     @current_user && (@auth['csec'] || @auth['superusers'])
@@ -211,15 +212,12 @@ class CoursesurveysController < ApplicationController
       redirect_to coursesurveys_search_path([first_name,last_name].join(' '))
       return
     end
-    
-    cache_key = "#{@instructor.cache_key}/controllerdata"
-  
-    # TODO: fragment caching is disabled here
-    unless true #(cached_values = Rails.cache.read(cache_key)).nil?
-      @instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total = Marshal.load(cached_values)
-    else # no cached data loaded
-    
-    
+   
+    @can_edit = @current_user && authorize_coursesurveys
+ 
+    # Don't do any heavy computation if cache exists
+    return if fragment_exist? instructor_cache_path(@instructor)
+
     @instructed_klasses = []
     @tad_klasses = []
 
@@ -293,33 +291,27 @@ class CoursesurveysController < ApplicationController
       end
     end
     
-    Rails.cache.write(cache_key, Marshal.dump([@instructed_klasses, @tad_klasses, @undergrad_totals, @undergrad_total, @grad_totals, @grad_total]))
-  end # cache
-
-  # Unwrap from id to object, for the view
-  [@instructed_klasses, @tad_klasses].each do |a|
-    a.each do |k|
-      k[0] =        Klass.find(k[0])
-      k[1] =   Instructor.find(k[1])
-      k[2] = SurveyAnswer.find(k[2])
-      k[3] = SurveyAnswer.find(k[3]) unless k[3].blank?
+    # Unwrap from id to object, for the view
+    [@instructed_klasses, @tad_klasses].each do |a|
+      a.each do |k|
+        k[0] =        Klass.find(k[0])
+        k[1] =   Instructor.find(k[1])
+        k[2] = SurveyAnswer.find(k[2])
+        k[3] = SurveyAnswer.find(k[3]) unless k[3].blank?
+      end
     end
-  end
-  
-  temp = {}
-  @undergrad_totals.each do |course_id,tuple|
-    temp[Course.find(course_id)] = tuple
-  end
-  @undergrad_totals = temp
+    
+    temp = {}
+    @undergrad_totals.each do |course_id,tuple|
+      temp[Course.find(course_id)] = tuple
+    end
+    @undergrad_totals = temp
 
-  temp = {}
-  @grad_totals.each do |course_id,tuple|
-    temp[Course.find(course_id)] = tuple
-  end
-  @grad_totals = temp
-
-  @can_edit = @current_user && authorize_coursesurveys
-
+    temp = {}
+    @grad_totals.each do |course_id,tuple|
+      temp[Course.find(course_id)] = tuple
+    end
+    @grad_totals = temp
   end #instructor
 
   def editinstructor
