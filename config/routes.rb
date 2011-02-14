@@ -20,10 +20,11 @@ HknRails::Application.routes.draw do
     end
 
     scope "eligibilities" do
-      get   "/"        => "eligibilities#list",      :as => :eligibilities
-      post  "update"   => "eligibilities#update",    :as => :update_eligibilities
-      post  "upload"   => "eligibilities#upload",    :as => :upload_eligibilities
-      post "reprocess" => "eligibilities#reprocess", :as => :reprocess_eligibilities
+      get   "/"         => "eligibilities#list",      :as => :eligibilities
+      post  "update"    => "eligibilities#update",    :as => :update_eligibilities
+      post  "upload"    => "eligibilities#upload",    :as => :upload_eligibilities
+      post  "reprocess" => "eligibilities#reprocess", :as => :reprocess_eligibilities
+      get   "candidates.csv" => "eligibilities#csv",       :as => :eligibilities_csv
     end
     
     scope "csec", :as => "csec" do

@@ -11,6 +11,12 @@ class Admin::EligibilitiesController < Admin::AdminController
     end
   end #eligibilities
 
+  def csv
+    @eligibilities = Eligibility.current.candidates.order(:last_name)
+    @fields = [:last_name, :first_name, :middle_initial, :email]
+    render :csv => 'candidates', :layout => false
+  end
+
   def reprocess
     case
     when params[:reprocess].present?
@@ -21,6 +27,14 @@ class Admin::EligibilitiesController < Admin::AdminController
       end
     when params[:clear_all].present?
       Eligibility.current.destroy_all
+    when params[:reset_all].present?
+      Eligibility.current.each do |e|
+        e.update_attributes :group=>Eligibility::GroupValues[:unknown], :confidence=>0
+      end
+    when params[:unk_to_cand].present?
+      Eligibility.current.unknowns.each do |e|
+        e.update_attribute :group, Eligibility::GroupValues[:candidate]
+      end
     end
     redirect_to admin_eligibilities_path
   end

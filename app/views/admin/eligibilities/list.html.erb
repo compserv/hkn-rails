@@ -18,8 +18,16 @@
 
   <div class="reprocess-form">
     <h3>Reprocess</h3>
-    <%= button_to "Clear all", admin_reprocess_eligibilities_path, :confirm => "Are you sure you want to delete all eligibilities?", :name=>'clear_all' %>
+    <%= button_to "Delete all", admin_reprocess_eligibilities_path, :confirm => "Are you sure you want to delete all eligibilities?", :name=>'clear_all', :style=>"float:left;" %>
+    <%= button_to "Reset all", admin_reprocess_eligibilities_path, :confirm => "Are you sure you want to reset all eligibilities to unknowns?", :name=>'reset_all', :style=>"float:left;" %>
     <%= button_to "Reprocess Current", admin_reprocess_eligibilities_path, :confirm => "Are you sure you want to auto-assign all unknown eligibilities? Candidates and members won't be affected.", :name=>'reprocess' %>
+    <%= button_to "Unknowns -> Candidates", admin_reprocess_eligibilities_path, :confirm => "Are you sure you want to move all current unknowns to candidates?", :name=>'unk_to_cand' %>
+  </div>
+
+  <div class="emails-box">
+    <h3>Contact Sheets</h3>
+    <%= link_to "CSV", admin_eligibilities_csv_path, :target=>"_blank" %>
+    <%= text_area_tag :emails, Eligibility.current.candidates.order(:last_name).collect{|e|"#{e.first_name} #{e.last_name} <#{e.email}>"}.join(', '), :readonly => nil, :disabled => true %>
   </div>
 
   <div class="upload-form">
