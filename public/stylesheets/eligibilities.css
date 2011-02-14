@@ -1,0 +1,13 @@
+.search-controls {
+  float: left;
+  clear: none;
+}
+
+.upload-form {
+  float: left;
+  clear: none;
+}
+
+.clear {
+  clear: both;
+}

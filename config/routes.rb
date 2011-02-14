@@ -18,6 +18,12 @@ HknRails::Application.routes.draw do
       match "update_announcement" => "admin#update_announcement"
       match "delete_announcement/:id" => "admin#delete_announcement"
     end
+
+    scope "vp" do
+      get   "eligibility_list" => "vp#eligibilities", :as => :eligibilities
+      post  "eligibility_list_update" => "vp#update_eligibilities", :as => :update_eligibilities
+      post  "upload_eligibilities" => "vp#upload_eligibilities", :as => :upload_eligibilities
+    end
     
     scope "csec", :as => "csec" do
       match "/" => "csec#index"
