@@ -6,7 +6,7 @@
   <th>Move to...</th>
 </tr>
 <%- else # actual row -%>
-<tr id=<%= "eligibility_row_#{eligibility.id}" %>>
+<tr id=<%= "eligibility_row_#{eligibility.id}" %> class=<%= "confidence#{eligibility.confidence}" %> >
   <%- Eligibility::TableFields.each do |field| -%>
     <td><%= case field
               when :address: simple_format eligibility.address

@@ -12,10 +12,15 @@ class Admin::VpController < Admin::AdminController
   end #eligibilities
 
   def reprocess_eligibilities
-    Eligibility.current.unknowns.each do |e|
-      g = e.group
-      e.auto_assign_group
-      e.save if e.group != g
+    case
+    when params[:reprocess].present?
+      Eligibility.current.unknowns.each do |e|
+        g = e.group
+        e.auto_assign_group
+        e.save if e.group != g
+      end
+    when params[:clear_all].present?
+      Eligibility.current.destroy_all
     end
     redirect_to admin_eligibilities_path
   end
@@ -23,10 +28,11 @@ class Admin::VpController < Admin::AdminController
   def update_eligibilities
     params[:eligibilities].each_pair do |eid,g|
       eid, g = eid.to_i, g.to_i
-      return redirect_to admin_eligibilities_path, :notice => "Missing eligibility ##{eid}" unless e = Eligibility.find(:first, :conditions=>{:id=>eid}, :select=>'"id","group"')
+      return redirect_to admin_eligibilities_path, :notice => "Missing eligibility ##{eid}" unless e = Eligibility.find_by_id(eid)
 
       next if e.group == g
-      e.update_attribute :group, g
+      c = g==Eligibility::GroupValues[:unknown] ? 0 : 3
+      e.update_attributes :group=>g, :confidence=>c
     end
 
     redirect_to admin_eligibilities_path, :notice => "Updated."

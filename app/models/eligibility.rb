@@ -15,6 +15,7 @@ class Eligibility < ActiveRecord::Base
   #   semester       : string 
   #   group          : integer 
   #   class_level    : integer 
+  #   confidence     : integer 
   #   first_reg      : date 
   #   candidate_id   : integer 
   #   created_at     : datetime 
@@ -26,8 +27,11 @@ class Eligibility < ActiveRecord::Base
   TableFields = [:last_name, :first_name, :email, :address, :class_level]
 
   validates_presence_of :semester
-  validates_presence_of :group
-  validates_numericality_of :group
+
+  [:group, :confidence].each do |f|
+    validates_presence_of f
+    validates_numericality_of f
+  end
 
   scope :current, lambda{ where(:semester=>Property.get_or_create.semester) }
   GroupValues.each_pair do |g,v|  # auto-generate group scopes
@@ -58,8 +62,17 @@ class Eligibility < ActiveRecord::Base
   end
 
   def auto_assign_group
+    # Also sets confidence level
+  
+    self.confidence = case
+      when p = Person.find(:first, :conditions => {:email => email}): 3
+      when p = Person.find(:first, :conditions => {:first_name => first_name, :last_name => last_name}): 2
+      when p = Person.find_by_username([first_name.first,last_name].join.downcase): 1
+      else self.confidence
+    end
+
     self.group = case
-      when p = Person.find(:first, :conditions => {:first_name => first_name, :last_name => last_name})
+      when p.present?
         p.candidate.present? ? GroupValues[:candidate] : GroupValues[:member]
       else 0
     end

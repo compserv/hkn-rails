@@ -192,6 +192,7 @@ ActiveRecord::Schema.define(:version => 20110213230531) do
     t.string   "semester"
     t.integer  "group",          :default => 0, :null => false
     t.integer  "class_level"
+    t.integer  "confidence",     :default => 0, :null => false
     t.date     "first_reg"
     t.integer  "candidate_id"
     t.datetime "created_at"
