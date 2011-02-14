@@ -47,7 +47,7 @@ class Eligibility < ActiveRecord::Base
   # Utility methods #
   ###################
   def is_unique?
-   not Eligibility.exists? unique_info
+   not Eligibility.exists?(unique_info)
   end
 
   def unique_info
@@ -114,7 +114,7 @@ class Eligibility < ActiveRecord::Base
             e[:semester] = current_semester
             puts e.inspect
             el = Eligibility.new(e)
-            unless el.is_unique? && el.save
+            if el.is_unique?
               el.auto_assign_group
               ret[:errors] << "Error parsing #{el.inspect}" unless el.save
             end # exists?
