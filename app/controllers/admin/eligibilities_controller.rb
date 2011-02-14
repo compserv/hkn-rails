@@ -26,6 +26,8 @@ class Admin::EligibilitiesController < Admin::AdminController
   end
 
   def update
+    return redirect_to admin_eligibilities_path, :notice => "No eligibilities found." if params[:eligibilities].blank?
+
     params[:eligibilities].each_pair do |eid,g|
       eid, g = eid.to_i, g.to_i
       return redirect_to admin_eligibilities_path, :notice => "Missing eligibility ##{eid}" unless e = Eligibility.find_by_id(eid)
