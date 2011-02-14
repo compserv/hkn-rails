@@ -2,17 +2,34 @@ class Admin::VpController < Admin::AdminController
   before_filter :authorize_vp
 
   def eligibilities
-    es = params[:semester].eql?('all') ? Eligibility.all : Eligibility.current
+    es = params[:semester].eql?('all') ? Eligibility.all.order(:last_name) : Eligibility.current.order(:last_name)
     @eligibilities = {}
     Eligibility::Groups.each {|g|@eligibilities[g] = []}
 
     es.each do |e|
       @eligibilities[Eligibility::Groups[e.group]] << e
     end
-
   end #eligibilities
 
+  def reprocess_eligibilities
+    Eligibility.current.unknowns.each do |e|
+      g = e.group
+      e.auto_assign_group
+      e.save if e.group != g
+    end
+    redirect_to admin_eligibilities_path
+  end
+
   def update_eligibilities
+    params[:eligibilities].each_pair do |eid,g|
+      eid, g = eid.to_i, g.to_i
+      return redirect_to admin_eligibilities_path, :notice => "Missing eligibility ##{eid}" unless e = Eligibility.find(:first, :conditions=>{:id=>eid}, :select=>'"id","group"')
+
+      next if e.group == g
+      e.update_attribute :group, g
+    end
+
+    redirect_to admin_eligibilities_path, :notice => "Updated."
   end #update_eligibilities
 
   def upload_eligibilities

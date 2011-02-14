@@ -15,6 +15,10 @@
     <%- end #form -%>
   </div>
 
+  <div class="reprocess-form">
+    <%= button_to "Reprocess Current", admin_reprocess_eligibilities_path, :confirm => "Are you sure you want to auto-assign all unknown eligibilities?" %>
+  </div>
+
   <div class="upload-form">
     <small>Upload eligibility list as a CSV.</small>
     <%= form_tag admin_upload_eligibilities_path, :multipart => true, :method => :post  do %>
@@ -26,29 +30,23 @@
   <div class="clear"></div>
 </div><%# end top-bar %>
 
+<br /><br />
+<h1>Eligibilities</h1>
 <div class="eligibilities">
-  <%- @eligibilities.each_pair do |group, els|
-        next if els.empty?
-    -%>
+  <%= form_tag admin_update_eligibilities_path do %>
+    Click some radio buttons, then hit this button to reassign eligibilities:
+    <%= submit_tag "Update" %>
+    <%- [:candidate, :member, :unknown].each do |group|
+        #@eligibilities.each_pair do |group, els|
+          els = @eligibilities[group]
+          next if els.empty?
+      -%>
     <h2><%= group.to_s.pluralize.titleize %></h2>
-    <table class=<%= "eligibilities-#{group.to_s}" %>>
-      <tr>
-        <%- Eligibility::TableFields.each do |field| -%>
-          <th><%= field.to_s.humanize.titleize %></th>
-        <%- end -%>
-      </tr>
-      <%- els.each do |e| -%>
-      <tr>
-        <%- Eligibility::TableFields.each do |field| -%>
-          <td><%= case field
-                    when :address: simple_format e.address
-                    when :first_name: [e.first_name, e.middle_initial].compact.join(' ')
-                    else e.send(field)
-                  end
-               %></td>
-        <%- end -%>
-      </tr>
-      <%- end #els -%>
+
+    <table class=<%= "#{group.to_s}" %>>
+      <%= render :partial => 'eligibility', :locals => {:header => true} %>
+      <%= render :partial => 'eligibility', :collection => els %>
     </table>
-  <%- end -%>
+    <%- end -%>
+  <%- end # form -%>
 </div><%# end eligibilities %>

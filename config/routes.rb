@@ -23,6 +23,7 @@ HknRails::Application.routes.draw do
       get   "eligibility_list" => "vp#eligibilities", :as => :eligibilities
       post  "eligibility_list_update" => "vp#update_eligibilities", :as => :update_eligibilities
       post  "upload_eligibilities" => "vp#upload_eligibilities", :as => :upload_eligibilities
+      post "reprocess_eligibilities" => "vp#reprocess_eligibilities", :as => :reprocess_eligibilities
     end
     
     scope "csec", :as => "csec" do

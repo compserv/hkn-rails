@@ -30,6 +30,9 @@ class Eligibility < ActiveRecord::Base
   validates_numericality_of :group
 
   scope :current, lambda{ where(:semester=>Property.get_or_create.semester) }
+  GroupValues.each_pair do |g,v|  # auto-generate group scopes
+    scope g.to_s.pluralize.to_sym, lambda{ where(:group=>v) }
+  end
 
   def full_name
     [first_name, middle_initial, last_name].join(' ').gsub!(/\s+/,' ')
@@ -56,7 +59,7 @@ class Eligibility < ActiveRecord::Base
 
   def auto_assign_group
     self.group = case
-      when p = Person.find(unique_info.delete(:first_reg))
+      when p = Person.find(:first, :conditions => {:first_name => first_name, :last_name => last_name})
         p.candidate.present? ? GroupValues[:candidate] : GroupValues[:member]
       else 0
     end
