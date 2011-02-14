@@ -110,6 +110,7 @@
       <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel Admin</a></li>
     <% end %>
     <% if @auth["vp"] %>
+      <li><%= link_to "Eligibilities", admin_eligibilities_path, :class=>"navigation_sublevel_item" %></li>
       <li><a href="/admin/general/candidate_announcements/" class="navigation_sublevel_item"> Cand Announcements</a></li>
     <% end %>
   </ul>
