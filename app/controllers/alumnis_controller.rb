@@ -3,6 +3,7 @@ class AlumnisController < ApplicationController
   before_filter :alumni_duplication_filtration, :only => [:new,:create]
   before_filter :alumni_modification_authorization_filtration, :only=> [:edit, :update, :destroy]
   before_filter :authorize_alumrel, :only => :index
+  before_filter :input_helper, :only => [:update,:create,]
   
   def alumni_login_check
     redirect_to(login_url, :notice=>"You must log in to edit alumni information.") if not @current_user
@@ -22,6 +23,11 @@ class AlumnisController < ApplicationController
                     else new_alumni_url end, 
                   :notice => "You're not authorized to modify someone else's alumni information!")
     end
+  end
+  
+  def input_helper
+    #Allow leading $, and seperators of , and _ (strip them)
+    params[:alumni][:salary].gsub!(/(^\$)|,|_/,'')
   end
   
   def me 

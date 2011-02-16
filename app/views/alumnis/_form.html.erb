@@ -29,7 +29,7 @@
   </div>
   <div class="field">
     <%= f.label :salary %>
-    <%= f.text_field :salary %>
+    <%= f.text_field :salary, :value=> (if @alumni.salary then pretty_salary(@alumni.salary) else "" end)%>
   </div>
   <div class="field-submit">
     <%= f.submit %>
