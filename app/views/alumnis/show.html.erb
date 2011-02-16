@@ -22,7 +22,7 @@
 
 <p>
   <b>Salary:</b>
-  <%= pretty_salary @alumni.salary %>
+  <%= if @alumni.salary then pretty_salary @alumni.salary else "" end %>
 </p>
 
 <p>
