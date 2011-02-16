@@ -27,7 +27,7 @@ class AlumnisController < ApplicationController
   
   def input_helper
     #Allow leading $, and seperators of , and _ (strip them)
-    params[:alumni][:salary].gsub!(/(^\$)|,|_/,'')
+    params[:alumni][:salary].gsub!(/(^\$)|,|_/,'') if params[:alumni] && params[:alumni][:salary]
   end
   
   def me 
