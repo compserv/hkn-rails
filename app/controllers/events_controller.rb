@@ -8,7 +8,7 @@ class EventsController < ApplicationController
   def index
     per_page = 20
     order = params[:sort] || "start_time"
-    params[:sort_direction] ||= 'down'
+    params[:sort_direction] ||= 'up'
     sort_direction = case params[:sort_direction]
                      when "up" then "ASC"
                      when "down" then "DESC"
