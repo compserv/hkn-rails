@@ -98,6 +98,8 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id])
     @person.approved = true
     @person.save
+
+    AccountMailer.account_approval(@person).deliver
     redirect_to :action => "show"
   end
 
