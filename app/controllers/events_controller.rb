@@ -12,7 +12,7 @@ class EventsController < ApplicationController
     sort_direction = case params[:sort_direction]
                      when "up" then "ASC"
                      when "down" then "DESC"
-                     else "DESC"
+                     else "ASC"
                      end
     @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
     # Maintains start_time as secondary sort column
