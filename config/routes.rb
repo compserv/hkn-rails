@@ -203,7 +203,7 @@ HknRails::Application.routes.draw do
   scope "exams" do
     match '/'                                     => "exams#index",
       :as => :exams
-    match "search"                                => "exams#search",
+    match "search(?q=:q)"                                => "exams#search",
       :as => :exams_search
     match "course/:dept_abbr"                     => "exams#department",
       :as => :exams_department
