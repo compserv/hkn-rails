@@ -58,7 +58,8 @@ class Admin::AdminController < ApplicationController
   def confirm_challenges
     challenges = Challenge.find(:all, :conditions => {:officer_id => @current_user.id})
     @acc_challenges = challenges.select {|c| c.status }
-    @pending_challenges = challenges.select {|c| !c.status }
+    @pending_challenges = challenges.select {|c| c.status == nil }
+    @rejected_challenges = challenges.select {|c| c.status == false}
     render "admin/confirm_challenges"
   end
   

@@ -88,7 +88,7 @@ class CandidatesController < ApplicationController
        return
     end
     
-    challenge = Challenge.new(:name => challenge_name, :status => false, :officer_id => officer.id)
+    challenge = Challenge.new(:name => challenge_name, :status => nil, :officer_id => officer.id)
     challenge.candidate = @current_user.candidate
     saved = challenge.save
     

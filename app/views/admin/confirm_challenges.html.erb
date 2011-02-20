@@ -24,5 +24,20 @@
   <% end %>
   </ul>
 <% else %>
-  No challenge request history
+  No accepted challenges.
+<% end %>
+
+<h2>Rejected Challenges</h2>
+<% if @rejected_challenges.length > 0 %>
+  <ul class="plain">
+    <% for challenge in @rejected_challenges %>
+    <li>
+	<%= link_to "[Accept instead]", "../confirm_challenge/" + challenge.id.to_s %>
+	<span class="challenge_name"><%= challenge.name %></span>
+	 (requested by <%= challenge.candidate.person.full_name %>)
+    </li>
+    <% end %>
+  </ul>
+<% else %>
+  No rejected challenges.
 <% end %>
