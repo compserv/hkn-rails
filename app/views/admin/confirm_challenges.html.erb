@@ -6,6 +6,7 @@
   <% for challenge in @pending_challenges %>
     <li>
       <%= link_to "[Confirm]", "../confirm_challenge/" + challenge.id.to_s %> 
+      <%= link_to "[Reject]", "../reject_challenge/" + challenge.id.to_s %>
       <span class="challenge_name"><%= challenge.name %></span> (requested by <%= challenge.candidate.person.full_name %>)
     </li>
   <% end %>
@@ -19,6 +20,7 @@
   <ul class="plain">
   <% for challenge in @acc_challenges %>
     <li>
+      <%= link_to "[Reject instead]", "../reject_challenge/" + challenge.id.to_s %>
       <span class="challenge_name"><%= challenge.name %></span> (requested by <%= challenge.candidate.person.full_name %>)
     </li>
   <% end %>

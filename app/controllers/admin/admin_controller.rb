@@ -71,4 +71,12 @@ class Admin::AdminController < ApplicationController
     flash[:notice] = "Challenge confirmed."
     redirect_to :back
   end
+  def reject_challenge
+    challenge = Challenge.find(params[:id])
+    challenge.status = false
+    challenge.save
+    
+    flash[:notice] = "Challenge rejected."
+    redirect_to :back
+  end
 end

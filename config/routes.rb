@@ -12,6 +12,7 @@ HknRails::Application.routes.draw do
     scope "general", :as => "general" do
       match "confirm_challenges" => "admin#confirm_challenges"
       match "confirm_challenge/:id" => "admin#confirm_challenge"
+      match "reject_challenge/:id" => "admin#reject_challenge"
       match "candidate_announcements" => "admin#candidate_announcements"
       match "create_announcement" => "admin#create_announcement"
       match "edit_announcement/:id" => "admin#edit_announcement"
