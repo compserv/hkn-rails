@@ -94,6 +94,9 @@ class EventsController < ApplicationController
     end
     @blocks = @event.blocks
     @current_user_rsvp = @event.rsvps.find_by_person_id(@current_user.id) if @current_user
+    if @event.need_transportation
+      @total_transportation = @event.rsvps.map{|rsvp| rsvp.transportation}.sum
+    end
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @event }

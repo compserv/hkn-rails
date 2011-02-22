@@ -2,8 +2,13 @@
 
 <div id="infobar">
   <h1>Who's coming?</h1>
-  <% @event.rsvps.map{|x|x.person}.each do |person| %>
+  <p>
+  <% @event.rsvps.each do |rsvp| %>
+    <% person = rsvp.person %>
     <%= link_to person.fullname, person %>
+    <% if @auth["comms"] and @event.need_transportation %>
+      (<%= rsvp.transportation %>)
+    <% end %>
   <% end %>
   <% if @event.blocks.size > 1 %>
     <h1>Time Slots</h1>
@@ -19,6 +24,11 @@
         </ul>
       <% end %>
     <% end %>
+  <% end %>
+  </p>
+
+  <% if @auth["comms"] and @event.need_transportation %>
+    <p>Total Transportation: <%= @total_transportation %></p>
   <% end %>
 </div>
 
