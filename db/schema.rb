@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110213230531) do
+ActiveRecord::Schema.define(:version => 20110223073849) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -410,7 +410,7 @@ ActiveRecord::Schema.define(:version => 20110213230531) do
 
   create_table "suggestions", :force => true do |t|
     t.integer  "person_id"
-    t.string   "suggestion"
+    t.text     "suggestion"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
