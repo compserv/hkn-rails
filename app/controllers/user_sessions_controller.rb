@@ -24,28 +24,31 @@ class UserSessionsController < ApplicationController
   def create
     user = Person.find_by_username(params[:user_session][:username])
     @user_session = UserSession.new(params[:user_session])
+
+    # Three cases:
+    # 1) Successful login
+    # 2) Successful credentials but account not approved
+    # 3) Failed login
     
-    if user and user.approved
-      if (use_recaptcha? ? verify_recaptcha(:model=>@user_session) : true) && @user_session.save
-        flash[:notice] = "Login successful!"
-        session[:login_attempts] = 0
-        if params[:referer]
-          redirect_to params[:referer]
-          return
-        else
-          redirect_to root_url
-          return
-        end
+    if user and (use_recaptcha? ? verify_recaptcha(:model=>@user_session) : true) && @user_session.save
+      flash[:notice] = "Login successful!"
+      session[:login_attempts] = 0
+      if params[:referer]
+        redirect_to params[:referer]
+      else
+        redirect_to root_url
       end
+    elsif @user_session.errors[:base].size == 1 and @user_session.errors[:base].include? "Your account is not approved"
+      @messages << "Your user account has not been approved yet. Please wait at least 24 hours for your account to be approved."
+      render :action => :new
+    else
+      session[:login_attempts] ||= 0
+      session[:login_attempts] += 1
+      @use_captcha = true if use_recaptcha?
+
+      @messages << "Login was unsuccessful."
+      render :action => :new
     end
-
-    session[:login_attempts] ||= 0
-    session[:login_attempts] += 1
-    @use_captcha = true if use_recaptcha?
-
-    flash[:notice] = "Login was unsuccessful."
-    render :action => :new
-    
   end
 
   def destroy
