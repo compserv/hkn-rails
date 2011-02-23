@@ -85,6 +85,11 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def allows_rsvps?
+    not blocks.empty?
+  end
+
+  # can_rsvp? only checks permission categories, not whether rsvps are enabled
   def can_rsvp? user
     if user.nil?
       false

@@ -158,7 +158,7 @@ class RsvpsController < ApplicationController
   end
 
   def rsvp_permission
-    if !@event.can_rsvp? @current_user
+    if !@event.allows_rsvps? or !@event.can_rsvp? @current_user
       redirect_to :root, :notice => "You do not have permission to RSVP for this event"
     end
   end
