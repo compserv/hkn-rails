@@ -122,7 +122,7 @@ describe EventsController do
           post :create, :event => {}, :rsvp_type => @rsvp_type, :uniform_blocks => true, :num_blocks => num_blocks
         end
 
-        it "with valid manual blocks enabled creates manually specified Blocks" do
+        it "with valid manual blocks creates manually specified Blocks" do
           num_blocks = 3
           @mock_event = mock_event(:save! => true)
           Event.stub(:new) { @mock_event }
@@ -140,12 +140,13 @@ describe EventsController do
           post :create, :event => {}, :rsvp_type => @rsvp_type, :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1, :block2 => block2
         end
 
-        it "with invalid manual blocks enabled redirects back to new event" do
+        it "with invalid manual blocks redirects back to new event" do
           num_blocks = 3
           @mock_event = mock_event(:save! => true)
           Event.stub(:new) { @mock_event }
-          @mock_block = mock_model(Block, :save! => lambda{raise }).as_null_object
-          #Block.stub(:new) { @mock_block }
+          @mock_block = mock_model(Block).as_null_object
+          @mock_block.should_receive(:save!).and_raise("Block Error")
+          Block.stub(:new) { @mock_block }
           block0 = {}
           block1 = {}
           block2 = {}
@@ -212,6 +213,11 @@ describe EventsController do
           it "deletes all existing blocks" do
             @mock_event = mock_event(:update_attributes! => true)
             Event.stub(:find) { @mock_event }
+            # New block should save correctl
+            @mock_block = mock_model(Block).as_null_object
+            @mock_block.should_receive(:save!).and_return(true)
+            Block.stub(:new) { @mock_block }
+            # Existing blocks
             @mock_blocks = [1, 2]
             @mock_event.stub(:blocks) { @mock_blocks }
             @mock_blocks.should_receive(:delete_all)
