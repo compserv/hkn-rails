@@ -452,6 +452,9 @@ li.event .description{
   padding: 0.5em 0px;
   margin: 5px 0px;
 }
+.event.current {
+  background-color: #F8F8FF;
+}
 
 
 
