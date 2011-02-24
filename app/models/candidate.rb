@@ -18,7 +18,7 @@ class Candidate < ActiveRecord::Base
   validates :person, :presence => true
   
   def self.committee_defaults
-    defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "Pub", "StudRel", "Tutoring"]
+    defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "StudRel", "Tutoring"]
     return defaults
   end
   

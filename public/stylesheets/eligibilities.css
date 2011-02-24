@@ -1,0 +1,30 @@
+.search-controls, .upload-form, .reprocess-form, .emails-box {
+  float: left;
+  border: 1px solid black;
+  padding: 0em 1em 1em 1em;
+  margin: 1.5em;
+}
+
+.emails-box {
+  padding: 0px;
+}
+
+.eligibilities tr, .eligibilities td {
+  border: 1px solid;
+}
+
+.eligibilities .confidence1 {
+  background-color: #F6E68B;
+}
+.eligibilities .confidence2 {
+  background-color: #BBCCFF;
+}
+.eligibilities .confidence3 {
+  background-color: #AAEE99;
+}
+
+
+
+.clear {
+  clear: both;
+}

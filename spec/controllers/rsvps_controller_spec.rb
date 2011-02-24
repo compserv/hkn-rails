@@ -3,7 +3,7 @@ require 'spec_helper'
 describe RsvpsController do
 
   before(:each) do
-    @event ||= mock_model(Event, :blocks => [], :can_rsvp? => true)
+    @event ||= mock_model(Event, :blocks => [], :can_rsvp? => true, :allows_rsvps? => true)
     Event.stub(:find).and_return(@event)
   end
 

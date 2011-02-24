@@ -1,0 +1,6 @@
+<%= @fields.collect{|f|f.to_s.humanize.titleize}.join(',') %>
+<br />
+<%- @eligibilities.each do |e| -%>
+<%= @fields.collect{|f|e.send(f)}.join(',') %>
+<br />
+<%- end -%>

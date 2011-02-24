@@ -1,0 +1,37 @@
+<div id="instructor_box" class="trans-bg">
+  <h1><%= @instructor.full_name %></h1>
+
+  <div style="float:left; margin-right: 1em;">
+    <% if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank? %>
+      <%= image_tag @instructor.picture, :class=>"instructor-photo" unless @instructor.picture.blank? %>
+    <% elsif @instructor.instructor? # guess the picture, but only if instructor.. %>
+      <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor-photo' %>
+    <% else %>
+      <%# no picture %>
+    <% end %>
+  </div>
+  <div class="clear"></div>
+</div>
+
+<%- form_for @instructor, :url=>coursesurveys_update_instructor_path(@instructor) do |f| -%>
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :first_name %><%= f.text_field :last_name %>
+  </div>
+
+  <%- %w(title office phone_number email home_page interests).each do |field| -%>
+    <div class="field">
+      <%= f.label field.to_sym %>
+      <%= f.text_field field.to_sym %>
+    </div>
+  <%- end -%>
+
+  <div class="field">
+    <%= f.label :private %>
+    <%= f.check_box :private %>
+  </div>
+   
+  <div class="submit">
+    <%= f.submit 'Update' %>
+  </div>
+<%- end -%>

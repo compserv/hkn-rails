@@ -58,7 +58,8 @@ class Admin::AdminController < ApplicationController
   def confirm_challenges
     challenges = Challenge.find(:all, :conditions => {:officer_id => @current_user.id})
     @acc_challenges = challenges.select {|c| c.status }
-    @pending_challenges = challenges.select {|c| !c.status }
+    @pending_challenges = challenges.select {|c| c.status == nil }
+    @rejected_challenges = challenges.select {|c| c.status == false}
     render "admin/confirm_challenges"
   end
   
@@ -68,6 +69,14 @@ class Admin::AdminController < ApplicationController
     challenge.save
     
     flash[:notice] = "Challenge confirmed."
+    redirect_to :back
+  end
+  def reject_challenge
+    challenge = Challenge.find(params[:id])
+    challenge.status = false
+    challenge.save
+    
+    flash[:notice] = "Challenge rejected."
     redirect_to :back
   end
 end

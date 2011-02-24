@@ -85,7 +85,7 @@
         $.post("../request_challenge",  
           { officer: officer_name, name: challenge_name},
           function(data) { 
-            console.log(data);
+            //console.log(data);
             if(data[0] == true){ //OK submission
               $("#request_challenge_errors").empty();
               $("input[name=officer]").val(""); //clear fields

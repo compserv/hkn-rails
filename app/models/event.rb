@@ -42,8 +42,8 @@ class Event < ActiveRecord::Base
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
   
   def self.upcoming_events(num)
-    self.with_permission(@current_user).find(:all, :conditions => ['start_time>= ?',
-    Time.now], :order => "start_time asc", :limit => num)
+    self.with_permission(@current_user).find(:all, :conditions => ['end_time >= ? AND end_time <= ?',
+    Time.now, Time.now + 7.days], :order => "start_time asc", :limit => num)
     
   end
   
@@ -85,6 +85,11 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def allows_rsvps?
+    not blocks.empty?
+  end
+
+  # can_rsvp? only checks permission categories, not whether rsvps are enabled
   def can_rsvp? user
     if user.nil?
       false

@@ -65,7 +65,7 @@ module ApplicationHelper
   def spinner
     raw '<div id="spinner"><img src="/images/site/spinner.gif" alt="Loading..."/></div>'
   end
-end
+end # ApplicationHelper
 
 
 # Other general helpers
@@ -136,11 +136,20 @@ module ActionController
       actions      = [actions] unless actions.is_a? Array
       cache_suffix = options.delete(:cache_suffix) || '_admin'
       groups       = options.delete(:groups) || []
+      custom_key   = options.delete(:key)
 
       actions.each do |a|
-        caches_action a, {:layout => false, :cache_path => Proc.new {|c| {:admin_tag => cache_suffix} if c.current_user_can_admin?(groups)}}.merge(options)
+        caches_action a, {:layout => false, :cache_path => Proc.new do |c|
+            can_admin = c.current_user_can_admin?(groups)
+            case when custom_key.present?
+              can_admin ? custom_key.to_s+cache_suffix : custom_key
+            else
+              can_admin ? {:admin_tag => cache_suffix} : nil
+            end #case
+          end }.merge(options)
       end
     end
+
     end # ClassMethods
     
   end #Helpers
@@ -155,15 +164,18 @@ module ActionView
 end # ActionView
 
 # SSL links by default
-module ActionDispatch
-  module Routing
-    class RouteSet
-      def url_for_with_secure_default(options = {})
-        options[:secure] ||= true
-        url_for_without_secure_default(options) 
-      end
-
-      alias_method_chain :url_for, :secure_default
-    end
-  end
-end
+#if defined? Rails::Configuration::SSL && Rails::Configuration::SSL
+#  module ActionDispatch
+#    module Routing
+#      class RouteSet
+#        $__SECURE_DEFAULT_ = true    # C++ style ftw
+#        def url_for_with_secure_default(options = {})
+#          options[:secure] ||= true
+#          url_for_without_secure_default(options) 
+#        end
+#
+#        alias_method_chain :url_for, :secure_default unless $__SECURE_DEFAULT_ #defined? url_for_without_secure_default
+#      end
+#    end
+#  end
+#end

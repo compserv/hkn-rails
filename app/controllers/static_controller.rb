@@ -40,9 +40,9 @@ class StaticController < ApplicationController
     @tutoring = %w(erictzeng tonydear dsadigh chongyang).map {|u| Person.find_by_username(u)}
     @alumrel = %w(bdong).map {|u| Person.find_by_username(u)}
 
-    @committees = [ ["Service"] << @serv, ["Industrial Relations"] << @indrel, ["Bridge"] << @bridge, ["Activities"] << @act, ["Computing Services"] << @compserv, ["Student Relations"] << @studrel, ["Tutoring"] << @tutoring, ["Alumni Relations"] <<@alumrel ]
+    @committees = [ ["Service",] << "serv" << @serv , ["Industrial Relations"] << "indrel" << @indrel , ["Bridge"] << "bridge" << @bridge, ["Activities"] << "act" << @act , ["Computing Services"] << "compserv" << @compserv, ["Student Relations"] << "studrel" << @studrel, ["Tutoring"] << "tutoring" << @tutoring, ["Alumni Relations"] << "alumrel" <<@alumrel ]
 
-    @execs = [ ["President"] << @pres, ["Vice President"] << @vp, ["Recording Secretary"] << @rsec, ["Treasurer"] << @treas, ["Corresponding Secretary"] << @csec, ["Department Relations"] << @deprel ]
+    @execs = [ ["President"] << "pres" << @pres , ["Vice President"] << "vp" << @vp , ["Recording Secretary"] << "rsec" << @rsec , ["Treasurer"] << "treas" << @treas , ["Corresponding Secretary"] << "csec" << @csec , ["Department Relations"] << "deprel" << @deprel  ]
 
     @committees.each {|g| g.last.compact!}
   end

@@ -3,8 +3,8 @@
 <div id="execs">
 <% for position in @execs %>
 <div class="position">
-<h2><%= position[0] %></h2>
-<% if person = position[1] %>
+<h2><%= position[0] %> (<%= position[1] %>@hkn)</h2>
+<% if person = position[2] %>
 <div class="officer">
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>
@@ -20,8 +20,8 @@
 <div id="committees">
 <% for committee in @committees %>
 <div class="committee">
-<h2><%= committee[0] %></h2>
-<% for person in committee[1] %>
+<h2><%= committee[0] %> (<%= committee[1] %>@hkn)</h2>
+<% for person in committee[2] %>
 <div class="officer">
   <div class="photo <%= "no-photo" if person.picture.blank? %>">
     <%= image_tag person.picture  unless person.picture.blank? %>

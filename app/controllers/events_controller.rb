@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn]
+  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical]
   
   #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
@@ -8,11 +8,11 @@ class EventsController < ApplicationController
   def index
     per_page = 20
     order = params[:sort] || "start_time"
-    params[:sort_direction] ||= 'down'
+    params[:sort_direction] ||= 'up'
     sort_direction = case params[:sort_direction]
                      when "up" then "ASC"
                      when "down" then "DESC"
-                     else "DESC"
+                     else "ASC"
                      end
     @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
     # Maintains start_time as secondary sort column
@@ -94,6 +94,9 @@ class EventsController < ApplicationController
     end
     @blocks = @event.blocks
     @current_user_rsvp = @event.rsvps.find_by_person_id(@current_user.id) if @current_user
+    if @event.need_transportation
+      @total_transportation = @event.rsvps.map{|rsvp| rsvp.transportation}.sum
+    end
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @event }
@@ -351,10 +354,37 @@ class EventsController < ApplicationController
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
-
+    
     respond_to do |format|
       format.html { render :hkn, :layout => false }
-      format.ics
+      format.ics {
+        render :text => generate_ical_text(@events)
+      }
     end
+  end
+  
+  def ical
+    return self.hkn
+  end
+  
+  private
+  
+  def generate_ical_text(events)
+    cal = RiCal.Calendar do |cal|
+      events.each do |event|
+        cal.event do |iCalEvent|
+          iCalEvent.description = event.description
+          iCalEvent.summary = event.name
+          iCalEvent.dtstart = event.start_time
+          iCalEvent.dtend   = event.end_time
+          iCalEvent.location = event.location
+        end
+      end
+      # the following are x-properties and so are set manually
+      cal.add_x_property "X-WR-CALNAME","HKN Events"
+      cal.add_x_property "X-WR-CALDESC","HKN Events"
+    end
+    headers['Content-Type'] = "text/calendar; charset=UTF-8"
+    cal.to_s
   end
 end
