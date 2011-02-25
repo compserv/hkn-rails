@@ -9,6 +9,9 @@
     <% if @auth["comms"] and @event.need_transportation %>
       (<%= rsvp.transportation %>)
     <% end %>
+    <% if @event.rsvps.last != rsvp %>
+      ,
+    <% end %>
   <% end %>
   <% if @event.blocks.size > 1 %>
     <h1>Time Slots</h1>
