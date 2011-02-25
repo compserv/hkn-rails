@@ -30,6 +30,7 @@
   <% end %>
   </p>
 
+  <p>Total RSVPs: <%= @event.rsvps.size %></p>
   <% if @auth["comms"] and @event.need_transportation %>
     <p>Total Transportation: <%= @total_transportation %></p>
   <% end %>
