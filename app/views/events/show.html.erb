@@ -47,7 +47,6 @@
 
 <% if @auth["comms"] %>
   <%= link_to 'Edit', edit_event_path(@event) %> |
-  <%= link_to 'Destroy', event_path(@event), :confirm => "Are you sure?", :method => :delete %> |
 <% end %>
 <% if @event.allows_rsvps? and @auth["candplus"] %>
   <% if @current_user_rsvp %>
