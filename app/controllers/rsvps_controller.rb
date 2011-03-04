@@ -72,7 +72,7 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       if @rsvp.save
-        format.html { redirect_to(@event, :notice => 'Rsvp was successfully created.') }
+        format.html { redirect_to(@event, :notice => 'Thanks for RSVPing! See you there!') }
         format.xml  { render :xml => @rsvp, :status => :created, :location => @rsvp }
       else
         format.html { render :action => "new" }
