@@ -18,7 +18,6 @@
 .calendar .big-fun { background-color: #44CC44; }
 .calendar .mandatory-for-candidates { background-color: #AA66DD; }
 .calendar .industry { background-color: #BBBB22; }
-.calendar .community-service { background-color: #EEBB22; }
-.calendar .department-service { background-color: #22BBBB; }
-.calendar .misc { background-color: #BBBB22; }
+.calendar .service { background-color: #8888FF; }
+.calendar .miscellaneous { background-color: #FF8000; }
 .calendar li { display: inline; border-radius: 3px; padding: 5px; }
