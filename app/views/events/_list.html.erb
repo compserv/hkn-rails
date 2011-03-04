@@ -11,7 +11,6 @@
         <%# th for edit/delete %>
         <% if @auth['comms'] %>
           <th></th>
-          <th></th>
         <% end %>
       </tr>
 
@@ -23,7 +22,6 @@
           <td><%= event.event_type.name %></td>
           <% if @auth['comms'] %>
             <td><%= link_to 'Edit', edit_event_path(event) %></td>
-            <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
           <% end %>
         </tr>
       <% end %>
