@@ -22,6 +22,8 @@ class UserSessionsController < ApplicationController
   end
 
   def create
+    return redirect_to login_path unless params[:user_session]
+
     user = Person.find_by_username(params[:user_session][:username])
     @user_session = UserSession.new(params[:user_session])
 
