@@ -119,7 +119,7 @@ class RsvpsController < ApplicationController
     @rsvp.save
 
     respond_to do |format|
-      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id), :notice => 'Rsvp was confirmed.') }
+      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id, :group => params[:group]), :notice => 'Rsvp was confirmed.') }
       format.xml  { render :xml => @rsvp }
     end
   end

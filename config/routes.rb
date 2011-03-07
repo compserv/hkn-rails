@@ -88,6 +88,8 @@ HknRails::Application.routes.draw do
   get   "people/:login"      => "people#show",    :as => :profile, :constraints => {:login => /.+/}
   resources :people, :except => [:new, :create, :index]
 
+  match "leaderboard" => "leaderboard#index", :as => :leaderboard
+
   # Alumni
   resources :alumnis do
     collection do
