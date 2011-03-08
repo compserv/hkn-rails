@@ -3,7 +3,9 @@ class LeaderboardController < ApplicationController
 
   def index
     @people = Person.find(:all, :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title IN (?)", Property.semester, ["officer", "cmember"] ])
-    @people << Person.find_by_username("eunjian")
+    if Person.find_by_username("eunjian")
+      @people << Person.find_by_username("eunjian")
+    end
     @people_array = []
     @people.each do |person|
       @people_array << [person, person.rsvps.confirmed.joins(:event).where("events.start_time > ?", Property.semester_start_time).count]
