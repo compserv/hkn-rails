@@ -10,5 +10,17 @@ class LeaderboardController < ApplicationController
 
     @people_array.sort!{|a,b| a[1] <=> b[1]}
     @people_array.reverse!
+    rank = 0
+    last_num = -1
+    incr = 1
+    @people_array.each do |entry|
+      if last_num != entry[1]
+        rank += incr
+        last_num = entry[1]
+        incr = 0
+      end
+      entry << rank
+      incr += 1
+    end
   end
 end
