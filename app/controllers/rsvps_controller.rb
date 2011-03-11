@@ -130,7 +130,7 @@ class RsvpsController < ApplicationController
     @rsvp.save
     
     respond_to do |format|
-      format.html { redirect_to(confirm_event_rsvps_path(rsvp.event_id), :notice => 'Confirmation was removed.') }
+      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id), :notice => 'Confirmation was removed.') }
       format.xml { render :xml => @rsvp }
     end
   end
