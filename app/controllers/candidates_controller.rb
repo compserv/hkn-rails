@@ -41,7 +41,7 @@ class CandidatesController < ApplicationController
   end
   
   def find_officers #FIXME: what's a more efficient way to do this?
-    render :json => Person.all.select {|p| p.in_group?("officers")}.map {|p| p.first_name + " " + p.last_name}
+    render :json => Person.all.select {|p| p.in_group?("comms")}.map {|p| p.first_name + " " + p.last_name}
   end
 
   def application
