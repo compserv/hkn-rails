@@ -27,7 +27,7 @@ class Candidate < ActiveRecord::Base
     req["Mandatory for Candidates"] = 3
     req["Fun"] = 3
     req["Big Fun"] = 1
-    req["Community Service"] = 2
+    req["Service"] = 2
     return req
   end
 
