@@ -18,7 +18,7 @@ module SurveyData
 
           CSV.open(file.path, 'r', ',') do |row|
             next if row.compact.empty?
-            last_row = [row.join(' '), last_row[1]+1]
+            last_row = [row.join(' '), last_row[1]+1] unless last_row[0].eql? row.join(' ')
             puts "Entering state #{state.to_s}"
 
             case state
@@ -69,17 +69,27 @@ module SurveyData
               # Instructor
               i[:title] = s.pop.to_s[1..-2]  # (prof) => prof
               i[:last_name], i[:first_name] = s.first.split(',').collect(&:titleize)
+              instructor = Instructor.find :first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]
 
-              raise if [:course, :klass, :instructor].any? {|k| current[k].empty?}
+              [course, klass, instructor].each do |o|
+                next if o.valid?
+                results[:errors] << "Invalid model: #{o.inspect}"
+                state = :error
+                redo
+              end
 
               result << "#{course.course_abbr}-#{klass.section}, #{klass.proper_semester}"
               result << ["Course: #{course.inspect}"]
               result << ["Klass: #{klass.inspect}"]
+
+              current[:klass] = klass
+              current[:course] = course
+              current[:instructor] = instructor
               state = :frequencies
 
             when :frequencies:
-              next if row.join =~ /FREQUENCIES/i
               row.compact!
+              next if row.first =~ /FREQUENCIES/i
               row.each do |k|
                 case
                 when k =~ /\[(.+)]/:
@@ -90,22 +100,36 @@ module SurveyData
                 else next  # ignore stats, these are recomputed
                 end # row case
               end # row.map
-              result << ["Read frequency keys:", frequency_keys]
+              # result << ["Read frequency keys:", frequency_keys]
               state = :data
 
             when :data:
               case
-              when row.first =~ /^[A-Z]/:        # e.g. CLASSROOM PRESENTATION
+              when row.first =~ /^[A-Z ]+$/:        # e.g. CLASSROOM PRESENTATION
               when row.first =~ /^\d\. (.+)/:    # question data
                 unless q = SurveyQuestion.find_by_text($1)
                   results[:errors] << "Couldn't find survey question matching \"#{$1}\"... check spelling and perhaps do a find+replace to correct it."
-                  raise
+                  state = :error
+                  redo
                 end
                 a = {}
                 a[:survey_question_id] = q.id
                 a[:klass_id] = current[:klass][:id]
+                a[:instructor_id] = current[:klass][:instructor_id]
+                row.shift # question text
+                a[:frequencies] = Hash[frequency_keys.zip frequency_keys.collect{row.shift.to_i}]
+
                 current[:answers] << a
-              else raise
+              when row.first =~ /^1 is a low rating/:
+                # Example scoring
+              when row.first =~ /^Data processed/:
+                # end of klass
+                result << ["Survey responses:", current[:answers]]
+                state = :finish
+                redo
+              else
+                state = :error
+                redo
               end
               state = :data   # process moar
 
