@@ -1,0 +1,18 @@
+<div class="upload-form">
+  <small>Upload raw survey data as CSV.</small>
+  <%= form_tag admin_csec_upload_surveys_post_path, :multipart=>true, :method=>:post do %>
+    <%= file_field_tag :file, :accept => 'text/csv' %>
+    <%= submit_tag 'Upload' %>
+  <%- end -%>
+</div>
+
+<div class="info-box">
+  <div class="errors">
+    Errors:
+    <%= raw @results[:errors].to_ul %>
+  </div>
+  <div class="info">
+    Info:
+    <%= raw @results[:info].collect(&:to_ul).join('<br/>') %>
+  </div>
+</div>

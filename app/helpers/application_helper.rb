@@ -73,6 +73,36 @@ class String
   def pluralize_for(n=1)
     n==1 ? self : self.pluralize 
   end
+
+  def is_int?
+    !self.blank? && self.to_i.to_s.eql?(self)
+  end
+  
+  def semi_escape
+    m = { '<' => '&lt;',
+          '>' => '&gt;',
+          /^\"|\"$/ => '',
+          '\\"' => '"'
+        }
+    s = self.dup
+    m.each_pair {|old,new| s.gsub! old, new }
+    s
+  end
+end
+
+class Array
+  def to_ul
+    # Converts a nested array to <ul>
+    ["<ul>",
+     self.collect do |e| case
+     when e.is_a?(Array):
+       e.to_ul
+     else
+       "<li>#{e.inspect.semi_escape}</li>"
+     end end.join,
+     "</ul>"
+    ].join
+  end
 end
 
 # Used as a quick and dirty hack when solr isn't running
