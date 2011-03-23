@@ -95,17 +95,24 @@ class String
 end
 
 class Array
-  def to_ul
+  def to_ul(tag='ul')
     # Converts a nested array to <ul>
-    ["<ul>",
+    ["<#{tag}>",
      self.collect do |e| case
      when e.is_a?(Array):
-       e.to_ul
+       e.to_ul tag
      else
        "<li>#{e.inspect.semi_escape}</li>"
      end end.join,
-     "</ul>"
+     "</#{tag}>"
     ].join
+  end
+end
+
+class Hash
+  def -(keys)   # I can't believe this isn't in Ruby already
+    keys = [keys] unless keys.is_a? Array
+    self.reject {|k,v| keys.include? k}
   end
 end
 

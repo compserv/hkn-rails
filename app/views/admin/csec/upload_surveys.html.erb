@@ -1,5 +1,30 @@
+<div class="directions">
+  <h3>Directions</h3>
+  <%= raw [
+        "Upload prof data", [
+          "Choose file to upload",
+          "Click upload and wait a while for processing to finish (dry run)",
+          "If errors occurred, fix them or contact compserv.",
+          "Else, if no errors occurred, upload data for realsies.", [
+            "First verify that the data looks right. Entities that are NEW will have a few nil fields. SurveyAnswers that rely on NEW entities might also have some nil fields, including stats, these will be corrected in the final run.",
+            "Choose THE SAME FILE from step 1.1. It won't be verified that you actually uploaded the same file.",
+            "Tick the box marked 'Save'. Read and accept the directions there.",
+            "Click Upload to reprocess and commit the new data.",
+            "Look for \"Save = true\" and no errors, which indicates success. Go verify that things show up in the course surveys section."
+            ]
+        ],
+        "Upload TA data"
+      ].to_ul 'ol'
+   %>
+  <h3>Fine print</h3>
+  <%= raw [
+        "For the time being, all sections default to 0. This is because, for historical reasons, one section corresponds to exactly one instructor, and all TAs are registered for all sections. This shall be fixed in the future.",
+        "Behavior is undefined when uploading the same data multiple times, or uploading TAs before profs. It should be fine, but have a web-dev handy just in case."
+      ].to_ul
+   %>
+</div>
 <div class="upload-form">
-  <small>Upload raw survey data as CSV.</small>
+  <small>Upload raw survey data as <b>CSV</b> (a.k.a. doublequoted and comma-delimited).</small>
   <%= form_tag admin_csec_upload_surveys_post_path, :multipart=>true, :method=>:post do %>
     <%= file_field_tag :file, :accept => 'text/csv' %>
     <%= submit_tag 'Upload', :disable_with => "Processing..." %>

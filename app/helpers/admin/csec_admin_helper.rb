@@ -65,7 +65,10 @@ module SurveyData
               course = Course.find(:first, :conditions=>c) || Course.new(c)
 
               raise if k[:section].blank?
-              k[:section] = k[:section].blank? ? nil : k[:section].to_i 
+              # REVELATION: currently, all TAs are globbed into a single section, and sections differentiate instructors.
+              # FIXME: make default section nil, instead of 0.
+              ### k[:section] = k[:section].blank? ? 0 : k[:section].to_i 
+              k[:section] = 0
               k[:course_id] = course.id || 'OMGWTFBBQ'
               klass = Klass.find(:first, :conditions=>k) || Klass.new(k)
               klass.course = course

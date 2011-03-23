@@ -161,7 +161,9 @@ class CoursesurveysController < ApplicationController
       return
     end
 
-    @results = (@klass.instructors + @klass.tas).collect do |instructor|
+    #instructors = @klass.instructors + (params[:section].blank? ? @klass.all_sections.collect(&:tas).flatten : @klass.tas) 
+    instructors = @klass.instructors+@klass.tas
+    @results = instructors.collect do |instructor|
       answers = instructor.private ? nil : @klass.survey_answers.find(:all, :conditions => {:instructor_id => instructor.id}, :order => '"order"')
       [instructor, answers]
     end
