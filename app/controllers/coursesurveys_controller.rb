@@ -5,7 +5,8 @@ class CoursesurveysController < ApplicationController
   before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor]
 
   begin # caching
-    [:index, :instructors, :klass].each {|a| caches_action a, :layout => false}
+    [:index, :instructors].each {|a| caches_action a, :layout => false}
+    caches_action :klass, :cache_path => Proc.new {|c| klass_cache_path(c.params)}, :layout => false
 
     # Cache full/partial department lists
     caches_action :department, :layout => false, :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"}
@@ -140,21 +141,7 @@ class CoursesurveysController < ApplicationController
   end
 
   def klass
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
-    if @course.blank?
-      @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
-      render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
-    end
-    (year,season) = params[:semester].match(/^([0-9]*)_([a-zA-Z]*)$/)[1..-1]
-    season_no = case season.downcase when "spring" then "1" when "summer" then "2" when "fall" then "3" else "" end
-    if year.blank? or season.blank?
-      @errors = "Semester #{params[:semester]} not formatted correctly."
-      render :text => "Semester #{params[:semester]} not formatted correctly."
-    end
-    semester = year+season_no
-    conditions = { :course_id => @course.id, :semester => semester }
-    conditions[:section] = params[:section].to_i unless params[:section].blank?
-    @klass = Klass.find(:first, :conditions => conditions, :order => "section ASC" )
+    @klass = params_to_klass(params)
     if @klass.blank?
       @errors = "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
       render :text => "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
@@ -325,15 +312,14 @@ class CoursesurveysController < ApplicationController
 
   def updateinstructor
     @instructor = Instructor.find(params[:id].to_i)
-    if @instructor.nil?
-      redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}."
-    end
+    return redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}." unless @instructor
 
-    unless @instructor.update_attributes(params[:instructor])
-      redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}"
-    end
+    return redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(params[:instructor])
 
-    redirect_to surveys_instructor_path(@instructor), :notice => "Successfully updated #{@instructor.full_name}."
+    (@instructor.klasses+@instructor.tad_klasses).each do |k|
+      expire_action klass_cache_path k
+    end
+    return redirect_to surveys_instructor_path(@instructor), :notice => "Successfully updated #{@instructor.full_name}."
   end
 
   def rating
@@ -490,6 +476,37 @@ end
 
   def show_searcharea
     @show_searcharea = true
+  end
+
+  private
+  def klass_cache_path(k)
+    unless k.is_a? Klass
+      k = params_to_klass k
+    end
+    p = surveys_klass_path k
+    puts "\n\n\n\nparms=#{k.inspect}\nPATH = #{p}\n\n\n"
+    p
+  end
+
+  def params_to_klass(parms)
+    @course = Course.find_by_short_name(parms[:dept_abbr], parms[:short_name])
+    if @course.blank?
+      @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
+      render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
+    end
+
+    (year,season) = parms[:semester].match(/^([0-9]*)_([a-zA-Z]*)$/)[1..-1]
+    season_no = case season.downcase when "spring" then "1" when "summer" then "2" when "fall" then "3" else "" end
+    if year.blank? or season.blank?
+      @errors = "Semester #{parms[:semester]} not formatted correctly."
+      render :text => "Semester #{parms[:semester]} not formatted correctly."
+      return nil
+    end
+    semester = year+season_no
+
+    conditions = { :course_id => @course.id, :semester => semester }
+    conditions[:section] = parms[:section].to_i unless parms[:section].blank?
+    @klass = Klass.find(:first, :conditions => conditions, :order => "section ASC" )
   end
 
 end
