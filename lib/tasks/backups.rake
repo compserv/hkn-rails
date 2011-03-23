@@ -39,10 +39,10 @@ namespace :backup do
   # rake db:backup:dump             => db/backups/db__date__time.gz
   desc "Backs up the database into $DBBAK, default db/backups/`date`.gz"
   task :dump, :filename do |t,args|
-    filename = args[:filename] || ENV['TO'] || File.join('db','backups', "#{config['database']}__#{Time.now.strftime "%Y_%m_%d__%H_%M_%S"}.gz")
-    puts "Dumping into #{filename}"
-
     pg_wrapper do |config|
+      filename = args[:filename] || ENV['TO'] || File.join('db','backups', "#{config['database']}__#{Time.now.strftime "%Y_%m_%d__%H_%M_%S"}.gz")
+      puts "Dumping into #{filename}"
+
       Dir.mkdir File.dirname(filename) unless File.directory? File.dirname(filename)
       success = system "pg_dump #{config['database']} --user #{config['username']} | gzip > \"#{filename}\""
       raise "pg_dump error!" unless success

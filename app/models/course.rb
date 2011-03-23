@@ -83,6 +83,13 @@ class Course < ActiveRecord::Base
     "#{prefix}#{course_number}#{suffix}"
   end
 
+  def self.split_course_number(s)
+    # Splits a course number string "C149" => "C", 149, nil
+    cn = {}
+    cn[:prefix], cn[:course_number], cn[:suffix] = s.scan(/^([a-zA-Z]*)([0-9]*)([a-zA-Z]*)$/).first
+    return cn
+  end
+
   # E.g. ("EE", "C149")
   def Course.find_by_short_name(dept_abbr, full_course_number, section=nil)
     (prefix, course_number, suffix) = full_course_number.scan(/^([a-zA-Z]*)([0-9]*)([a-zA-Z]*)$/).first

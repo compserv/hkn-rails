@@ -50,7 +50,7 @@ class Instructor < ActiveRecord::Base
   end
 
   def full_name
-    first_name + " " + last_name
+    [first_name,last_name].join ' '
   end
 
   # Reverse order
