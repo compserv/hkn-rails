@@ -22,8 +22,6 @@ class SurveyAnswer < ActiveRecord::Base
   validates_presence_of :instructor
   validates_presence_of :survey_question
 
-  #serialize :frequencies, Hash
-
   def SurveyAnswer.find_by_instructor_klass(instructor, klass, opts = {})
     conditions = opts.merge({ :instructor_id => instructor.id, :klass_id => klass.id })
     SurveyAnswer.find(:all, :conditions => conditions )

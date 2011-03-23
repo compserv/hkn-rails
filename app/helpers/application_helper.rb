@@ -88,6 +88,10 @@ class String
     m.each_pair {|old,new| s.gsub! old, new }
     s
   end
+
+  def to_ul
+    [self].to_ul
+  end
 end
 
 class Array

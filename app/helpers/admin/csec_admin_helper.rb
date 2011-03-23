@@ -10,6 +10,8 @@ module SurveyData
       result = []
       last_row = ["none", 0]
 
+      results[:info] << "Save = #{!!commit}" if commit
+
       begin
         ActiveRecord::Base.transaction do
           state = :init
@@ -19,20 +21,20 @@ module SurveyData
           CSV.open(file.path, 'r', ',') do |row|
             next if row.compact.empty?
             last_row = [row.join(' '), last_row[1]+1] unless last_row[0].eql? row.join(' ')
-            puts "Entering state #{state.to_s}"
+            # puts "Entering state #{state.to_s}"
 
             case state
             when :init:
               # Initialize vars that are cross-state, but not cross-klass
               frequency_keys = []   # Ordered list of [1], [2], N/A, ...
               frequencies = {}      # Frequencies that will go into SurveyAnswer
-              state = :accept_klass
-              result = []
+              result = []           # For convenience, will be appended to results[:info] at :finish state
               current = {:course     => {},
                          :klass      => {},
                          :instructor => {},
                          :answers    => []
-                        }
+                        }            # Cross-state state
+              state = :accept_klass
               redo
             when :accept_klass:
               # Row like
@@ -62,29 +64,51 @@ module SurveyData
               c.merge! Course.split_course_number(c.delete(:number))
               course = Course.find(:first, :conditions=>c) || Course.new(c)
 
+              raise if k[:section].blank?
               k[:section] = k[:section].blank? ? nil : k[:section].to_i 
-              k[:course_id] = course.id
+              k[:course_id] = course.id || 'OMGWTFBBQ'
               klass = Klass.find(:first, :conditions=>k) || Klass.new(k)
+              klass.course = course
 
               # Instructor
               i[:title] = s.pop.to_s[1..-2]  # (prof) => prof
+              i[:title] = {'prof'=>'Professor', 'ta'=>'Teaching Assistant'}[i[:title]]
               i[:last_name], i[:first_name] = s.first.split(',').collect(&:titleize)
-              instructor = Instructor.find :first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]
+              instructor = Instructor.find(:first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]) || Instructor.new(i)
 
-              [course, klass, instructor].each do |o|
-                next if o.valid?
-                results[:errors] << "Invalid model: #{o.inspect}"
+              # Misc.
+              if instructor.instructor? then
+                klass.instructors |= [instructor]
+              elsif instructor.ta? then
+                klass.tas |= [instructor]
+              else
+                results[:errors] << "Unknown instructor type #{instructor.title}"
                 state = :error
                 redo
               end
 
-              result << "#{course.course_abbr}-#{klass.section}, #{klass.proper_semester}"
-              result << ["Course: #{course.inspect}"]
-              result << ["Klass: #{klass.inspect}"]
+              [:course, :klass, :instructor].each do |o|
+                m = binding.eval o.to_s
+                next if m && m.valid?
+                results[:errors] << "Invalid #{o.to_s}: #{m.inspect}"
+                state = :error
+              end
+              redo if state == :error
 
-              current[:klass] = klass
-              current[:course] = course
-              current[:instructor] = instructor
+              result << "#{course.course_abbr}-#{klass.section}, #{klass.proper_semester}"
+              [:course, :klass, :instructor].each do |s|
+                o = binding.eval s.to_s
+                pfix = (o.created_at.nil? ? '::NEW::' : 'existing')
+                result << ["#{pfix} #{s.to_s.capitalize}", [o.inspect]]
+                current[s] = o
+              end
+
+              raise if [current[:course], current[:klass], current[:instructor]].any? {|o|o.nil?}
+
+              if commit then
+                [klass, course, instructor].map(&:save)
+              end
+
               state = :frequencies
 
             when :frequencies:
@@ -92,7 +116,7 @@ module SurveyData
               next if row.first =~ /FREQUENCIES/i
               row.each do |k|
                 case
-                when k =~ /\[(.+)]/:
+                when k =~ /\[(.+)\]/:
                   k = $1
                   redo
                 when k.is_int? || k =~ /N\/A|Omit/:
@@ -114,10 +138,22 @@ module SurveyData
                 end
                 a = {}
                 a[:survey_question_id] = q.id
-                a[:klass_id] = current[:klass][:id]
-                a[:instructor_id] = current[:klass][:instructor_id]
+                a[:klass_id] = current[:klass].id
+                a[:instructor_id] = current[:instructor].id
                 row.shift # question text
                 a[:frequencies] = Hash[frequency_keys.zip frequency_keys.collect{row.shift.to_i}]
+                a[:frequencies] = ActiveSupport::JSON.encode a[:frequencies]
+                a = SurveyAnswer.find(:first, :conditions=>a) || SurveyAnswer.new(a)
+
+                if commit
+                  if a.save
+                    a.order = current[:answers].length+1
+                    a.recompute_stats!  # only do for commit because new klasses will cause null constraint errors
+                  else
+                    results[:errors] << "Error with survey answer #{a.inspect}"
+                    state = :error
+                  end
+                end
 
                 current[:answers] << a
               when row.first =~ /^1 is a low rating/:
@@ -142,8 +178,10 @@ module SurveyData
             end # case state
           end # CSV.open
         end # transaction
-      rescue
-        results[:errors] << "Error parsing near line #{last_row[1]}: #{last_row[0]}"
+      rescue => e
+        results[:errors] << "Error #{e.inspect} parsing near line #{last_row[1]}: #{last_row[0]}"
+        results[:errors] << ["Stack trace:", caller]
+        raise if RAILS_ENV.eql?('development')
       end
 
       return results

@@ -1,9 +1,12 @@
+include Process
+
 class Admin::CsecController < Admin::AdminController
   before_filter :authorize_csec
 
   def upload_surveys
     # Displays form for upload course surveys
     @results = {:errors=>[], :info=>[]}
+    @success = @allow_save = false
   end
 
   def upload_surveys_post
@@ -11,8 +14,15 @@ class Admin::CsecController < Admin::AdminController
 
     return redirect_to admin_csec_upload_surveys_path, :notice => "Please select a file to upload." unless params[:file]
 
-    @results = SurveyData::Importer.import(:csv, params[:file].tempfile)
-    @success = (@results[:errors].empty?)
+##    if params[:save] then
+##      Process.fork { system "rake db:backup:dump RAILS_ENV=#{RAILS_ENV}" }
+##      Process.wait
+##    end
+
+    @results = SurveyData::Importer.import(:csv, params[:file].tempfile, params[:save])
+    @success = @results[:errors].empty?
+    @allow_save = @success && !params[:save]
+    @results[:errors] << "No data was imported because of the above errors." if !@success && params[:save]
     render 'upload_surveys'
 
 ##    unless results[:errors].empty? then
