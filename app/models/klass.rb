@@ -26,6 +26,13 @@ class Klass < ActiveRecord::Base
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
   ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }
 
+  def self.semester_code_from_s(s)
+    # Converts string like "FALL 2010" to "20103"
+    sem, year = s.split
+    sem = SEMESTER_MAP.invert[sem.capitalize]
+    "#{year}#{sem}"
+  end
+
   def to_s
     "#{course.course_abbr} #{proper_semester}"
   end

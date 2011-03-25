@@ -63,7 +63,7 @@ module CoursesurveysHelper
   end
 
   def surveys_instructor_path(instructor)
-    coursesurveys_instructor_path(instructor.last_name+","+instructor.first_name)
+    coursesurveys_instructor_path("#{instructor.last_name},#{instructor.first_name}")
   end
 
   def surveys_rating_path(rating)
