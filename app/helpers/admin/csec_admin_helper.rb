@@ -75,8 +75,8 @@ module SurveyData
 
               # Instructor
               i[:title] = s.pop.to_s[1..-2]  # (prof) => prof
-              i[:private] = false if i[:title].eql? 'prof'
-              i[:title] = {'prof'=>'Professor', 'ta'=>'Teaching Assistant'}[i[:title]]
+              i[:private] = false if i[:title].eql? 'PROF'
+              i[:title] = {'PROF'=>'Professor', 'TA'=>'Teaching Assistant'}[i[:title]]
               i[:last_name], i[:first_name] = s.join(' ').split(',').collect(&:strip).collect(&:titleize_with_dashes)
               instructor = Instructor.find(:first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]) || Instructor.new(i)
 
