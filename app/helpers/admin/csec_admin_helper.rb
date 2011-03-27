@@ -41,7 +41,7 @@ module SurveyData
               # ["EE 100-1 NIKNEJAD,ALI (prof)", "60 RESPONDENTS", nil, nil, nil, nil, nil, nil, nil, nil, nil, "FALL 2010", nil] 
               
               row.compact!
-              s = row.shift.split /\s+/
+              s = row.shift.upcase.split /\s+/
 
               c = current[:course    ]  # course
               k = current[:klass     ]  # klass
