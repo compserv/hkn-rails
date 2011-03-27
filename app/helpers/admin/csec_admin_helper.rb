@@ -77,7 +77,7 @@ module SurveyData
               i[:title] = s.pop.to_s[1..-2]  # (prof) => prof
               i[:private] = false if i[:title].eql? 'prof'
               i[:title] = {'prof'=>'Professor', 'ta'=>'Teaching Assistant'}[i[:title]]
-              i[:last_name], i[:first_name] = s.first.split(',').collect(&:titleize)
+              i[:last_name], i[:first_name] = s.join(' ').split(',').collect(&:strip).collect(&:titleize)
               instructor = Instructor.find(:first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]) || Instructor.new(i)
 
               # Misc.
@@ -185,7 +185,7 @@ module SurveyData
       rescue => e
         results[:errors] << "Error #{e.inspect} parsing near line #{last_row[1]}: #{last_row[0]}"
         results[:errors] << ["Stack trace:", caller]
-        raise if RAILS_ENV.eql?('development')
+        #raise if RAILS_ENV.eql?('development')
       end
 
       return results

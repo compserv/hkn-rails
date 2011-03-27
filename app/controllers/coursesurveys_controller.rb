@@ -152,6 +152,7 @@ class CoursesurveysController < ApplicationController
     instructors = @klass.instructors+@klass.tas
     @results = instructors.collect do |instructor|
       answers = instructor.private ? nil : @klass.survey_answers.find(:all, :conditions => {:instructor_id => instructor.id}, :order => '"order"')
+      raise "Nil answers for instructor #{instructor.inspect}" if answers.blank? && RAILS_ENV.eql?('development')
       [instructor, answers]
     end
   end
