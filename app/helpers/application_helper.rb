@@ -92,6 +92,20 @@ class String
   def to_ul
     [self].to_ul
   end
+
+  def titleize_with_dashes
+    ActiveSupport::Inflector.titleize_with_dashes(self)
+  end
+
+end
+
+module ActiveSupport
+  module Inflector
+    def titleize_with_dashes(word)
+      # Because titleize kills the - in Sangiovanni-Vincentelli
+      word.downcase.gsub(/\b('?[a-z])/) { $1.capitalize }
+    end
+  end
 end
 
 class Array
