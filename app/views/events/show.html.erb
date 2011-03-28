@@ -1,17 +1,18 @@
-<p class="notice"><%= notice %></p>
-
-<div id="infobar">
+<div id="sidebar" style="width:50%;">
   <h1>Who's coming?</h1>
+  <p>Total RSVPs: <%= @event.rsvps.size %></p>
+  <% if @auth["comms"] and @event.need_transportation %>
+    <p>Total Transportation: <%= @total_transportation %></p>
+  <% end %>
   <p>
-  <% @event.rsvps.each do |rsvp| %>
+  <% events = @event.rsvps.sort {|x,y| x.person.first_name <=> y.person.first_name } %>
+  <% events.each do |rsvp| %>
     <% person = rsvp.person %>
     <%= link_to person.fullname, person %>
     <% if @auth["comms"] and @event.need_transportation %>
       (<%= rsvp.transportation %>)
     <% end %>
-    <% if @event.rsvps.last != rsvp %>
-      ,
-    <% end %>
+    <% if events.last != rsvp %>, <% end %>
   <% end %>
   <% if @event.blocks.size > 1 %>
     <h1>Time Slots</h1>
@@ -30,14 +31,11 @@
   <% end %>
   </p>
 
-  <% if @auth["comms"] and @event.need_transportation %>
-    <p>Total Transportation: <%= @total_transportation %></p>
-  <% end %>
 </div>
 
 <h1><%= @event.name %></h1>
 
-<table id="event_info" class="infobox">
+<table id="event_info" class="infobox" style="width: auto; margin-right: 20px;">
   <tr><th>Date</th><td><%= @event.nice_time_range %></td></tr>
   <tr><th>Location</th><td><%= @event.location %></td></tr>
   <tr><th>Event type</th><td><%= @event.event_type.name %></td></tr>
@@ -46,7 +44,6 @@
 
 <% if @auth["comms"] %>
   <%= link_to 'Edit', edit_event_path(@event) %> |
-  <%= link_to 'Destroy', event_path(@event), :confirm => "Are you sure?", :method => :delete %> |
 <% end %>
 <% if @event.allows_rsvps? and @auth["candplus"] %>
   <% if @current_user_rsvp %>

@@ -73,6 +73,61 @@ class String
   def pluralize_for(n=1)
     n==1 ? self : self.pluralize 
   end
+
+  def is_int?
+    !self.blank? && self.to_i.to_s.eql?(self)
+  end
+  
+  def semi_escape
+    m = { '<' => '&lt;',
+          '>' => '&gt;',
+          /^\"|\"$/ => '',
+          '\\"' => '"'
+        }
+    s = self.dup
+    m.each_pair {|old,new| s.gsub! old, new }
+    s
+  end
+
+  def to_ul
+    [self].to_ul
+  end
+
+  def titleize_with_dashes
+    ActiveSupport::Inflector.titleize_with_dashes(self)
+  end
+
+end
+
+module ActiveSupport
+  module Inflector
+    def titleize_with_dashes(word)
+      # Because titleize kills the - in Sangiovanni-Vincentelli
+      word.downcase.gsub(/\b('?[a-z])/) { $1.capitalize }
+    end
+  end
+end
+
+class Array
+  def to_ul(tag='ul')
+    # Converts a nested array to <ul>
+    ["<#{tag}>",
+     self.collect do |e| case
+     when e.is_a?(Array):
+       e.to_ul tag
+     else
+       "<li>#{e.inspect.semi_escape}</li>"
+     end end.join,
+     "</#{tag}>"
+    ].join
+  end
+end
+
+class Hash
+  def -(keys)   # I can't believe this isn't in Ruby already
+    keys = [keys] unless keys.is_a? Array
+    self.reject {|k,v| keys.include? k}
+  end
 end
 
 # Used as a quick and dirty hack when solr isn't running

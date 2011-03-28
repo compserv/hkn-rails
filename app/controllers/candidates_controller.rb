@@ -19,7 +19,7 @@ class CandidatesController < ApplicationController
       requirements = @current_user.candidate.requirements_status
       @status = requirements[:status]
       @rsvps = requirements[:rsvps]
-      @events = Event.upcoming_events(5)
+      @events = Event.upcoming_events(5, @current_user)
     
       @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
     
@@ -41,7 +41,7 @@ class CandidatesController < ApplicationController
   end
   
   def find_officers #FIXME: what's a more efficient way to do this?
-    render :json => Person.all.select {|p| p.in_group?("officers")}.map {|p| p.first_name + " " + p.last_name}
+    render :json => Person.all.select {|p| p.in_group?("comms")}.map {|p| p.first_name + " " + p.last_name}
   end
 
   def application

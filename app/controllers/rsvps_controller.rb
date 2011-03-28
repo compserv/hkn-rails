@@ -72,7 +72,7 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       if @rsvp.save
-        format.html { redirect_to(@event, :notice => 'Rsvp was successfully created.') }
+        format.html { redirect_to(@event, :notice => 'Thanks for RSVPing! See you there!') }
         format.xml  { render :xml => @rsvp, :status => :created, :location => @rsvp }
       else
         format.html { render :action => "new" }
@@ -119,7 +119,7 @@ class RsvpsController < ApplicationController
     @rsvp.save
 
     respond_to do |format|
-      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id), :notice => 'Rsvp was confirmed.') }
+      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id, :group => params[:group]), :notice => 'Rsvp was confirmed.') }
       format.xml  { render :xml => @rsvp }
     end
   end
@@ -130,7 +130,7 @@ class RsvpsController < ApplicationController
     @rsvp.save
     
     respond_to do |format|
-      format.html { redirect_to(confirm_event_rsvps_path(rsvp.event_id), :notice => 'Confirmation was removed.') }
+      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id), :notice => 'Confirmation was removed.') }
       format.xml { render :xml => @rsvp }
     end
   end

@@ -35,6 +35,9 @@ HknRails::Application.routes.draw do
       get "manage_classes" => "csec#manage_classes", :as => :manage_classes
       post "manage_classes" => "csec#manage_classes_post", :as => :manage_classes_post
       match "manage_candidates" => "csec#manage_candidates", :as => :manage_candidates
+
+      get  "upload_surveys" => "csec#upload_surveys",  :as => :upload_surveys
+      post "upload_surveys" => "csec#upload_surveys_post", :as => :upload_surveys_post
     end
     scope "deprel" do
       match "/" => "deprel#overview"
@@ -87,6 +90,8 @@ HknRails::Application.routes.draw do
   match "people/:id/approve" => "people#approve", :as => :approve
   get   "people/:login"      => "people#show",    :as => :profile, :constraints => {:login => /.+/}
   resources :people, :except => [:new, :create, :index]
+
+  match "leaderboard" => "leaderboard#index", :as => :leaderboard
 
   # Alumni
   resources :alumnis do

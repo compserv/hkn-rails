@@ -43,6 +43,7 @@ class Person < ActiveRecord::Base
   # Username, password, and email validation is done by AuthLogic
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
+  scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('comms')) }
 
   acts_as_authentic do |c|
     # Options go here if you have any

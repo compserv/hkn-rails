@@ -52,6 +52,32 @@ class Property < ActiveRecord::Base
       prop.send(variable+"=", value)
       prop.save
     end
+
+    def semester_start_time
+      prop = get_or_create
+      semester = prop.semester.to_s
+      semester_year = semester[0..3]
+
+      # 1 = Spring, 2 = Summer, 3 = Fall
+      case semester[4..4]
+      when "1"
+        semester_start_month = 1
+        semester_end_month = 5
+      when "2"
+        semester_start_month = 6
+        semester_end_month = 7
+      when "3"
+        semester_start_month = 8
+        semester_end_month = 12
+      else
+        raise "Error!"
+      end
+
+      start_month = ( semester_start_month ).to_i
+      start_year = ( semester_year ).to_i
+
+      return Time.local(start_year, start_month).beginning_of_month
+    end
     
     def get_property(variable)
       prop = get_or_create

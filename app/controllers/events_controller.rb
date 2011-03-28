@@ -8,7 +8,8 @@ class EventsController < ApplicationController
   def index
     per_page = 20
     order = params[:sort] || "start_time"
-    params[:sort_direction] ||= 'up'
+    params[:sort_direction] ||= (params[:category] == 'past') ? 'down' : 'up'
+    
     sort_direction = case params[:sort_direction]
                      when "up" then "ASC"
                      when "down" then "DESC"
@@ -44,6 +45,7 @@ class EventsController < ApplicationController
 
   #Controller action for main confirmation page that links to each event confirmation page
   def vp_confirm
+    @group = params[:group] || "candidates"
     types = ["Mandatory for Candidates", "Big Fun", "Fun", "Community Service"]
 
     #Filters for candidate events (enumerated in "types" variable)
@@ -51,12 +53,13 @@ class EventsController < ApplicationController
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
     #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
     # Sorry, this is kind of a bad query
-    @events = Event.past.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "rsvps.confirmed IS NULL AND groups.id = #{Group.find_by_name('candidates').id}").uniq
+    @events = Event.past.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "rsvps.confirmed IS NULL AND groups.id = #{Group.find_by_name(@group).id}").uniq
     @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
 
   #Rsvp confirmation for an individual event
   def rsvps_confirm
+    @group = params[:group] || "candidates"
     @event = Event.find(params[:id])
     @rsvps = @event.rsvps.sort_by { |rsvp| rsvp.person.last_name }
   end

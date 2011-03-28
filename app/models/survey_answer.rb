@@ -39,7 +39,7 @@ class SurveyAnswer < ActiveRecord::Base
       num_scores -= f['N/A']
     end
     if f.keys.include? 'Omit'
-      num_scores -= -f['Omit']
+      num_scores -= f['Omit']
     end
     if num_scores == 0
       self.update_attributes(:mean => 0, :median => 0, :deviation => 0)

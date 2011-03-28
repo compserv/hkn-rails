@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <th>Rank</td>
+    <th>Name</th>
+    <th>Fun Events</th>
+  </tr>
+<% @people_array.each do |person, count, rank| %>
+  <tr>
+    <td><%= rank %></td>
+    <td><%= person.full_name %></td>
+    <td><%= count %></td>
+  </tr>
+<% end %>
+</table>

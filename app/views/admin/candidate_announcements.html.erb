@@ -1,6 +1,6 @@
 <h1>Candidate Announcements</h1>
 <h2>Create an Announcement</h2>
-<% form_tag("create_announcement", :method => "post") do %>
+<% form_tag("/admin/general/create_announcement", :method => "post") do %>
   <div class="field">
     <%= label_tag :title %><br />
     <%= text_field_tag :title %>
