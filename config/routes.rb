@@ -155,6 +155,7 @@ HknRails::Application.routes.draw do
     match "confirm_rsvps/event/:id" => "events#rsvps_confirm", :as => :confirm_event_rsvps
     match "confirm/:id" => "rsvps#confirm", :as => :confirm_rsvp
     match "unconfirm/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
+    match "reject/:id" => "rsvps#reject", :as => :reject_rsvp
   end
   
   resources :events do

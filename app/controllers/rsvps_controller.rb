@@ -1,6 +1,7 @@
 class RsvpsController < ApplicationController
   before_filter :get_event
-  before_filter :rsvp_permission, :except => [:my_rsvps, :confirm, :unconfirm]
+  before_filter :rsvp_permission, :except => [:my_rsvps, :confirm, :unconfirm, :reject]
+  before_filter(:only => [:confirm, :unconfirm, :reject]) { |c| c.authorize(['p', 'vp']) }
 
   # GET /rsvps
   # GET /rsvps.xml
@@ -128,9 +129,20 @@ class RsvpsController < ApplicationController
     @rsvp = Rsvp.find(params[:id])
     @rsvp.confirmed = "f"
     @rsvp.save
+
+    respond_to do |format|
+      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id, :group => params[:group]), :notice => 'Confirmation was removed.') }
+      format.xml { render :xml => @rsvp }
+    end
+  end
+
+  def reject
+    @rsvp = Rsvp.find(params[:id])
+    @rsvp.confirmed = "r"
+    @rsvp.save
     
     respond_to do |format|
-      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id), :notice => 'Confirmation was removed.') }
+      format.html { redirect_to(confirm_event_rsvps_path(@rsvp.event_id, :group => params[:group]), :notice => 'Confirmation was rejected.') }
       format.xml { render :xml => @rsvp }
     end
   end

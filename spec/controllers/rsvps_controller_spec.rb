@@ -180,4 +180,88 @@ describe RsvpsController do
     end
   end
 
+  describe "confirm" do
+    it "without being logged in should redirect to login" do
+      do_get :confirm, :id => "37"
+      response.should redirect_to(login_url)
+    end
+
+    it "with wrong user should raise error" do
+      @current_user = stub_model(Person)
+      login_as @current_user
+      do_get :confirm, :id => "37"
+      response.should redirect_to(root_url)
+    end
+
+    describe "with correct user" do
+      before(:each) do
+        @current_user = stub_model(Person)
+        login_as @current_user
+        controller.should_receive(:authorize).with(['p','vp'])
+      end
+
+      it "should set rsvp.confirmed to 't'" do
+        Rsvp.should_receive(:find).with("37") { mock_rsvp }
+        mock_rsvp.should_receive(:confirmed=).with('t')
+        do_get :confirm, :id => "37"
+      end
+    end
+  end
+
+  describe "unconfirm" do
+    it "without being logged in should redirect to login" do
+      do_get :unconfirm, :id => "37"
+      response.should redirect_to(login_url)
+    end
+
+    it "with wrong user should raise error" do
+      @current_user = stub_model(Person)
+      login_as @current_user
+      do_get :unconfirm, :id => "37"
+      response.should redirect_to(root_url)
+    end
+
+    describe "with correct user" do
+      before(:each) do
+        @current_user = stub_model(Person)
+        login_as @current_user
+        controller.should_receive(:authorize).with(['p','vp'])
+      end
+
+      it "should set rsvp.confirmed to 't'" do
+        Rsvp.should_receive(:find).with("37") { mock_rsvp }
+        mock_rsvp.should_receive(:confirmed=).with('f')
+        do_get :unconfirm, :id => "37"
+      end
+    end
+  end
+
+  describe "reject" do
+    it "without being logged in should redirect to login" do
+      do_get :reject, :id => "37"
+      response.should redirect_to(login_url)
+    end
+
+    it "with wrong user should raise error" do
+      @current_user = stub_model(Person)
+      login_as @current_user
+      do_get :reject, :id => "37"
+      response.should redirect_to(root_url)
+    end
+
+    describe "with correct user" do
+      before(:each) do
+        @current_user = stub_model(Person)
+        login_as @current_user
+        controller.should_receive(:authorize).with(['p','vp'])
+      end
+
+      it "should set rsvp.confirmed to 't'" do
+        Rsvp.should_receive(:find).with("37") { mock_rsvp }
+        mock_rsvp.should_receive(:confirmed=).with('r')
+        do_get :reject, :id => "37"
+      end
+    end
+  end
+
 end
