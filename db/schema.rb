@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110223073849) do
+ActiveRecord::Schema.define(:version => 20110328201821) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -53,6 +53,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.integer "person_id"
   end
 
+  add_index "badges_people", ["badge_id", "person_id"], :name => "index_badges_people_on_badge_id_and_person_id", :unique => true
+
   create_table "blocks", :force => true do |t|
     t.integer  "rsvp_cap"
     t.datetime "start_time"
@@ -66,6 +68,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.integer "block_id"
     t.integer "rsvp_id"
   end
+
+  add_index "blocks_rsvps", ["block_id", "rsvp_id"], :name => "index_blocks_rsvps_on_block_id_and_rsvp_id", :unique => true
 
   create_table "candidates", :force => true do |t|
     t.integer  "person_id"
@@ -132,6 +136,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.datetime "updated_at"
   end
 
+  add_index "course_preferences", ["course_id", "tutor_id"], :name => "index_course_preferences_on_course_id_and_tutor_id", :unique => true
+
   create_table "courses", :force => true do |t|
     t.string   "suffix",        :default => ""
     t.string   "prefix",        :default => ""
@@ -158,6 +164,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.integer "coursesurvey_id"
     t.integer "person_id"
   end
+
+  add_index "coursesurveys_people", ["coursesurvey_id", "person_id"], :name => "index_coursesurveys_people_on_coursesurvey_id_and_person_id", :unique => true
 
   create_table "departments", :force => true do |t|
     t.string   "name"
@@ -241,6 +249,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.integer "person_id"
   end
 
+  add_index "groups_people", ["group_id", "person_id"], :name => "index_groups_people_on_group_id_and_person_id", :unique => true
+
   create_table "indrel_event_types", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -283,6 +293,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.integer "klass_id"
   end
 
+  add_index "instructors_klasses", ["instructor_id", "klass_id"], :name => "index_instructors_klasses_on_instructor_id_and_klass_id", :unique => true
+
   create_table "klasses", :force => true do |t|
     t.integer  "course_id",    :null => false
     t.string   "semester",     :null => false
@@ -299,6 +311,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.integer "instructor_id"
     t.integer "klass_id"
   end
+
+  add_index "klasses_tas", ["instructor_id", "klass_id"], :name => "index_klasses_tas_on_instructor_id_and_klass_id", :unique => true
 
   create_table "locations", :force => true do |t|
     t.string   "name"
@@ -403,10 +417,14 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.datetime "updated_at"
   end
 
+  add_index "slots", ["time"], :name => "index_slots_on_time"
+
   create_table "slots_tutors", :id => false, :force => true do |t|
     t.integer "slot_id"
     t.integer "tutor_id"
   end
+
+  add_index "slots_tutors", ["slot_id", "tutor_id"], :name => "index_slots_tutors_on_slot_id_and_tutor_id", :unique => true
 
   create_table "suggestions", :force => true do |t|
     t.integer  "person_id"
@@ -426,6 +444,8 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.integer "order"
   end
 
+  add_index "survey_answers", ["klass_id"], :name => "index_survey_answers_on_klass_id"
+
   create_table "survey_questions", :force => true do |t|
     t.string  "text",                         :null => false
     t.boolean "important", :default => false
@@ -441,5 +461,7 @@ ActiveRecord::Schema.define(:version => 20110223073849) do
     t.datetime "updated_at"
     t.integer  "adjacency",  :default => 0
   end
+
+  add_index "tutors", ["person_id"], :name => "index_tutors_on_person_id"
 
 end
