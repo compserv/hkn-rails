@@ -46,7 +46,7 @@ class EventsController < ApplicationController
   #Controller action for main confirmation page that links to each event confirmation page
   def vp_confirm
     @group = params[:group] || "candidates"
-    types = ["Mandatory for Candidates", "Big Fun", "Fun", "Community Service"]
+    types = ["Mandatory for Candidates", "Big Fun", "Fun", "Service"]
 
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
