@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110328201821) do
+ActiveRecord::Schema.define(:version => 20110330055327) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -288,12 +288,13 @@ ActiveRecord::Schema.define(:version => 20110328201821) do
     t.string   "first_name"
   end
 
-  create_table "instructors_klasses", :id => false, :force => true do |t|
-    t.integer "instructor_id"
-    t.integer "klass_id"
+  create_table "instructorships", :force => true do |t|
+    t.integer  "klass_id"
+    t.integer  "instructor_id"
+    t.boolean  "ta",            :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "instructors_klasses", ["instructor_id", "klass_id"], :name => "index_instructors_klasses_on_instructor_id_and_klass_id", :unique => true
 
   create_table "klasses", :force => true do |t|
     t.integer  "course_id",    :null => false
@@ -306,13 +307,6 @@ ActiveRecord::Schema.define(:version => 20110328201821) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "klasses_tas", :id => false, :force => true do |t|
-    t.integer "instructor_id"
-    t.integer "klass_id"
-  end
-
-  add_index "klasses_tas", ["instructor_id", "klass_id"], :name => "index_klasses_tas_on_instructor_id_and_klass_id", :unique => true
 
   create_table "locations", :force => true do |t|
     t.string   "name"
