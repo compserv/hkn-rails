@@ -16,9 +16,9 @@ class Klass < ActiveRecord::Base
   belongs_to :course
   has_one :coursesurvey, :dependent => :destroy
   has_many :survey_answers, :dependent => :destroy
-  has_and_belongs_to_many :instructors
-  # tas = TAs
-  has_and_belongs_to_many :tas, { :class_name => "Instructor", :join_table => "klasses_tas" }
+  has_many :instructorships
+  has_many :instructors, :through => :instructorships, :conditions => {:instructorships => {:ta => false}}
+  has_many :tas,         :through => :instructorships, :conditions => {:instructorships => {:ta => true }}, :source => :instructor
   has_many :exams, :dependent => :destroy
 
   scope :current_semester, lambda{ joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section') }

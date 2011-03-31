@@ -3,13 +3,12 @@ class SurveyAnswer < ActiveRecord::Base
   # === List of columns ===
   #   id                 : integer 
   #   survey_question_id : integer 
-  #   klass_id           : integer 
-  #   instructor_id      : integer 
   #   frequencies        : string 
   #   mean               : float 
   #   deviation          : float 
   #   median             : float 
   #   order              : integer 
+  #   instructorship_id  : integer 
   # =======================
 
   include CoursesurveysHelper
@@ -18,8 +17,9 @@ class SurveyAnswer < ActiveRecord::Base
   belongs_to :instructor
   belongs_to :survey_question
 
-  validates_presence_of :klass
-  validates_presence_of :instructor
+#  validates_presence_of :klass
+#  validates_presence_of :instructor
+  validates_presence_of :instructorship
   validates_presence_of :survey_question
 
   def SurveyAnswer.find_by_instructor_klass(instructor, klass, opts = {})
@@ -72,12 +72,12 @@ class SurveyAnswer < ActiveRecord::Base
   end #recompute_stats!
   
   def confidence_interval
-    k = "survey_answer/#{self.id}/confidence_interval"
-    v = Rails.cache.read(k)
-    return v if v
+#    k = "survey_answer/#{self.id}/confidence_interval"
+#    v = Rails.cache.read(k)
+#    return v if v
     v = 1.96*self.deviation/Math.sqrt(ActiveSupport::JSON.decode(frequencies).values.reduce{|x,y| x.to_i+y.to_i})
     v = 0 if v.to_f.nan? || v.to_f.infinite?
-    Rails.cache.write(k, v)
-    v
+#    Rails.cache.write(k, v)
+#    v
   end
 end

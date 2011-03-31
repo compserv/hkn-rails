@@ -17,8 +17,9 @@ class Instructor < ActiveRecord::Base
   # =======================
 
   has_many :coursesurveys
-  has_and_belongs_to_many :klasses, { :order => "semester DESC" }
-  has_and_belongs_to_many :tad_klasses, { :class_name => "Klass", :join_table => "klasses_tas" }
+  has_many :instructorships
+  has_many :klasses,     :through => :instructorships, :conditions => {:instructorships => {:ta => false}}
+  has_many :tad_klasses, :through => :instructorships, :conditions => {:instructorships => {:ta => true }}, :source => :instructor
 
   # sunspot
   searchable do

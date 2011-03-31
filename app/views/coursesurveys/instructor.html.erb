@@ -98,7 +98,7 @@
         <%= rating_bar(worthwhileness.mean/worthwhileness.survey_question.max.to_f) %>
       </td>
       <td>
-      <%= raw(klass.instructors.where("id!=#{@instructor.id}").collect do |instructor|
+      <%= raw( (klass.instructors - [@instructor]).collect do |instructor|
             link_to(instructor.full_name, surveys_instructor_path(instructor))
           end .join(", "))
        %>
