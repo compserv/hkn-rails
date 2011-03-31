@@ -7,7 +7,7 @@ class DeptTourRequest < ActiveRecord::Base
   #   submitted  : datetime 
   #   contact    : string 
   #   phone      : string 
-  #   comments   : string 
+  #   comments   : text 
   #   created_at : datetime 
   #   updated_at : datetime 
   #   responded  : boolean 
