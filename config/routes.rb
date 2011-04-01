@@ -10,6 +10,7 @@ HknRails::Application.routes.draw do
   
   namespace :admin do
     scope "general", :as => "general" do
+      match "super_page" => "admin#super_page"
       match "confirm_challenges" => "admin#confirm_challenges"
       match "confirm_challenge/:id" => "admin#confirm_challenge"
       match "reject_challenge/:id" => "admin#reject_challenge"

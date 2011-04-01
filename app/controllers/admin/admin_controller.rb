@@ -1,7 +1,31 @@
 class Admin::AdminController < ApplicationController
   #before_filter :authorize_officers, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
   before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
+
+  def super_page
+	@candidates = Candidate.all
+	@candidates.map! { |cand|
+	    calculate_status(cand)    
+	}
+
+	puts @candidates
+  end
   
+  def calculate_status(cand)
+	puts cand
+	done = Hash.new(false)
+	reqs = cand.requirements_status
+        done["candidate"] = cand.person.full_name
+	done["events"] = reqs[:status]
+	done["challenges"] = cand.challenges.select {|c| c.status }.length
+	done["resume"] = cand.person.resumes.length
+	done["quiz"] = cand.quiz_responses.length
+	done["course_surveys"] = false
+	
+	puts done.to_s
+	return done
+  end 
+
   def candidate_announcements
     @announcements = Announcement.order("created_at desc")
     render "admin/candidate_announcements"
