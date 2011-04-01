@@ -16,6 +16,7 @@ class Admin::AdminController < ApplicationController
 	done = Hash.new(false)
 
 	if cand.person_id == nil
+		done["events"] = []
 		return done
 	end
 	reqs = cand.requirements_status
