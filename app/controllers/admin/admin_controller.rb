@@ -14,6 +14,10 @@ class Admin::AdminController < ApplicationController
   def calculate_status(cand)
 	puts cand
 	done = Hash.new(false)
+
+	if cand.person_id == nil
+		return done
+	end
 	reqs = cand.requirements_status
         done["candidate"] = cand.person.full_name
 	done["events"] = reqs[:status]
