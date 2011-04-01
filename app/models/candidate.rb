@@ -35,6 +35,21 @@ class Candidate < ActiveRecord::Base
     3
   end
 
+  def requirements_count
+    rsvps = self.person.rsvps
+    done = Hash.new(0)
+    done["Mandatory for Candidates"] = 0
+    done["Fun"] = 0
+    done["Big Fun"] = 0
+    done["Service"] = 0
+
+    for rsvp in rsvps #Record finished requirements
+      type = rsvp.event.event_type.name
+      done[type] = done[type] + 1 if rsvp.confirmed == "t"
+    end
+    return done
+  end 
+
   def requirements_status
     rsvps = self.person.rsvps
     sorted_rsvps = Hash.new

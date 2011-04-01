@@ -1,13 +1,14 @@
 <h1>Candidate Super Page!</h1>
 
 <% for cand in @candidates %>
+	<% if cand["candidate"] != false %>
 	<div class="candidate">
 		<%= cand["candidate"] %>
 		<ul>
 			<li>Events: 
 				<ul>
-					<% for event in cand["events"] %>
-						<li><%= event.to_s %></li>
+					<% cand["events"].each_pair do |k,v| %>
+						<li><%= k.to_s %> - <%= v.to_s %></li>
 					<% end %>
 				</ul>
 			</li>
@@ -16,5 +17,6 @@
 			<li>Quiz: <%= cand["quiz"] %></li>
 		</ul>
 	</div>
+	<% end %>
 <% end %>
 

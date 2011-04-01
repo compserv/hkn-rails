@@ -19,9 +19,12 @@ class Admin::AdminController < ApplicationController
 		done["events"] = []
 		return done
 	end
-	reqs = cand.requirements_status
         done["candidate"] = cand.person.full_name
-	done["events"] = reqs[:status]
+	done["events"] = cand.requirements_count 
+
+	puts "REQ COUNT"
+	puts cand.requirements_count
+	puts "=="
 	done["challenges"] = cand.challenges.select {|c| c.status }.length
 	done["resume"] = cand.person.resumes.length
 	done["quiz"] = cand.quiz_responses.length
