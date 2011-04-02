@@ -10,6 +10,24 @@
         [@grad,      'Graduate'      ]   ].each do |courses, course_type|
   -%>
     <tr><th><%= course_type %></th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
-      <%= render :partial => 'department_row', :locals => {:courses => courses} %>
+
+    <%- courses.each do |c| -%>
+      <%# Course name %>
+      <td><%= link_to "#{c[:course].course_abbr} #{c[:course].name}",
+                      coursesurveys_course_path(c[:course].dept_abbr, c[:course].full_course_number)
+           %></td>
+
+      <%# Instructors %>
+      <td><%= raw c[:instructors].collect {|i| link_to i.last_name, surveys_instructor_path(i)} .join(', ') %></td>
+
+      <%# Rating %>
+      <td><%= rating_and_bar c[:mean], @prof_eff_q.max %></td>
+
+      <%# Latest klass %>
+      <td><%= link_to c[:klass].proper_semester, surveys_klass_path(c[:klass]) %></td>
+
+    </tr>
+    <%- end -%>
+
   <%- end -%>
 </table>

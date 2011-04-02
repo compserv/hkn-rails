@@ -109,6 +109,10 @@ module ActiveSupport
 end
 
 class Array
+#  def average
+#    self.sum.to_f / self.count.to_f
+#  end
+
   def to_ul(tag='ul')
     # Converts a nested array to <ul>
     ["<#{tag}>",

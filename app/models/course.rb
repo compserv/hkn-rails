@@ -19,7 +19,9 @@ class Course < ActiveRecord::Base
   has_many :tutors, :through => :course_preferences, :uniq => true
   has_many :klasses, :order => "semester DESC, section DESC", :dependent => :destroy
   has_many :coursesurveys, :through => :klasses
-  has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
+  #has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
+  has_many :instructorships, :through => :klasses
+                  
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
@@ -51,7 +53,19 @@ class Course < ActiveRecord::Base
   # course_number refers to just the numbers, e.g. the 61 in 61A
   # suffix refers to all letters that appear after the numbers, e.g. the A in 61A, the M in 145M, the AC in E130AC
   # This is DIFFERENT from the old Django site's definitions
-  
+
+  def instructors
+    Instructor.find self.klasses.collect(&:instructor_ids).flatten.uniq
+  end
+
+  def average_rating
+    # BE CAREFUL, THIS IS KIND OF EXPENSIVE
+    SurveyAnswer.
+      where( :survey_question_id => SurveyQuestion.find_by_keyword(:prof_eff),
+             :id => self.instructorships.collect(&:survey_answer_ids) ).
+      average(:mean)
+  end
+
   def invalid?
     # Some courses are invalid, and shouldn't be listed.
     !!(name =~ /INVALID/)

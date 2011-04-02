@@ -78,20 +78,22 @@
       <th>Teaching Effectiveness</th>
       <th>How worthwhile was this course?</th>
     </tr>
-  <%- @results.each do |klass, instructor, effectiveness_mean, worthwhileness_mean| -%>
+  <%- @results.each do |result|
+      klass, instructors, effectiveness_mean, worthwhileness_mean = result[:klass], result[:instructors], result[:effectiveness][:score], result[:worthwhile][:score]
+      effective_max, worthwhile_max = result[:effectiveness][:max], result[:worthwhile][:max]
+  -%>
     <tr>
       <td>
         <span class="semester"><%= link_to klass.proper_semester, surveys_klass_path(klass) %></span>
       </td>
       <td>
-        <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+        <%= raw instructors.collect{|i| link_to i.full_name, surveys_instructor_path(i)}.join(', ') %>
       </td>
-      <td>
-       <%= rating_and_bar(effectiveness_mean, @effective_max) %>
-      </td>
-      <td>
-        <%= rating_and_bar(worthwhileness_mean, @worthwhile_max) %>
-      </td>
+      <%- [ :effectiveness, :worthwhile ].each do |qname| -%>
+        <td>
+          <%= rating_and_bar result[qname][:score], @overall[qname][:max] %>
+        </td>
+      <%- end -%>
     </tr>
   <%- end -%>
     <tr>
@@ -101,12 +103,11 @@
     </tr>
     <tr>
       <td colspan="2"></td>
-      <td>
-       <%= rating_and_bar(@total_effectiveness, @effective_max) %>
-      </td>
-      <td>
-       <%= rating_and_bar(@total_worthwhileness, @worthwhile_max) %>
-      </td>
+      <%- [:effectiveness, :worthwhile].each do |qname| -%>
+        <td>
+          <%= rating_and_bar @overall[qname][:score], @overall[qname][:max] %>
+        </td>
+      <%- end -%>
     </tr>
   </table>
 </div>

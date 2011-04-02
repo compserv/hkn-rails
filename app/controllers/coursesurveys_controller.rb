@@ -43,11 +43,13 @@ class CoursesurveysController < ApplicationController
     return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @department
 
     #Course.find(:all, :conditions => {:department_id => @department.id}, :order => 'course_number, prefix, suffix').each do |course|
-    Course.where(:department_id => @department.id).ordered.each do |course|
+    # includes(:klasses => {:instructorships => :instructor}).
+    Course.where(:department_id => @department.id).includes(:instructorships).ordered.each do |course|
       next if course.invalid?
 
       ratings = []
 
+      # Find only the most recent course, optionally with a lower bound on semester
       first_klass = course.klasses
       first_klass = first_klass.where(:semester => Property.make_semester(:year=>4.years.ago.year)..Property.make_semester) unless @full_list
       first_klass = first_klass.find(:first, :include => {:instructorships => :instructor} )
@@ -57,17 +59,22 @@ class CoursesurveysController < ApplicationController
 
       # Find the average, or silently fail if something is missing
       # TODO: silent is bad
-      next unless avg_rating = first_klass.survey_answers.average(:mean)
-      
-      #avg_rating.nil? ? next : avg_rating = avg_rating.to_f
+      #next unless avg_rating = course.survey_answers.collect(&:mean).average #.average(:mean)
+      next unless avg_rating = course.average_rating.to_f
 
+      # Generate row
       instructors = course.instructors.uniq[0..3]
-      tuple = [course, instructors, avg_rating, first_klass]
-       case course.course_number.to_i
-         when   0.. 99: @lower_div
-         when 100..199: @upper_div
-         else           @grad
-       end << tuple
+      result = { :course      => course,
+                 :instructors => instructors,
+                 :mean        => avg_rating,
+                 :klass       => first_klass  }
+
+      # Append course to correct list
+      case course.course_number.to_i
+        when   0.. 99: @lower_div
+        when 100..199: @upper_div
+        else           @grad
+      end << result
  end
 
   end
@@ -75,18 +82,46 @@ class CoursesurveysController < ApplicationController
   def course
     @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
 
-    if @course.nil? then
-      redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}")
-      return
-    end
+    # Try searching if no course was found
+    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @course
 
-    @course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}]) unless @course.nil?  # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
+    # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
+    @course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}])
+
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
-    @effective_max  = effective_q.max
-    @worthwhile_max = worthwhile_q.max
-    @total_effectiveness = 0
-    @total_worthwhileness = 0
+
+    @results = []
+    @overall = { :effectiveness  => {:max=>effective_q.max },
+                 :worthwhile     => {:max=>worthwhile_q.max}
+               }
+
+    @course.klasses.each do |klass|
+      result = { :klass         => klass,
+                 :instructors   => klass.instructors,
+                 :effectiveness => { },
+                 :worthwhile    => { }
+               }
+
+      # Some heavier computations
+      [ [:effectiveness, effective_q ],
+        [:worthwhile,    worthwhile_q]
+      ].each do |qname, q|
+        result[qname][:score] = klass.survey_answers.where(:survey_question_id => q.id).average(:mean)
+      end
+
+      @results << result
+    end # @course.klasses
+
+    [ :effectiveness, :worthwhile ].each do |qname|
+      @overall[qname][:score] = @results.collect{|r|r[qname][:score]}.sum / @results.size.to_f
+    end
+
+    puts "\n\n\n\n\n#{@results.inspect}\n\n#{@overall.inspect}\n\n\n"
+
+
+    ########################################
+if false
 
     if @course.blank?
       @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
@@ -127,6 +162,7 @@ class CoursesurveysController < ApplicationController
         @total_worthwhileness = worthwhile_sum/@results.size.to_f
       end
     end
+end # ASDF
   end
 
   def klass
