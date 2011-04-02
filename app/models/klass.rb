@@ -14,12 +14,17 @@ class Klass < ActiveRecord::Base
   # =======================
 
   belongs_to :course
-  has_one :coursesurvey, :dependent => :destroy
-  has_many :survey_answers, :dependent => :destroy
+  has_one  :coursesurvey, :dependent => :destroy
+  has_many :survey_answers, :through => :instructorships, :dependent => :destroy
   has_many :instructorships
   has_many :instructors, :through => :instructorships, :conditions => {:instructorships => {:ta => false}}
   has_many :tas,         :through => :instructorships, :conditions => {:instructorships => {:ta => true }}, :source => :instructor
   has_many :exams, :dependent => :destroy
+
+  validates_format_of       :semester, :with => /\d{5}/
+  validates_numericality_of :section
+  validates_presence_of     :course_id
+  validates_uniqueness_of   :section, :scope => [:semester, :course_id]
 
   scope :current_semester, lambda{ joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section') }
   

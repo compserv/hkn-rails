@@ -29,7 +29,8 @@ class AdaptSurveyAnswersToInstructorships < ActiveRecord::Migration
   end
 
   def self.down
-  raise
+  # TODO
+  raise "Sigh, im lazy. restore a backup"
     # Restore old columns
     add_column :survey_answers, "klass_id",      :integer
     add_column :survey_answers, "instructor_id", :integer

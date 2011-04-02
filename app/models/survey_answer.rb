@@ -13,20 +13,15 @@ class SurveyAnswer < ActiveRecord::Base
 
   include CoursesurveysHelper
   
-  belongs_to :klass
-  belongs_to :instructor
+  belongs_to :instructorship
   belongs_to :survey_question
 
-#  validates_presence_of :klass
-#  validates_presence_of :instructor
+  has_one :instructor, :through => :instructorship
+
   validates_presence_of :instructorship
   validates_presence_of :survey_question
 
-  def SurveyAnswer.find_by_instructor_klass(instructor, klass, opts = {})
-    conditions = opts.merge({ :instructor_id => instructor.id, :klass_id => klass.id })
-    SurveyAnswer.find(:all, :conditions => conditions )
-  end
-  
+ 
   def recompute_stats!
     f = decode_frequencies(self.frequencies)
 

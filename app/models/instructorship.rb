@@ -14,9 +14,10 @@ class Instructorship < ActiveRecord::Base
 
   has_many :survey_answers
 
-  validates_presence_of :klass
-  validates_presence_of :instructor
+  validates_presence_of :klass_id
+  validates_presence_of :instructor_id
+  validates_inclusion_of :ta, :in => [true, false]
 
   # Can't have multiple instructorships for same klass, and can't be both TA and instructor
-  validates_uniqueness_of :instructor, :scope => [:klass]
+  validates_uniqueness_of :instructor_id, :scope => [:klass_id]
 end

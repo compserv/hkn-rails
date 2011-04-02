@@ -35,26 +35,15 @@ class CoursesurveysController < ApplicationController
     @upper_div = []
     @grad      = []
     @prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
+
+    # Assume current semester
     if params[:full_list].blank?
       current_semester = (Time.now.year*10 + (Time.now.month/3)).to_s
       start_semester   = (4.years.ago.year*10 + (4.years.ago.month/3)).to_s
     end
 
-    #Course.find(:all, :conditions => { :department_id => @department.id }).each do |course|
-    #Course.find(:all, 
-    #            :select => "courses.*, s.effectiveness",
-    #            :joins => "INNER JOIN (SELECT course_id, AVG(survey_answers.mean) AS effectiveness, ARRAY_AGG(survey_answers.instructor_id) AS instructors FROM klasses, survey_answers WHERE klass_id = klasses.id AND survey_question_id = #{@prof_eff_q.id} GROUP BY course_id) AS s ON courses.id = s.course_id",
-    #            :conditions => { :department_id => @department.id },
-    #            :order => "courses.course_number, courses.suffix"
-    #           ).each do |course|
-    #  if course.course_number.to_i < 100
-    #    @lower_div << course
-    #  elsif course.course_number.to_i < 200
-    #    @upper_div << course
-    #  else
-    #    @grad << course
-    #  end
-    #end
+    # Error checking
+    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @department;
 
     Course.find(:all, :conditions => {:department_id => @department.id}, :order => 'course_number, prefix, suffix').each do |course|
       next if course.invalid?
@@ -68,7 +57,8 @@ class CoursesurveysController < ApplicationController
 
       next if first_klass.nil?   # Sometimes the latest klass is really old, and not included in these results
 
-      avg_rating = SurveyAnswer.average(:mean, :joins => 'INNER JOIN klasses ON klasses.id = klass_id', :conditions => ['survey_question_id = ? and klasses.course_id = ?', @prof_eff_q.id, course.id])
+      avg_rating = first_klass.survey_answers.average(:mean)
+      #avg_rating = SurveyAnswer.average(:mean, :joins => 'INNER JOIN klasses ON klasses.id = klass_id', :conditions => ['survey_question_id = ? and klasses.course_id = ?', @prof_eff_q.id, course.id])
       
       avg_rating.nil? ? next : avg_rating = avg_rating.to_f
 
@@ -91,7 +81,7 @@ class CoursesurveysController < ApplicationController
       return
     end
 
-    @course = Course.find(@course.id, :include => [:klasses => :instructors]) unless @course.nil?  # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
+    @course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}]) unless @course.nil?  # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
     @effective_max  = effective_q.max
