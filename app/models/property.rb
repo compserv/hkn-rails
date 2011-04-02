@@ -47,6 +47,30 @@ class Property < ActiveRecord::Base
       # end
     # end
 
+
+    # Makes a coded semester out of year and semester integers.
+    # year_and_semester is a hash accepting:
+    #   - year      : integer year of desired semester
+    #   - semester  : integer semester in [1,2,3]
+    #     -OR- month: integer month in [0..11]
+    #   Missing arguments default to valus taken from Time.now().
+    #
+    # With no arguments, calculates the current semester
+    def make_semester(year_and_semester={})
+      year     = year_and_semester.delete(:year)     || Time.now.year
+      semester = year_and_semester.delete(:semester) || 
+                 ( case (year_and_semester.delete(:month) || Time.now.month)
+                   when 0..4: 1
+                   when 5..6: 2
+                   else       3 end     )
+      "#{year}#{semester}"
+    end
+
+    # Convenience method
+    def current_semester
+      make_semester
+    end
+
     def set_property(variable, value)
       prop = get_or_create
       prop.send(variable+"=", value)

@@ -30,40 +30,39 @@ class CoursesurveysController < ApplicationController
   end
 
   def department
-    @department = Department.find_by_nice_abbr(params[:dept_abbr])
-    @lower_div = []
-    @upper_div = []
-    @grad      = []
-    @prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
+    params[:dept_abbr].downcase! if params[:dept_abbr]
 
-    # Assume current semester
-    if params[:full_list].blank?
-      current_semester = (Time.now.year*10 + (Time.now.month/3)).to_s
-      start_semester   = (4.years.ago.year*10 + (4.years.ago.month/3)).to_s
-    end
+    @department  = Department.find_by_nice_abbr(params[:dept_abbr])
+    @prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
+    @lower_div   = []
+    @upper_div   = []
+    @grad        = []
+    @full_list   = params[:full_list].present?
 
     # Error checking
-    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @department;
+    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @department
 
-    Course.find(:all, :conditions => {:department_id => @department.id}, :order => 'course_number, prefix, suffix').each do |course|
+    #Course.find(:all, :conditions => {:department_id => @department.id}, :order => 'course_number, prefix, suffix').each do |course|
+    Course.where(:department_id => @department.id).ordered.each do |course|
       next if course.invalid?
 
       ratings = []
-      sort_order = 'semester DESC, section DESC'
 
-      find_args = {:order => sort_order}
-      find_args[:conditions] = {:semester => start_semester.to_s..current_semester.to_s} if params[:full_list].blank?
-      first_klass = course.klasses.find(:first, find_args) #.find(:first, :conditions => conditions, :order => sort_order)
+      first_klass = course.klasses
+      first_klass = first_klass.where(:semester => Property.make_semester(:year=>4.years.ago.year)..Property.make_semester) unless @full_list
+      first_klass = first_klass.find(:first, :include => {:instructorships => :instructor} )
 
-      next if first_klass.nil?   # Sometimes the latest klass is really old, and not included in these results
+      # Sometimes the latest klass is really old, and not included in these results
+      next unless first_klass.present?
 
-      avg_rating = first_klass.survey_answers.average(:mean)
-      #avg_rating = SurveyAnswer.average(:mean, :joins => 'INNER JOIN klasses ON klasses.id = klass_id', :conditions => ['survey_question_id = ? and klasses.course_id = ?', @prof_eff_q.id, course.id])
+      # Find the average, or silently fail if something is missing
+      # TODO: silent is bad
+      next unless avg_rating = first_klass.survey_answers.average(:mean)
       
-      avg_rating.nil? ? next : avg_rating = avg_rating.to_f
+      #avg_rating.nil? ? next : avg_rating = avg_rating.to_f
 
       instructors = course.instructors.uniq[0..3]
-      tuple = [course, instructors, avg_rating, first_klass] #klasses.first]
+      tuple = [course, instructors, avg_rating, first_klass]
        case course.course_number.to_i
          when   0.. 99: @lower_div
          when 100..199: @upper_div

@@ -1,12 +1,15 @@
 <h1><%= @department.name %> Courses</h1>
 
-<%- if params[:full_list].blank? -%>
+<%- unless @full_list -%>
   This list contains only courses which have been taught within the past 4 years. See also <%= link_to "all courses", "?full_list=true" %>.
 <%- end -%>
 
 <table id="ratings" class="table">
-  <%- [ [@lower_div, 'Lower-Division'], [@upper_div, 'Upper-Division'], [@grad, 'Graduate'] ].each do |courses, course_type| -%>
+  <%- [ [@lower_div, 'Lower-Division'],
+        [@upper_div, 'Upper-Division'],
+        [@grad,      'Graduate'      ]   ].each do |courses, course_type|
+  -%>
     <tr><th><%= course_type %></th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
-    <%= render :partial => 'department_row', :locals => {:courses => courses} %>
+      <%= render :partial => 'department_row', :locals => {:courses => courses} %>
   <%- end -%>
 </table>
