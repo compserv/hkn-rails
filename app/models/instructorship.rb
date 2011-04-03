@@ -12,7 +12,7 @@ class Instructorship < ActiveRecord::Base
   belongs_to :klass
   belongs_to :instructor
 
-  has_many :survey_answers
+  has_many :survey_answers, :order => 'survey_answers.order'
 
   validates_presence_of :klass_id
   validates_presence_of :instructor_id

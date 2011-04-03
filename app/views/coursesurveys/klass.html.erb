@@ -1,21 +1,57 @@
 <h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
 
 <div id="instructorbox" class="infobox trans-bg">
-  <h3>Instructor<%= "s" if @klass.instructors.size > 1 %></h3>
+  <%- [ ['Instructor', @instructors], ['TA', @tas] ].each do |label, group| -%>
+  <h3><%= label.pluralize_for group.size %></h3>
   <ul>
-    <% @klass.instructors.each do |instructor| %>
-      <li><%= link_to instructor.full_name, surveys_instructor_path(instructor) %></li>
+    <% group.each do |result| %>
+      <li><%= link_to result[:instructor].full_name, surveys_instructor_path(result[:instructor]) %></li>
     <% end %>
   </ul>
-  <h3>TA<%= "s" if @klass.tas.size > 1 %></h3>
-  <ul>
-    <% @klass.tas.each do |instructor| %>
-      <li><%= link_to instructor.full_name, surveys_instructor_path(instructor) %></li>
-    <% end %>
-  </ul>
-  
+  <%- end -%>
+ 
   <%= render :partial => 'emailhkn' %>
 </div>
+
+
+<div id="klass-table">
+  <table id="ratings" class="table">
+    <%- [ [@instructors, 'Instructor'], [@tas, 'TA'] ].each do |results, title|
+          results.each do |result|
+          instructor, answers = result[:instructor], result[:answers]
+          private = answers.blank?
+    -%>
+    <%# Instructor name %>
+    <tr>
+      <th<%=raw " colspan=\"2\"" if private %>>
+        <%= title %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+      </th>
+      <%- unless private -%>
+        <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.sum %> respondents</th>
+      <%- end -%>
+    </tr>
+
+    <%# Survey answers %>
+    <%- if answers.blank? -%>
+      <tr>
+        <td colspan="2">This instructor's ratings are <%= link_to 'hidden', coursesurveys_ferpa_path %>.</td>
+      </tr>
+    <%- else -%>
+    <%- answers.each do |answer| -%>
+      <tr>
+        <%- t = [answer.survey_question.text]
+            t.unshift("<strong>").push("</strong>") if answer.survey_question.important -%>
+        <td><%=raw t.join %></td>
+        <td><%= rating_and_bar answer.mean, answer.survey_question.max, surveys_rating_path(answer), answer.survey_question.inverted %></td>
+      </tr>
+    <%- end end # answers -%>
+    <%- end end # instructors+tas -%>
+  </table>
+</div>
+
+
+
+<%- if false -%>
 
 <div id="klass-table">
   <table id="ratings" class="table">
@@ -52,3 +88,6 @@
   <%- end -%>
   </table>
 </div>
+
+
+<%- end -%>

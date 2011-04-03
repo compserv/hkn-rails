@@ -29,7 +29,7 @@ module CoursesurveysHelper
   def rating_and_bar(score, max, url=nil, inverted=nil)
     contents = "
     <span class=\"rating\">#{sprintf "%.1f", score}</span><span class=\"rating2\"> / #{max}</span>\n
-    #{rating_bar(score/max.to_f)}
+    #{rating_bar(score/max.to_f, url, inverted)}
     "
  
     content_tag(:span, contents.html_safe)

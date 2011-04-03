@@ -117,68 +117,23 @@ class CoursesurveysController < ApplicationController
       @overall[qname][:score] = @results.collect{|r|r[qname][:score]}.sum / @results.size.to_f
     end
 
-    puts "\n\n\n\n\n#{@results.inspect}\n\n#{@overall.inspect}\n\n\n"
-
-
-    ########################################
-if false
-
-    if @course.blank?
-      @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
-      render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
-    else
-      sort_order = "semester DESC, section DESC"
-      @results = []
-      effective_sum = 0.0
-      worthwhile_sum = 0.0
-      @course.klasses.order(sort_order).each do |klass|
-        klass.instructors.each do |instructor|
-          prof_eff, worthwhileness = [effective_q, worthwhile_q].collect { |q|
-            klass.survey_answers.find(:first, :conditions => {:instructor_id => instructor.id, :survey_question_id => q.id}, :select => 'mean' )
-          }
-         
-          # TODO: sometimes prof_eff or worthwhileness is missing... like if the imported data is incomplete
-          # Fail gracefully
-          if prof_eff.nil? or worthwhileness.nil? then
-            flash[:warning] = "Data on this page may be incomplete. We're currently in the process of adding more survey responses."
-            logger.warn "incomplete data. course=#{@course.id}, klass=#{klass.id}, instructor=#{instructor.id}, prof_eff=#{prof_eff.nil? ? 'nil':prof_eff.id}, ww=#{worthwhileness.nil? ? 'nil':worthwhileness.id}"
-            next
-          end
-            
-          @results << [
-            klass, 
-            instructor, 
-            prof_eff.mean,
-            worthwhileness.mean,
-          ]
-          
-          effective_sum  += prof_eff.mean
-          worthwhile_sum += worthwhileness.mean
-        end
-      end
-
-      unless @results.empty?
-        @total_effectiveness  = effective_sum/@results.size.to_f
-        @total_worthwhileness = worthwhile_sum/@results.size.to_f
-      end
-    end
-end # ASDF
   end
 
   def klass
     @klass = params_to_klass(params)
+
+    # Error checking
     if @klass.blank?
-      @errors = "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
-      render :text => "No class found for #{params[:dept_abbr]} #{params[:short_name]} in #{season} #{year}."
-      return
+       flash[:notice] = "No class found for #{params[:semester].gsub('_',' ')}."
+       return redirect_to coursesurveys_course_path(params[:dept_abbr], params[:short_name])
     end
 
-    #instructors = @klass.instructors + (params[:section].blank? ? @klass.all_sections.collect(&:tas).flatten : @klass.tas) 
-    instructors = @klass.instructors+@klass.tas
-    @results = instructors.collect do |instructor|
-      answers = instructor.private ? nil : @klass.survey_answers.find(:all, :conditions => {:instructor_id => instructor.id}, :order => '"order"')
-      raise "Nil answers for instructor #{instructor.inspect}" if answers.blank? && RAILS_ENV.eql?('development')
-      [instructor, answers]
+    @instructors, @tas = [], []
+
+    @klass.instructorships.each do |i|
+      (i.ta ? @tas : @instructors) << { :instructor => i.instructor,
+                                        :answers    => (i.instructor.private ?
+                                                        nil : i.survey_answers) }
     end
   end
 
@@ -510,29 +465,17 @@ end
       k = params_to_klass k
     end
     p = surveys_klass_path k
-    puts "\n\n\n\nparms=#{k.inspect}\nPATH = #{p}\n\n\n"
     p
   end
 
   def params_to_klass(parms)
-    @course = Course.find_by_short_name(parms[:dept_abbr], parms[:short_name])
-    if @course.blank?
-      @errors = "Couldn't find #{params[:dept_abbr]} #{params[:short_name]}"
-      render :text => "Could not find #{params[:dept_abbr]} #{params[:short_name]}"
-    end
+    return nil unless @course = Course.find_by_short_name(parms[:dept_abbr], parms[:short_name])
+    puts Klass.semester_code_from_s parms[:semester]
+    return nil unless sem = Klass.semester_code_from_s( parms[:semester] )
 
-    (year,season) = parms[:semester].match(/^([0-9]*)_([a-zA-Z]*)$/)[1..-1]
-    season_no = case season.downcase when "spring" then "1" when "summer" then "2" when "fall" then "3" else "" end
-    if year.blank? or season.blank?
-      @errors = "Semester #{parms[:semester]} not formatted correctly."
-      render :text => "Semester #{parms[:semester]} not formatted correctly."
-      return nil
-    end
-    semester = year+season_no
-
-    conditions = { :course_id => @course.id, :semester => semester }
-    conditions[:section] = parms[:section].to_i unless parms[:section].blank?
-    @klass = Klass.find(:first, :conditions => conditions, :order => "section ASC" )
+    @klass = Klass.where(:semester => sem, :course_id => @course.id)
+    @klass = @klass.where(:section => params[:section].to_i) if params[:section].present? && params[:section].is_int?
+    return @klass = @klass.order('section ASC').limit(1).first
   end
 
 end
