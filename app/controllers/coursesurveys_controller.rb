@@ -137,8 +137,51 @@ class CoursesurveysController < ApplicationController
     end
   end
 
+  def _instructors(cat)
+    # cat is in [:ta, :prof]
+    @category = cat
+    @eff_q    = SurveyQuestion.find_by_keyword "#{@category.to_s}_eff".to_sym
+
+    return redirect_to coursesurveys_path, :notice => "Invalid category" unless @category && @eff_q
+
+    @results = []
+
+    Instructor.where("instructors.id IN
+                      ( SELECT instructor_id
+                        FROM   instructorships
+                        INNER JOIN survey_answers
+                        ON     survey_answers.instructorship_id = instructorships.id
+                        WHERE  survey_answers.survey_question_id = #{@eff_q.id} )").
+               order(:last_name).
+               each do |i|
+
+
+#    SurveyAnswer.find(
+#    SurveyAnswer.select("survey_answers.id").
+#                 where(:survey_question_id => @eff_q.id).
+#                 joins("INNER JOIN instructorships ON instructorships.id = survey_answers.instructorship_id").
+#                 joins("INNER JOIN instructors     ON instructors.id     = instructorships.instructor_id").
+#                 order("instructors.last_name").
+#                 limit(20).collect(&:id)).each do |ans|
+    #SurveyAnswer.select(:survey_answers=>:id).where(:survey_question_id => @eff_q.id).joins(:instructorship).group("instructorships.instructor_id").limit(20).each do |ans|
+      # This gives one survey answer per instructor
+      @results << { :instructor => i,
+                    :courses    => i.courses,
+                    :rating     => i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean)
+                  }
+    end
+  end
+
   def instructors
-    @category   = (params[:category] == "tas") ? "Teaching Assistants" : "Instructors"
+    _instructors :prof
+  end
+
+  def tas
+    _instructors :ta
+  end
+
+  def instructorsZ
+    @category    = (params[:category] == "tas") ? "Teaching Assistants" : "Instructors"
     @eff_q       = SurveyQuestion.find_by_keyword((params[:category] == "tas") ? :ta_eff : :prof_eff)
 
     @results = []
@@ -176,6 +219,8 @@ class CoursesurveysController < ApplicationController
   end
 
   def instructor
+    return redirect_to coursesurveys_instructors_path unless params[:name]
+
     (last_name, first_name) = params[:name].split(',')
     @instructor = Instructor.find_by_name(first_name, last_name)
     if @instructor.nil? then

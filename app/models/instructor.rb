@@ -28,7 +28,11 @@ class Instructor < ActiveRecord::Base
   end
   # end sunspot
 
-  def courses(options={})
+  def courses
+    Course.where(:id => klasses.collect(&:course_id))
+  end
+
+  def coursesZZZZ(options={})
     courses = Course.find(:all, {
                  :select => "DISTINCT courses.*",
                  #:group =>  "courses.id, courses.course_number, klasses.semester",

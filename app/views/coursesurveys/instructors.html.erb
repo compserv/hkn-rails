@@ -1,9 +1,9 @@
-<h1><%= @category %></h1>
+<h1><%= {:ta=>"TAs", :instructor=>"Instructors"}[@category] %></h1>
 
 <table id="ratings" class="table">
   <tr><th><%= @category %></th><th>Recent Courses</th><th>Rating</th></tr>
-  <%- @results.each do |tuple| -%>
-    <%- (instructor, courses, rating) = tuple -%>
+  <%- @results.each do |result| -%>
+    <%- instructor, courses, rating = result[:instructor], result[:courses], result[:rating] -%>
   <tr>
     <td>
       <%= link_to instructor.full_name_r, surveys_instructor_path(instructor) %>
