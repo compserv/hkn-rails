@@ -139,35 +139,36 @@ class CoursesurveysController < ApplicationController
 
   def _instructors(cat)
     # cat is in [:ta, :prof]
-    @category = cat
+    @category = (cat==:ta ? :ta : :prof)
     @eff_q    = SurveyQuestion.find_by_keyword "#{@category.to_s}_eff".to_sym
 
     return redirect_to coursesurveys_path, :notice => "Invalid category" unless @category && @eff_q
 
     @results = []
 
-    Instructor.where("instructors.id IN
-                      ( SELECT instructor_id
-                        FROM   instructorships
-                        INNER JOIN survey_answers
-                        ON     survey_answers.instructorship_id = instructorships.id
-                        WHERE  survey_answers.survey_question_id = #{@eff_q.id} )").
-               order(:last_name).
-               each do |i|
 
+    klasstype = (@category == :ta ? :tad_klass : :klass)
+    is_ta     = (@category == :ta)
 
-#    SurveyAnswer.find(
-#    SurveyAnswer.select("survey_answers.id").
-#                 where(:survey_question_id => @eff_q.id).
-#                 joins("INNER JOIN instructorships ON instructorships.id = survey_answers.instructorship_id").
-#                 joins("INNER JOIN instructors     ON instructors.id     = instructorships.instructor_id").
-#                 order("instructors.last_name").
-#                 limit(20).collect(&:id)).each do |ans|
-    #SurveyAnswer.select(:survey_answers=>:id).where(:survey_question_id => @eff_q.id).joins(:instructorship).group("instructorships.instructor_id").limit(20).each do |ans|
-      # This gives one survey answer per instructor
+    # I know this is very convoluted, but it tries to pull as much data
+    # as possible from a single query, to avoid hammering the database.
+    Instructor.find(:all,
+               :conditions => { :id =>
+                     Instructorship.select(:instructor_id).
+                                    where(:id =>
+                                           SurveyAnswer.select(:instructorship_id).
+                                                        where (:survey_question_id => @eff_q.id).
+                                                        collect(&:instructorship_id),
+                                           :ta => is_ta
+                                          ).
+                                    collect(&:instructor_id)
+                    },
+               :include => {:instructorships => {:klass => :course}},
+               :order   => 'last_name, first_name'
+               ).each do |i|
       @results << { :instructor => i,
-                    :courses    => i.courses,
-                    :rating     => i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean)
+                    :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
+                    :rating     => (i.private ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
                   }
     end
   end
@@ -178,6 +179,7 @@ class CoursesurveysController < ApplicationController
 
   def tas
     _instructors :ta
+    render 'instructors'
   end
 
   def instructorsZ

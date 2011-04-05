@@ -1,7 +1,7 @@
-<h1><%= {:ta=>"TAs", :instructor=>"Instructors"}[@category] %></h1>
+<h1><%= {:ta=>"Teaching Assistants", :prof=>"Instructors"}[@category] %></h1>
 
 <table id="ratings" class="table">
-  <tr><th><%= @category %></th><th>Recent Courses</th><th>Rating</th></tr>
+  <tr><th>Name</th><th>Recent Courses</th><th>Rating</th></tr>
   <%- @results.each do |result| -%>
     <%- instructor, courses, rating = result[:instructor], result[:courses], result[:rating] -%>
   <tr>
@@ -9,13 +9,12 @@
       <%= link_to instructor.full_name_r, surveys_instructor_path(instructor) %>
     </td>
     <td>
-      <%- courses.each do |course_id| -%>
-        <%- course = Course.find(course_id) -%>
+      <%- courses.each do |course| -%>
         <%= link_to course.course_abbr, surveys_course_path(course) -%><%= ", " unless course == courses.last %>
       <%- end -%>
     </td>
     <td>
-      <%- if rating == "private" -%>
+      <%- unless rating.present? -%>
       [private]
       <%- else -%>
       <%= sprintf "%.1f", rating %> / <%= @eff_q.max.to_f %> 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110330192808) do
+ActiveRecord::Schema.define(:version => 20110405175829) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -296,6 +296,8 @@ ActiveRecord::Schema.define(:version => 20110330192808) do
     t.datetime "updated_at"
   end
 
+  add_index "instructorships", ["klass_id", "ta"], :name => "index_instructorships_on_klass_id_and_ta"
+
   create_table "klasses", :force => true do |t|
     t.integer  "course_id",    :null => false
     t.string   "semester",     :null => false
@@ -438,6 +440,7 @@ ActiveRecord::Schema.define(:version => 20110330192808) do
   end
 
   add_index "survey_answers", ["instructorship_id"], :name => "index_survey_answers_on_instructorship_id"
+  add_index "survey_answers", ["survey_question_id"], :name => "index_survey_answers_on_survey_question_id"
 
   create_table "survey_questions", :force => true do |t|
     t.string  "text",                         :null => false

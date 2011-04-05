@@ -28,8 +28,13 @@ class Instructor < ActiveRecord::Base
   end
   # end sunspot
 
-  def courses
-    Course.where(:id => klasses.collect(&:course_id))
+  def instructed_courses
+    klasses.collect(&:course)
+    #Course.find( klasses.collect(&:course_id) )
+  end
+  def tad_courses
+    tad_klasses.collect(&:course)
+    #Course.find( tad_klasses.collect(&:course_id) )
   end
 
   def coursesZZZZ(options={})
