@@ -34,7 +34,7 @@ SUCCESS_DIR = File.join(::Rails.root.to_s, 'public', 'examfiles')
 
 # Imports the exam at the given file path into the database. Also moves
 # successfully imported exams in the given directory, if specified.
-def importExam(file_path, success_dir=nil)
+def import_exam(file_path, success_dir=nil)
   basedir = File.dirname(file_path)
   filename = File.basename(file_path)
 
@@ -100,7 +100,7 @@ def importExam(file_path, success_dir=nil)
 end
 
 # Ensures the file is correctly formatted and of a supported file type.
-def isValidExamFile?(filename)
+def is_valid_exam_file?(filename)
   if not $filepattern.match(filename)
     puts "\tinvalid file name: #{filename} - ignoring"
     return false
@@ -117,7 +117,7 @@ end
 
 # Given a properly formatted file of a supported file type, makes the
 # filename lowercase and converts it to pdf. Returns the new file path.
-def convertFile(file_path)
+def convert_file(file_path)
   filename = File.basename(file_path)
   basedir = File.dirname(file_path)
 
@@ -137,7 +137,7 @@ def convertFile(file_path)
 end
 
 # Imports a directory of exam files. Moves files to 'dirname/successful'.
-def importExamDirectory(dirname, success_dir=nil)
+def import_exam_directory(dirname, success_dir=nil)
   puts "Importing exams from #{dirname}..."
   success_dir = File.join(dirname, 'successful') unless !success_dir.nil?
   puts "Successful imports will go into #{success_dir}"
@@ -182,12 +182,11 @@ elsif not File.exist?(file_or_dir = File.expand_path(ARGV[0]))
   abort "Could not find #{file_or_dir} - exiting."
 end
 
-
 puts "Creating output directory: #{SUCCESS_DIR}" unless File.exists?(SUCCESS_DIR)
 FileUtils.mkdir_p(SUCCESS_DIR)
 
 if File.file?(file_or_dir)
-  importExam(file_or_dir, SUCCESS_DIR)
+  import_exam(file_or_dir, SUCCESS_DIR)
 else	# directory
-  importExamDirectory(file_or_dir, SUCCESS_DIR)
+  import_exam_directory(file_or_dir, SUCCESS_DIR)
 end
