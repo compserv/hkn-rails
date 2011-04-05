@@ -29,12 +29,10 @@ class Instructor < ActiveRecord::Base
   # end sunspot
 
   def instructed_courses
-    klasses.collect(&:course)
-    #Course.find( klasses.collect(&:course_id) )
+    Course.where(:id => klasses.collect(&:course_id).uniq).ordered
   end
   def tad_courses
-    tad_klasses.collect(&:course)
-    #Course.find( tad_klasses.collect(&:course_id) )
+    Course.where(:id => tad_klasses.collect(&:course_id).uniq).ordered
   end
 
   def coursesZZZZ(options={})

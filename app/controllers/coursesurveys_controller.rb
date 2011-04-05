@@ -182,44 +182,6 @@ class CoursesurveysController < ApplicationController
     render 'instructors'
   end
 
-  def instructorsZ
-    @category    = (params[:category] == "tas") ? "Teaching Assistants" : "Instructors"
-    @eff_q       = SurveyQuestion.find_by_keyword((params[:category] == "tas") ? :ta_eff : :prof_eff)
-
-    @results = []
-    Instructor.order(:last_name).each do |instructor|
-      ratings = []
-      SurveyAnswer.find(:all, 
-                        :conditions => { :survey_question_id => @eff_q, :instructor_id => instructor.id }
-                       ).each do |answer|
-        ratings << answer.mean
-      end
-      if params[:category] == "tas"
-        courses = Course.find(:all,
-                   :select => "courses.id",
-                   :group =>  "courses.id",
-                   :conditions => "klasses_tas.instructor_id = #{instructor.id}",
-                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN klasses_tas ON klasses_tas.klass_id = klasses.id"
-                  )
-      else
-        courses = Course.find(:all,
-                   :select => "courses.id",
-                   :group =>  "courses.id",
-                   :conditions => "instructors_klasses.instructor_id = #{instructor.id}",
-                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
-                  )
-      end
-      unless ratings.empty?
-        if instructor.private
-          rating = "private"
-        else
-          rating = 1.0/ratings.size*ratings.reduce{|x,y| x+y}
-        end
-        @results << [instructor, courses, rating]
-      end
-    end
-  end
-
   def instructor
     return redirect_to coursesurveys_instructors_path unless params[:name]
 
