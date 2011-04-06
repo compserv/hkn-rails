@@ -87,12 +87,23 @@ def parse_course(course_text, i, department)
   count = i - initial_line
 
   (prefix, course_number, suffix) = full_course_number.scan(/^([A-Z]*)([0-9]*)([A-Z]*)$/).first
+
+  # Hack: CS 149 should not be listed, as it is already listed as EE 149
+  if course_number.to_i == 149 and department.nice_abbrs.include?('CS')
+    department = Department.find_by_nice_abbr('EE')
+  end
+
+  # Cross-listed courses have the 'C' prefix stripped off
+  if !prefix.nil? and prefix.upcase == 'C'
+    prefix = ''
+  end
+
   if course_number.nil?
     puts "Poorly formatted course number #{full_course_number}"
     return count
   end
   if Course.find( :first, :conditions => { :department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix } ).nil?
-    puts "Adding #{department.nice_abbrs.first} #{full_course_number}"
+    puts "Adding #{department.nice_abbrs.first} #{prefix}#{course_number}#{suffix}"
     a = Course.create(
       :course_number => course_number,
       :suffix => suffix,
