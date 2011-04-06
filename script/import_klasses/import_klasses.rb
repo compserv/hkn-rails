@@ -27,6 +27,12 @@ end
 # formatted semester.
 def import_klass(klass_dict, department, semester)
   prefix = klass_dict['course_prefix']
+
+  # Strip off 'C' prefix of cross-listed courses
+  if prefix == 'C'
+    prefix = ''
+  end
+
   number = klass_dict['course_number']
   suffix = klass_dict['course_suffix']
   section = klass_dict['section'].to_i
