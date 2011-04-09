@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110405224807) do
+ActiveRecord::Schema.define(:version => 20110409074401) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -152,7 +152,7 @@ ActiveRecord::Schema.define(:version => 20110405224807) do
   end
 
   create_table "coursesurveys", :force => true do |t|
-    t.integer  "max_surveyors"
+    t.integer  "max_surveyors",  :default => 3
     t.integer  "status",         :default => 0, :null => false
     t.datetime "scheduled_time"
     t.datetime "created_at"
