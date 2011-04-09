@@ -1,4 +1,4 @@
-<h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
+<h1><%= link_to @course.course_name + (@klass.has_other_sections? ? "-#{@klass.section}" : ""), surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
 
 <div id="instructorbox" class="infobox trans-bg">
   <h3>Instructor<%= "s" if @klass.instructors.size > 1 %></h3>
