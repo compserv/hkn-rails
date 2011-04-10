@@ -14,7 +14,7 @@
         <% end %>
       </tr>
 
-      <% @events.each do |event| %>
+      <% @events.reject {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}.each do |event| %>
         <tr>
           <td><%= event.start_time.strftime('%a %m/%d/%y %I:%M%p') %></td>
           <td><%= link_to event.name, event %></td>
