@@ -14,10 +14,22 @@
 
     <% if rsvp.confirmed == "t" %>
     <td>Confirmed</td>
-    <td><%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id) %></td>
+    <td>
+      <%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id, :group => @group) %> |
+      <%= link_to "Reject", reject_rsvp_path(rsvp.id, :group => @group) %>
+    </td>
+    <% elsif rsvp.confirmed == "r" %>
+    <td>Rejected</td>
+    <td>
+      <%= link_to "Confirm", confirm_rsvp_path(rsvp.id, :group => @group) %> |
+      <%= link_to "Unconfirm", unconfirm_rsvp_path(rsvp.id, :group => @group) %>
+    </td>
     <% else %>
     <td>Not Confirmed</td>
-    <td><%= link_to "Confirm", confirm_rsvp_path(rsvp.id, :group => @group) %></td>
+    <td>
+      <%= link_to "Confirm", confirm_rsvp_path(rsvp.id, :group => @group) %> |
+      <%= link_to "Reject", reject_rsvp_path(rsvp.id, :group => @group) %>
+    </td>
     <% end %>
   </tr>
   <% end %>

@@ -68,14 +68,15 @@ module SurveyData
               # REVELATION: currently, all TAs are globbed into a single section, and sections differentiate instructors.
               # FIXME: make default section nil, instead of 0.
               ### k[:section] = k[:section].blank? ? 0 : k[:section].to_i 
-              k[:section] = 0
+              k[:section] = 0 unless course.course_number % 100 == 94
+              k[:section] = k[:section].to_i
               k[:course_id] = course.id || 'OMGWTFBBQ'
               klass = Klass.find(:first, :conditions=>k) || Klass.new(k)
               klass.course = course
 
               # Instructor
               i[:title] = s.pop.to_s[1..-2]  # (prof) => prof
-              i[:private] = false if i[:title].eql? 'PROF'
+              i[:private] = true #false if i[:title] =~ /prof/i
               i[:title] = {'PROF'=>'Professor', 'TA'=>'Teaching Assistant'}[i[:title]]
               i[:last_name], i[:first_name] = s.join(' ').split(',').collect(&:strip).collect(&:titleize_with_dashes)
               instructor = Instructor.find(:first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]) || Instructor.new(i)
@@ -135,8 +136,11 @@ module SurveyData
               case
               when row.first =~ /^[A-Z ]+$/:        # e.g. CLASSROOM PRESENTATION
               when row.first =~ /^\d\. (.+)/:    # question data
-                unless q = SurveyQuestion.find_by_text($1)
-                  results[:errors] << "Couldn't find survey question matching \"#{$1}\"... check spelling and perhaps do a find+replace to correct it."
+		qtext = $1.gsub(/[^a-zA-Z]/,' ')
+		q = SurveyQuestion.find_by_text(qtext) || SurveyQuestion.search {keywords qtext}.results.first
+		q = nil if !q || !SurveyQuestion.exists?(q.id)
+                unless q
+                  results[:errors] << "Couldn't find survey question matching \"#{qtext}\"... check spelling and perhaps do a find+replace to correct it."
                   state = :error
                   redo
                 end

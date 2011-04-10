@@ -1,0 +1,22 @@
+<h1>Candidate Super Page!</h1>
+
+<% for cand in @candidates %>
+	<% if cand["candidate"] != false %>
+	<div class="candidate">
+		<%= cand["candidate"] %>
+		<ul>
+			<li>Events: 
+				<ul>
+					<% cand["events"].each_pair do |k,v| %>
+						<li><%= k.to_s %> - <%= v.to_s %></li>
+					<% end %>
+				</ul>
+			</li>
+			<li>Challenges: <%= cand["challenges"] %></li>
+			<li>Resume: <%= cand["resumes"] %></li>
+			<li>Quiz: <%= cand["quiz"] %></li>
+		</ul>
+	</div>
+	<% end %>
+<% end %>
+

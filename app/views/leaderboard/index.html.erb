@@ -1,14 +1,22 @@
+<p> Scoring system: Big fun = 2 pts; Fun = 1 pt; Service = 3 pts
+</p>
 <table>
   <tr>
     <th>Rank</td>
     <th>Name</th>
-    <th>Fun Events</th>
+    <th>Score</th>
+    <th>Big Fun</th>
+    <th>Fun</th>
+    <th>Service</th>
   </tr>
-<% @people_array.each do |person, count, rank| %>
+<% @people_array.each do |entry| %>
   <tr>
-    <td><%= rank %></td>
-    <td><%= person.full_name %></td>
-    <td><%= count %></td>
+    <td><%= entry[:rank] %></td>
+    <td><%= entry[:person].full_name %></td>
+    <td><%= entry[:score] %></td>
+    <td><%= entry[:big_fun] %></td>
+    <td><%= entry[:fun] %></td>
+    <td><%= entry[:service] %></td>
   </tr>
 <% end %>
 </table>

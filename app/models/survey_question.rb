@@ -15,6 +15,10 @@ class SurveyQuestion < ActiveRecord::Base
   validates :text, :presence => true
   validates :max,  :presence => true
 
+  searchable do
+    text :text
+  end
+
   def keyword
     KEYWORDS[read_attribute(:keyword)]
   end

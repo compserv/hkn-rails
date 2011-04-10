@@ -10,9 +10,11 @@ HknRails::Application.routes.draw do
   
   namespace :admin do
     scope "general", :as => "general" do
+      match "super_page" => "admin#super_page"
       match "confirm_challenges" => "admin#confirm_challenges"
       match "confirm_challenge/:id" => "admin#confirm_challenge"
       match "reject_challenge/:id" => "admin#reject_challenge"
+      # Shouldn't this be done with resources?
       match "candidate_announcements" => "admin#candidate_announcements"
       match "create_announcement" => "admin#create_announcement"
       match "edit_announcement/:id" => "admin#edit_announcement"
@@ -20,12 +22,15 @@ HknRails::Application.routes.draw do
       match "delete_announcement/:id" => "admin#delete_announcement"
     end
 
-    scope "eligibilities" do
-      get   "/"         => "eligibilities#list",      :as => :eligibilities
-      post  "update"    => "eligibilities#update",    :as => :update_eligibilities
-      post  "upload"    => "eligibilities#upload",    :as => :upload_eligibilities
-      post  "reprocess" => "eligibilities#reprocess", :as => :reprocess_eligibilities
-      get   "candidates.csv" => "eligibilities#csv",       :as => :eligibilities_csv
+    scope "vp" do
+      match "/" => "vp#index", :as => :vp
+      scope "eligibilities" do
+        get   "/"         => "eligibilities#list",      :as => :eligibilities
+        post  "update"    => "eligibilities#update",    :as => :update_eligibilities
+        post  "upload"    => "eligibilities#upload",    :as => :upload_eligibilities
+        post  "reprocess" => "eligibilities#reprocess", :as => :reprocess_eligibilities
+        get   "candidates.csv" => "eligibilities#csv",       :as => :eligibilities_csv
+      end
     end
     
     scope "csec", :as => "csec" do
@@ -155,6 +160,7 @@ HknRails::Application.routes.draw do
     match "confirm_rsvps/event/:id" => "events#rsvps_confirm", :as => :confirm_event_rsvps
     match "confirm/:id" => "rsvps#confirm", :as => :confirm_rsvp
     match "unconfirm/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
+    match "reject/:id" => "rsvps#reject", :as => :reject_rsvp
   end
   
   resources :events do

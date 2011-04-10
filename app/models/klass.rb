@@ -7,7 +7,7 @@ class Klass < ActiveRecord::Base
   #   location     : string 
   #   time         : string 
   #   section      : integer 
-  #   notes        : string 
+  #   notes        : text 
   #   num_students : integer 
   #   created_at   : datetime 
   #   updated_at   : datetime 

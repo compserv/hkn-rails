@@ -152,7 +152,7 @@
   <%- if @instructor.private -%>
       <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in.", coursesurveys_ferpa_path %></p>
   <%- end -%>
-<h3>Classes TA'd</h3>
+<h3 class="center">Classes TA'd</h3>
 <table id="ratings" class="table">
   <tr>
     <th>Sections</th>

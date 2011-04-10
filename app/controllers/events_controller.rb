@@ -46,14 +46,14 @@ class EventsController < ApplicationController
   #Controller action for main confirmation page that links to each event confirmation page
   def vp_confirm
     @group = params[:group] || "candidates"
-    types = ["Mandatory for Candidates", "Big Fun", "Fun", "Community Service"]
+    types = ["Mandatory for Candidates", "Big Fun", "Fun", "Service"]
 
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
     #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
     # Sorry, this is kind of a bad query
-    @events = Event.past.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "rsvps.confirmed IS NULL AND groups.id = #{Group.find_by_name(@group).id}").uniq
+    @events = Event.past.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "(rsvps.confirmed IS NULL OR rsvps.confirmed = 'f') AND groups.id = #{Group.find_by_name(@group).id}").uniq
     @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
 
