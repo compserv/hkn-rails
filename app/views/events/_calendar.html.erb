@@ -1,7 +1,9 @@
 <div id="ajax-wrapper">
   <ul class="plain calendar" style="float:right">
     <% EventType.order(:name).each do |event_type| %>
-    <li class="event <%= event_type.classify %>"><%= event_type.name %></li>
+    <% if event_type != EventType.find_by_name("Exam") and event_type != EventType.find_by_name("Review Session") %>
+      <li class="event <%= event_type.classify %>"><%= event_type.name %></li>
+      <% end %>
     <% end %>
   </ul>
   <div class="clear"></div>
