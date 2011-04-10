@@ -67,6 +67,8 @@ def initialize_eventtypes
     {'name'=> 'Big Fun'},
     {'name'=> 'Service'},
     {'name'=> 'Industry'},
+    {'name'=> 'Exam'},
+    {'name'=> 'Review Session'},
     {'name'=> 'Miscellaneous'},
   ]
 

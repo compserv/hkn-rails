@@ -20,4 +20,6 @@
 .calendar .industry { background-color: #BBBB22; }
 .calendar .service { background-color: #8888FF; }
 .calendar .miscellaneous { background-color: #FF8000; }
+.calendar .exam { background-color: #FF6633; }
+.calendar .review-session { background-color: #3366FF; }
 .calendar li { display: inline; border-radius: 3px; padding: 5px; }

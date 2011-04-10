@@ -1,12 +1,15 @@
 <div class="submenu services_submenu">
   <ul class="plain">
-    <li><a href="/tutor/">Tutoring</a></li>
-    <li><%= link_to "Course Surveys", coursesurveys_path %></li>
+    <li><a href="/tutor/">Tutoring Hours</a></li>
+    <li><a href="/tutor/calendar">Review Sessions</a></li>
     <li><a href="/exams/">Exam Archive</a></li>
   </ul>
   <ul class="plain">
+    <li><%= link_to "Course Surveys", coursesurveys_path %></li>
     <li><%= link_to "Course Guide", "https://hkn.eecs.berkeley.edu/courseguide/index.php" %></li>
     <li><%= link_to "Department Tours", dept_tour_signup_path %>
+  </ul>
+  <ul class="plain">
     <li><%= link_to "More Services", "/service/comingsoon" || "/services/more" %></li>
   </ul>
 </div>
@@ -91,9 +94,9 @@
     <li><a href="/admin/tutor/signup_slots/" class="navigation_sublevel_item">Tutor Slot Signup</a></li>
     <li><a href="/admin/tutor/signup_courses/" class="navigation_sublevel_item">Tutor Course Signup</a></li>
     <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
-    <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
   </ul>
   <ul class="plain">
+    <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
     <% if @auth["tutoring"] %>
       <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
     <% end %>

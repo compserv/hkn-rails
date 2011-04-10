@@ -1,15 +1,15 @@
+<%= stylesheet_link_tag "events" %>
+
 <div id="ajax-wrapper">
   <ul class="plain calendar" style="float:right">
     <% EventType.order(:name).each do |event_type| %>
-    <% if event_type != EventType.find_by_name("Exam") and event_type != EventType.find_by_name("Review Session") %>
+    <% if event_type == EventType.find_by_name("Exam") or event_type == EventType.find_by_name("Review Session") %>
       <li class="event <%= event_type.classify %>"><%= event_type.name %></li>
       <% end %>
     <% end %>
   </ul>
   <div class="clear"></div>
-  
   <span class="title"><%= @start_date.strftime('%B %Y') %></span>
-
   <%= spinner %>
 
   <div class="ajax-controls">
