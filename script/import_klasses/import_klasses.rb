@@ -15,7 +15,7 @@ require File.expand_path('../../../config/environment', __FILE__)
 def get_instructor(first_initials, last_name)
     # TODO check by first initial
     instructors = Instructor.find_all_by_last_name(last_name)
-    instructors.reject do |instructor|
+    instructors.reject! do |instructor|
       instructor.first_name.empty? or instructor.first_name[0] != first_initials[0]
     end
     if !instructors.empty?
