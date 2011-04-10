@@ -32,6 +32,7 @@ module SurveyData
               current = {:course     => {},
                          :klass      => {},
                          :instructor => {},
+                         :instructorship => {},
                          :answers    => []
                         }            # Cross-state state
               state = :accept_klass
@@ -80,16 +81,10 @@ module SurveyData
               i[:last_name], i[:first_name] = s.join(' ').split(',').collect(&:strip).collect(&:titleize_with_dashes)
               instructor = Instructor.find(:first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]) || Instructor.new(i)
 
-              # Misc.
-              if instructor.instructor? then
-                klass.instructors |= [instructor]
-              elsif instructor.ta? then
-                klass.tas |= [instructor]
-              else
-                results[:errors] << "Unknown instructor type #{instructor.title}"
-                state = :error
-                redo
-              end
+              # Instructorship
+              instructorship = Instructorship.find_by_klass_id_and_instructor_id(klass.id, instructor.id) || Instructorship.new
+              instructorship.instructor, instructorship.klass = instructor, klass
+              instructorship.ta = (i[:title] =~ /prof/i)
 
               [:course, :klass, :instructor].each do |o|
                 m = binding.eval o.to_s
@@ -100,7 +95,7 @@ module SurveyData
               redo if state == :error
 
               result << "#{course.course_abbr}-#{klass.section}, #{klass.proper_semester}"
-              [:course, :klass, :instructor].each do |s|
+              [:course, :klass, :instructor, :instructorship].each do |s|
                 o = binding.eval s.to_s
                 pfix = (o.created_at.nil? ? '::NEW::' : 'existing')
                 result << ["#{pfix} #{s.to_s.capitalize}", [o.inspect]]
@@ -110,7 +105,7 @@ module SurveyData
               raise if [current[:course], current[:klass], current[:instructor]].any? {|o|o.nil?}
 
               if commit then
-                [klass, course, instructor].map(&:save)
+                [klass, course, instructor, instructorship].map(&:save)
               end
 
               state = :frequencies
@@ -142,8 +137,7 @@ module SurveyData
                 end
                 a = {}
                 a[:survey_question_id] = q.id
-                a[:klass_id] = current[:klass].id
-                a[:instructor_id] = current[:instructor].id
+                a[:instructorship_id] = current[:instructorship].id
                 row.shift # question text
                 a[:frequencies] = Hash[frequency_keys.zip frequency_keys.collect{row.shift.to_i}]
                 a[:frequencies] = ActiveSupport::JSON.encode a[:frequencies]
