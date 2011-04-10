@@ -25,7 +25,7 @@ class Instructorship < ActiveRecord::Base
   def average_rating(cat=:eff)
   # Cat = :eff | :ww
   #
-      survey_answers.where (:survey_question_id => SurveyQuestion.find_by_keyword (
+      survey_answers.where(:survey_question_id => SurveyQuestion.find_by_keyword(
           case cat
           when :eff: "#{ta ? 'ta' : 'prof'}_eff".to_sym
           when :ww:  :worthwhile

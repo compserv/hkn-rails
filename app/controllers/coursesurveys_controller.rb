@@ -52,7 +52,8 @@ class CoursesurveysController < ApplicationController
       # Find only the most recent course, optionally with a lower bound on semester
       first_klass = course.klasses
       first_klass = first_klass.where(:semester => Property.make_semester(:year=>4.years.ago.year)..Property.make_semester) unless @full_list
-      first_klass = first_klass.find(:first, :include => {:instructorships => :instructor} )
+      first_klass = first_klass.drop_while { |k| !k.survey_answers.exists? } .first
+      #first_klass = first_klass.find(:first, :include => {:instructorships => :instructor} )
 
       # Sometimes the latest klass is really old, and not included in these results
       next unless first_klass.present?
@@ -63,7 +64,8 @@ class CoursesurveysController < ApplicationController
       next unless avg_rating = course.average_rating.to_f
 
       # Generate row
-      instructors = course.instructors.uniq[0..3]
+      #instructors = course.instructors.uniq[0..3]
+      instructors = Instructor.find course.klasses.collect(&:instructor_ids).flatten.group_by{|i|i}.values.sort_by(&:length).reverse[0..3]
       result = { :course      => course,
                  :instructors => instructors,
                  :mean        => avg_rating,
@@ -97,6 +99,7 @@ class CoursesurveysController < ApplicationController
                }
 
     @course.klasses.each do |klass|
+      next unless klass.survey_answers.exists?
       result = { :klass         => klass,
                  :instructors   => klass.instructors,
                  :effectiveness => { },

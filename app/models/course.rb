@@ -74,6 +74,13 @@ class Course < ActiveRecord::Base
       average(:mean)
   end
 
+  def latest_klass
+  # Return the latest klass for which there is survey data
+      k = klasses.ordered
+      k.drop_while {|k| not k.survey_answers.exists?}
+      k.first
+  end
+
   def invalid?
     # Some courses are invalid, and shouldn't be listed.
     !!(name =~ /INVALID/)

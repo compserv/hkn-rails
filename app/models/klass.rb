@@ -27,6 +27,8 @@ class Klass < ActiveRecord::Base
   validates_uniqueness_of   :section, :scope => [:semester, :course_id]
 
   scope :current_semester, lambda{ joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section') }
+
+  scope :ordered, lambda { order("course_number DESC, prefix ASC, suffix ASC, semester DESC") }
   
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
   ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }
@@ -44,11 +46,11 @@ class Klass < ActiveRecord::Base
   end
 
   def all_sections
-    # This is slow, but whatever.. there shouldn't be too many klasses for a given semester
-    Klass.find(:all, :conditions => {:course_id => course_id, :semester => semester})
+    course.klasses.where(:semester => self.semester)
   end
+
   def has_other_sections?
-    not Klass.find(:first, :conditions => ['course_id = ? and semester = ? and id != ?', course_id, semester, id]).nil?
+    all_sections.where("id != ?", self.id).exists?
   end
 
   def proper_semester(options={})
