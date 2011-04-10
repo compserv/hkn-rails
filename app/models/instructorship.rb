@@ -22,8 +22,6 @@ class Instructorship < ActiveRecord::Base
   # Can't have multiple instructorships for same klass, and can't be both TA and instructor
   validates_uniqueness_of :instructor_id, :scope => [:klass_id]
 
-  attr_accessor :ta
-
   def average_rating(cat=:eff)
   # Cat = :eff | :ww
   #

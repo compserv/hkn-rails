@@ -111,7 +111,11 @@ class CoursesurveysController < ApplicationController
         [:worthwhile,    worthwhile_q]
       ].each do |qname, q|
         result[qname][:score] = klass.survey_answers.where(:survey_question_id => q.id).average(:mean)
-      end
+        if result[qname][:score].nil? then
+          logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
+          raise
+        end
+      end rescue next
 
       @results << result
     end # @course.klasses
@@ -160,7 +164,7 @@ class CoursesurveysController < ApplicationController
                      Instructorship.select(:instructor_id).
                                     where(:id =>
                                            SurveyAnswer.select(:instructorship_id).
-                                                        where (:survey_question_id => @eff_q.id).
+                                                        where(:survey_question_id => @eff_q.id).
                                                         collect(&:instructorship_id),
                                            :ta => is_ta
                                           ).
@@ -229,6 +233,7 @@ class CoursesurveysController < ApplicationController
                  i.survey_answers.find_by_survey_question_id(worthwhile_q.id),
                  i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
                 ]
+      next unless result.all?
       results << result
 
       t = (@totals[i.course.classification][i.course] ||= {:eff=>[], :ww=>[]})

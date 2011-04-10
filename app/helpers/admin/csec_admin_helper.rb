@@ -12,6 +12,8 @@ module SurveyData
 
       results[:info] << "Save = #{!!commit}" if commit
 
+      [:instructors, :klasses, :instructorships, :courses].each {|s| ActiveRecord::Base.connection.execute "ANALYZE #{s.to_s};"}
+
       begin
         ActiveRecord::Base.transaction do
           state = :init
@@ -63,7 +65,7 @@ module SurveyData
               end
 
               c.merge! Course.split_course_number(c.delete(:number))
-              course = Course.find(:first, :conditions=>c) || Course.new(c)
+              course = Course.find_by_prefix_and_course_number_and_suffix_and_department_id(c[:prefix], c[:course_number], c[:suffix], c[:department_id]) || Course.new(c)
 
               raise if k[:section].blank?
               # REVELATION: currently, all TAs are globbed into a single section, and sections differentiate instructors.
@@ -85,9 +87,10 @@ module SurveyData
               # Instructorship
               instructorship = Instructorship.find_by_klass_id_and_instructor_id(klass.id, instructor.id) || Instructorship.new
               instructorship.instructor, instructorship.klass = instructor, klass
-              instructorship.ta = (i[:title] =~ /prof/i)
+              instructorship.ta = !(i[:title] =~ /prof/i)
+              instructorship.klass = klass
 
-              [:course, :klass, :instructor].each do |o|
+              [:course, :klass, :instructor, :instructorship].each do |o|
                 m = binding.eval o.to_s
                 next if m && m.valid?
                 results[:errors] << "Invalid #{o.to_s}: #{m.inspect}"
@@ -103,7 +106,7 @@ module SurveyData
                 current[s] = o
               end
 
-              raise if [current[:course], current[:klass], current[:instructor]].any? {|o|o.nil?}
+              raise if [current[:course], current[:klass], current[:instructor], current[:instructorship]].any? {|o|o.nil?}
 
               if commit then
                 [klass, course, instructor, instructorship].map(&:save)
