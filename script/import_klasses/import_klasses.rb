@@ -23,6 +23,35 @@ def get_instructor(first_initials, last_name)
     end
 end
 
+def create_instructor()
+  # Get the instructor's name from user input
+  begin
+    print "Please enter the instructor's first name: "
+    STDOUT.flush
+    first_name = STDIN.gets.chomp
+  end while first_name.empty?
+  begin
+    print "Please enter the instructor's last name: "
+    STDOUT.flush
+    last_name = STDIN.gets.chomp
+  end while last_name.empty?
+  begin
+    print "Should the instructor's ratings be hidden? [y/n]: "
+    STDOUT.flush
+    hidden = STDIN.gets.chomp
+  end while !(hidden == 'y' or hidden == 'n')
+
+  if hidden == 'y'
+    ratings = 'private'
+  else
+    ratings = 'public'
+  end
+
+  puts "Creating instructor #{first_name} #{last_name} with #{ratings} ratings."
+  return Instructor.create( :first_name => first_name, :last_name => last_name, :private => (hidden == 'y'))
+
+end
+
 # imports a klass given a dictionary of klass data, a department, and a
 # formatted semester.
 def import_klass(klass_dict, department, semester)
@@ -57,42 +86,18 @@ def import_klass(klass_dict, department, semester)
 
     if instructor.nil?
       puts "WARN: No instructor named #{first_initials} #{last_name} found (teaching #{course_pretty_print}). Please enter the name of the instructor manually to create a new instructor in the database."
-
-      # Get the instructor's name from user input
-      begin
-        print "Please enter the instructor's first name: "
-        STDOUT.flush
-        first_name = STDIN.gets.chomp
-      end while first_name.empty?
-      begin
-        print "Please enter the instructor's last name: "
-        STDOUT.flush
-        last_name = STDIN.gets.chomp
-      end while last_name.empty?
-      begin
-        print "Should the instructor's ratings be hidden? [y/n]: "
-        STDOUT.flush
-        hidden = STDIN.gets.chomp
-      end while !(hidden == 'y' or hidden == 'n')
-
-      if hidden == 'y'
-        ratings = 'private'
-      else
-        ratings = 'public'
-      end
-
-      puts "Creating instructor #{first_name} #{last_name} with #{ratings} ratings."
-      instructor = Instructor.create( :first_name => first_name, :last_name => last_name, :private => (hidden == 'y'))
+      instructor = create_instructor()
     end
+    instructors << instructor
   end
 
-  # Check whether klass exists, note that the EE survey results for TAs may not not follow the same section number convention as the other results
+  # Check whether klass exists
   klass = Klass.find( :first, :conditions => { :course_id => course.id, :semester => semester, :section => section } )
   if klass.nil?
     klass = Klass.create( :course_id => course.id, :semester => semester, :section => section, :location => location, :time => time, :notes => notes )
     puts "No klass for #{course_pretty_print} #{klass.proper_semester} found. Creating new one."
   else
-    puts "Found klass #{course_pretty_print} #{klass.proper_semester}. Skipping."
+    puts "Found klass #{course_pretty_print} #{klass.proper_semester}. Updating."
   end
 
   instructors.each do |instructor|
