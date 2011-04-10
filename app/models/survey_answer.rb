@@ -17,11 +17,13 @@ class SurveyAnswer < ActiveRecord::Base
   belongs_to :survey_question
 
   has_one :instructor, :through => :instructorship
+  has_one :klass,      :through => :instructorship
+  has_one :course,     :through => :klass
 
   validates_presence_of :instructorship
   validates_presence_of :survey_question
 
- 
+
   def recompute_stats!
     f = decode_frequencies(self.frequencies)
 

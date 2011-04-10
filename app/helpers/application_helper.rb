@@ -109,10 +109,10 @@ module ActiveSupport
 end
 
 class Array
-## This borks activerecord's average
-#  def average
-#    self.sum.to_f / self.count.to_f
-#  end
+# This borks activerecord's average
+  def avg
+    self.sum.to_f / self.count.to_f
+  end
 
   def to_ul(tag='ul')
     # Converts a nested array to <ul>

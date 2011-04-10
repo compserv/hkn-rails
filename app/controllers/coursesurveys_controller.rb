@@ -185,112 +185,61 @@ class CoursesurveysController < ApplicationController
   def instructor
     return redirect_to coursesurveys_instructors_path unless params[:name]
 
-    (last_name, first_name) = params[:name].split(',')
-    @instructor = Instructor.find_by_name(first_name, last_name)
-    if @instructor.nil? then
-      redirect_to coursesurveys_search_path([first_name,last_name].join(' '))
-      return
-    end
-   
-    @can_edit = @current_user && authorize_coursesurveys
+    @instructor =
+        if params[:name].is_int? then
+          # ID
+          Instructor.find(params[:name])
+        else
+          # last,first
+          (last_name, first_name) = params[:name].split(',')
+          Instructor.find_by_name(first_name, last_name)
+        end
+
+    return redirect_to coursesurveys_search_path([first_name,last_name].join(' ')) unless @instructor
  
     # Don't do any heavy computation if cache exists
     return if fragment_exist? instructor_cache_path(@instructor)
 
-    @instructed_klasses = []
-    @tad_klasses = []
 
-    @undergrad_totals = {}
-    @grad_totals = {}
+    #-- Individual klasses --#
 
-    prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
+    @results = { :klasses     => [],
+                 :tad_klasses => []  }
+    @totals  = { :undergrad   => {},
+                 :grad        => {}  }
+
+    @can_edit = @current_user && authorize_coursesurveys
+ 
+    prof_eff_q   = SurveyQuestion.find_by_keyword(:prof_eff)
+    ta_eff_q     = SurveyQuestion.find_by_keyword(:ta_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
-    ta_eff_q  = SurveyQuestion.find_by_keyword(:ta_eff)
 
-    @instructor.klasses.each do |klass|
-      effectiveness  = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => prof_eff_q.id}).first
-      worthwhileness = SurveyAnswer.find_by_instructor_klass(@instructor, klass, {:survey_question_id => worthwhile_q.id}).first
+    # Build results of
+    #   [ klass, my effectiveness answer, my worthwhile answer, [other instructors] ]
+    # and totals
+    #
+    @instructor.instructorships.each do |i|
+      results = @results[i.ta ? :tad_klasses : :klasses]   # BUCKET SORT YEAHHHHHH
+      eff_q   = (i.ta ? ta_eff_q : prof_eff_q)
+      result  = [i.klass,
+                 i.survey_answers.find_by_survey_question_id(eff_q.id),
+                 i.survey_answers.find_by_survey_question_id(worthwhile_q.id),
+                 i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
+                ]
+      results << result
 
-      unless (effectiveness.blank? or worthwhileness.blank?)
-        @instructed_klasses << [
-          klass.id, 
-          @instructor.id, 
-          effectiveness.id,
-          worthwhileness.id,
-        ]
-
-        if klass.course.course_number.to_i < 200 
-          totals = @undergrad_totals
-        else
-          totals = @grad_totals
-        end
-
-        totals[klass.course.id] ||= []
-        totals[klass.course.id] << [effectiveness.mean, worthwhileness.mean]
-#        if totals.has_key? klass.course
-#          totals[klass.course.id] << [effectiveness.mean, worthwhileness.mean]
-#        else
-#          totals[klass.course.id] = [[effectiveness.mean, worthwhileness.mean]]
-#        end
-      end
+      t = (@totals[i.course.classification][i.course] ||= {:eff=>[], :ww=>[]})
+      t[:eff]     <<  result[1].mean
+      t[:ww]      <<  result[2].mean
+      t[:eff_max] ||= result[1].survey_question.max
+      t[:ww_max ] ||= result[2].survey_question.max
     end
 
-    # Aggregate totals
-    totals = [@undergrad_totals, @grad_totals]
-    total = [0,0] # will end up as [@undergrad_total, @grad_total]
-    [0,1].each do |i|
-      unless totals[i].empty?
-        totals[i].keys.each do |course_id|
-          scores = totals[i][course_id]
-          count = scores.size
-          total_score = scores.reduce{|tuple0, tuple1| [tuple0[0] + tuple1[0], tuple0[1] + tuple1[1]]}
-          totals[i][course_id] = total_score.map{|score| score/count}.push count
-        end
-        total[i] = totals[i].keys.reduce([0, 0, 0]) do |sum, new| 
-          (sum_eff, sum_wth, sum_count) = sum
-          (new_eff, new_wth, new_count) = totals[i][new]
-          [sum_eff + new_eff*new_count, sum_wth + new_wth*new_count, sum_count+new_count]
-        end
-        (eff, wth, count) = total[i]
-        total[i] = [eff/count, wth/count, count] unless count == 0
-      end
-    end
-    @undergrad_total, @grad_total = total
-
-
-    @instructor.tad_klasses.each do |klass_id|
-      effectiveness  = SurveyAnswer.find(:first, :conditions => {:instructor_id=>@instructor.id, :klass_id=>klass_id, :survey_question_id => ta_eff_q.id})
-      unless effectiveness.blank?
-        @tad_klasses << [
-          klass_id, 
-          @instructor.id, 
-          effectiveness.id,
-          nil                # no worthwhileness
-        ]
-      end
-    end
-    
-    # Unwrap from id to object, for the view
-    [@instructed_klasses, @tad_klasses].each do |a|
-      a.each do |k|
-        k[0] =        Klass.find(k[0])
-        k[1] =   Instructor.find(k[1])
-        k[2] = SurveyAnswer.find(k[2])
-        k[3] = SurveyAnswer.find(k[3]) unless k[3].blank?
-      end
-    end
-    
-    temp = {}
-    @undergrad_totals.each do |course_id,tuple|
-      temp[Course.find(course_id)] = tuple
-    end
-    @undergrad_totals = temp
-
-    temp = {}
-    @grad_totals.each do |course_id,tuple|
-      temp[Course.find(course_id)] = tuple
-    end
-    @grad_totals = temp
+    # Sort results by descending (semester, course)
+    # TODO: change this to use sort_by! when we upgrade to ruby 1.9
+    @results[:klasses].sort! {|a,b| b.first.course.to_s <=> a.first.course.to_s}
+    @results[:klasses].sort! {|a,b| b.first.course.course_number <=> a.first.course.course_number}
+    @results[:klasses].sort! {|a,b| b.first.semester <=> a.first.semester}
   end #instructor
 
   def editinstructor
@@ -314,6 +263,7 @@ class CoursesurveysController < ApplicationController
 
   def rating
     @answer = SurveyAnswer.find(params[:id])
+    return redirect_to coursesurveys_path, :notice => "Error: Couldn't find that rating." unless @answer
     @klass  = @answer.klass
     @course = @klass.course
     @instructor = @answer.instructor
@@ -406,63 +356,7 @@ class CoursesurveysController < ApplicationController
     redirect_to surveys_instructor_path(@results[:instructors].results.first) if @results[:instructors].results.length == 1 && @results[:courses].results.empty?
     redirect_to surveys_course_path(@results[:courses].results.first) if @results[:courses].results.length == 1 && @results[:instructors].results.empty?
 
-end
-
-##  def search_BY_SQL
-##    @prof_eff_q = SurveyQuestion.find_by_keyword(:prof_eff)
-##    @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
-##    @eff_q = @prof_eff_q
-##    query = params[:query] || ""
-##    query.upcase!
-##
-##    # If course abbr format:
-##    if %w[CS EE].include? query[0..1].upcase
-##      (dept_abbr, prefix, number, suffix) = params[:query].match(
-##        /((?:CS)|(?:EE))\s*([a-zA-Z]*)([0-9]*)([a-zA-Z]*)/)[1..-1]
-##      dept = Department.find_by_nice_abbr(dept_abbr)
-##      course = Course.find(:first, :conditions => {:department_id => dept.id, :prefix => prefix, :course_number => number, :suffix => suffix})
-##      redirect_to :action => :course, :dept_abbr => course.dept_abbr, :short_name => course.full_course_number
-##    end
-##
-##    # Else try finding instructor
-##    @results = []
-##    name_query = params[:query].gsub(/\*/, '%').downcase
-##    instructors = Instructor.find(:all, :conditions => ["(lower(last_name) LIKE ?) OR (lower(first_name) LIKE ?)", name_query, name_query]
-##                   )
-##    if instructors.size == 1
-##      instructor = instructors.first
-##      redirect_to :action => :instructor, :name => instructor.last_name+","+instructor.first_name
-##    end
-##
-##    instructors.each do |instructor|
-##      ratings = []
-##      SurveyAnswer.find(:all, 
-##                        :conditions => { :survey_question_id => [@prof_eff_q,@ta_eff_q], :instructor_id => instructor.id }
-##                       ).each do |answer|
-##        ratings << answer.mean
-##      end
-##      courses = Course.find(:all,
-##                   :select => "courses.id",
-##                   :group =>  "courses.id",
-##                   :conditions => "klasses_tas.instructor_id = #{instructor.id}",
-##                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN klasses_tas ON klasses_tas.klass_id = klasses.id"
-##                  ) + 
-##                  Course.find(:all,
-##                   :select => "courses.id",
-##                   :group =>  "courses.id",
-##                   :conditions => "instructors_klasses.instructor_id = #{instructor.id}",
-##                   :joins => "INNER JOIN klasses ON klasses.course_id = courses.id INNER JOIN instructors_klasses ON instructors_klasses.klass_id = klasses.id"
-##                  )
-##      unless ratings.empty?
-##        if instructor.private
-##          rating = "private"
-##        else
-##          rating = 1.0/ratings.size*ratings.reduce{|x,y| x+y}
-##        end
-##        @results << [instructor, courses, rating]
-##      end
-##    end
-##  end
+  end # search
 
   def show_searcharea
     @show_searcharea = true
@@ -479,7 +373,6 @@ end
 
   def params_to_klass(parms)
     return nil unless @course = Course.find_by_short_name(parms[:dept_abbr], parms[:short_name])
-    puts Klass.semester_code_from_s parms[:semester]
     return nil unless sem = Klass.semester_code_from_s( parms[:semester] )
 
     @klass = Klass.where(:semester => sem, :course_id => @course.id)

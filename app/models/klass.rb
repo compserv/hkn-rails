@@ -40,7 +40,7 @@ class Klass < ActiveRecord::Base
   end
 
   def to_s
-    "#{course.course_abbr} #{proper_semester}"
+    "#{course.course_abbr} #{proper_semester(:sections=>true)}"
   end
 
   def all_sections

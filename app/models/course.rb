@@ -58,6 +58,14 @@ class Course < ActiveRecord::Base
     Instructor.find self.klasses.collect(&:instructor_ids).flatten.uniq
   end
 
+  def classification
+  # is this an undergrad or grad class?
+      case course_number
+      when 0..199: :undergrad
+      else         :grad
+      end
+  end
+
   def average_rating
     # BE CAREFUL, THIS IS KIND OF EXPENSIVE
     SurveyAnswer.
