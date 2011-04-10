@@ -1,4 +1,4 @@
-<h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
+<h1><%= link_to @course.course_name + (@klass.has_other_sections? ? "-#{@klass.section}" : ""), surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
 
 <div id="instructorbox" class="infobox trans-bg">
   <%- [ ['Instructor', @instructors], ['TA', @tas] ].each do |label, group| -%>

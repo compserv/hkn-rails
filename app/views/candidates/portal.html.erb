@@ -200,7 +200,11 @@
     <h3>
       <span class="<%= "req_status " + (@done["course_surveys"] ? "status_done" : "status_notdone") %>"></span>
       Course Surveys</h3>
+<% if Property.get_or_create.coursesurveys_active %>
+    <%= link_to 'View Course Surveys', :coursesurvey_signup %>
+<% else %>
     [Coming Soon]
+<% end %>
     
     
   </div>

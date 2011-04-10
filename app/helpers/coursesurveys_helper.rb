@@ -50,9 +50,9 @@ module CoursesurveysHelper
 
   def surveys_klass_path(klass)
     if klass.section.blank? || klass.has_other_sections?
-      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
-    else
       coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester, klass.section
+    else
+      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
     end
   end
 

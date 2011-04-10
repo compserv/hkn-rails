@@ -4,6 +4,7 @@ class FixHabtmDuplicates < ActiveRecord::Migration
             [:badges_people, [:badge_id, :person_id]],
             [:groups_people, [:group_id, :person_id]],
             [:instructors_klasses, [:instructor_id, :klass_id]],
+            [:klasses_tas,         [:klass_id, :instructor_id]],
             [:course_preferences, [:course_id, :tutor_id]],
          ]
 
