@@ -48,9 +48,7 @@
 <%- end %>
 <%- if @auth['comms'] %>
     <li><%= link_to "New Event", new_event_path %></li>
-<%- end %>
-<%- if @current_user and @auth["vp"] -%>
-<li><%= link_to "Confirm RSVPs", vp_confirm_path %></li>
+    <li><%= link_to "Leaderboard", leaderboard_path %></li>
 <%- end %>
   </ul>
 </div>
@@ -94,7 +92,6 @@
     <li><a href="/admin/tutor/signup_courses/" class="navigation_sublevel_item">Tutor Course Signup</a></li>
     <li><a href="/admin/tutor/edit_schedule/" class="navigation_sublevel_item">View Tutor Signups</a></li>
     <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
-    <% if @auth["vp"] %><li><%= link_to "Confirm Candidate Accounts", people_list_path(:category => "candidates", :not_approved=> true) %></li><% end %>
   </ul>
   <ul class="plain">
     <% if @auth["tutoring"] %>
@@ -110,8 +107,7 @@
       <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel Admin</a></li>
     <% end %>
     <% if @auth["vp"] %>
-      <li><%= link_to "Eligibilities", admin_eligibilities_path, :class=>"navigation_sublevel_item" %></li>
-      <li><a href="/admin/general/candidate_announcements/" class="navigation_sublevel_item"> Cand Announcements</a></li>
+      <li><%= link_to "VP Admin", admin_vp_path, :class => "navigation_sublevel_item" %></li>
     <% end %>
   </ul>
 </div>

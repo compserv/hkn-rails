@@ -11,7 +11,8 @@ class DeptTourController < ApplicationController
       @errors[:recaptcha] = "Captcha validation failed" unless verify_recaptcha
       if @errors.empty?
         @messages << params[:date]
-        date = params[:date][:month] + "/" + params[:date][:day] + "/" + params[:date][:year]
+        date = "#{params[:date][:year]}-#{params[:date][:month]}-#{params[:date][:day]} #{params[:date][:hour]}:#{params[:date][:minute]}:#{params[:date][:second]}"
+
         mail = DeptTourMailer.dept_tour_email params[:name], date, params[:email],
           params[:phone], params[:comments]
         mail.deliver

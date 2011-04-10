@@ -6,6 +6,9 @@ class LeaderboardController < ApplicationController
     if Person.find_by_username("eunjian")
       @people << Person.find_by_username("eunjian")
     end
+    if Person.find_by_username("kylim")
+      @people << Person.find_by_username("kylim")
+    end
     @people_array = []
     @people.each do |person|
       # Makeshift data structure
