@@ -114,8 +114,7 @@
   </div>
   <div class="field">
     <%= f.label :event_type %>
-    <% types = EventType.find(:all, :conditions => ["name NOT IN (?)", ["Exam", "Review Session"]]) %>
-    <%= f.select :event_type_id, types.map{|x| [x.name, x.id]} %>
+    <%= f.select :event_type_id, EventType.all.map{|x| [x.name, x.id]} %>
   </div>
   <div class="field">
     <%= f.label :start_time %>
