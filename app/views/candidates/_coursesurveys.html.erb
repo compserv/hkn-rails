@@ -1,0 +1,34 @@
+<table>
+  <tr>
+    <th>Current # of Surveyors</th>
+    <th>Course Number</th>
+    <th>Section</th>
+    <th>Title</th>
+    <th>Instructor(s)</th>
+    <th>Times(s)</th>
+    <th>Location</th>
+    <th>Notes</th>
+    <th>Other Surveyors</th>
+  </tr>
+  <% @coursesurveys.each do |coursesurvey| %>
+    <tr>
+      <td><%= coursesurvey.surveyors.count %></td>
+      <td><%= coursesurvey.klass.course.course_abbr %></td>
+      <td><%= coursesurvey.klass.section %></td>
+      <td><%= coursesurvey.klass.course.name%></td>
+      <td>
+        <% coursesurvey.klass.instructors.each do |instructor| %>
+          <%= link_to instructor.full_name, surveys_instructor_path(instructor) %><%= "," if instructor != coursesurvey.klass.instructors.last %>
+        <% end%>
+      </td>
+      <td><%= coursesurvey.klass.time %></td>
+      <td><%= coursesurvey.klass.location %></td>
+      <td><%= coursesurvey.klass.notes %></td>
+      <td>
+        <% coursesurvey.surveyors.each do |surveyor| %>
+          <%= link_to surveyor.name, surveyor.email %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

@@ -202,6 +202,7 @@
       Course Surveys</h3>
 <% if Property.get_or_create.coursesurveys_active %>
     <%= link_to 'View Course Surveys', :coursesurvey_signup %>
+    <%= render :partial => "coursesurveys" %>
 <% else %>
     [Coming Soon]
 <% end %>
