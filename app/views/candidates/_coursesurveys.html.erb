@@ -26,7 +26,7 @@
       <td><%= coursesurvey.klass.notes %></td>
       <td>
         <% coursesurvey.surveyors.each do |surveyor| %>
-          <%= link_to surveyor.name, surveyor.email %>
+          <%= link_to surveyor.full_name, surveyor.email %>
         <% end %>
       </td>
     </tr>
