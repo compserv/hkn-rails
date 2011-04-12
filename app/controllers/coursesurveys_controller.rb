@@ -233,15 +233,17 @@ class CoursesurveysController < ApplicationController
                  i.survey_answers.find_by_survey_question_id(worthwhile_q.id),
                  i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
                 ]
-      next unless result.all?
+      #next unless result.all?
       results << result
 
       t = (@totals[i.course.classification][i.course] ||= {:eff=>[], :ww=>[]})
       t[:eff]     <<  result[1].mean
-      t[:ww]      <<  result[2].mean
+      t[:ww]      <<  (result[2] ? result[2].mean : nil)
       t[:eff_max] ||= result[1].survey_question.max
-      t[:ww_max ] ||= result[2].survey_question.max
+      t[:ww_max ] ||= (result[2] ? result[2].survey_question.max : nil)
     end
+
+    @totals.values.collect(&:values).flatten.each {|t| t[:ww].compact!}
 
     # Sort results by descending (semester, course)
     # TODO: change this to use sort_by! when we upgrade to ruby 1.9

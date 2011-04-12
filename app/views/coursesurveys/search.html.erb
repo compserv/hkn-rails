@@ -35,11 +35,13 @@
     <th>Recent Courses</th>
     <th>Rating</th>
   </tr>
-  <% @results[:instructors].results.each do |i| %>
-    <% next if i.courses.empty? # some classes don't have any data... %>
+  <% @results[:instructors].results.each do |i|
+       courses = (i.instructed_courses.limit(4)+i.tad_courses.limit(4))
+   %>
+    <% next if courses.empty? # some classes don't have any data... %>
     <tr>
       <td><%= link_to i.full_name_r, surveys_instructor_path(i) %></td>
-      <td><%= raw i.courses[0..3].collect {|c| link_to c.course_abbr, surveys_course_path(c)}.join(', ') %></td>
+      <td><%= raw courses[0..3].collect {|c| link_to c.course_abbr, surveys_course_path(c)}.join(', ') %></td>
       <td><%- if i.private -%>
         [private]
         <%- else rating = i.average_rating -%>

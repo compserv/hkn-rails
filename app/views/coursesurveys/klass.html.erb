@@ -19,7 +19,7 @@
     <%- [ [@instructors, 'Instructor'], [@tas, 'TA'] ].each do |results, title|
           results.each do |result|
           instructor, answers = result[:instructor], result[:answers]
-          private = answers.blank?
+          private = instructor.private || answers.blank?
     -%>
     <%# Instructor name %>
     <tr>
@@ -42,7 +42,7 @@
         <%- t = [answer.survey_question.text]
             t.unshift("<strong>").push("</strong>") if answer.survey_question.important -%>
         <td><%=raw t.join %></td>
-        <td><%= rating_and_bar answer.mean, answer.survey_question.max, surveys_rating_path(answer), answer.survey_question.inverted %></td>
+        <td><%= answer.mean == 0 ? 'N/A' : (rating_and_bar answer.mean, answer.survey_question.max, surveys_rating_path(answer), answer.survey_question.inverted) %></td>
       </tr>
     <%- end end # answers -%>
     <%- end end # instructors+tas -%>

@@ -5,7 +5,7 @@ module SurveyData
     ##
     # Import from CSV
     ##
-    def self.import(type, file, commit=false)
+    def self.import(type, file, commit=false, is_ta=nil)
       results = { :errors => [], :info => [] }
       result = []
       last_row = ["none", 0]
@@ -86,11 +86,11 @@ module SurveyData
 
               # Instructorship
               instructorship = Instructorship.find_by_klass_id_and_instructor_id(klass.id, instructor.id) || Instructorship.new
-              instructorship.instructor, instructorship.klass = instructor, klass
-              instructorship.ta = !(i[:title] =~ /prof/i)
-              instructorship.klass = klass
+              #instructorship.instructor, instructorship.klass = instructor, klass  # NOTE this doesn't work, idk why
+              instructorship.ta = (is_ta.nil? ? !(i[:title] =~ /prof/i) : is_ta)
+              #instructorship.klass = klass
 
-              [:course, :klass, :instructor, :instructorship].each do |o|
+              [:course, :klass, :instructor].each do |o|
                 m = binding.eval o.to_s
                 next if m && m.valid?
                 results[:errors] << "Invalid #{o.to_s}: #{m.inspect}"
@@ -106,10 +106,15 @@ module SurveyData
                 current[s] = o
               end
 
-              raise if [current[:course], current[:klass], current[:instructor], current[:instructorship]].any? {|o|o.nil?}
+              raise unless [current[:course], current[:klass], current[:instructor], current[:instructorship]].all?
 
               if commit then
-                [klass, course, instructor, instructorship].map(&:save)
+                [klass, course, instructor, instructorship].each do |o|
+                  instructorship.instructor, instructorship.klass = instructor, klass # wtf man
+                  next if o.save
+                  results[:errors] << "Failed to save #{o.inspect} because #{o.errors.inspect}"
+                  raise "save failed"
+                end
               end
 
               state = :frequencies
@@ -185,7 +190,7 @@ module SurveyData
         end # transaction
       rescue => e
         results[:errors] << "Error #{e.inspect} parsing near line #{last_row[1]}: #{last_row[0]}"
-        results[:errors] << ["Stack trace:", caller]
+        results[:errors] << ["Stack trace:", e.backtrace]
         #raise if RAILS_ENV.eql?('development')
       end
 

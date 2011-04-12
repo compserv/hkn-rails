@@ -31,6 +31,9 @@
     <br/>
     <%= label_tag :save, "Save", :for => :save %>
     <%= check_box_tag :save, "1", false, :disabled => !@allow_save, :onclick => "if(this.checked) this.checked=confirm(\"Are you sure? If so, click OK and re-select the file to be uploaded. Make sure compserv has made a backup recently before you do this.\\n\\nBtw, this could take a while. DO NOT resubmit/refresh until the page comes back to you. If an error occurs, first check to see if the data was imported (it probably wasn't), then go back to the upload form via the url, NOT with back/refresh.\");" %>
+    &nbsp;&nbsp;&nbsp;
+    <%= label_tag :ta, "TA?", :for => :ta %>
+    <%= check_box_tag :ta, "1", @ta, :disabled => @allow_save %>
   <%- end -%>
 </div>
 

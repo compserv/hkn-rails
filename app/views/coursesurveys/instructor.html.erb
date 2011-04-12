@@ -82,7 +82,7 @@
       [:tad_klasses, "TA'd"  ]
     ].each do |klasstype, label|
 
-    next if @results[klasstype].empty?
+    #next if @results[klasstype].empty?
 -%>
 <%- if @instructor.private -%>
     <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in", coursesurveys_ferpa_path %>.</p>
@@ -133,7 +133,7 @@
   <tr>
     <td><%= link_to course.to_s, surveys_course_path(course) %> (<%= stats[:eff].count %>)</td>
     <%- [:eff, :ww].each do |s| -%>
-    <td><%= rating_and_bar stats[s].avg, stats["#{s}_max".to_sym] %></td>
+    <td><%= rating_and_bar(stats[s].avg, stats["#{s}_max".to_sym]) if stats[s].any? %></td>
     <%- end -%>
     <td></td>
   </tr>
@@ -141,9 +141,10 @@
   <!-- <%= classification %> -->
   <tr>
     <td><strong><%= "#{classification}uate".capitalize %> Courses (<%= courses.values.collect{|v|v[:eff].count}.sum %>)</strong></td>
-    <%- [:eff,:ww].each do |s| -%>
-    <%- puts courses.inspect -%>
-    <td><%= rating_and_bar courses.values.collect{|v|v[s]}.flatten.avg, courses.values.first["#{s}_max".to_sym] %></td>
+    <%- [:eff,:ww].each do |s|
+          numz = courses.values.collect{|v|v[s]}.flatten
+    -%>
+    <td><%= rating_and_bar numz.avg, courses.values.first["#{s}_max".to_sym] unless courses.empty? || !numz.any? %></td>
     <%- end -%>
     <td></td>
   </tr>
