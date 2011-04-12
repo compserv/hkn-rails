@@ -15,7 +15,7 @@ require File.expand_path('../../../config/environment', __FILE__)
 def get_instructor(first_initials, last_name)
     # TODO check by first initial
     instructors = Instructor.find_all_by_last_name(last_name)
-    instructors.reject do |instructor|
+    instructors.reject! do |instructor|
       instructor.first_name.empty? or instructor.first_name[0] != first_initials[0]
     end
     if !instructors.empty?
@@ -100,8 +100,14 @@ def import_klass(klass_dict, department, semester)
     puts "Found klass #{course_pretty_print} #{klass.proper_semester}. Updating."
   end
 
-  instructors.each do |instructor|
-    klass.instructors << instructor unless klass.instructors.include? instructor
+  # Remove instructors from klass if not in import data
+  klass.instructors.each do |db_instructor|
+    klass.instructors.delete(db_instructor) unless instructors.include? db_instructor
+  end
+
+  # Add imported instructors to klass if they are not already there
+  instructors.each do |import_instructor|
+    klass.instructors << import_instructor unless klass.instructors.include? import_instructor
   end
 
   return klass.save
