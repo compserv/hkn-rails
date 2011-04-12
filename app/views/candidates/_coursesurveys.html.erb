@@ -1,3 +1,4 @@
+<% unless @coursesurveys.empty? %>
 <table>
   <tr>
     <th>Current # of Surveyors</th>
@@ -26,9 +27,11 @@
       <td><%= coursesurvey.klass.notes %></td>
       <td>
         <% coursesurvey.surveyors.each do |surveyor| %>
-          <%= link_to surveyor.full_name, surveyor.email %><%= ", " unless surveyor == coursesurvey.surveyors.last %>
+          <%= mail_to surveyor.email, surveyor.full_name %><%= ", " unless surveyor == coursesurvey.surveyors.last %>
         <% end %>
       </td>
     </tr>
   <% end %>
+
 </table>
+<% end %>
