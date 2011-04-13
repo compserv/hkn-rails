@@ -22,7 +22,7 @@ class Instructor < ActiveRecord::Base
   has_many :tad_klasses, :through => :instructorships, :conditions => {:instructorships => {:ta => true }}, :source => :klass
   has_many :survey_answers, :through => :instructorships
 
-  validates_presence_of :first_name
+  #validates_presence_of :first_name
   validates_presence_of :last_name
 
   # sunspot

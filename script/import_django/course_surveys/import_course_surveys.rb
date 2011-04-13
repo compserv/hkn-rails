@@ -113,6 +113,7 @@ class CourseSurveyImporter
 # Yes, these lines don't actually do anything, but looks like you have to
 # initialize things in initialize() to have any effect.
 @instructors
+  @roles
 @questions
 @klasses
 @seasons
@@ -127,7 +128,7 @@ class CourseSurveyImporter
 attr_accessor :options
 
 def initialize
-    @instructors, @questions, @klasses, @seasons, @courses, @departments, @answers = {}, {}, {}, {}, {}, {}, {}
+    @instructors, @roles, @questions, @klasses, @seasons, @courses, @departments, @answers = {}, {}, {}, {}, {}, {}, {}, {}
     @options = {}
 end
 
@@ -244,6 +245,7 @@ def load_instructors
     #
     return false if @options[:skip].include?(:instructors)
     instructor_map_cache_file = "instructors.cache"
+    role_map_cache_file       = "roles.cache"
     
     puts "Loading instructors.\n"
     
@@ -277,9 +279,13 @@ def load_instructors
             end
         end
 
+        # Store role for this instructor; there used to be multiple entries for same person for different roles
+        # Roles is a mapping from old id to role
+        @roles[i[:id]] = (i[:role] =~ /Professor/i) ? :professor : :ta
+
         raise "ERROR: load_instructors: Failed to save instructor:\n\n\t#{new_i.inspect}\n\n" unless new_i.save
         
-        puts "load_instructors: Created/updated #{new_i.first_name} #{new_i.last_name} (new id #{new_i.id})\n" if @options[:verbose]
+        puts "load_instructors: Created/updated #{new_i.first_name} #{new_i.last_name} (new id #{new_i.id}, role #{i[:role]}, ta #{@roles[i[:id]] == :ta})\n" if @options[:verbose]
         
         # Save reference to newly created object, mapped by old id
         @instructors[i[:id]] = new_i
@@ -287,6 +293,7 @@ def load_instructors
     
     # Write to cache map
     write_cache_hash(instructor_map_cache_file, @instructors)
+    #write_cache_hash(role_map_cache_file, @roles)
     
     puts "Done loading instructors.\n\n"
 end # load_instructors
@@ -470,7 +477,7 @@ def load_klasses
         # Special processing
         new_k[:notes] = "Url: #{k[:url]}" unless k[:url].eql?("N")
 
-        raise "ERROR: couldn't save klass #{new_k.inspect}" unless new_k.save
+        raise "ERROR: couldn't save klass #{new_k.inspect}" unless new_k.save(:validate => false)
 
         # TODO: time? location? num_students? This info isn't available for import.
         
@@ -491,6 +498,8 @@ def load_instructorships
     puts "Loading instructor-klass relationships."
     
     instructorships = Array.from_csv(dumpfilename("instructor_klass"), @@instructorship_fields)
+
+    iship_sqls = []
     
     instructorships.each_index do |index|      
         i = instructorships[index]
@@ -500,15 +509,30 @@ def load_instructorships
         raise "Couldn't find klass #{i[:klassid]}!" if (the_klass=Klass.find(i[:klassid])).nil?
         raise "Couldn't find instructor #{i[:instructorid]}!" if (the_instructor=Instructor.find(i[:instructorid])).nil?
         
-        group = the_instructor.ta? ? :tas : :instructors
-        groupids = group.to_s.chop.concat('_ids').to_sym
+#        group = the_instructor.ta? ? :tas : :instructors
+#        groupids = group.to_s.chop.concat('_ids').to_sym
         
-        unless the_klass.send(groupids).include?(i[:instructorid])
-            the_klass.send(group) << the_instructor
-            raise "ERROR saving #{group.to_s.chop} #{the_instructor.full_name} for klass #{the_klass.to_s}" unless the_klass.save
+        ta = "asdf"
+        if existing = Instructorship.find(:first, :conditions => {:klass_id => the_klass.id, :instructor_id => the_instructor.id})
+            ta = existing.ta
+        else
+            ta = (@roles[i[:instructorid]] == :ta)
+            iship_sqls << [the_klass.id, the_instructor.id, ta]
+#            unless iship = Instructorship.create(:klass_id => the_klass.id, :instructor_id => the_instructor.id, :ta => ta)
+#              raise "ERROR saving instructorship #{iship.inspect}"
+#            end
         end
+#        unless the_klass.send(groupids).include?(i[:instructorid])
+#            the_klass.send(group) << the_instructor
+#            raise "ERROR saving #{group.to_s.chop} #{the_instructor.full_name} for klass #{the_klass.to_s}" unless the_klass.save
+#        end
         
-        puts "Created/updated instructorship #{index}/#{instructorships.length} of #{the_instructor.full_name} (#{group.to_s.chop}) for #{the_klass.to_s}" if @options[:verbose]
+        puts "Created/updated instructorship #{index}/#{instructorships.length} of #{the_instructor.full_name} (#{ta.to_s}) for #{the_klass.to_s}" if @options[:verbose]
+    end
+
+    iship_sqls.each do |klass_id, instructor_id, ta|
+        ta = ActiveRecord::ConnectionAdapters::Column.value_to_boolean(ta)
+        ActiveRecord::Base.connection.execute("INSERT INTO instructorships (klass_id, instructor_id, ta) VALUES (#{[klass_id, instructor_id, ta].join(', ')});")
     end
     
     puts "Done loading instructor-klass.\n\n"
@@ -528,6 +552,8 @@ def load_answers
 #        @answers[old_id] = SurveyAnswer.find(new_id)
 #    end
 
+    a_sqls = []
+
     answers = Array.from_csv(dumpfilename("answer"), @@answer_fields)
     answers.each_index do |index|
         a = answers[index]
@@ -545,24 +571,38 @@ def load_answers
         
         # Find existing answer, or do weird stuff to create a new one
         new_klass_id, new_instructor_id, new_question_id = @klasses[a[:klassid]].id, @instructors[a[:instructorid]].id, @questions[a[:questionid]].id
-#        new_a = SurveyAnswer.find_by_klass_id_and_instructor_id_and_survey_question_id(new_klass_id, new_instructor_id, new_question_id) || SurveyAnswer.new(:klass_id=>new_klass_id, :instructor_id=>new_instructor_id, :survey_question_id=>new_question_id)
-        conditions = {:klass_id=>new_klass_id, :instructor_id=>new_instructor_id, :survey_question_id=>new_question_id}
-        new_a = SurveyAnswer.find(:first, :conditions => conditions) || SurveyAnswer.send(:new, conditions)
+###        new_a = SurveyAnswer.find_by_klass_id_and_instructor_id_and_survey_question_id(new_klass_id, new_instructor_id, new_question_id) || SurveyAnswer.new(:klass_id=>new_klass_id, :instructor_id=>new_instructor_id, :survey_question_id=>new_question_id)
+##        conditions = {:klass_id=>new_klass_id, :instructor_id=>new_instructor_id, :survey_question_id=>new_question_id}
+##        new_a = SurveyAnswer.find(:first, :conditions => conditions) || SurveyAnswer.send(:new, conditions)
+
+        iship = Instructorship.where(:instructor_id => new_instructor_id, :klass_id => new_klass_id).limit(1).first
+        raise "No existing instructorship for instructor #{new_instructor_id}, klass #{new_klass_id}" unless iship
+
+        sa = SurveyAnswer.find(:first, :conditions => {:instructorship_id => iship.id, :survey_question_id => new_question_id})
+        next if sa
+
+##        # Map attribs
+##        {:mean => :mean, :deviation => :deviation, :median => :median, :orderinsurvey => :order, :frequencies => :frequencies}.each_pair do |old_attrib, new_attrib|
+##            new_a[new_attrib] = a[old_attrib]
+##        end
         
-        # Map attribs
-        {:mean => :mean, :deviation => :deviation, :median => :median, :orderinsurvey => :order, :frequencies => :frequencies}.each_pair do |old_attrib, new_attrib|
-            new_a[new_attrib] = a[old_attrib]
-        end
+        #raise "Couldn't save answer #{new_a.inspect} because #{new_a.errors}!" unless new_a.save(:validate=>false)
         
-        raise "Couldn't save answer #{new_a.inspect} because #{new_a.errors}!" unless new_a.save
+        a_sqls << [iship.id, new_question_id, a[:mean], a[:deviation], a[:median], a[:orderinsurvey], a[:frequencies]]
 
         # Hack to increase performance
         analyze_counter += 1
         ActiveRecord::Base.connection.execute("ANALYZE survey_answers;") if analyze_counter%1000 == 0
 
 #        @answers[a[:id]] = new_a
-        puts "Created/updated answer (#{index}/#{answers.length}) ##{new_a.order} for #{new_a.instructor.full_name} for #{new_a.klass.to_s}" if @options[:verbose]
+        #puts "Created/updated answer (#{index}/#{answers.length}) ##{new_a.order} for #{new_a.instructor.full_name} for #{new_a.klass.to_s}" if @options[:verbose]
+        puts "Created/updated answer (#{index}/#{answers.length}) ##{a[:orderinsurvey]} for #{iship.instructor_id} klass #{iship.klass_id}" if @options[:verbose]
     end # answers.each
+
+    ActiveRecord::Base.connection.execute(
+        a_sqls.collect do |a| #|iship_id, q_id, mean, dev, median, order, freq|
+            "INSERT INTO survey_answers (instructorship_id, survey_question_id, mean, deviation, median, order, frequencies) VALUES (#{a.join(', ')});"
+        end .join)
     
     # Write to cache map
 #    write_cache_hash(answers_map_cache_file, @answers)
@@ -618,7 +658,9 @@ else
     Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)   # fake out sunspot
 
     puts "\n\n"
-    @csi.import!(:from => ARGV.first)
+    ActiveRecord::Base.transaction do
+        @csi.import!(:from => ARGV.first)
+    end
 end
 puts "\nAll done.\n"
 # }
