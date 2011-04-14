@@ -221,6 +221,11 @@ class CoursesurveysController < ApplicationController
     ta_eff_q     = SurveyQuestion.find_by_keyword(:ta_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
 
+    if @instructor.private then
+        render
+	return
+    end
+
     # Build results of
     #   [ klass, my effectiveness answer, my worthwhile answer, [other instructors] ]
     # and totals

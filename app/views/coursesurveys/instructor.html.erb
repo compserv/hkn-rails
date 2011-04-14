@@ -71,10 +71,14 @@
     }
   </script>
 <%# end %>
-<% end %>
+<% end # unless results.blank %>
 
 
 <div id="chart_div"></div> 
+
+<%- if @instructor.private -%>
+    <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in", coursesurveys_ferpa_path %>.</p>
+<%- end -%>
 
 
 <%# Instructed and tad klasses %>
@@ -84,10 +88,6 @@
 
     next if @results[klasstype].empty?
 -%>
-<%- if @instructor.private -%>
-    <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in", coursesurveys_ferpa_path %>.</p>
-<%- end -%>
-
 <!-- Classes <%= label %> -->
 <div id="table">
   <h3 class="center">Classes <%= label %></h3>
