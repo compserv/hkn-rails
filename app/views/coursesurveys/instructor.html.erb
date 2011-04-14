@@ -120,6 +120,7 @@
 
 <!-- Aggregate stats -->
 <%# Warning: unreadable mass of code %>
+<%- unless @instructor.private -%>
 <div id="table">
   <h3 class="center">Totals</h3>
   <table id="ratings" class="table"><tbody>
@@ -155,6 +156,7 @@
 
   </tbody></table>
 </div>
+<%- end # private for totals -%>
 
 <%- end #cache -%>
 

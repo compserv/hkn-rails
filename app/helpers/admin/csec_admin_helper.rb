@@ -78,7 +78,7 @@ module SurveyData
               klass.course = course
 
               # Instructor
-              i[:title] = s.pop.to_s[1..-2]  # (prof) => prof
+              i[:title] = (s.last =~ /\(\w+\)/) ? s.pop.to_s[1..-2] : 'PROF'  # (prof) => prof
               i[:private] = true #false if i[:title] =~ /prof/i
               i[:title] = {'PROF'=>'Professor', 'TA'=>'Teaching Assistant'}[i[:title]]
               i[:last_name], i[:first_name] = s.join(' ').split(',').collect(&:strip).collect(&:titleize_with_dashes)
