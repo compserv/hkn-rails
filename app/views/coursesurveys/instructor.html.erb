@@ -100,14 +100,14 @@
     </tr>
 
 <%-   @results[klasstype].each do |klass, eff_a, ww_a, others|
-      next unless eff_a && ww_a
+      next unless eff_a #&& ww_a
 -%>
 
   <!-- <%= klass.to_s %> -->
   <tr>
       <td><span class="semester"><%= link_to klass.to_s, surveys_klass_path(klass) %></span></td>
 <%-   [eff_a, ww_a].each do |a| -%>
-      <td><%= rating_and_bar a.mean, a.survey_question.max, surveys_rating_path(a) %></td>
+      <td><%= rating_and_bar a.mean, a.survey_question.max, surveys_rating_path(a) if a %></td>
 <%-   end -%>
       <td><span class="others"><%= raw (
           (klass.instructors - [@instructor]).collect { |instructor|
@@ -115,14 +115,18 @@
           } .join(", ") ) %></span></td>
     </tr>
     <%- end # results -%>
+    </tbody></table>
+<%- end # klasstype -%>
 
 <!-- Aggregate stats -->
 <%# Warning: unreadable mass of code %>
-  <tr>
+<div id="table">
+  <h3 class="center">Totals</h3>
+  <table id="ratings" class="table"><tbody>
+   <tr>
     <th>Totals</th>
     <th>Teaching Effectiveness</th>
     <th>How worthwhile was this course?</th>
-    <th></th>
   </tr>
   <%- [ :undergrad, :grad ].each do |classification|
       courses = @totals[classification]
@@ -135,7 +139,6 @@
     <%- [:eff, :ww].each do |s| -%>
     <td><%= rating_and_bar(stats[s].avg, stats["#{s}_max".to_sym]) if stats[s].any? %></td>
     <%- end -%>
-    <td></td>
   </tr>
   <%- end # courses   -%>
   <!-- <%= classification %> -->
@@ -152,7 +155,6 @@
 
   </tbody></table>
 </div>
-<%- end # klasstype -%>
 
 <%- end #cache -%>
 
