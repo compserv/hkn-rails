@@ -111,6 +111,7 @@ end
 class Array
 # This borks activerecord's average
   def avg
+    return nil if self.empty?
     self.sum.to_f / self.count.to_f
   end
 

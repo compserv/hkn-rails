@@ -234,6 +234,7 @@ class CoursesurveysController < ApplicationController
                  i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
                 ]
       #next unless result.all?
+      next unless result[1]
       results << result
 
       t = (@totals[i.course.classification][i.course] ||= {:eff=>[], :ww=>[]})

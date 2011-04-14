@@ -54,8 +54,12 @@ class Course < ActiveRecord::Base
   # suffix refers to all letters that appear after the numbers, e.g. the A in 61A, the M in 145M, the AC in E130AC
   # This is DIFFERENT from the old Django site's definitions
 
-  def instructors
+  def instructors(conds={:ta=>false})
     Instructor.find self.klasses.collect(&:instructor_ids).flatten.uniq
+  end
+
+  def tas
+    instructors(:ta=>true)
   end
 
   def classification
