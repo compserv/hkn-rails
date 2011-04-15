@@ -32,7 +32,13 @@
 
       var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
       chart.draw(data, 
-        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: true, backgroundColor: 'none', reverseCategories: true}
+        { width: $(window).width() * 0.9, height: 400,
+          title: 'Course Survey', colors:['#235185','#f9df49'],
+          backgroundColor: 'none',
+          hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}},
+          isStacked: false,
+          reverseCategories: true
+        }
       );
     }
   </script>

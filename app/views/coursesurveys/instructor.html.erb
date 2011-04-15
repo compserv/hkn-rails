@@ -29,7 +29,8 @@
   <div class="clear"></div>
 </div>
 
-<%- cache instructor_cache_path(@instructor) do -%>
+<%# cache instructor_cache_path(@instructor) do -%>
+<%- if true -%>
 
 <%- unless @results[:klasses].blank? -%>
 <%# content_for :header do %>
@@ -66,7 +67,7 @@
 
       var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
       chart.draw(data, 
-        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: true, backgroundColor: 'none'}
+        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none'}
       );
     }
   </script>
