@@ -3,6 +3,7 @@ class CoursesurveysController < ApplicationController
 
   before_filter :show_searcharea
   before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor]
+  before_filter :authorize_privileged
 
   begin # caching
     [:index, :instructors].each {|a| caches_action a, :layout => false}
@@ -139,7 +140,7 @@ class CoursesurveysController < ApplicationController
 
     @klass.instructorships.each do |i|
       (i.ta ? @tas : @instructors) << { :instructor => i.instructor,
-                                        :answers    => (i.instructor.private ?
+                                        :answers    => (i.instructor.private && !@privileged ?
                                                         nil : i.survey_answers) }
     end
   end
@@ -175,7 +176,7 @@ class CoursesurveysController < ApplicationController
                ).each do |i|
       @results << { :instructor => i,
                     :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
-                    :rating     => (i.private ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
+                    :rating     => (i.private && !@privileged ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
                   }
     end
   end
@@ -221,7 +222,7 @@ class CoursesurveysController < ApplicationController
     ta_eff_q     = SurveyQuestion.find_by_keyword(:ta_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
 
-    if @instructor.private then
+    if @instructor.private && !@privileged then
         render
 	return
     end
@@ -394,6 +395,12 @@ class CoursesurveysController < ApplicationController
     @klass = Klass.where(:semester => sem, :course_id => @course.id)
     @klass = @klass.where(:section => params[:section].to_i) if params[:section].present? && params[:section].is_int?
     return @klass = @klass.order('section ASC').limit(1).first
+  end
+
+  def authorize_privileged
+  # Sets the value of @privileged based on the user's group membership.
+  # Csec, superusers, and coursesurvey groups all override @privileged to false
+    @privileged = ['csec', 'coursesurveys'].any? {|g| @auth[g]}
   end
 
 end

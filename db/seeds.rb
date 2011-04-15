@@ -53,6 +53,9 @@ def initialize_groups
     {"name"=>"pub",       "description"=>"Publicity"},
     {"name"=>"examfiles", "description"=>"Exam Files"},
     {"name"=>"ejc",       "description"=>"EJC Representative"},
+
+    # Misc. groups
+    {'name'=>'coursesurveys', 'description'=>'Course surveys privileged access'},
   ]
 
   groups.each do |group|
@@ -88,8 +91,18 @@ def initialize_departments
   end
 end
 
+def initialize_people
+  [ [{:first_name => 'Course', :last_name => 'Surveys', :username => 'coursesurveys', :email => 'www-coursesurvey@hkn.eecs.berkeley.edu'}, ['coursesurveys']]
+  ].each do |p, groups|
+    purson = Person.find(:first, :conditions => p) || Person.new(p.update({:password => 'changeme', :password_confirmation => 'changeme', :approved => true}))
+    purson.groups = groups.collect {|g| Group.find_by_name(g)}
+    raise purson.errors.inspect unless purson.save
+  end
+end
+
 
 initialize_slots
 initialize_groups
 initialize_eventtypes
 initialize_departments
+initialize_people
