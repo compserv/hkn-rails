@@ -40,11 +40,11 @@ def import_exam(file_path, success_dir=nil)
 
   puts "importing #{filename} ..."
 
-  if not isValidExamFile?(filename)
+  if not is_valid_exam_file?(filename)
     return false
   end
 
-  file_path = convertFile(file_path)
+  file_path = convert_file(file_path)
   filename = File.basename(file_path)
 
   # File should now be a properly formatted pdf file
@@ -93,7 +93,7 @@ def import_exam(file_path, success_dir=nil)
 
   # Move the file if successful
   if success and success_dir
-    FileUtils.mv(file_path, success_dir)
+    FileUtils.cp(file_path, success_dir)
   end
 
   return success
@@ -152,7 +152,7 @@ def import_exam_directory(dirname, success_dir=nil)
   # Call importExam for each file in directory.
   Dir[File.join(dirname, '*')].each do |file_path|
     if File.file?(file_path)
-      if importExam(file_path, success_dir)
+      if import_exam(file_path, success_dir)
         n_succeeded += 1
       else
         n_failed += 1
