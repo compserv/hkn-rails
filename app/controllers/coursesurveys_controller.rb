@@ -7,7 +7,7 @@ class CoursesurveysController < ApplicationController
   before_filter :authorize_csec, :only => [:merge_instructors, :merge_instructors_post, :merge, :instructor_ids]
 
   begin # caching
-    [:index, :instructors].each {|a| caches_action a, :layout => false}
+    [:index, :instructors, :tas].each {|a| caches_action a, :layout => false}
 #    caches_action :klass, :cache_path => Proc.new {|c| klass_cache_path(c.params)}, :layout => false
 
     # Cache full/partial department lists
