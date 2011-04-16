@@ -60,7 +60,9 @@ class Instructor < ActiveRecord::Base
 #    !!(title =~ /TA|Teaching Assistant/)
   end
   def instructor?
-    title && title =~ /Professor|Lecturer|Instructor/i
+    return false if title.blank?
+    return false if title =~ /Student Instructor/i
+    title =~ /Professor|Lecturer|Instructor/i
   end
 
   def Instructor.find_by_name(first_name, last_name)

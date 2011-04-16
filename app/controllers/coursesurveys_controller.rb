@@ -176,7 +176,7 @@ class CoursesurveysController < ApplicationController
                ).each do |i|
       @results << { :instructor => i,
                     :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
-                    :rating     => (i.private && !@privileged ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
+                    :rating     => (i.private ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
                   }
     end
   end
