@@ -39,7 +39,7 @@ class Instructor < ActiveRecord::Base
   end
 
   def average_rating
-    q = SurveyQuestion.find_by_keyword(self.instructor? ? :prof_eff : :ta_eff)
+    q = SurveyQuestion.find_by_keyword(self.student_instructor? || self.instructor? ? :prof_eff : :ta_eff)
     survey_answers.where(:survey_question_id =>q.id).average(:mean)
   end
 
@@ -53,7 +53,7 @@ class Instructor < ActiveRecord::Base
   end
   
   def ta?
-    not instructor?
+    not instructor? and not student_instructor?
 #    if title.blank? then
 #      logger.warn "Blank title for instructor ##{id} #{full_name}"
 #    end
@@ -61,8 +61,11 @@ class Instructor < ActiveRecord::Base
   end
   def instructor?
     return false if title.blank?
-    return false if title =~ /Student Instructor/i
+    return false if self.student_instructor?
     title =~ /Professor|Lecturer|Instructor/i
+  end
+  def student_instructor?
+    title =~ /Student Instructor/i
   end
 
   def Instructor.find_by_name(first_name, last_name)
