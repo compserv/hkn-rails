@@ -8,7 +8,8 @@
 <%- end -%>
 </span>
 
-<% cache do %>
+<%# cache do %>
+<%- if true -%>
 
 <div id="rating-info" class="infobox">
   <div class="info-row">
@@ -32,6 +33,10 @@
     <div class="info-item"><%= sprintf "%.1f", @answer.mean %> &plusmn; <%= sprintf "%.1f", @conf_intrvl %></div>
   </div>
   <div class="info-row">
+    <span class="info-label">Max</span> 
+    <div class="info-item"><%= @answer.survey_question.max.to_f %></div>
+  </div>
+   <div class="info-row">
     <span class="info-label">Frequency Distribution</span>
     <div class="info-item">
       <table class="histogram">
