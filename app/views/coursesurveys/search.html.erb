@@ -45,7 +45,7 @@
       <td><%- if i.private -%>
         [private]
         <%- else rating = i.average_rating -%>
-        <%= rating_and_bar rating, (i.ta? ? @ta_eff_q.max : @prof_eff_q.max)  %>
+        <%= rating ? rating_and_bar(rating, (i.ta? ? @ta_eff_q.max : @prof_eff_q.max)) : '' %>
         <%- end -%></td>
     </tr>
   <% end %>
