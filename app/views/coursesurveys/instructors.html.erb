@@ -17,8 +17,11 @@
       <%- unless rating.present? -%>
       [private]
       <%- else -%>
+      <%= rating_and_bar instructor.average_rating, @eff_q.max.to_f %>
+      <%- if false -%>
       <%= sprintf "%.1f", rating %> / <%= @eff_q.max.to_f %> 
       <%= rating_bar(rating/@eff_q.max) %>
+      <%- end # if false -%>
       <%- end -%>
     </td>
   </tr>
