@@ -1,14 +1,30 @@
+<% if @instructor %>
+  <h1>
+    <%= link_to @course.course_name + (@klass.has_other_sections? ? "-#{@klass.section}" : ""), surveys_course_path(@course) %> 
+    - 
+    <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> 
+    - 
+    <%= @instructor.full_name %>
+  </h1>
+<% else %>
 <h1><%= link_to @course.course_name + (@klass.has_other_sections? ? "-#{@klass.section}" : ""), surveys_course_path(@course) %> - <%= @klass.proper_semester %></h1>
+<% end %>
 
 <div id="instructorbox" class="infobox trans-bg">
-  <%- [ ['Instructor', @instructors], ['TA', @tas] ].each do |label, group| -%>
-  <h3><%= label.pluralize_for group.size %></h3>
-  <ul>
-    <% group.each do |result| %>
-      <li><%= link_to result[:instructor].full_name, surveys_instructor_path(result[:instructor]) %></li>
-    <% end %>
-  </ul>
-  <%- end -%>
+  <% if @instructor.nil? %>
+    <%- [ ['Instructor', @instructors], ['TA', @tas] ].each do |label, group| -%>
+    <h3><%= label.pluralize_for group.size %></h3>
+    <ul>
+      <% group.each do |result| %>
+        <li><%= link_to result[:instructor].full_name, surveys_instructor_path(result[:instructor]) %></li>
+      <% end %>
+    </ul>
+    <%- end -%>
+  <% else %>
+    <p>
+    See all of <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %>'s data.
+    </p>
+  <% end %>
  
   <%= render :partial => 'emailhkn' %>
 </div>
@@ -24,7 +40,7 @@
     <%# Instructor name %>
     <tr>
       <th<%=raw " colspan=\"2\"" if private %>>
-        <%= title %> <%= link_to instructor.full_name, surveys_instructor_path(instructor) %>
+        <%= title %> <%= link_to instructor.full_name, surveys_klass_path(@klass, :instructor => instructor.full_name_r_strip) %>
       </th>
       <%- unless private -%>
         <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.sum %> respondents</th>

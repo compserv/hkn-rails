@@ -129,6 +129,7 @@ class CoursesurveysController < ApplicationController
   end
 
   def klass
+    @instructor = _get_instructor(params[:instructor])
     @klass = params_to_klass(params)
 
     # Error checking
@@ -140,9 +141,16 @@ class CoursesurveysController < ApplicationController
     @instructors, @tas = [], []
 
     @klass.instructorships.each do |i|
-      (i.ta ? @tas : @instructors) << { :instructor => i.instructor,
+      if @instructor.nil? or @instructor == i.instructor
+        (i.ta ? @tas : @instructors) << { :instructor => i.instructor,
                                         :answers    => (i.instructor.private && !@privileged ?
                                                         nil : i.survey_answers) }
+      end
+    end
+
+    if @instructors.empty? and @tas.empty?
+      flash.now[:notice] = "No instructor named #{@instructor.full_name} found for current class and semester"
+      @instructor = nil
     end
   end
 
@@ -194,15 +202,17 @@ class CoursesurveysController < ApplicationController
   def instructor
     return redirect_to coursesurveys_instructors_path unless params[:name]
 
-    @instructor =
-        if params[:name].is_int? then
-          # ID
-          Instructor.find(params[:name])
-        else
-          # last,first
-          (last_name, first_name) = params[:name].split(',')
-          Instructor.find_by_name(first_name, last_name)
-        end
+    #@instructor =
+    #    if params[:name].is_int? then
+    #      # ID
+    #      Instructor.find(params[:name])
+    #    else
+    #      # last,first
+    #      (last_name, first_name) = params[:name].split(',')
+    #      Instructor.find_by_name(first_name, last_name)
+    #    end
+
+    @instructor = _get_instructor(params[:name])
 
     return redirect_to coursesurveys_search_path([first_name,last_name].join(' ')) unless @instructor
  
@@ -453,6 +463,19 @@ class CoursesurveysController < ApplicationController
   # Sets the value of @privileged based on the user's group membership.
   # Csec, superusers, and coursesurvey groups all override @privileged to false
     @privileged = ['csec', 'coursesurveys'].any? {|g| @auth[g]}
+  end
+
+  def _get_instructor(param)
+    if param.nil?
+      nil
+    elsif param.is_int?
+      # ID
+      Instructor.find(param)
+    else
+      # last,first
+      (last_name, first_name) = param.split(',')
+      Instructor.find_by_name(first_name, last_name)
+    end
   end
 
 end

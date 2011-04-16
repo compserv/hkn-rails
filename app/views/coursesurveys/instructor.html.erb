@@ -135,7 +135,7 @@
 
   <!-- <%= klass.to_s %> -->
   <tr>
-      <td><span class="semester"><%= link_to klass.to_s, surveys_klass_path(klass) %></span></td>
+    <td><span class="semester"><%= link_to klass.to_s, surveys_klass_path(klass, :instructor => @instructor.full_name_r_strip) %></span></td>
       <td><%= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a %></td>
   <%- unless klasstype == :tad_klasses -%>
       <td><%= rating_and_bar ww_a.mean, ww_a.survey_question.max, surveys_rating_path(ww_a) if ww_a %></td>

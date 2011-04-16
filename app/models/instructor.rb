@@ -86,6 +86,11 @@ class Instructor < ActiveRecord::Base
   def full_name_r
     [last_name, first_name].join ', '
   end
+
+  # Reverse order without spaces
+  def full_name_r_strip
+    [last_name, first_name].join ','
+  end
   
   def ta?
     not instructor? and not student_instructor?

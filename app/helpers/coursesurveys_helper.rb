@@ -48,11 +48,11 @@ module CoursesurveysHelper
     "instructor_#{instructor.id}"
   end
 
-  def surveys_klass_path(klass)
+  def surveys_klass_path(klass, opts={})
     if klass.section.blank? || klass.has_other_sections?
-      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester, klass.section
+      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester, klass.section, opts
     else
-      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester
+      coursesurveys_klass_path klass.course.dept_abbr, klass.course.full_course_number, klass.url_semester, opts
     end
   end
 
