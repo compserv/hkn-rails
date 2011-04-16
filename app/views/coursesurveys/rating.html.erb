@@ -35,7 +35,9 @@
     <span class="info-label">Frequency Distribution</span>
     <div class="info-item">
       <table class="histogram">
-        <%- @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key| -%>
+        <%- @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key|
+            next if key.is_a?(Integer) && key > @answer.survey_question.max
+        -%>
           <tr>
             <th><%= key %></th>
             <td><%= frequency_bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %> (<%= @total_responses > 0 ? sprintf("%.1f", 100.0*@frequencies[key]/@total_responses) : 0 %>%)</td>
