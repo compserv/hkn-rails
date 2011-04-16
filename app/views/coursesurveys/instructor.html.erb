@@ -32,23 +32,34 @@
 <%# cache instructor_cache_path(@instructor) do -%>
 <%- if true -%>
 
+<%# Temporarily disabling charts %>
+<% if false %>
 <%- unless @results[:klasses].blank? -%>
 <%# content_for :header do %>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script type="text/javascript">
     google.load("visualization", "1", {packages:["corechart"]});
     
-    google.setOnLoadCallback(drawChart);
+    google.setOnLoadCallback(function(){drawChart('instructor');});
+    google.setOnLoadCallback(function(){drawChart('ta');});
     
-    function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Semester');
-      data.addColumn('number', 'Teaching Effectiveness');
-      data.addColumn('number', 'Worthwhile Course?');
-      data.addRows($(".semester").length);
+    function drawChart(type) {
+      if (typeof(type) == 'undefined')
+      {
+        type = "instructor"
+      }
+      if (typeof(data) == 'undefined')
+      {
+        var data = new Array();
+      }
+      data[type] = new google.visualization.DataTable();
+      data[type].addColumn('string', 'Semester');
+      data[type].addColumn('number', 'Teaching Effectiveness');
+      data[type].addColumn('number', 'Worthwhile Course?');
+      data[type].addRows($(".semester").length);
       
       count = 0;
-      $("#ratings tbody tr").each(function(){
+      $("#" + type + "_table #ratings tbody tr").each(function(){
         dat = $($(this)).children("td")
         year = $(dat[0]).find(".semester a").html();
         eff = parseFloat($(dat[1]).find(".rating").html(), 10);
@@ -57,39 +68,50 @@
         console.log(year + ": " + eff + " " + worth);
         
         if(year != null){
-          data.setValue(count, 0, year);
-          data.setValue(count, 1, eff);
-          data.setValue(count, 2, worth);
+          data[type].setValue(count, 0, year);
+          data[type].setValue(count, 1, eff);
+          data[type].setValue(count, 2, worth);
           count++;
         }
         
       }); 
 
-      var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
-      chart.draw(data, 
-        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none'}
+      var chart = new google.visualization.ColumnChart($("#instructor_chart_div")[0]);
+      chart.draw(data['instructor'], 
+        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 7}}
+      );
+      var ta_chart = new google.visualization.ColumnChart($("#ta_chart_div")[0]);
+      ta_chart.draw(data['ta'], 
+        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 5}}
       );
     }
   </script>
 <%# end %>
 <% end # unless results.blank %>
+<% end %>
 
 
-<div id="chart_div"></div> 
+<div id="instructor_chart_div"></div> 
+<div id="ta_chart_div"></div> 
 
 <%- if @instructor.private -%>
-    <p>This instructor's ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in", coursesurveys_ferpa_path %>.</p>
+    <p>This instructor&#39;s ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in", coursesurveys_ferpa_path %>.</p>
 <%- end -%>
 
 
 <%# Instructed and tad klasses %>
+<%# THIS IS IN A LOOP %>
 <%- [ [:klasses,     "Taught"],
       [:tad_klasses, "TA'd"  ]
-    ].each do |klasstype, label|
+      ].each do |klasstype, label| %>
 
-    next if @results[klasstype].empty?
--%>
+  <% next if @results[klasstype].empty? %>
 <!-- Classes <%= label %> -->
+<% if klasstype == :klasses %>
+<div id="instructor_table">
+<% else %>
+<div id="ta_table">
+<% end %>
 <div id="table">
   <h3 class="center">Classes <%= label %></h3>
   <table id="ratings" class="table"><tbody>
@@ -160,6 +182,7 @@
 
   </tbody></table>
 </div>
+</div> <!-- end "table" div -->
 <%- end # klasstype -%>
 
 <%- end #cache -%>
