@@ -52,13 +52,14 @@ class Instructor < ActiveRecord::Base
   end
   
   def ta?
-    if title.blank? then
-      logger.warn "Blank title for instructor ##{id} #{full_name}"
-    end
-    !!(title =~ /TA|Teaching Assistant/)
+    not instructor?
+#    if title.blank? then
+#      logger.warn "Blank title for instructor ##{id} #{full_name}"
+#    end
+#    !!(title =~ /TA|Teaching Assistant/)
   end
   def instructor?
-    not ta?
+    title && title =~ /Professor|Lecturer/i
   end
 
   def Instructor.find_by_name(first_name, last_name)
