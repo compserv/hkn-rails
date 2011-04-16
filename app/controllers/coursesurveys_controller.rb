@@ -6,7 +6,7 @@ class CoursesurveysController < ApplicationController
   before_filter :authorize_privileged
 
   begin # caching
-#    [:index, :instructors].each {|a| caches_action a, :layout => false}
+    [:index, :instructors].each {|a| caches_action a, :layout => false}
 #    caches_action :klass, :cache_path => Proc.new {|c| klass_cache_path(c.params)}, :layout => false
 
     # Cache full/partial department lists
