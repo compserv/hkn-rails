@@ -96,7 +96,9 @@
     <tr>
       <th>Sections</th>
       <th>Teaching Effectiveness</th>
+    <%- unless klasstype == :tad_klasses -%>
       <th>How worthwhile was this course?</th>
+    <%- end -%>
       <th>Other Instructors</th>
     </tr>
 
@@ -107,9 +109,10 @@
   <!-- <%= klass.to_s %> -->
   <tr>
       <td><span class="semester"><%= link_to klass.to_s, surveys_klass_path(klass) %></span></td>
-<%-   [eff_a, ww_a].each do |a| -%>
-      <td><%= rating_and_bar a.mean, a.survey_question.max, surveys_rating_path(a) if a %></td>
-<%-   end -%>
+      <td><%= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a %></td>
+  <%- unless klasstype == :tad_klasses -%>
+      <td><%= rating_and_bar ww_a.mean, ww_a.survey_question.max, surveys_rating_path(ww_a) if ww_a %></td>
+  <%- end -%>
       <td><span class="others"><%= raw (
           (klass.instructors - [@instructor]).collect { |instructor|
               link_to(instructor.full_name, surveys_instructor_path(instructor))
@@ -122,7 +125,9 @@
   <tr>
     <th>Totals</th>
     <th>Teaching Effectiveness</th>
+  <%- unless klasstype == :tad_klasses -%>
     <th>How worthwhile was this course?</th>
+  <%- end -%>
     <th></th>
   </tr>
   <%- [ :undergrad, :grad ].each do |classification|
@@ -133,9 +138,10 @@
   <!-- <%= course.to_s %> -->
   <tr>
     <td><%= link_to course.to_s, surveys_course_path(course) %> (<%= stats[:eff].count %>)</td>
-    <%- [:eff, :ww].each do |s| -%>
-    <td><%= rating_and_bar(stats[s].avg, stats["#{s}_max".to_sym]) if stats[s].any? %></td>
-    <%- end -%>
+    <td><%= rating_and_bar(stats[:eff].avg, stats[:eff_max]) if stats[:eff].any? %></td>
+  <%- unless klasstype == :tad_klasses -%>
+    <td><%= rating_and_bar(stats[:ww].avg, stats[:ww_max]) if stats[:ww].any? %></td>
+  <%- end -%>
     <td></td>
   </tr>
   <%- end # courses   -%>
@@ -143,6 +149,7 @@
   <tr>
     <td><strong><%= "#{classification}uate".capitalize %> Courses (<%= courses.values.collect{|v|v[:eff].count}.sum %>)</strong></td>
     <%- [:eff,:ww].each do |s|
+          next if klasstype == :tad_klasses && s == :ww
           numz = courses.values.collect{|v|v[s]}.flatten
     -%>
     <td><%= rating_and_bar(numz.avg, courses.values.drop_while{|x|x.nil?}.collect{|x|x["#{s}_max".to_sym]}.compact.first || 1) unless courses.empty? || !numz.any? %></td>
