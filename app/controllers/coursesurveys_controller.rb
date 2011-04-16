@@ -4,6 +4,7 @@ class CoursesurveysController < ApplicationController
   before_filter :show_searcharea
   before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor]
   before_filter :authorize_privileged
+  before_filter :authorize_csec, :only => [:merge_instructors, :merge_instructors_post, :merge, :instructor_ids]
 
   begin # caching
     [:index, :instructors].each {|a| caches_action a, :layout => false}
@@ -384,6 +385,51 @@ class CoursesurveysController < ApplicationController
 
   def show_searcharea
     @show_searcharea = true
+  end
+
+  #######################
+  #       Admin         #
+  #######################
+
+  # GET /instructor_ids
+  def instructor_ids
+     render :json => Instructor.order('last_name, first_name').collect {|i| {:id => i.id, :name => i.full_name_r} }
+  end
+
+  # GET /merge
+  def merge_index
+  end
+
+  # GET /merge_instructors
+  def merge_instructors
+    @instructors = [:id_0, :id_1].collect {|s| Instructor.find(params[s]) if params[s]}
+
+  end
+
+  # POST /merge_instructors
+  def merge_instructors_post
+    p = {}
+    @instructors = [:id_0, :id_1].collect {|s| Instructor.find(params[s]) if params[s]}
+
+    return redirect_to coursesurveys_merge_instructors_path(params[:id_0], params[:id_1]), :notice => "Invalid IDs" unless @instructors.all?
+
+    Instructor.column_names.collect(&:downcase).collect(&:to_sym).each do |col|
+      # params[col] is 0 or 1, indicating from which instructor to take the new attribute
+      p[col] = @instructors[params[col].to_i].send(col) if params[col]
+    end
+
+    @instructor = Instructor.new(p)
+
+    begin
+        Instructor.transaction do
+          puts "FUCK LIFE"
+          raise unless @instructor.eat(@instructors)
+        end
+    rescue => e
+      return redirect_to coursesurveys_merge_instructors_path(@instructors[0].id, @instructors[1].id), :notice => [e,@instructor.errors.inspect, @instructor].inspect
+    end
+
+    redirect_to surveys_instructor_path(@instructor), :notice => "This is the new instructor."
   end
 
   private

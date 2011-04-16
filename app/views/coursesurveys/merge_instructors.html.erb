@@ -1,0 +1,86 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
+
+  <script type="text/javascript">
+    profname = function(prof) { return prof.name; }
+    $(document).ready( function() {
+      $.ajax({ url: <%= raw coursesurveys_instructor_ids_path.inspect %>,
+               success: function(data) {
+               <%-[0,1].each do |i|-%>
+               $(<%="'#ibox#{i}'"%>).
+                 autocomplete(data, {formatItem: profname} ).
+                 result( function(event,item) {
+                   $(<%="'#id_#{i}'"%>)[0].value = item.id;
+                   $(<%="'#ibox#{i}'"%>)[0].disabled = true;
+                 });
+<%-end-%> }
+             });
+      $("#submit").click( function() {
+      });
+        
+      });
+  </script>
+
+  <style type="text/css">
+    #instructors .inst {
+      float: left;
+      width: 45%;
+    }
+  </style>
+
+<%- end # header -%>
+
+<h1>Merging instructors</h1>
+
+<div id="instructor-select">
+<div>Choose some instructors to merge:</div>
+<%= form_tag coursesurveys_merge_instructors_path, :method => :get do %>
+<%- [0,1].each do |i| -%>
+  <div id="autocomplete-<%=i%>">
+    <%= text_field_tag (l="ibox#{i}"), nil, :id => l, :placeholder => "Instructor #{i+1}" %>
+    <%= hidden_field_tag (l="id_#{i}"), '', :id => l %>
+  </div>
+<%- end # 0,1 -%>
+<%= submit_tag 'Let\'s do it!' %>
+<%- end # form -%>
+</div>
+
+<%- if @instructors.count == 2 && @instructors.all? -%>
+<div id="instructors">
+<%= form_tag coursesurveys_merge_instructors_path do %>
+<%= hidden_field_tag :id_0, params[:id_0] %>
+<%= hidden_field_tag :id_1, params[:id_1] %>
+<table>
+  <tr>
+    <th>Attribute</th>
+    <%- @instructors.each do |inst| -%>
+    <th><%= inst.full_name %>'s value</th>
+    <%- end -%>
+  </tr>
+<%- Instructor.column_names.collect(&:downcase).collect(&:to_sym).each do |attrib|
+      next if [:id, :created_at, :updated_at].include? attrib
+-%>
+  <tr>
+    <td><%= attrib.to_s.humanize %></td>
+<%- [0,1].each do |i|
+      inst = @instructors[i]
+-%>
+    <td>
+      <%= radio_button_tag attrib.to_s, i.to_s, false %>
+      <%= label_tag attrib.to_s, inst.send(attrib).to_s %>
+    </td>
+<%- end #0,1 -%>
+  </tr>
+<%- end #attribs -%>
+  <tr>
+    <td>Courses taught</td>
+    <%- @instructors.each do |inst| -%>
+    <td><%= (inst.instructed_courses+inst.tad_courses).collect(&:to_s).join(', ') %></td>
+    <%- end -%>
+  </tr>
+</table>
+<%= submit_tag 'Merge!' %>
+<%- end # form -%>
+</div>
+<%- end # instructors.count == 2 -%>

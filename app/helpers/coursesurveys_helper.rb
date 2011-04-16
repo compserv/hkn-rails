@@ -61,7 +61,11 @@ module CoursesurveysHelper
   end
 
   def surveys_instructor_path(instructor)
-    coursesurveys_instructor_path("#{instructor.last_name},#{instructor.first_name}")
+    if Instructor.where(:last_name => instructor.last_name, :first_name => instructor.first_name).count > 1 then
+      coursesurveys_instructor_path("#{instructor.last_name},#{instructor.first_name}")
+    else
+      coursesurveys_instructor_path(instructor.id)
+    end
   end
 
   def surveys_rating_path(rating)

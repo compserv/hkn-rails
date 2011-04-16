@@ -150,6 +150,11 @@ HknRails::Application.routes.draw do
     match "how-to"                         => "static#coursesurveys_how_to",     :as => :coursesurveys_how_to
     match "info-profs"                     => "coursesurveys#coursesurveys_info_profs", :as => :coursesurveys_info_profs
     match "ferpa"                          => "static#coursesurveys_ferpa",      :as => :coursesurveys_ferpa
+
+    # Admin stuff
+    get   "instructor_ids"                 => "coursesurveys#instructor_ids", :as => :coursesurveys_instructor_ids
+    get   "merge_instructors(?id_0=:id_0(&id_1=:id_1))"              => "coursesurveys#merge_instructors",      :as => :coursesurveys_merge_instructors
+    post  "merge_instructors"              => "coursesurveys#merge_instructors_post"
   end
 
   
