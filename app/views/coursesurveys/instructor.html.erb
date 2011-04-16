@@ -122,7 +122,11 @@
     <%- unless klasstype == :tad_klasses -%>
       <th>How worthwhile was this course?</th>
     <%- end -%>
+    <% if klasstype == :klasses %>
       <th>Other Instructors</th>
+    <% else %>
+      <th>Instructors</th>
+    <% end %>
     </tr>
 
 <%-   @results[klasstype].each do |klass, eff_a, ww_a, others|
