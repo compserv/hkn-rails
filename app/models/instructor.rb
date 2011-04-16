@@ -39,7 +39,8 @@ class Instructor < ActiveRecord::Base
   end
 
   def average_rating
-    survey_answers.where(:survey_question_id =>[SurveyQuestion.find_by_keyword(:prof_eff).id, SurveyQuestion.find_by_keyword(:ta_eff).id]).average(:mean)
+    q = SurveyQuestion.find_by_keyword(self.instructor? ? :prof_eff : :ta_eff)
+    survey_answers.where(:survey_question_id =>q.id).average(:mean)
   end
 
   def full_name
@@ -59,7 +60,7 @@ class Instructor < ActiveRecord::Base
 #    !!(title =~ /TA|Teaching Assistant/)
   end
   def instructor?
-    title && title =~ /Professor|Lecturer/i
+    title && title =~ /Professor|Lecturer|Instructor/i
   end
 
   def Instructor.find_by_name(first_name, last_name)
