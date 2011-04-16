@@ -402,8 +402,7 @@ class CoursesurveysController < ApplicationController
 
   # GET /merge_instructors
   def merge_instructors
-    @instructors = [:id_0, :id_1].collect {|s| Instructor.find(params[s]) if params[s]}
-
+    @instructors = [:id_0, :id_1].collect {|s| params[s].blank? ? nil : Instructor.find(params[s])}
   end
 
   # POST /merge_instructors
