@@ -213,8 +213,12 @@ class CoursesurveysController < ApplicationController
 
     @results = { :klasses     => [],
                  :tad_klasses => []  }
-    @totals  = { :undergrad   => {},
-                 :grad        => {}  }
+    @totals  = { :klasses => { :undergrad   => {},
+                               :grad        => {}  },
+                 :tad_klasses => { :undergrad   => {},
+                                   :grad        => {}  }
+               }
+
 
     @can_edit = @current_user && authorize_coursesurveys
  
@@ -232,7 +236,8 @@ class CoursesurveysController < ApplicationController
     # and totals
     #
     @instructor.instructorships.each do |i|
-      results = @results[i.ta ? :tad_klasses : :klasses]   # BUCKET SORT YEAHHHHHH
+      klasstype = i.ta ? :tad_klasses : :klasses
+      results = @results[klasstype]   # BUCKET SORT YEAHHHHHH
       eff_q   = (i.ta ? ta_eff_q : prof_eff_q)
       result  = [i.klass,
                  i.survey_answers.find_by_survey_question_id(eff_q.id),
@@ -243,20 +248,22 @@ class CoursesurveysController < ApplicationController
       next unless result[1]
       results << result
 
-      t = (@totals[i.course.classification][i.course] ||= {:eff=>[], :ww=>[]})
+      t = (@totals[klasstype][i.course.classification][i.course] ||= {:eff=>[], :ww=>[]})
       t[:eff]     <<  result[1].mean
       t[:ww]      <<  (result[2] ? result[2].mean : nil)
       t[:eff_max] ||= result[1].survey_question.max
       t[:ww_max ] ||= (result[2] ? result[2].survey_question.max : nil)
     end
 
-    @totals.values.collect(&:values).flatten.each {|t| t[:ww].compact!}
+    @totals.values.collect(&:values).flatten.collect(&:values).flatten.each {|t| t[:ww].compact!}
 
     # Sort results by descending (semester, course)
     # TODO: change this to use sort_by! when we upgrade to ruby 1.9
-    @results[:klasses].sort! {|a,b| b.first.course.to_s <=> a.first.course.to_s}
-    @results[:klasses].sort! {|a,b| b.first.course.course_number <=> a.first.course.course_number}
-    @results[:klasses].sort! {|a,b| b.first.semester <=> a.first.semester}
+    [ :klasses, :tad_klasses ].each do |klasstype|
+        @results[klasstype].sort! {|a,b| b.first.course.to_s <=> a.first.course.to_s}
+        @results[klasstype].sort! {|a,b| b.first.course.course_number <=> a.first.course.course_number}
+        @results[klasstype].sort! {|a,b| b.first.semester <=> a.first.semester}
+    end
   end #instructor
 
   def editinstructor

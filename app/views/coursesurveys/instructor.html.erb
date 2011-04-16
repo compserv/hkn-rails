@@ -116,22 +116,17 @@
           } .join(", ") ) %></span></td>
     </tr>
     <%- end # results -%>
-    </tbody></table>
-<%- end # klasstype -%>
 
 <!-- Aggregate stats -->
 <%# Warning: unreadable mass of code %>
-<%- unless @instructor.private -%>
-<div id="table">
-  <h3 class="center">Totals</h3>
-  <table id="ratings" class="table"><tbody>
-   <tr>
+  <tr>
     <th>Totals</th>
     <th>Teaching Effectiveness</th>
     <th>How worthwhile was this course?</th>
+    <th></th>
   </tr>
   <%- [ :undergrad, :grad ].each do |classification|
-      courses = @totals[classification]
+      courses = @totals[klasstype][classification]
       courses.keys.sort_by(&:to_s).sort_by(&:course_number).each do |course|
           stats = courses[course]
   -%>
@@ -141,6 +136,7 @@
     <%- [:eff, :ww].each do |s| -%>
     <td><%= rating_and_bar(stats[s].avg, stats["#{s}_max".to_sym]) if stats[s].any? %></td>
     <%- end -%>
+    <td></td>
   </tr>
   <%- end # courses   -%>
   <!-- <%= classification %> -->
@@ -157,7 +153,7 @@
 
   </tbody></table>
 </div>
-<%- end # private for totals -%>
+<%- end # klasstype -%>
 
 <%- end #cache -%>
 
