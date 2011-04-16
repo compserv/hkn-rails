@@ -18,8 +18,8 @@
       <%= link_to person.fullname, profile_path(:login => person.username) %>
       <div class="small"><%= person.status %></div>
     </td>
-    <td><%= raw html_obfuscate person.email unless person.private %></td>
-    <td><%= person.phone_number unless person.private %></td>
+    <td><%= raw html_obfuscate person.email if !person.private || @auth['csec'] %></td>
+    <td><%= person.phone_number if !person.private || @auth['csec'] %></td>
   </tr>
 <% end %>
 </table>
