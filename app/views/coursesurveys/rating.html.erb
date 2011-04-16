@@ -41,7 +41,7 @@
     <div class="info-item">
       <table class="histogram">
         <%- @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key|
-            next if key.is_a?(Integer) && key > @answer.survey_question.max
+            next if key.to_s.is_int? && key.to_i > @answer.survey_question.max
         -%>
           <tr>
             <th><%= key %></th>
