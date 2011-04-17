@@ -148,7 +148,7 @@ class CoursesurveysController < ApplicationController
       end
     end
 
-    if @instructors.empty? and @tas.empty?
+    if @instructor && @instructors.empty? && @tas.empty?
       flash.now[:notice] = "No instructor named #{@instructor.full_name} found for current class and semester"
       @instructor = nil
     end
