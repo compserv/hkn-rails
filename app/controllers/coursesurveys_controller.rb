@@ -212,9 +212,10 @@ class CoursesurveysController < ApplicationController
     #      Instructor.find_by_name(first_name, last_name)
     #    end
 
+    params[:name] ||= ""
     @instructor = _get_instructor(params[:name])
 
-    return redirect_to coursesurveys_search_path([first_name,last_name].join(' ')) unless @instructor
+    return redirect_to coursesurveys_search_path(params[:name].split(',').reverse.join(' ')) unless @instructor
  
     # Don't do any heavy computation if cache exists
     return if fragment_exist? instructor_cache_path(@instructor)
