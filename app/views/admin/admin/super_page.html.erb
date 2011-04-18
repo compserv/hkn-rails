@@ -12,7 +12,20 @@
 					<% end %>
 				</ul>
 			</li>
-			<li>Challenges: <%= cand["challenges"] %></li>
+      <li>
+        Challenges: <%= cand["challenges"] %>
+        <% unless cand["unconfirmed_challenges"].empty? %>
+          <br />
+        Unconfirmed challenges:
+        <ul>
+          <% cand["unconfirmed_challenges"].each do |challenge|  %>
+            <li>
+              <%= challenge.name %> - <%= challenge.officer.full_name %> 
+            </li>
+          <% end %>
+        </ul>
+        <% end %>
+      </li>
 			<li>Resume: <%= cand["resumes"] %></li>
 			<li>Quiz: <%= cand["quiz"] %></li>
 		</ul>
