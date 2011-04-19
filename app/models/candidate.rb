@@ -100,26 +100,54 @@ class Candidate < ActiveRecord::Base
     results = Hash.new(false)
     quiz_resp = self.quiz_responses
     flash ||= {}
+    q8 = []
+    q8_answers = ['exam', 'tutor', 'course survey', 'advising', 'food run', 'review session', 'faculty retreat', 'course guide', 'department bake off', 'department bake-off']
     if !quiz_resp.empty? #Fill hash with default blanks
       for resp in quiz_resp
         if resp.number.to_sym == :q1
           if resp.response.downcase =~ /.*urbana( |-)champaign.*/
             results[resp.number.to_sym] = true
-            resp.correct = true
-            resp.save!
+            resp.update_attributes! :correct => true
             score += 1
           else
-            resp.correct = false
-            resp.save!
+            resp.update_attributes! :correct => false
+          end
+        elsif [:q8_1, :q8_2, :q8_3, :q8_4].include? resp.number.to_sym
+          idx = q8_answers.index{|regex| resp.response.downcase =~ /.*#{regex}.*/}
+          if idx != nil and !q8.include?(idx)
+            resp.update_attributes! :correct => true
+            score += 1
+            q8 << idx
+          else
+            resp.update_attributes! :correct => false
+          end
+        elsif resp.number.to_sym == :q9
+          if [/.*brewer.*/, /.*garcia.*/, /.*birdsall.*/, /.*babak.*/, /.*ayazifar.*/, /.*sahai.*/].delete_if{|regex| !(resp.response.downcase =~ regex)}.size >= 1
+            resp.update_attributes! :correct => true
+            score += 1
+          else
+            resp.update_attributes! :correct => false
+          end
+        elsif resp.number.to_sym == :q10_1
+          if resp.response.downcase =~ /.*290 cory.*/ or resp.response.downcase =~ /.*cory 290.*/
+            resp.update_attributes! :correct => true
+            score += 1
+          else
+            resp.update_attributes! :correct => false
+          end
+        elsif resp.number.to_sym == :q10_2
+          if resp.response.downcase =~ /.*345 soda.*/ or resp.response.downcase =~ /.*soda 345.*/
+            resp.update_attributes! :correct => true
+            score += 1
+          else
+            resp.update_attributes! :correct => false
           end
         elsif answers[resp.number.to_sym].downcase == resp.response.downcase
           results[resp.number.to_sym] = true
-          resp.correct = true
-          resp.save!
+          resp.update_attributes! :correct => true
           score += 1
         else
-          resp.correct = false
-          resp.save!
+          resp.update_attributes! :correct => false
         end
       end
     else

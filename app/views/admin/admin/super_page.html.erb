@@ -46,9 +46,23 @@
       </li>
       <li class="<%= (cand["resume"] > 0) ? "green" : "red"%>">Resume: <%= cand["resume"] %></li>
       <li class="<%= (cand["quiz"] >= 18) ? "green" : "red"%>">Quiz: <%= cand["quiz"] %></li>
+      <% quiz_numbers = [ :q1, :q2, :q3, :q4, :q5_1, :q5_2, :q6, :q7_1, :q7_2, :q7_3, :q7_4, :q7_5, :q7_6, :q8_1, :q8_2, :q8_3, :q8_4, :q9, :q10_1, :q10_2, ] %>
+      <% cand_name_no_space = cand["candidate"].gsub(/ /, '_') %>
+      <button id="quiz_toggle_<%= cand_name_no_space %>">Show Answers</button>
+        <script> $('#quiz_toggle_<%= cand_name_no_space %>').click(function(){$('#quiz_answers_<%= cand_name_no_space %>').toggle();});</script>
+      <div id="quiz_answers_<%= cand_name_no_space %>" style="display:none">
+        All Answers:
+        <ul>
+        <% quiz_numbers.each do |num| %>
+          <% next if cand["quiz_responses"][num].nil? %>
+          <li><%= num %>. <%= cand["quiz_responses"][num][:response] %></li>
+        <% end %>
+        </ul>
+      </div>
+      <br />
+
       <% unless cand["quiz"] >= 18 %>
         Incorrect Quiz Answers:
-        <% quiz_numbers = [ :q1, :q2, :q3, :q4, :q5_1, :q5_2, :q6, :q7_1, :q7_2, :q7_3, :q7_4, :q7_5, :q7_6, :q8_1, :q8_2, :q8_3, :q8_4, :q9, :q10_1, :q10_2, ] %>
         <ul>
         <% quiz_numbers.each do |num| %>
           <% next if cand["quiz_responses"][num].nil? || cand["quiz_responses"][num][:correct] %>
@@ -56,6 +70,7 @@
         <% end %>
         </ul>
       <% end %>
+
 		</ul>
 	</div>
 	<% end %>
