@@ -1,3 +1,7 @@
+/* Disabling course survey graphs for certain individuals */
+#chart_div, #ta_chart_div, #instructor_chart_div {
+  display: none;
+}
 .ratingbar { width: 100px; height: 15px; border: 1px #ddd solid; display: inline-block; padding: 2px; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .ratingbar .subbar { height: 100%; display: block; border-radius: 2px; -webkit-border-radius: 2px; -moz-border-radius: 2px;}
 .histogram th, .histogram td { padding: 0 4px; }
