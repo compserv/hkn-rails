@@ -8,11 +8,11 @@ class Admin::AdminController < ApplicationController
       calculate_status(cand)    
     }
 
-    puts @candidates
+    #puts @candidates
   end
 
   def calculate_status(cand)
-    puts cand
+    #puts cand
     done = Hash.new(false)
 
     if cand.person_id == nil
@@ -22,16 +22,18 @@ class Admin::AdminController < ApplicationController
     done["candidate"] = cand.person.full_name
     done["events"] = cand.requirements_count 
 
-    puts "REQ COUNT"
-    puts cand.requirements_count
-    puts "=="
+    #puts "REQ COUNT"
+    #puts cand.requirements_count
+    #puts "=="
     done["challenges"] = cand.challenges.select {|c| c.status }.length
     done["unconfirmed_challenges"] = cand.challenges.where :status => nil
+    done["confirmed_challenges"] = cand.challenges.where :status => true
     done["resume"] = cand.person.resumes.length
-    done["quiz"] = cand.quiz_responses.length
+    done["quiz"] = cand.quiz_score
+    done["quiz_responses"] = Hash[cand.quiz_responses.map{|x| [x.number.to_sym, {:response => x.response, :correct => x.correct}]}]
     done["course_surveys"] = false
 
-    puts done.to_s
+    #puts done.to_s
     return done
   end 
 

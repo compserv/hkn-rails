@@ -7,6 +7,7 @@ class QuizResponse < ActiveRecord::Base
   #   candidate_id : integer 
   #   created_at   : datetime 
   #   updated_at   : datetime 
+  #   correct      : boolean 
   # =======================
 
   belongs_to :candidate

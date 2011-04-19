@@ -7,6 +7,7 @@ class Candidate < ActiveRecord::Base
   #   updated_at            : datetime 
   #   committee_preferences : string 
   #   release               : string 
+  #   quiz_score            : integer 
   # =======================
 
   belongs_to :person
@@ -71,7 +72,6 @@ class Candidate < ActiveRecord::Base
     
     return {:status => status, :rsvps => sorted_rsvps}
   end
-  
   def grade_quiz
     answers = { 
       :q1 => "University of Illinois, Urbana-Champaign",
@@ -99,15 +99,33 @@ class Candidate < ActiveRecord::Base
     score = 0
     results = Hash.new(false)
     quiz_resp = self.quiz_responses
+    flash ||= {}
     if !quiz_resp.empty? #Fill hash with default blanks
       for resp in quiz_resp
-        if answers[resp.number.to_sym] == resp.response
+        if resp.number.to_sym == :q1
+          if resp.response.downcase =~ /.*urbana( |-)champaign.*/
+            results[resp.number.to_sym] = true
+            resp.correct = true
+            resp.save!
+            score += 1
+          else
+            resp.correct = false
+            resp.save!
+          end
+        elsif answers[resp.number.to_sym].downcase == resp.response.downcase
           results[resp.number.to_sym] = true
+          resp.correct = true
+          resp.save!
           score += 1
+        else
+          resp.correct = false
+          resp.save!
         end
       end
     else
       flash[:notice] = "You haven't submitted any quiz answers yet!"
     end
+    self.quiz_score = score
+    self.save!
   end
 end
