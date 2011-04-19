@@ -33,8 +33,6 @@
 <%# cache instructor_cache_path(@instructor) do -%>
 <%- if true -%>
 
-<%# Temporarily disabling charts %>
-<% if false %>
 <%- unless @results[:klasses].blank? -%>
 <%# content_for :header do %>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -57,7 +55,7 @@
       data[type].addColumn('string', 'Semester');
       data[type].addColumn('number', 'Teaching Effectiveness');
       data[type].addColumn('number', 'Worthwhile Course?');
-      data[type].addRows($(".semester").length);
+      data[type].addRows($("#" + type + "_table .semester").length);
       
       count = 0;
       $("#" + type + "_table #ratings tbody tr").each(function(){
@@ -65,8 +63,6 @@
         year = $(dat[0]).find(".semester a").html();
         eff = parseFloat($(dat[1]).find(".rating").html(), 10);
         worth = parseFloat($(dat[2]).find(".rating").html(), 10);
-        
-        console.log(year + ": " + eff + " " + worth);
         
         if(year != null){
           data[type].setValue(count, 0, year);
@@ -77,19 +73,27 @@
         
       }); 
 
-      var chart = new google.visualization.ColumnChart($("#instructor_chart_div")[0]);
-      chart.draw(data['instructor'], 
-        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 7}}
-      );
-      var ta_chart = new google.visualization.ColumnChart($("#ta_chart_div")[0]);
-      ta_chart.draw(data['ta'], 
-        {width: $(window).width() * 0.9, height: 400, title: 'Course Survey', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 5}}
-      );
+      console.log (data[type].getNumberOfRows());
+      if (data[type].getNumberOfRows() > 0)
+      {
+        if (type == "instructor")
+        {
+          var chart = new google.visualization.ColumnChart($("#instructor_chart_div")[0]);
+          chart.draw(data['instructor'], 
+            {width: $(window).width() * 0.9, height: 300, title: 'Instructor Ratings', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 7}}
+          );
+        } else if (type == "ta")
+        {
+          var ta_chart = new google.visualization.ColumnChart($("#ta_chart_div")[0]);
+          ta_chart.draw(data['ta'], 
+            {width: $(window).width() * 0.9, height: 300, title: 'TA Ratings', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 5}}
+          );
+        }
+      }
     }
   </script>
 <%# end %>
 <% end # unless results.blank %>
-<% end %>
 
 
 <div id="instructor_chart_div"></div> 

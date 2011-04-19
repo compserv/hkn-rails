@@ -1,6 +1,4 @@
 <%# content_for :header do %>
-<%# Temporarily disabling chart %>
-<% if false %>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script type="text/javascript">
     google.load("visualization", "1", {packages:["corechart"]});
@@ -39,12 +37,12 @@
           backgroundColor: 'none',
           hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}},
           isStacked: false,
-          reverseCategories: true
+          reverseCategories: true,
+          vAxis: {minValue: 0, maxValue: 7}
         }
       );
     }
   </script>
-<% end %>
 <%# end %>
 
 <div class="trans-bg">
