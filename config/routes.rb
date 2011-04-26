@@ -44,6 +44,12 @@ HknRails::Application.routes.draw do
       get  "upload_surveys" => "csec#upload_surveys",  :as => :upload_surveys
       post "upload_surveys" => "csec#upload_surveys_post", :as => :upload_surveys_post
     end
+
+    scope "rsec", :as => "rsec" do
+      get  "/" => "rsec#index"
+      post "add_elected/:id/:position"        => "rsec#add_elected",      :as => :add_elected
+    end # rsec
+
     scope "deprel" do
       match "/" => "deprel#overview"
     end

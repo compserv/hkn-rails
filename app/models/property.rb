@@ -71,6 +71,10 @@ class Property < ActiveRecord::Base
       make_semester
     end
 
+    def current_semester_range
+      case current_semester
+    end
+
     def set_property(variable, value)
       prop = get_or_create
       prop.send(variable+"=", value)
