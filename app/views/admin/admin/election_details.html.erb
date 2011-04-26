@@ -1,0 +1,17 @@
+<h1>Set your HKN officer details</h1>
+
+<% position = @user %>
+<form action="submit_info" method="post">
+    <h3><%= position.full_name %></h3>
+    <p>Desired HKN login: <input type="text" name="username" value="<%= position.username %>" /></p>
+    <p>Phone Number: <input type="text" name="phone_number" value="<%= position.phone_number %>" /></p>
+    <p>Texting?: <input type="text" name="texting" value="<%= position.texting %>" /></p>
+    <p>AIM: <input type="text" name="aim" value="<%= position.aim %>" /></p>
+    <p>Email: <input type="text" name="email" value="<%= position.email %>" /></p>
+    <p>Current Address: <input type="text" name="local_address" value="<%= position.local_address %>" /></p>
+    <p>SID: <input type="text" name="sid" value="<%= position.sid %>" /></p>
+    <p>Keycard Number: <input type="text" name="keycard" value="<%= position.keycard %>" /></p>
+    <p>Birthday: <input type="text" name="date_of_birth" value="<%= position.date_of_birth %>" /></p>
+    <p>Midnight Meeting?: <input type="text" name="midnight_meeting" value="<%= position.midnight_meeting %>" /></p>
+    <input type="submit" value="Submit" /> 
+</form>

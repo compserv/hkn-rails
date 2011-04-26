@@ -3,7 +3,7 @@ class Admin::AdminController < ApplicationController
   before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
 
   def election_details
-    @user = current_user
+    @user = @current_user
   end
 
   def super_page

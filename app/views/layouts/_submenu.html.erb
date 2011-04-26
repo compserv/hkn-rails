@@ -97,11 +97,15 @@
   </ul>
   <ul class="plain">
     <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
+    <li><a href="/admin/general/election_details/" class="navigation_sublevel_item">Election Details</a></li>
     <% if @auth["tutoring"] %>
       <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
     <% end %>
     <% if @auth['csec'] %>
       <li><a href="/admin/csec" class="navigation_sublevel_item">Csec Admin</a></li>
+    <% end %>
+    <% if @auth['rsec'] %>
+      <li><a href="/admin/rsec/elections" class="navigation_sublevel_item">Elections</a></li>
     <% end %>
     <% if @auth["deprel"] %>
       <li><a href="/admin/deprel" class="navigation_sublevel_item">Deprel Admin [<%= controller.num_deprel_requests %>]</a></li>
