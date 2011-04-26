@@ -1,0 +1,43 @@
+<script type="text/javascript">
+    $(document).ready(function (){
+        $.ajax({
+            url: '../find_members',
+            success: function(data) {
+                $("#find_user").autocomplete(data);
+            }
+        });
+    });
+</script>
+
+<h1>Add New Officers</h1>
+
+<% for group in @groups %>
+    <% for position in group[:members] %>
+        <% if position %> 
+	    <form action="submit_info" method="post">
+            <h3><%= position.full_name %></h3>
+            <p>Desired HKN login: <input type="text" name="username" value="<%= position.username %>" /></p>
+            <p>Phone Number: <input type="text" name="phone_number" value="<%= position.phone_number %>" /></p>
+            <p>Texting?: <input type="text" name="texting" value="<%= position.texting %>" /></p>
+            <p>AIM: <input type="text" name="aim" value="<%= position.aim %>" /></p>
+            <p>Email: <input type="text" name="email" value="<%= position.email %>" /></p>
+            <p>Current Address: <input type="text" name="local_address" value="<%= position.local_address %>" /></p>
+            <p>SID: <input type="text" name="sid" value="<%= position.sid %>" /></p>
+            <p>Keycard Number: <input type="text" name="keycard" value="<%= position.keycard %>" /></p>
+            <p>Birthday: <input type="text" name="date_of_birth" value="<%= position.date_of_birth %>" /></p>
+            <p>Midnight Meeting?: <input type="text" name="midnight_meeting" value="<%= position.midnight_meeting %>" /></p>
+        </form>
+        <% else %>
+            <form action="add_elected" method="post">
+                Person elected: <input type="text" id="find_user" name="username" />
+                <input type="submit" value="Submit" />
+            </form>
+        <% end %>
+
+    <% end %>
+
+</form>
+
+
+<% end %>
+
