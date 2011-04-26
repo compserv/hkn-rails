@@ -72,8 +72,6 @@ class Property < ActiveRecord::Base
     end
 
     def current_semester_range
-      case current_semester
-      end
     end
 
     def set_property(variable, value)

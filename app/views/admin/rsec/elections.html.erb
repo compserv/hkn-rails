@@ -1,18 +1,30 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
 <script type="text/javascript">
     $(document).ready(function (){
         $.ajax({
-            url: '../find_members',
+            url: 'find_members',
             success: function(data) {
-                $("#find_user").autocomplete(data);
+                    $("#find_user").autocomplete(data, {
+                        formatItem: function(item) {
+                            return item.name;
+                        }
+                    }).result(function(event, item) {
+                        $("#user_id").val(item.id);
+                    });
             }
         });
     });
 </script>
 
+<% end %>
+
 <h1>Add New Officers</h1>
 
 <% for group in @groups %>
-    <% for position in group[:members] %>
+    <h2><%= group[:name] %></h2>
+    <% for position in group[:positions] %>
         <% if position %> 
 	    <form action="submit_info" method="post">
             <h3><%= position.full_name %></h3>
@@ -29,7 +41,13 @@
         </form>
         <% else %>
             <form action="add_elected" method="post">
-                Person elected: <input type="text" id="find_user" name="username" />
+                <p>Person elected: 
+                <input type="text" id="find_user" name="username" />
+                </p>
+                <p>
+                (Autopopulated) 
+                <input type="text" id="user_id" name="id" />
+                </p>
                 <input type="submit" value="Submit" />
             </form>
         <% end %>

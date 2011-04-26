@@ -20,6 +20,7 @@ HknRails::Application.routes.draw do
       match "edit_announcement/:id" => "admin#edit_announcement"
       match "update_announcement" => "admin#update_announcement"
       match "delete_announcement/:id" => "admin#delete_announcement"
+      match "election_details" => "admin#election_details"
     end
 
     scope "vp" do
@@ -48,6 +49,9 @@ HknRails::Application.routes.draw do
     scope "rsec", :as => "rsec" do
       get  "/" => "rsec#index"
       post "add_elected/:id/:position"        => "rsec#add_elected",      :as => :add_elected
+      match "elections" => "rsec#elections"
+      match "find_members" => "rsec#find_members"
+      match "submit_info" => "rsec#submit_info"
     end # rsec
 
     scope "deprel" do
