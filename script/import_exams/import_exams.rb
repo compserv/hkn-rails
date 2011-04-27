@@ -90,7 +90,7 @@ def import_exam(file_path, success_dir)
   end
 
   # Move the file if successful
-  if success
+  if success and basedir != success_dir
     FileUtils.mv(file_path, success_dir)
   end
 
