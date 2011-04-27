@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
 
-# Usage: import_exams EXAM_DIRECTORY | EXAM
+# Usage: import_exams [EXAM_DIRECTORY]
 #
-# This script will import exams from the specified folder, or the given exam
-# if one is specified. Successfully imported exams will go into the
-# ~hkn-rails/public/examfiles directory. Klasses must be imported prior to
-# running the script by importing coursesurveys. Exams must be formatted
-# as follow:
+# This script will import exams from the specified folder, or the default
+# output of fix_exams.rb. Please run fix_exams.rb before running this script.
+# Successfully imported exams will go into the $RAILS_ROOT/public/examfiles
+# directory. Exams must be formatted as follow:
 # 	<course abbr>_<semester>_<exam-type>[#][_sol].<filetype>
+#
 # For example, "cs61a_fa10_mt3.pdf" or "ee40_su05_f_sol.pdf".
 #
 # Supported filetypes: (TODO add more)
-# 	.pdf
+# 	pdf txt
 #
 # -adegtiar
 
@@ -19,22 +19,25 @@
 # Trick Ruby into loading all of our Rails configurations
 # Note: You MUST have the environment variable $RAILS_ENV set to 'production'
 # if you want to load in the course surveys to the production server.
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../../../config/environment', __FILE__)
 require 'fileutils'
 
 # Regex for verifying the file format
-$filepattern = /[a-zA-Z]+\d+[a-zA-Z]*_(sp|fa|su)\d\d_(mt\d+|f|q\d+)(_sol)?.(\w)+$/
+$filepattern = \
+  /[a-zA-Z]+\d+[a-zA-Z]*_(sp|fa|su)\d\d_(mt\d+|f|q\d+)(_sol)?\.(\w)+$/
 # Regex for tokenizing the file name
 
-$tokenpattern = /([a-zA-Z]+)(\d+[a-zA-Z]*)_(sp|fa|su)(\d\d)_(mt|f|q)(\d)?(_sol)?.\w+$/
+$tokenpattern = \
+  /([a-zA-Z]+)(\d+[a-zA-Z]*)_(sp|fa|su)(\d\d)_(mt|f|q)(\d)?(_sol)?\.\w+$/
 
-VALID_EXTENSIONS = ['pdf']
+VALID_EXTENSIONS = ['pdf', 'txt']
 SUCCESS_DIR = File.join(::Rails.root.to_s, 'public', 'examfiles')
-
+PROCESSED_EXAMS_DIR = File.join(::Rails.root.to_s, 'script', 'import_exams', \
+                               'processed_exams', 'success')
 
 # Imports the exam at the given file path into the database. Also moves
 # successfully imported exams in the given directory, if specified.
-def import_exam(file_path, success_dir=nil)
+def import_exam(file_path, success_dir)
   basedir = File.dirname(file_path)
   filename = File.basename(file_path)
 
@@ -43,9 +46,6 @@ def import_exam(file_path, success_dir=nil)
   if not is_valid_exam_file?(filename)
     return false
   end
-
-  file_path = convert_file(file_path)
-  filename = File.basename(file_path)
 
   # File should now be a properly formatted pdf file
   dept, course_num, season, year, exam_type_abbr, type_num, sol_flag = (
@@ -58,7 +58,6 @@ def import_exam(file_path, success_dir=nil)
   course = Course.find_by_short_name(dept, course_num)
   if course.nil?
     puts "\tcould not find course #{dept}#{course_num}"
-    puts "\tadd the course and re-run the script."
     return false
   end
 
@@ -66,7 +65,6 @@ def import_exam(file_path, success_dir=nil)
   klass = Klass.find_by_course_and_nice_semester(course, semester)
   if klass.nil?
     puts "\tcould not find klass #{course} #{semester}"
-    puts "\tadd the klass and re-run the script."
     return false
   end
 
@@ -92,8 +90,8 @@ def import_exam(file_path, success_dir=nil)
   end
 
   # Move the file if successful
-  if success and success_dir
-    FileUtils.cp(file_path, success_dir)
+  if success
+    FileUtils.mv(file_path, success_dir)
   end
 
   return success
@@ -102,44 +100,21 @@ end
 # Ensures the file is correctly formatted and of a supported file type.
 def is_valid_exam_file?(filename)
   if not $filepattern.match(filename)
-    puts "\tinvalid file name: #{filename} - ignoring"
+    puts "\tinvalid file name: #{filename} - aborting"
     return false
   end
   type = filename.split('.')[1]
   if not VALID_EXTENSIONS.include?(type)
-    puts "\tunsupported file type: #{type} - ignoring"
-    puts "\tsupported file types: #{VALID_EXTENSIONS}"
+    puts "\tunsupported file type: #{type} - aborting"
     return false
   else
     return true
   end
 end
 
-# Given a properly formatted file of a supported file type, makes the
-# filename lowercase and converts it to pdf. Returns the new file path.
-def convert_file(file_path)
-  filename = File.basename(file_path)
-  basedir = File.dirname(file_path)
-
-  # Make sure the file is all lowercase, for consistency
-  if filename =~ /[A-Z]/
-    puts "\tRenaming to all lowercase"
-    filename.downcase!
-    new_path = File.join(basedir, filename)
-    FileUtils.mv(file_path, new_path)
-    file_path = new_path
-  end
-
-  description, type = filename.split('.')
-
-  # TODO add conversion from other types
-  return file_path
-end
-
 # Imports a directory of exam files. Moves files to 'dirname/successful'.
-def import_exam_directory(dirname, success_dir=nil)
+def import_exam_directory(dirname, success_dir)
   puts "Importing exams from #{dirname}..."
-  success_dir = File.join(dirname, 'successful') unless !success_dir.nil?
   puts "Successful imports will go into #{success_dir}"
   if not File.exist?(success_dir)
     puts "Could not find #{success_dir}. Creating now."
@@ -147,7 +122,6 @@ def import_exam_directory(dirname, success_dir=nil)
   end
 
   n_succeeded = 0
-  n_failed = 0
 
   # Call importExam for each file in directory.
   Dir[File.join(dirname, '*')].each do |file_path|
@@ -155,38 +129,31 @@ def import_exam_directory(dirname, success_dir=nil)
       if import_exam(file_path, success_dir)
         n_succeeded += 1
       else
-        n_failed += 1
+        abort "Error - please run fix_exams before re-running this script."
       end
     end
   end
 
   puts 'Done.'
-  puts "#{n_succeeded} exams successful."
-  puts "#{n_failed} exams failed."
+  puts "#{n_succeeded} exams successfully imported."
 end
 
 
-file_or_dir = File.expand_path('~/examfiles/test') # testing default
-
 # Error checking
 if ARGV.size == 0
-  puts 'You must specify an exam or directory.'
-  puts "Supported filetypes: #{VALID_EXTENSIONS}"
-  puts "Debugging: using default ~/examfiles/test"
-# exit
-elsif not Course.exists?
+  exam_dir = PROCESSED_EXAMS_DIR
+else
+  exam_dir = File.expand_path(ARGV[0])
+end
+if not Course.exists?
   abort 'No Courses found. Please import courses before re-running this script.'
 elsif not Klass.exists?
   abort 'No Klasses found. Please import course surveys before re-running this script."'
-elsif not File.exist?(file_or_dir = File.expand_path(ARGV[0]))
-  abort "Could not find #{file_or_dir} - exiting."
+elsif !File.exist?(exam_dir)
+  abort "Could not find #{exam_dir} - exiting."
 end
 
 puts "Creating output directory: #{SUCCESS_DIR}" unless File.exists?(SUCCESS_DIR)
 FileUtils.mkdir_p(SUCCESS_DIR)
 
-if File.file?(file_or_dir)
-  import_exam(file_or_dir, SUCCESS_DIR)
-else	# directory
-  import_exam_directory(file_or_dir, SUCCESS_DIR)
-end
+import_exam_directory(exam_dir, SUCCESS_DIR)
