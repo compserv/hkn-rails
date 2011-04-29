@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110426030242) do
+ActiveRecord::Schema.define(:version => 20110429083019) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20110426030242) do
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "desc"
   end
 
   create_table "badges_people", :id => false, :force => true do |t|
@@ -194,7 +195,8 @@ ActiveRecord::Schema.define(:version => 20110426030242) do
     t.integer  "keycard"
     t.boolean  "midnight_meeting", :default => true
     t.boolean  "txt",              :default => false
-    t.datetime "elected_time"
+    t.string   "semester",                            :null => false
+    t.datetime "elected_time",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -255,6 +257,7 @@ ActiveRecord::Schema.define(:version => 20110426030242) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "committee",   :default => false, :null => false
   end
 
   create_table "groups_people", :id => false, :force => true do |t|
@@ -301,6 +304,11 @@ ActiveRecord::Schema.define(:version => 20110426030242) do
     t.string   "first_name"
   end
 
+  create_table "instructors_klasses", :id => false, :force => true do |t|
+    t.integer "instructor_id"
+    t.integer "klass_id"
+  end
+
   create_table "instructorships", :force => true do |t|
     t.integer  "klass_id"
     t.integer  "instructor_id"
@@ -321,6 +329,11 @@ ActiveRecord::Schema.define(:version => 20110426030242) do
     t.integer  "num_students"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "klasses_tas", :id => false, :force => true do |t|
+    t.integer "instructor_id"
+    t.integer "klass_id"
   end
 
   create_table "locations", :force => true do |t|

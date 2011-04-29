@@ -18,6 +18,8 @@ class Property < ActiveRecord::Base
   validates_numericality_of :tutoring_start, :greater_than_or_equal_to => 11
   validates_numericality_of :tutoring_end, :greater_than => :tutoring_start, :less_than_or_equal_to => 16
 
+  MONTH_SEMESTER_MAP = { 0..4 => 1, 5..6 => 2, 7..11 => 3 }
+
   class << self
     def get_or_create
       prop = Property.first
@@ -72,6 +74,11 @@ class Property < ActiveRecord::Base
     end
 
     def current_semester_range
+      MONTH_SEMESTER_MAP.each_pair do |months, sem|
+        next if Time.now.month > months.last
+        this_year = Time.now.year
+        Time.local(year, months.first) .. Time.local(year, months.last)
+      end
     end
 
     def set_property(variable, value)

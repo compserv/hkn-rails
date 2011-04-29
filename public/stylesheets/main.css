@@ -9,6 +9,7 @@ a { color: #3366CC; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 /*Forms*/
+.required-field:after { content: "*"; color: red; font-weight: bold; }
 input { border: 1px solid #ccc; background: white; border-radius: 3px; -moz-border-radius: 3px; -moz-border-radius: 3px;font-size: 1.1em; margin: 2px 0; padding: 2px 3px; outline: none;}
 input:focus { border: 1px solid black; }
 input[type=submit]{
@@ -343,7 +344,7 @@ h4{
 #footer-right { float: right; }
 #push {height: 30px;}
 /* Messages */
-#messages { display: block; margin: 0 0 1em; text-align: center;}
+#messages { display: block; margin: 0 0 1em; text-align: center; list-style-position: inside; }
 #debug { display: block; font-size: 12px !important; margin: 0 0 1em; padding: 4px 25px 4px 25px; }
 .message { border: solid 1px #E6D98A; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; padding: 5px; background: #FFFAD6; color: #595957; }
 #debug .message { border: solid 3px #cc0000; padding: 10px; background: #ff6666; color: #FFFFFF; }

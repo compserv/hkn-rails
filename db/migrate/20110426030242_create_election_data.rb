@@ -10,7 +10,9 @@ class CreateElectionData < ActiveRecord::Migration
       t.boolean  :midnight_meeting, :null => :false, :default => true
       t.boolean  :txt,              :null => :false, :default => false
 
-      t.datetime :elected_time
+      # Metadata
+      t.string   :semester,         :null => false
+      t.datetime :elected_time,     :null => false
 
       t.timestamps
     end # create_table

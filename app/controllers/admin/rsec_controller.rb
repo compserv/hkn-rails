@@ -17,6 +17,9 @@ class Admin::RsecController < Admin::AdminController
   # for the POSITION.
   #
   def add_elected
+    unless Election.create(:person_id => params[:id], :position => params[:position])
+      # TODO: error
+    end
   end # add_elected
 
 end # Admin::RsecController

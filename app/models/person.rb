@@ -40,6 +40,12 @@ class Person < ActiveRecord::Base
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
+  validates_each :username do |model, attr, value|
+      model.errors.add(attr, 'requires password confirmation') if model.username_changed? && !model.valid_password?(model.password, true)
+
+      # sometimes people just verify password and don't want to change it
+      model.password = nil unless model.password_confirmation.present?
+  end
   # Username, password, and email validation is done by AuthLogic
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
@@ -63,6 +69,10 @@ class Person < ActiveRecord::Base
 
   def full_name
     first_name + " " + last_name
+  end
+
+  def current_election
+      Election.find_by_person_id_and_semester self.id, Property.current_semester
   end
 
   def valid_ldap_or_password?(password)
