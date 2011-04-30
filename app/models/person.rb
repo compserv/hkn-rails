@@ -40,12 +40,6 @@ class Person < ActiveRecord::Base
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
-  validates_each :username do |model, attr, value|
-      model.errors.add(attr, 'requires password confirmation') if model.username_changed? && !model.valid_password?(model.password, true)
-
-      # sometimes people just verify password and don't want to change it
-      model.password = nil unless model.password_confirmation.present?
-  end
   # Username, password, and email validation is done by AuthLogic
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
@@ -57,6 +51,19 @@ class Person < ActiveRecord::Base
     # Allows us to use the old password hashes. Upon successfully logging in,
     # the password hash will be automatically converted to SHA512
     c.transition_from_crypto_providers = DjangoSha1
+  end
+
+  def change_username(opts)
+      new_uname, pw = opts[:username], opts[:password]
+      return false unless new_uname && pw
+      unless self.valid_password?(pw, true)
+          self.errors.add :password, 'is invalid'
+          return false
+      end
+      self.username = new_uname
+      self.password = pw
+      self.password_confirmation = pw
+      return self.valid?
   end
   
   def picture(guess=false)

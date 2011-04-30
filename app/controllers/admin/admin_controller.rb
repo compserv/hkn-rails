@@ -3,7 +3,7 @@ class Admin::AdminController < ApplicationController
   before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
 
     ELECTION_DETAILS = {
-      :person   => [:username,     
+      :person   => [ #:username,        # this isn't working atm
                     :phone_number, 
                     :aim,          
                     :email,        
@@ -29,8 +29,17 @@ class Admin::AdminController < ApplicationController
         pheedback << "Post-election info"
         pheedback << (obj=@current_user.current_election).update_attributes(params[:election])
     elsif params[:person].present? then
+        obj = @current_user
+
+        # Need to reset crypted password if username changed
+        unless params[:person][:username] == obj.username
+            obj.change_username :username => params[:person][:username], :password => params[:person][:password]
+        end
+        params[:person].delete :password
+        params[:person].delete :username
+
         pheedback << "User profile"
-        pheedback << (obj=@current_user).update_attributes(params[:person])
+        pheedback << obj.valid? && obj.update_attributes(params[:person])
     else
         # wat happened?
         redirect_to admin_general_election_details_path
