@@ -81,7 +81,7 @@
 <div class="election-form">
   <h3><%= {:person=>"User Account Preferences", :election=>"Post-Election Info"}[model] %></h3>
 
-<%= form_for obj, :url => admin_general_election_details_post_path do |f| %>
+<%= form_for obj, :url => admin_election_update_details_path(@user.username) do |f| %>
 
   <%- @details[model].each do |fname|
         ftag, required, explanation, options = details_map[model].assoc(fname)[1..-1]
@@ -121,4 +121,6 @@
 
 
 </div><%# results %>
+<div class="clear"></div>
 
+<%= link_to 'Back to elections', admin_election_details_path %>

@@ -20,9 +20,15 @@ HknRails::Application.routes.draw do
       match "edit_announcement/:id" => "admin#edit_announcement"
       match "update_announcement" => "admin#update_announcement"
       match "delete_announcement/:id" => "admin#delete_announcement"
+    end
 
-      match "election_details_post" => "admin#update_election_details", :as => :election_details_post
-      get   "election_details"      => "admin#election_details",        :as => :election_details
+    scope "election", :as => "election" do
+        get  "details"                => "elections#details",          :as => :details
+
+        put  "edit_details/:username" => "elections#update_details",   :as => :update_details
+        get  "edit_details/:username" => "elections#edit_details",     :as => :edit_details
+
+        get  "minutes"                => "elections#election_minutes", :as => :minutes
     end
 
     scope "vp" do
@@ -48,16 +54,12 @@ HknRails::Application.routes.draw do
       post "upload_surveys" => "csec#upload_surveys_post", :as => :upload_surveys_post
     end
 
-    scope "elections" do
-      get  "/minutes"                         => "rsec#election_minutes", :as => :minutes
-    end
-
     scope "rsec", :as => "rsec" do
       get  "/" => "rsec#index"
       post "add_elected"                      => "rsec#add_elected",      :as => :add_elected
-      match "elections"                       => "rsec#elections"
+      match "unelect/:election_id"             => "rsec#unelect",         :as => :unelect
+      match "elections"                       => "rsec#elections",        :as => :elections
       match "find_members"                    => "rsec#find_members"
-      match "submit_info"                     => "rsec#submit_info"
     end # rsec
 
     scope "deprel" do

@@ -19,6 +19,7 @@ class Property < ActiveRecord::Base
   validates_numericality_of :tutoring_end, :greater_than => :tutoring_start, :less_than_or_equal_to => 16
 
   MONTH_SEMESTER_MAP = { 0..4 => 1, 5..6 => 2, 7..11 => 3 }
+  SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
 
   class << self
     def get_or_create
@@ -111,6 +112,12 @@ class Property < ActiveRecord::Base
       start_year = ( semester_year ).to_i
 
       return Time.local(start_year, start_month).beginning_of_month
+    end
+
+    # Pretty semester from "20111"
+    def pretty_semester(s=nil)
+      s ||= current_semester
+      "#{SEMESTER_MAP[s[-1..-1].to_i]} #{s[0..3]}"
     end
     
     def get_property(variable)

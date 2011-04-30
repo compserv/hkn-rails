@@ -1,0 +1,20 @@
+<h1><%= Property.pretty_semester %> Elections</h1>
+
+<%- if @auth['rsec'] -%>
+  <%= link_to '[Elect people]', admin_rsec_elections_path %>
+<%- end # rsec -%>
+
+<%- if @current_user.current_election -%>
+  <h1><%= link_to '[Edit your details!]', admin_election_edit_details_path(@current_user) %></h1>
+<%- end # my election -%>
+
+<div id="elections">
+  <%- @elections.group_by(&:position).each do |position,es| -%>
+      <h2><%= position.titleize %></h2>
+      <ul>
+          <%- es.each do |e| -%>
+          <li><%= e.person.full_name %></li>
+          <%- end -%>
+      </ul>
+  <%- end # elections -%>
+</div>

@@ -2,55 +2,6 @@ class Admin::AdminController < ApplicationController
   #before_filter :authorize_officers, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
   before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
 
-    ELECTION_DETAILS = {
-      :person   => [ #:username,        # this isn't working atm
-                    :phone_number, 
-                    :aim,          
-                    :email,        
-                    :local_address,
-                    :date_of_birth ],
-      :election => [:txt,            
-                    :sid,            
-                    :keycard,        
-                    :midnight_meeting ]
-    }
-
-  def election_details
-    @user = @current_user
-    @election = @current_user.current_election
-    @details = ELECTION_DETAILS
-
-    Election.find_or_create_by_person_id_and_semester(@user.id, Property.current_semester)
-  end
-
-  def update_election_details
-    obj, pheedback = nil, []
-    if params[:election].present? then
-        pheedback << "Post-election info"
-        pheedback << (obj=@current_user.current_election).update_attributes(params[:election])
-    elsif params[:person].present? then
-        obj = @current_user
-
-        # Need to reset crypted password if username changed
-        unless params[:person][:username] == obj.username
-            obj.change_username :username => params[:person][:username], :password => params[:person][:password]
-        end
-        params[:person].delete :password
-        params[:person].delete :username
-
-        pheedback << "User profile"
-        pheedback << obj.valid? && obj.update_attributes(params[:person])
-    else
-        # wat happened?
-        redirect_to admin_general_election_details_path
-    end
-
-    pheedback.push({true=>"updated successfully.", false=>"failed because #{obj.errors.to_a.to_ul}"}[pheedback.pop])
-    pheedback = pheedback * ' '
-
-    redirect_to admin_general_election_details_path, :notice => pheedback
-  end
-
   def super_page
     @candidates = Candidate.find(:all, :joins => :person, :order => "people.first_name, people.last_name")
     @candidates.map! { |cand|
@@ -163,4 +114,5 @@ class Admin::AdminController < ApplicationController
     flash[:notice] = "Challenge rejected."
     redirect_to :back
   end
+
 end

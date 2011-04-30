@@ -97,7 +97,7 @@
   </ul>
   <ul class="plain">
     <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
-    <li><a href="/admin/general/election_details/" class="navigation_sublevel_item">Election Details</a></li>
+    <li><%= link_to 'Election Details', admin_election_details_path, :class => "navigation_sublevel_item" %></li>
     <% if @auth["tutoring"] %>
       <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
     <% end %>

@@ -90,7 +90,7 @@
   	  <% if !@messages.empty? %>
     	  <div id="messages">
       		<% @messages.each do |message| %>
-      		  <div class="message"><%= message =~ /\n|</ ? simple_format(message) : message %></div>
+      		  <div class="message"><%= message =~ /\n|<.>/ ? simple_format(message) : message %></div>
       		<% end %>
       	</div>
     	<% end %>

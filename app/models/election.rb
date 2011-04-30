@@ -18,7 +18,7 @@ class Election < ActiveRecord::Base
 
   validates_uniqueness_of   :person_id, :scope => :semester
   validates_presence_of     :person_id, :position
-  validates_numericality_of :sid, :keycard
+  #validates_numericality_of :sid, :keycard, :on => :update
   validates_associated      :person
   validates_each            :position do |model, attr, value|
       model.errors.add(attr, 'must be a committee') unless Group.committees.exists?(:name => value)
