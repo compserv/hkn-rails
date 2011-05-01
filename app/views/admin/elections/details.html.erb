@@ -22,7 +22,7 @@
       <%- end -%>
       <h3>Elected</h3>
       <ul>
-          <%- es.select {|e| e.elected} .each do |e| -%>
+          <%- es.select {|e| e.elected} .sort {|e| e.person.full_name} .each do |e| -%>
           <li><b><%= e.person.full_name %></b> was elected <%= e.elected_time.pp %>!</li>
           <%- end -%>
       </ul>
