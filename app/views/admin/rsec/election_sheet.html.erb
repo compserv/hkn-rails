@@ -47,6 +47,10 @@
         val = "#{e.person.username} -> #{e.desired_username}" if field == :username && e.desired_username.present?    -%>
     <td><%= bool_map[val] || val %></td>
     <%- end -%>
+
+    <td>
+      <%= button_to 'Commit', admin_rsec_commit_path(e.id) %>
+    </td>
   </tr>
 <%- end -%>
 </tbody></table>

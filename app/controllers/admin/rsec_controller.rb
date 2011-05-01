@@ -4,6 +4,15 @@ class Admin::RsecController < Admin::AdminController
   def index
   end
 
+  def commit
+    e = Election.find(params[:election_id])
+    return redirect_to admin_rsec_election_sheet_path, :notice => "Segfault" unless e
+
+    return redirect_to admin_rsec_election_sheet_path, :notice => "Failed to commit #{e.inspect} because #{e.errors.inspect}" unless e.commit
+
+    redirect_to admin_rsec_election_sheet_path
+  end
+
   def elections
     #@groups is a list of hashes in the form of {:name => "pres", :positions => [@Person, @Person]}
     grouped_elections = Election.current_semester.ordered.group_by(&:position)

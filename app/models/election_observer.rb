@@ -13,21 +13,6 @@ class ElectionObserver < ActiveRecord::Observer
         # Add person to comms
         person.groups = person.groups | [Group.find_by_name("comms"),Group.find_by_name(election.position)]
         person.save
-
-        # hknmod
-        cmd = []
-        cmd << "-l #{person.username}"
-        cmd << "-c #{election.position}"
-        if election.first_election?
-          cmd << "-a"
-          cmd << "-n #{person.full_name.inspect}"
-          cmd << "-e #{person.email.inspect}"
-        else # returning officer
-          cmd << "-m"
-        end
-
-        Rails.logger.info "Election Create: #{election.inspect} #{person.inspect} 'hknmod #{cmd.join ' '}'"
-        system 'hknmod', *cmd
     elsif election.changed? # just an update..
         log election, :update
     end

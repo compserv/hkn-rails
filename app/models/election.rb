@@ -41,6 +41,23 @@ class Election < ActiveRecord::Base
     return true
   end
 
+  def commit
+    # hknmod
+    cmd = []
+    cmd << "-l #{self.person.username}"
+    cmd << "-c #{self.position}"
+    if self.first_election?
+      cmd << "-a"
+      cmd << "-n #{self.person.full_name.inspect}"
+      cmd << "-e #{self.person.email.inspect}"
+    else # returning officer
+      cmd << "-m"
+    end
+
+    Rails.logger.info "Election Create: #{self.inspect} #{self.person.inspect} 'hknmod #{cmd.join ' '}'"
+    system './hknmod.py', *cmd
+  end
+
 #  def method_missing_with_person(sym, *args, &block)
 #    method_missing_without_person(sym, *args, &block) rescue self.person.send(sym, *args, &block) 
 #  end
