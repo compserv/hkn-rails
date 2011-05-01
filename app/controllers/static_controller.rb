@@ -24,26 +24,74 @@ class StaticController < ApplicationController
   end
 
   def officers
-    @pres = Person.find_by_username("richardxia")
-    @vp = Person.find_by_username("byang")
-    @rsec = Person.find_by_username("tmagrino")
-    @treas = Person.find_by_username("ronagesh")
-    @csec = Person.find_by_username("awong")
-    @deprel = Person.find_by_username("elevin")
+    semester = params[:semester] || Property.semester
+    season_map = {"sp" => "1", "su" => "2", "fa" => "3"}
+    if semester =~ /^\w{2}\d{4}$/
+      season = semester[0..1]
+      year = semester[2..5]
+      semester = year + season_map[season]
+    end
+    @year = semester[0..3]
+    @season = case semester[4..4] when "1" then "Spring" when "2" then "Summer" when "3" then "Fall" end
 
-    @serv = %w(rajat kathysun).map {|u| Person.find_by_username(u)}
-    @indrel = %w(rlan sameetr akashgupta sren).map {|u| Person.find_by_username(u)}
-    @bridge = %w(ykim daiweili alexsun).map {|u| Person.find_by_username(u)}
-    @act = %w(ystephie seshadri amatsukawa).map {|u| Person.find_by_username(u)}
-    @compserv = %w(awygle amber akim adegtiar).map {|u| Person.find_by_username(u)}
-    @studrel = %w(mmatloob rpoddar maxfeldman).map {|u| Person.find_by_username(u)}
-    @tutoring = %w(erictzeng tonydear dsadigh chongyang).map {|u| Person.find_by_username(u)}
-    @alumrel = %w(bdong).map {|u| Person.find_by_username(u)}
+    @next_semester = nil
+    if semester != Property.semester
+      if semester[4..4] == "1"
+        @next_semester = "fa" + semester[0..3]
+      elsif semester[4..4] == "3"
+        @next_semester = "sp" + (semester[0..3].to_i + 1).to_s
+      end
+    end
 
-    @committees = [ ["Service",] << "serv" << @serv , ["Industrial Relations"] << "indrel" << @indrel , ["Bridge"] << "bridge" << @bridge, ["Activities"] << "act" << @act , ["Computing Services"] << "compserv" << @compserv, ["Student Relations"] << "studrel" << @studrel, ["Tutoring"] << "tutoring" << @tutoring, ["Alumni Relations"] << "alumrel" <<@alumrel ]
+    @prev_semester = nil
+    if semester != Property.semester
+      if semester[4..4] == "3"
+        @prev_semester = "sp" + semester[0..3]
+      elsif semester[4..4] == "1"
+        @prev_semester = "fa" + (semester[0..3].to_i - 1).to_s
+      end
+    end
 
-    @execs = [ ["President"] << "pres" << @pres , ["Vice President"] << "vp" << @vp , ["Recording Secretary"] << "rsec" << @rsec , ["Treasurer"] << "treas" << @treas , ["Corresponding Secretary"] << "csec" << @csec , ["Department Relations"] << "deprel" << @deprel  ]
+    the_officers = Committeeship.where(:semester => semester).where(:title => "officer")
+    @no_data = the_officers.blank?
+    @pres = the_officers.find_all_by_committee("pres").map{|x|x.person}
+    @vp = the_officers.find_all_by_committee("vp").map{|x|x.person}
+    @rsec = the_officers.find_all_by_committee("rsec").map{|x|x.person}
+    @csec = the_officers.find_all_by_committee("csec").map{|x|x.person}
+    @treas = the_officers.find_all_by_committee("treas").map{|x|x.person}
 
-    @committees.each {|g| g.last.compact!}
+    @execs = [ ["President"] << "pres" << @pres , ["Vice President"] << "vp" << @vp , ["Recording Secretary"] << "rsec" << @rsec , ["Corresponding Secretary"] << "csec" << @csec  , ["Treasurer"] << "treas" << @treas ]
+
+    exec_names = %w[pres vp rsec csec treas]
+
+    committee_names = the_officers.map{|x| x.committee}.uniq
+    committee_names.delete_if{|x| exec_names.include? x}
+    committee_names.sort!
+
+    committee_map = { 
+      "act" => "Activities",
+      "alumrel" => "Alumni Relations",
+      "bridge" => "Bridge",
+      "compserv" => "Computer Services",
+      "deprel" => "Department Relations",
+      "ejc" => "Engineering Joint Council",
+      "examfiles" => "Exam Files",
+      "indrel" => "Industrial Relations",
+      "pub" => "Publicity",
+      "serv" => "Service",
+      "studrel" => "Student Relations",
+      "tutoring" => "Tutoring",
+    }
+
+    @committees = []
+    committee_names.each do |committee|
+      committee_officers = the_officers.where(:committee => committee).map{|x| x.person}
+      committee_struct = [
+        committee_map[committee],
+        committee,
+        committee_officers,
+      ]
+      @committees << committee_struct
+    end
   end
 end

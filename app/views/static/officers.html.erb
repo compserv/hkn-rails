@@ -1,39 +1,29 @@
-<h1>HKN Officers, Spring 2011</h1>
+<h1>HKN Officers, <%= @season %> <%= @year %></h1>
+
+<%= link_to "Previous Semester", about_officers_path(@prev_semester) unless @prev_semester.blank? %>
+<%= link_to "Next Semester", about_officers_path(@next_semester) unless @next_semester.blank? %>
+
+<% if @no_data %>
+  <p>No data available for this semester. If you know information about the officers for this semester and would like us to add it, please email hkn@hkn.</p>
+<% else %>
 
 <div id="execs">
 <% for position in @execs %>
-<div class="position">
-<h2><%= position[0] %> (<%= position[1] %>@hkn)</h2>
-<% if person = position[2] %>
-<div class="officer">
-  <div class="photo <%= "no-photo" if person.picture.blank? %>">
-    <%= image_tag person.picture  unless person.picture.blank? %>
-  </div>
-  <span class="name"><%= person.full_name %></span>
-  <span class="email"><%= person.username %>@hkn</span>
-</div>
-<% end %>
-</div>
+  <%= render :partial => "officers_committee", :locals => { :style_class => "position", :position => position } %>
 <% end %>
 </div>
 
 <div id="committees">
 <% for committee in @committees %>
-<div class="committee">
-<h2><%= committee[0] %> (<%= committee[1] %>@hkn)</h2>
-<% for person in committee[2] %>
-<div class="officer">
-  <div class="photo <%= "no-photo" if person.picture.blank? %>">
-    <%= image_tag person.picture  unless person.picture.blank? %>
-  </div>
-  <span class="name"><%= person.full_name %></span>
-  <span class="email"><%= person.username %>@hkn</span>
+  <%= render :partial => "officers_committee", :locals => { :style_class => "committee", :position => committee } %>
+<% end %>
 </div>
 
-<% end %>
-</div>
-<% end %>
-<br>
+<%# Alumni Advisor should go here. %>
+
+<br/>
 <div class="hbar"></div>
 To send an email, fill out the full domain name (hkn=>hkn.eecs.berkeley.edu)
 </div>
+
+<% end %>

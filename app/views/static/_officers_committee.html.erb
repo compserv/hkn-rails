@@ -1,0 +1,22 @@
+<% style_class ||= "committee" %>
+<div class="<%= style_class %>">
+<h2><%= position[0] %> (<%= position[1] %>@hkn)</h2>
+  <% for person in position[2] %>
+  <div class="officer">
+<%
+=begin
+%>
+    <div class="photo <%= "no-photo" if person.picture.blank? %>">
+      <%= image_tag person.picture  unless person.picture.blank? %>
+    </div>
+<%
+=end 
+%>
+    <div class="photo">
+      <%= image_tag "https://hkn.eecs.berkeley.edu/images/officerpics/#{person.username}.png" %>
+    </div>
+    <span class="name"><%= person.full_name %></span>
+    <span class="email"><%= person.username %>@hkn</span>
+  </div>
+  <% end %>
+</div>
