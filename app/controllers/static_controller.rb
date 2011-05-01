@@ -44,12 +44,10 @@ class StaticController < ApplicationController
     end
 
     @prev_semester = nil
-    if semester != Property.semester
-      if semester[4..4] == "3"
-        @prev_semester = "sp" + semester[0..3]
-      elsif semester[4..4] == "1"
-        @prev_semester = "fa" + (semester[0..3].to_i - 1).to_s
-      end
+    if semester[4..4] == "3"
+      @prev_semester = "sp" + semester[0..3]
+    elsif semester[4..4] == "1"
+      @prev_semester = "fa" + (semester[0..3].to_i - 1).to_s
     end
 
     the_officers = Committeeship.where(:semester => semester).where(:title => "officer")
