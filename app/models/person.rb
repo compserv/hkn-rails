@@ -37,6 +37,7 @@ class Person < ActiveRecord::Base
   has_one :suggestion
   has_and_belongs_to_many :coursesurveys
   has_and_belongs_to_many :badges
+  has_many :elections, :dependent => :destroy
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
@@ -79,7 +80,8 @@ class Person < ActiveRecord::Base
   end
 
   def current_election
-      Election.find_by_person_id_and_semester self.id, Property.current_semester
+      self.elections.where(:semester => Property.current_semester).limit(1).first
+      #Election.find_by_person_id_and_semester self.id, Property.current_semester
   end
 
   def valid_ldap_or_password?(password)

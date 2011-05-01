@@ -17,7 +17,7 @@ class Election < ActiveRecord::Base
   belongs_to :person
 
   validates_uniqueness_of   :person_id, :scope => :semester
-  validates_presence_of     :person_id, :position
+  validates_presence_of     :person_id, :position, :semester
   #validates_numericality_of :sid, :keycard, :on => :update
   validates_associated      :person
   validates_each            :position do |model, attr, value|
@@ -25,8 +25,17 @@ class Election < ActiveRecord::Base
   end
 
   scope :current_semester, lambda { where(:semester => Property.current_semester) }
+  scope :ordered, lambda { order(:elected_time) }
 
-  before_create :set_current
+  before_validation :set_current
+
+  # Is this the person's first officership?
+  def first_election?
+    # hacky heuristic.. if they're on a committee already, assume no
+    return false unless (self.person.groups & Group.committees).empty?
+    return false if self.person.elections.count > 1
+    return true
+  end
 
 #  def method_missing_with_person(sym, *args, &block)
 #    method_missing_without_person(sym, *args, &block) rescue self.person.send(sym, *args, &block) 
@@ -48,8 +57,8 @@ class Election < ActiveRecord::Base
 private
 
   def set_current
-    self.elected_time = Time.now
-    self.semester = Property.current_semester
+    self.elected_time ||= Time.now
+    self.semester ||= Property.current_semester
   end
 
 end

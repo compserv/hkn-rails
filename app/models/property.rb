@@ -18,7 +18,7 @@ class Property < ActiveRecord::Base
   validates_numericality_of :tutoring_start, :greater_than_or_equal_to => 11
   validates_numericality_of :tutoring_end, :greater_than => :tutoring_start, :less_than_or_equal_to => 16
 
-  MONTH_SEMESTER_MAP = { 0..4 => 1, 5..6 => 2, 7..11 => 3 }
+  MONTH_SEMESTER_MAP = { 1..5 => 1, 6..7 => 2, 8..12 => 3 }
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
 
   class << self
@@ -63,8 +63,8 @@ class Property < ActiveRecord::Base
       year     = year_and_semester.delete(:year)     || Time.now.year
       semester = year_and_semester.delete(:semester) || 
                  ( case (year_and_semester.delete(:month) || Time.now.month)
-                   when 0..4: 1
-                   when 5..6: 2
+                   when 1..5: 1
+                   when 6..7: 2
                    else       3 end     )
       "#{year}#{semester}"
     end

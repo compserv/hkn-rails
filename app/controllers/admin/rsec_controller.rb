@@ -1,9 +1,9 @@
 class Admin::RsecController < Admin::AdminController
-  before_filter :authorize_rsec, :only => [:find_members, :add_elected]
+  before_filter :authorize_rsec
 
   def elections
     #@groups is a list of hashes in the form of {:name => "pres", :positions => [@Person, @Person]}
-    grouped_elections = Election.current_semester.group_by(&:position)
+    grouped_elections = Election.current_semester.ordered.group_by(&:position)
     @groups = Group.committees.collect do |g|
         {:name => g.name, :positions => (grouped_elections[g.name] || [])}
     end
@@ -19,10 +19,10 @@ class Admin::RsecController < Admin::AdminController
   #
   def add_elected
     e = Election.new(:person_id => params[:person_id].to_i, :position => params[:position])
-    unless e.save
+    unless e.valid? && e.save
       return redirect_to admin_rsec_elections_path, :notice => "Failed to elect: #{e.person} because #{e.errors.inspect}"
     end
-    redirect_to admin_rsec_elections_path
+    redirect_to with_anchor(admin_rsec_elections_path,e.position), :notice => "Elected #{e.position} officer #{e.person.full_name}"
   end # add_elected
 
   # POST unelect [:election_id]
@@ -34,6 +34,12 @@ class Admin::RsecController < Admin::AdminController
         e.destroy || msg = "Failed to un-elect #{e.person.full_name}..."
     end
     redirect_to admin_rsec_elections_path, :notice => msg
+  end
+
+private
+
+  def with_anchor(path, anchor)
+    "#{path}##{anchor}"
   end
 
 end # Admin::RsecController

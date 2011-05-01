@@ -9,11 +9,12 @@
 <%- end # my election -%>
 
 <div id="elections">
-  <%- @elections.group_by(&:position).each do |position,es| -%>
+  <%# @elections.group_by(&:position).each do |position,es| -%>
+  <%- @elections.each do |position, es| -%>
       <h2><%= position.titleize %></h2>
       <ul>
           <%- es.each do |e| -%>
-          <li><%= e.person.full_name %></li>
+          <li><b><%= e.person.full_name %></b> was elected <%= e.elected_time.pp %></li>
           <%- end -%>
       </ul>
   <%- end # elections -%>

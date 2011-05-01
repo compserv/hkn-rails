@@ -1,6 +1,6 @@
 class Admin::ElectionsController < ApplicationController
 
-  before_filter :authorize_rsec_or_username, :only => [:update_election_details, :edit_election_details]
+  before_filter :authorize_rsec_or_username, :except => [:details]
 
     ELECTION_DETAILS = {
       :person   => [ #:username,        # this isn't working atm
@@ -16,13 +16,13 @@ class Admin::ElectionsController < ApplicationController
     }
 
   def details
-    redirect_to admin_rsec_elections_path if @auth['rsec']
-    @elections = Election.current_semester
+    # redirect_to admin_rsec_elections_path if @auth['rsec']
+    @elections = Election.current_semester.ordered.all.ordered_group_by(&:position)
   end
 
   def edit_details
     @user = Person.find_by_username(params[:username]) || Person.find_by_id(params[:username])
-    return redirect_back_or_default admin_election_details_path, :notice => "invalid username #{params[:username]}" unless @user
+    return redirect_to admin_election_details_path, :notice => "invalid username #{params[:username]}" unless @user
 
     @election = @user.current_election
     return redirect_to admin_election_details_path, :notice => "#{@user.full_name} has not been elected this semester" unless @election
@@ -34,9 +34,11 @@ class Admin::ElectionsController < ApplicationController
 
   def update_details
     obj, pheedback = nil, []
+    user = Person.find_by_username(params[:username]) || Person.find(params[:username])
+    redirect_to admin_election_details_path, :notice => "Segfault!" unless user
     if params[:election].present? then
         pheedback << "Post-election info"
-        pheedback << (obj=@current_user.current_election).update_attributes(params[:election])
+        pheedback << (obj=user.current_election).update_attributes(params[:election])
     elsif params[:person].present? then
         obj = Person.find_by_username(params[:username]) || Person.find_by_id(params[:username])
 
@@ -62,7 +64,7 @@ class Admin::ElectionsController < ApplicationController
 
 private
   def authorize_rsec_or_username
-      return redirect_back_or_default admin_election_details_path unless (@current_user && @current_user.username == params[:username]) || @auth['rsec']
+      return redirect_to admin_election_details_path, :notice => "Access violation!" unless (@current_user && @current_user.username == params[:username]) || @auth['rsec']
   end
 
 end

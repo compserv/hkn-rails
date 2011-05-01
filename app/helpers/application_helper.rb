@@ -127,6 +127,21 @@ class Array
      "</#{tag}>"
     ].join
   end
+
+  def ordered_group_by  # until we upgrade to ruby 1.9 to get chunk...
+    ary = []
+
+    self.each do |e|
+      k = yield e
+      unless sub_ary = ary.assoc(k)
+        sub_ary = [k, []]
+        ary << sub_ary
+      end
+      sub_ary[1] << e
+    end
+
+    ary
+  end
 end
 
 class Hash
