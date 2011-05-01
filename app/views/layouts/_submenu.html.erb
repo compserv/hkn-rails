@@ -35,6 +35,7 @@
   </ul>
   <ul class="plain">
     <li><%= link_to "Candidates",        people_list_path("candidates") %></li>
+    <li><%= link_to 'Election Details', admin_election_details_path, :class => "navigation_sublevel_item" %></li>
   </ul>
 </div>
 <% end %>
@@ -97,7 +98,6 @@
   </ul>
   <ul class="plain">
     <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
-    <li><%= link_to 'Election Details', admin_election_details_path, :class => "navigation_sublevel_item" %></li>
     <% if @auth["tutoring"] %>
       <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
     <% end %>
