@@ -43,6 +43,7 @@
         <div class="elected-person">
             <%= link_to position.person.full_name, admin_election_edit_details_path(position.person.username) %>
             <%= link_to '[X]', admin_rsec_unelect_path(position.id), :onClick => "return confirm('Really un-elect #{position.person.full_name} from #{group[:name]}?');" %>
+            <%= link_to '[Elect]', admin_rsec_elect_path(position.id) unless position.elected %>
         </div>
     <%- end -%>
     <div class="add-new" id="new-<%=group[:name]%>">

@@ -36,6 +36,19 @@ class Admin::RsecController < Admin::AdminController
     redirect_to admin_rsec_elections_path, :notice => msg
   end
 
+  # POST elect [:election_id]
+  #
+  def elect
+    e = Election.find(params[:election_id])
+    msg = "Successfully elected #{e.person.full_name} to #{e.position}"
+    if e then
+        e.elected = true
+        e.save || msg = "Failed to elect #{e.person.full_name}... #{e.errors.inspect}"
+    end
+    redirect_to admin_rsec_elections_path, :notice => msg
+  end
+
+
 private
 
   def with_anchor(path, anchor)

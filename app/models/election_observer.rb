@@ -1,34 +1,45 @@
 class ElectionObserver < ActiveRecord::Observer
   observe :election
 
-  def after_create(election)
+  def before_update(election)
     person = election.person
 
-    # Logging info
-    log election, :create
+    return true unless election.elected   # don't care about candidates
 
-    # Add person to comms
-    person.groups ||= [Group.find_by_name("comms")]
+    if election.elected_was == false then # new election
+        # Logging info
+        log election, :create
 
-    # hknmod
-    cmd = []
-    cmd << "-l #{person.username}"
-    cmd << "-c #{election.position}"
-    if election.first_election?
-      cmd << "-a"
-      cmd << "-n #{person.full_name.inspect}"
-      cmd << "-e #{person.email.inspect}"
-    else # returning officer
-      cmd << "-m"
+        # Add person to comms
+        person.groups ||= [Group.find_by_name("comms")]
+
+        # hknmod
+        cmd = []
+        cmd << "-l #{person.username}"
+        cmd << "-c #{election.position}"
+        if election.first_election?
+          cmd << "-a"
+          cmd << "-n #{person.full_name.inspect}"
+          cmd << "-e #{person.email.inspect}"
+        else # returning officer
+          cmd << "-m"
+        end
+
+        Rails.logger.info "Election Create: #{election.inspect} #{person.inspect} 'hknmod #{cmd.join ' '}'"
+        system 'hknmod', *cmd
+    elsif election.changed? # just an update..
+        log election, :update
     end
 
-    Rails.logger.info "Election Create: #{election.inspect} #{person.inspect} 'hknmod #{cmd.join ' '}'"
-    system 'hknmod', *cmd
+    return true
   end
 
-  def after_update(election)
-    log election, :update
-  end
+#  def after_update(election)
+#    # only log elected people, not candidates
+#    if election.elected_was == false && election.elected then
+#        log election, :update
+#    end
+#  end
 
   def after_destroy(election)
     log election, :destroy

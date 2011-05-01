@@ -57,6 +57,7 @@ HknRails::Application.routes.draw do
     scope "rsec", :as => "rsec" do
       get  "/" => "rsec#index"
       post "add_elected"                      => "rsec#add_elected",      :as => :add_elected
+      match "elect/:election_id"              => "rsec#elect",            :as => :elect
       match "unelect/:election_id"             => "rsec#unelect",         :as => :unelect
       match "elections"                       => "rsec#elections",        :as => :elections
       match "find_members"                    => "rsec#find_members"

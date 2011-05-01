@@ -12,6 +12,7 @@ class Election < ActiveRecord::Base
   #   elected_time     : datetime 
   #   created_at       : datetime 
   #   updated_at       : datetime 
+  #   elected          : boolean 
   # =======================
 
   belongs_to :person
@@ -26,6 +27,7 @@ class Election < ActiveRecord::Base
 
   scope :current_semester, lambda { where(:semester => Property.current_semester) }
   scope :ordered, lambda { order(:elected_time) }
+  scope :elected, lambda { where(:elected => true) }
 
   before_validation :set_current
 

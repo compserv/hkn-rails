@@ -80,7 +80,7 @@ class Person < ActiveRecord::Base
   end
 
   def current_election
-      self.elections.where(:semester => Property.current_semester).limit(1).first
+      self.elections.where(:semester => Property.current_semester).elected.limit(1).first
       #Election.find_by_person_id_and_semester self.id, Property.current_semester
   end
 

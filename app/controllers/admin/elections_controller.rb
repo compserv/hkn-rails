@@ -17,7 +17,6 @@ class Admin::ElectionsController < ApplicationController
     }
 
   def details
-    # redirect_to admin_rsec_elections_path if @auth['rsec']
     @elections = Election.current_semester.ordered.all.ordered_group_by(&:position)
   end
 
