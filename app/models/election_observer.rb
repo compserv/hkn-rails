@@ -11,7 +11,8 @@ class ElectionObserver < ActiveRecord::Observer
         log election, :create
 
         # Add person to comms
-        person.groups ||= [Group.find_by_name("comms")]
+        person.groups = person.groups | [Group.find_by_name("comms"),Group.find_by_name(election.position)]
+        person.save
 
         # hknmod
         cmd = []
