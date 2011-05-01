@@ -41,6 +41,7 @@
 
 <%- field_label_map = {
         :username         => "Desired HKN login",
+        :non_hkn_email    => "Non-HKN email",
         :txt              => "Accept Texting?",
         :aim              => "AIM",
         :local_address    => "Current Address",
@@ -62,7 +63,11 @@
                   [:local_address,    :text_field,  false],
                   [:date_of_birth,    :date_select, false, nil, {:end_year => Time.now.year-17, :start_year => Time.now.year-30} ] # arbitrary age limits...
                 ],
-   :election => [ [:txt,              :check_box,   false,
+   :election => [ [:non_hkn_email,    :text_field,  true,
+                   'Your email address not @hkn.eecs'],
+                  [:desired_username,    :text_field,  true,
+                   "You're allowed to change your username. Leave this blank if you want to use your existing one"],
+                  [:txt,              :check_box,   false,
                    'Is it okay to text you?'],
                   [:sid,              :text_field,  true,
                    'This is for keycard access.'],

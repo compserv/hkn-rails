@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110501182646) do
+ActiveRecord::Schema.define(:version => 20110501210144) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -200,6 +200,8 @@ ActiveRecord::Schema.define(:version => 20110501182646) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "elected",          :default => false, :null => false
+    t.string   "non_hkn_email"
+    t.string   "desired_username"
   end
 
   create_table "eligibilities", :force => true do |t|

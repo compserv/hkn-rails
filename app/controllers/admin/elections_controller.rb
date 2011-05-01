@@ -10,7 +10,9 @@ class Admin::ElectionsController < ApplicationController
                     :email,        
                     :local_address,
                     :date_of_birth ],
-      :election => [:txt,            
+      :election => [:non_hkn_email,
+                    :desired_username,
+                    :txt,            
                     :sid,            
                     :keycard,        
                     :midnight_meeting ]

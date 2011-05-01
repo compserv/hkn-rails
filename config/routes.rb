@@ -61,6 +61,7 @@ HknRails::Application.routes.draw do
       match "unelect/:election_id"             => "rsec#unelect",         :as => :unelect
       match "elections"                       => "rsec#elections",        :as => :elections
       match "find_members"                    => "rsec#find_members"
+      get   "election_sheet"                  => "rsec#election_sheet",   :as => :election_sheet
     end # rsec
 
     scope "deprel" do

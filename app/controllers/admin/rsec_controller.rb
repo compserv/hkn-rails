@@ -48,6 +48,9 @@ class Admin::RsecController < Admin::AdminController
     redirect_to admin_rsec_elections_path, :notice => msg
   end
 
+  def election_sheet
+    @elections = Election.current_semester.elected.ordered
+  end
 
 private
 
