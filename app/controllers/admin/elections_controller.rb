@@ -1,6 +1,7 @@
 class Admin::ElectionsController < ApplicationController
 
   before_filter :authorize_rsec_or_username, :except => [:details]
+  before_filter :authorize_candplus, :only => [:details]
 
     ELECTION_DETAILS = {
       :person   => [ #:username,        # this isn't working atm

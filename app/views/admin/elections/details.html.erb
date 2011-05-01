@@ -4,7 +4,7 @@
   <%= link_to '[Elect people]', admin_rsec_elections_path %>
 <%- end # rsec -%>
 
-<%- if @current_user.current_election -%>
+<%- if @current_user && @current_user.current_election -%>
   <h1><%= link_to '[Edit your details!]', admin_election_edit_details_path(@current_user) %></h1>
 <%- end # my election -%>
 
