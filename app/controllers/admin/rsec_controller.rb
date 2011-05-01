@@ -22,7 +22,7 @@ class Admin::RsecController < Admin::AdminController
     unless e.valid? && e.save
       return redirect_to admin_rsec_elections_path, :notice => "Failed to elect: #{e.person} because #{e.errors.inspect}"
     end
-    redirect_to with_anchor(admin_rsec_elections_path,e.position), :notice => "Elected #{e.position} officer #{e.person.full_name}"
+    redirect_to with_anchor(admin_rsec_elections_path,e.position), :notice => "Nominated #{e.position} officer #{e.person.full_name}"
   end # add_elected
 
   # POST unelect [:election_id]

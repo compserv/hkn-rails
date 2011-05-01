@@ -49,7 +49,7 @@
     <div class="add-new" id="new-<%=group[:name]%>">
         <%= form_for :election, :url => admin_rsec_add_elected_path do |f| %>
             <p>
-            <%= label_tag :name, "Add another #{group[:name]}:" %>
+            <%= label_tag :name, "Add #{group[:name]} candidate:" %>
             <%= text_field_tag :name, nil, :class => 'find_user' %>
             <%= hidden_field_tag :person_id, nil, :class => 'user-id' %>
             <%= hidden_field_tag :position, group[:name] %>
