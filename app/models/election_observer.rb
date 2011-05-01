@@ -43,7 +43,9 @@ class ElectionObserver < ActiveRecord::Observer
 #  end
 
   def after_destroy(election)
-    log election, :destroy
+    if election.elected
+        log election, :destroy
+    end
   end
 
   private

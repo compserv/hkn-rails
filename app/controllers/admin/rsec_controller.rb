@@ -29,9 +29,9 @@ class Admin::RsecController < Admin::AdminController
   #
   def unelect
     e = Election.find(params[:election_id])
-    msg = "Successfully un-elected #{e.person.full_name} from #{e.position}"
+    msg = "Successfully removed #{e.person.full_name} from #{e.position}"
     if e then
-        e.destroy || msg = "Failed to un-elect #{e.person.full_name}..."
+        e.destroy || msg = "Failed to remove #{e.person.full_name}..."
     end
     redirect_to admin_rsec_elections_path, :notice => msg
   end

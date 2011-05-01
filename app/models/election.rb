@@ -17,7 +17,7 @@ class Election < ActiveRecord::Base
 
   belongs_to :person
 
-  validates_uniqueness_of   :person_id, :scope => :semester
+  validates_uniqueness_of   :person_id, :scope => [:position, :semester]
   validates_presence_of     :person_id, :position, :semester
   #validates_numericality_of :sid, :keycard, :on => :update
   validates_associated      :person
