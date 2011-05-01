@@ -1,0 +1,52 @@
+<table><tbody>
+  <tr>
+<%-
+    bool_map = {true => 'Yes', false => 'No'}
+
+    fields = 
+    [:name,
+     :username,
+     :phone_number,
+     :aim,
+     :position,
+     :sid,
+     :keycard,
+     :email,
+     :address,
+     :date_of_birth,
+     :midnight_meeting,
+     :txt]
+     
+     fields.each do |f|
+-%>
+  <th><%= f.to_s.titleize %></th>
+<%- end -%>
+</tr>
+<%- @elections.each do |e|
+
+    field_map = {
+      :name => e.person.full_name,
+      :username => e.desired_username || e.person.username,
+      :phone_number => e.person.phone_number,
+      :aim => e.person.aim,
+      :position => e.position,
+      :sid => e.sid,
+      :keycard => e.keycard,
+      :email => e.non_hkn_email || e.person.email,
+      :address => e.person.local_address,
+      :date_of_birth => e.person.date_of_birth,
+      :midnight_meeting => e.midnight_meeting,
+      :txt => e.txt
+    }
+-%>
+  <tr>
+    <%- fields.each do |field|
+        val = field_map[field]
+
+        # Special case username
+        val = "#{e.person.username} -> #{e.desired_username}" if field == :username && e.desired_username.present?    -%>
+    <td><%= bool_map[val] || val %></td>
+    <%- end -%>
+  </tr>
+<%- end -%>
+</tbody></table>
