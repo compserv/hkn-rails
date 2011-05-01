@@ -105,7 +105,7 @@
       <li><a href="/admin/csec" class="navigation_sublevel_item">Csec Admin</a></li>
     <% end %>
     <% if @auth['rsec'] %>
-      <li><a href="/admin/rsec/elections" class="navigation_sublevel_item">Elections</a></li>
+      <li><%= link_to 'Rsec Admin', admin_rsec_path, :class => 'navigation_sublevel_item'  %></li>
     <% end %>
     <% if @auth["deprel"] %>
       <li><a href="/admin/deprel" class="navigation_sublevel_item">Deprel Admin [<%= controller.num_deprel_requests %>]</a></li>

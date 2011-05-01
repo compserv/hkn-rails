@@ -1,6 +1,9 @@
 class Admin::RsecController < Admin::AdminController
   before_filter :authorize_rsec
 
+  def index
+  end
+
   def elections
     #@groups is a list of hashes in the form of {:name => "pres", :positions => [@Person, @Person]}
     grouped_elections = Election.current_semester.ordered.group_by(&:position)
