@@ -25,8 +25,8 @@ HknRails::Application.routes.draw do
     scope "election", :as => "election" do
         get  "details"                => "elections#details",          :as => :details
 
-        put  "edit_details/:username" => "elections#update_details",   :as => :update_details, :constraints => {:name => /.+/}
-        get  "edit_details/:username" => "elections#edit_details",     :as => :edit_details,   :constraints => {:name => /.+/}
+        put  "edit_details/:username" => "elections#update_details",   :as => :update_details, :constraints => {:username => /.+/}
+        get  "edit_details/:username" => "elections#edit_details",     :as => :edit_details,   :constraints => {:username => /.+/}
 
         get  "minutes"                => "elections#election_minutes", :as => :minutes
     end
