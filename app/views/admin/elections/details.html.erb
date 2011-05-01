@@ -12,12 +12,14 @@
   <%# @elections.group_by(&:position).each do |position,es| -%>
   <%- @elections.each do |position, es| -%>
       <h1><%= position.titleize %></h2>
+      <%- unless es.select {|e| e.elected} %>
       <h3>Candidates</h3>
       <ul>
           <%- es.each do |e| -%>
           <li><b><%= e.person.full_name %></b></li>
           <%- end -%>
       </ul>
+      <%- end -%>
       <h3>Elected</h3>
       <ul>
           <%- es.select {|e| e.elected} .each do |e| -%>
