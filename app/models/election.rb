@@ -61,7 +61,7 @@ class Election < ActiveRecord::Base
 
     # username changes
     person.username = self.final_username
-    return false unless person.valid? && person.save
+    return false unless person.valid? && person.save && person.reload && self.reload
 
     # hknmod
     cmd = []

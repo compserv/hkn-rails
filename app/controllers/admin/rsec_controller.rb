@@ -21,7 +21,7 @@ class Admin::RsecController < Admin::AdminController
   #
   # Runs commit in a loop
   def commit_all
-    results = Election.current_semester.all.elected.collect do |e|
+    results = Election.current_semester.elected.all.collect do |e|
       [e, e.commit]
     end
 
