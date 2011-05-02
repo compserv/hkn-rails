@@ -10,9 +10,6 @@ class ElectionObserver < ActiveRecord::Observer
         # Logging info
         log election, :create
 
-        # Add person to comms
-        person.groups = person.groups | [Group.find_by_name("comms"),Group.find_by_name(election.position)]
-        person.save
     elsif election.changed? # just an update..
         log election, :update
     end

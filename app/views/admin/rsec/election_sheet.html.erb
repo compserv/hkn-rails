@@ -1,3 +1,18 @@
+<%- content_for :header do -%>
+    <style type="text/css">
+      #big-red-button {
+        background-color: red;
+        padding: 7em;
+        margin-top: 7em;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        display: block;
+        font-size: x-large;
+      }
+    </style>
+<%- end -%>
+
 <table><tbody>
   <tr>
 <%-
@@ -44,7 +59,7 @@
         val = field_map[field]
 
         # Special case username
-        val = "#{e.person.username} -> #{e.desired_username}" if field == :username && e.desired_username.present? && e.desired_username != e.person.username -%>
+        val = "#{e.person.username} -> #{e.final_username}" if field == :username && e.person.username != e.final_username -%>
     <td><%= bool_map[val] || val %></td>
     <%- end -%>
 
@@ -54,3 +69,7 @@
   </tr>
 <%- end -%>
 </tbody></table>
+
+<div id="big-red-button-wrapper">
+  <%= button_to 'Commit all', admin_rsec_commit_all_path, :id => 'big-red-button', :confirm => 'Really commit all?' %>
+</div>

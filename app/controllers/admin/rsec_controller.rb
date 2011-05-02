@@ -4,6 +4,10 @@ class Admin::RsecController < Admin::AdminController
   def index
   end
 
+  # POST /commit/:election_id
+  #
+  # Forwards to Election.commit
+  #
   def commit
     e = Election.find(params[:election_id])
     return redirect_to admin_rsec_election_sheet_path, :notice => "Segfault" unless e
@@ -11,6 +15,17 @@ class Admin::RsecController < Admin::AdminController
     return redirect_to admin_rsec_election_sheet_path, :notice => "Failed to commit #{e.inspect} because #{e.errors.inspect}" unless e.commit
 
     redirect_to admin_rsec_election_sheet_path, :notice => "Committed #{e.person.full_name}"
+  end
+
+  # POST /commit_all
+  #
+  # Runs commit in a loop
+  def commit_all
+    results = Election.current_semester.all.collect do |e|
+      [e, e.commit]
+    end
+
+    redirect_to admin_rsec_election_sheet_path, :notice => 'Okay'
   end
 
   def elections

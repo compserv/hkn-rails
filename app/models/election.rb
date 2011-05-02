@@ -41,18 +41,40 @@ class Election < ActiveRecord::Base
     return true
   end
 
+  # Determines the person's final username:
+  # If they've specified a different one, return this preferred uname,
+  # else return existing one
+  #
+  def final_username
+    self.desired_username.present? && self.desired_username != self.person.username ? self.desired_username : self.person.username
+  end
+
+  # Commits changes represented by this Election:
+  #  - Add person to comms, officers, and corresponding committee
+  #  - Run hknmod.py to put person on mailing lists
+  #
   def commit
+
+    # group management
+    person.groups = person.groups | [Group.find_by_name("officers"), Group.find_by_name("comms"),Group.find_by_name(self.position)]
+
+    # username changes
+    person.username = self.final_username
+    return false unless person.valid? && person.save
+
     # hknmod
     cmd = []
+    cmd << "-s"
     cmd << "-l #{self.person.username}"
     cmd << "-c #{self.position}"
-    if self.first_election?
-      cmd << "-a"
-      cmd << "-n #{self.person.full_name.inspect}"
+#    if self.first_election?
+#      cmd << "-a"
+      cmd << "-nf #{self.person.first_name.inspect}"
+      cmd << "-nl #{self.person.last_name.inspect}"
       cmd << "-e #{self.person.email.inspect}"
-    else # returning officer
-      cmd << "-m"
-    end
+#    else # returning officer
+#      cmd << "-m"
+#    end
 
     Rails.logger.info "Election Create: #{self.inspect} #{self.person.inspect} 'hknmod #{cmd.join ' '}'"
     system './run_hknmod', *cmd
