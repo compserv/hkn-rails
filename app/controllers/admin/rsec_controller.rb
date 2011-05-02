@@ -10,7 +10,7 @@ class Admin::RsecController < Admin::AdminController
 
     return redirect_to admin_rsec_election_sheet_path, :notice => "Failed to commit #{e.inspect} because #{e.errors.inspect}" unless e.commit
 
-    redirect_to admin_rsec_election_sheet_path
+    redirect_to admin_rsec_election_sheet_path, :notice => "Committed #{e.person.full_name}"
   end
 
   def elections

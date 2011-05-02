@@ -26,7 +26,7 @@
 
     field_map = {
       :name => e.person.full_name,
-      :username => e.desired_username || e.person.username,
+      :username => e.desired_username.present? ? e.desired_username : e.person.username,
       :phone_number => e.person.phone_number,
       :aim => e.person.aim,
       :position => e.position,
@@ -44,7 +44,7 @@
         val = field_map[field]
 
         # Special case username
-        val = "#{e.person.username} -> #{e.desired_username}" if field == :username && e.desired_username.present?    -%>
+        val = "#{e.person.username} -> #{e.desired_username}" if field == :username && e.desired_username.present? && e.desired_username != e.person.username -%>
     <td><%= bool_map[val] || val %></td>
     <%- end -%>
 
