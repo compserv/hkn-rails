@@ -63,6 +63,9 @@ class Election < ActiveRecord::Base
     person.username = self.final_username
     return false unless person.valid? && person.save && person.reload && self.reload
 
+    # ensure s/he has a tutor
+    return false unless self.person.get_tutor
+
     # hknmod
     cmd = []
     cmd << "-s"
