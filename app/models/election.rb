@@ -69,15 +69,15 @@ class Election < ActiveRecord::Base
     cmd << "-c #{self.position}"
 #    if self.first_election?
 #      cmd << "-a"
-      cmd << "-nf #{self.person.first_name.inspect}"
-      cmd << "-nl #{self.person.last_name.inspect}"
+      cmd << "--nf #{self.person.first_name.inspect}"
+      cmd << "--nl #{self.person.last_name.inspect}"
       cmd << "-e #{self.person.email.inspect}"
 #    else # returning officer
 #      cmd << "-m"
 #    end
 
     Rails.logger.info "Election Create: #{self.inspect} #{self.person.inspect} 'hknmod #{cmd.join ' '}'"
-    system './run_hknmod', *cmd
+    Rails.logger.info system('./run_hknmod', *cmd)
   end
 
 #  def method_missing_with_person(sym, *args, &block)
