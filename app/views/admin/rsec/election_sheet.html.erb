@@ -1,14 +1,22 @@
 <%- content_for :header do -%>
     <style type="text/css">
+      #big-red-wrapper {
+        margin-top: 7em;
+      }
+
+      #warning-wrapper {
+        margin-left: 3em;
+        margin-right: 25%;
+        left: 75%;
+        float: right;
+      }
+
       #big-red-button {
         background-color: red;
         padding: 7em;
-        margin-top: 7em;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
-        display: block;
         font-size: x-large;
+        left: 0%;
+        float: left;
       }
     </style>
 <%- end -%>
@@ -31,11 +39,15 @@
      :date_of_birth,
      :midnight_meeting,
      :txt]
+
+
+    commitWarningMessage = 'Clicking OK will commit all of the above election data. ONLY CLICK IF YOU HAVE READ YOUR DUTIES to the right and have PROOFREAD DATA ABOVE. In particular, usernames should be well-formed (preferably letters only / no numbers/spaces).'
      
      fields.each do |f|
 -%>
   <th><%= f.to_s.titleize %></th>
 <%- end -%>
+  <th></th>
 </tr>
 <%- @elections.each do |e|
 
@@ -47,12 +59,13 @@
       :position => e.position,
       :sid => e.sid,
       :keycard => e.keycard,
-      :email => e.non_hkn_email || e.person.email,
+      :email => e.non_hkn_email.present? ? e.non_hkn_email : e.person.email,
       :address => e.person.local_address,
       :date_of_birth => e.person.date_of_birth,
       :midnight_meeting => e.midnight_meeting,
       :txt => e.txt
     }
+
 -%>
   <tr>
     <%- fields.each do |field|
@@ -64,12 +77,17 @@
     <%- end -%>
 
     <td>
-      <%= button_to 'Commit', admin_rsec_commit_path(e.id) %>
+      <%= button_to 'Commit', admin_rsec_commit_path(e.id), :confirm => "Are you sure you want to commit #{e.person.full_name}? Read the notice next to the red button at the bottom of the page!" %>
     </td>
   </tr>
 <%- end -%>
 </tbody></table>
 
-<div id="big-red-button-wrapper">
-  <%= button_to 'Commit all', admin_rsec_commit_all_path, :id => 'big-red-button', :confirm => 'Really commit all?' %>
+<div id="big-red-wrapper">
+  <div id="big-red-button-wrapper">
+      <%= button_to 'BIG RED BUTTON', admin_rsec_commit_all_path, :id => 'big-red-button', :confirm => commitWarningMessage %>
+  </div>
+  <div id="warning-wrapper">
+    Don't click this button until you <%= link_to 'READ YOUR DUTIES', 'https://hkn.eecs.berkeley.edu/prot/Recording_Secretary#Upon_Being_Elected' %>
+  </div>
 </div>

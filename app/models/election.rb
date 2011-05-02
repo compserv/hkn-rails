@@ -59,7 +59,7 @@ class Election < ActiveRecord::Base
     person.groups = person.groups | [Group.find_by_name("officers"), Group.find_by_name("comms"),Group.find_by_name(self.position)]
 
     # username changes
-    person.username = self.final_username
+    #person.username = self.final_username
     return false unless person.valid? && person.save
 
     # hknmod
