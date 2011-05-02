@@ -10,7 +10,7 @@ class Admin::RsecController < Admin::AdminController
   #
   def commit
     e = Election.find(params[:election_id])
-    return redirect_to admin_rsec_election_sheet_path, :notice => "Segfault" unless e
+    return redirect_to admin_rsec_election_sheet_path, :notice => "Segfault" unless e && e.elected
 
     return redirect_to admin_rsec_election_sheet_path, :notice => "Failed to commit #{e.inspect} because #{e.errors.inspect}" unless e.commit
 

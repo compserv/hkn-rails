@@ -54,6 +54,7 @@ class Election < ActiveRecord::Base
   #  - Run hknmod.py to put person on mailing lists
   #
   def commit
+    return false unless self.elected
 
     # group management
     person.groups = person.groups | [Group.find_by_name("officers"), Group.find_by_name("comms"),Group.find_by_name(self.position)]
