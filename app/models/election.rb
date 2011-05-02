@@ -77,7 +77,8 @@ class Election < ActiveRecord::Base
 #    end
 
     Rails.logger.info "Election Create: #{self.inspect} #{self.person.inspect} 'hknmod #{cmd.join ' '}'"
-    Rails.logger.info system('./run_hknmod', *cmd)
+    Rails.logger.info `./run_hknmod #{cmd.join ' '}`
+    #Rails.logger.info system('./run_hknmod', *cmd)
   end
 
 #  def method_missing_with_person(sym, *args, &block)
