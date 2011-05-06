@@ -463,7 +463,8 @@ class CoursesurveysController < ApplicationController
   def authorize_privileged
   # Sets the value of @privileged based on the user's group membership.
   # Csec, superusers, and coursesurvey groups all override @privileged to false
-    @privileged = ['csec', 'coursesurveys'].any? {|g| @auth[g]}
+    @privileged = @current_user && @current_user.groups.exists?(:name => ['csec', 'coursesurveys'])
+    #@privileged = ['csec', 'coursesurveys'].any? {|g| @auth[g]}
   end
 
   def _get_instructor(param)

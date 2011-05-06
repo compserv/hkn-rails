@@ -101,6 +101,9 @@
 
 <%- if @instructor.private -%>
     <p>This instructor&#39;s ratings are <%= link_to "hidden", coursesurveys_ferpa_path %>. If you are <%= @instructor.full_name %> and would like to allow HKN to display your teaching evaluation ratings on the web, please <%= link_to "opt-in", coursesurveys_ferpa_path %>.</p>
+    <%- if @privileged -%>
+    <p>You're seeing these survey results because you are currently logged in with privileged access. These results are not publicly available.</p>
+    <%- end -%>
 <%- end -%>
 
 
