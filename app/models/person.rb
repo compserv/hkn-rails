@@ -86,7 +86,7 @@ class Person < ActiveRecord::Base
   end
 
   def valid_ldap_or_password?(password)
-    return valid_ldap?(password) || valid_password?(password)
+    return valid_password?(password) || valid_ldap?(password)
   end
 
   def valid_ldap?(password)
