@@ -3,7 +3,7 @@
   <li class="event <%= " current" if event.start_time < Time.now %>">
     <span class="name">
       <%= link_to event.name, event %> (<span class="location"><%= event.location %></span>)
-      <% if event.allows_rsvps? and event.can_rsvp? @current_user %>
+      <% if event.allows_rsvps? && event.can_rsvp?(@current_user) && @current_user && !@current_user.events.include?(event) %>
         [<%= link_to "RSVP", "/events/" + event.id.to_s + "/rsvps/new" %>]
       <% end %>
     </span>
