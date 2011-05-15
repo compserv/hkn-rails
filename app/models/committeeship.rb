@@ -13,19 +13,24 @@ class Committeeship < ActiveRecord::Base
   @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring pub examfiles ejc)	#This generates a constant which is an array of possible committees.
   Semester = /^\d{4}[0-4]$/	#A regex which validates the semester
   Positions = %w(officer cmember candidate)	#A list of possible positions
-  validates_inclusion_of :committee, :in => @Committees, :message => "Committee not recognized."
+
+  validates_presence_of :person_id
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validates_inclusion_of :title, :in => Positions, :message => "Not a valid title." 
+  validates_inclusion_of :committee, :in => @Committees, :message => "Committee not recognized."
   validates_uniqueness_of :committee, :scope => [:person_id, :semester]
   
   belongs_to :person
 
+  after_create :assign_groups
+
   # We have this argumentless lambda because we don't want to evaluate 
   # Property.semester until we call the scope, not when we define it
-  scope :current, lambda{ { :conditions => { :semester => Property.semester } } }
-  scope :committee, lambda{|x| { :conditions => { :committee => x } } }
-  scope :officers, :conditions => { :title => "officer" }
-  scope :cmembers, :conditions => { :title => "cmember" }
+  scope :current,    lambda{ { :conditions => { :semester => Property.semester } } }
+  scope :next,       lambda{ where(:semester => Property.next_semester) }
+  scope :committee,  lambda{|x| { :conditions => { :committee => x } } }
+  scope :officers,   :conditions => { :title => "officer" }
+  scope :cmembers,   :conditions => { :title => "cmember" }
   scope :candidates, :conditions => { :title => "candidate" }
 
   class << self
@@ -77,4 +82,35 @@ class Committeeship < ActiveRecord::Base
     }
     nice_committees[committee]
   end
+
+private
+
+  def assign_groups
+    # Adds the associated person to:
+    #   candplus     always
+    #
+    #   comms        if officer or cmember
+    #
+    #   officers     depending on the title
+    #   cmembers
+    #   candidates
+    #
+    # Does not save the group changes. You have to do that yourself.
+    #
+
+    # TODO: this is duplicating work... we could implement in-group as
+    # person.committeeships.exists? ...
+
+    grups = ['candplus']
+
+    # Don't add candidates to groups
+    # TODO: is this right?
+    grups << self.committee << 'comms' unless self.title == 'candidate'
+
+    # officers, cmembers, candidates
+    grups << self.title.pluralize
+
+    self.person.join_groups grups
+  end
+
 end

@@ -155,4 +155,12 @@ class Person < ActiveRecord::Base
       current_committeeship.nice_position
     end
   end
+
+  def join_groups(gnames)
+    self.groups |= Group.find_all_by_name([*gnames])
+  end
+  def join_groups!(gnames)
+    self.join_groups gnames
+    self.save
+  end
 end

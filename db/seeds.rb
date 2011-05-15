@@ -59,7 +59,8 @@ def initialize_groups
   ]
 
   groups.each do |group|
-    Group.find_or_create_by_name_and_description(group)
+    g = Group.find_or_create_by_name_and_description(group)
+    g.update_attribute(:committee, true) if Committeeship.Committees.include? group['name']
   end
 end
 

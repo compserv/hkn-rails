@@ -59,19 +59,32 @@ class Property < ActiveRecord::Base
     #   Missing arguments default to valus taken from Time.now().
     #
     # With no arguments, calculates the current semester
-    def make_semester(year_and_semester={})
+    def make_semester(year_and_semester={}, options={})
+      year_and_semester ||= {}
       year     = year_and_semester.delete(:year)     || Time.now.year
       semester = year_and_semester.delete(:semester) || 
                  ( case (year_and_semester.delete(:month) || Time.now.month)
                    when 1..5: 1
                    when 6..7: 2
                    else       3 end     )
-      "#{year}#{semester}"
+      if options.delete(:hash) then
+        {:year => year, :semester => semester}
+      else
+        "#{year}#{semester}"
+      end
     end
 
     # Convenience method
     def current_semester
       make_semester
+    end
+
+    def next_semester
+      s = make_semester(nil, :hash=>true)
+      year, sem = s[:year], s[:semester]
+      sem = (sem+1)%3
+      year += sem/3
+      "#{year}#{sem}"
     end
 
     def current_semester_range

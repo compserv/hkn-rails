@@ -17,7 +17,8 @@ describe Person, "when created with blank parameters" do
 
   it "should require an email of correct length" do
     @person.should_not be_valid
-    @person.errors[:email].should include("is too short (minimum is 6 characters)")
+    #@person.errors[:email].should include("is too short (minimum is 6 characters)")
+    @person.errors[:email].should include("should look like an email address.")
   end
 
   it "should require a username of correct length" do

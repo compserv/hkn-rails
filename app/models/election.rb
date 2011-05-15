@@ -51,20 +51,33 @@ class Election < ActiveRecord::Base
 
   # Commits changes represented by this Election:
   #  - Add person to comms, officers, and corresponding committee
-  #  - Run hknmod.py to put person on mailing lists
+  #  - Create committeeship
+  #  - Run hknmod.py to put person on mailing lists and create accounts
   #
   def commit
     return false unless self.elected
 
     # group management
-    person.groups = person.groups | [Group.find_by_name("officers"), Group.find_by_name("comms"),Group.find_by_name(self.position)]
+#    person.groups = person.groups | [Group.find_by_name("officers"), Group.find_by_name("comms"),Group.find_by_name(self.position)]
+    cship = Committeeship.create({
+        :person_id => self.person_id,
+        :committee => self.position,
+        :semester  => self.semester,
+        :title     => 'officer'
+      })
 
     # username changes
     person.username = self.final_username
-    return false unless person.valid? && person.save && person.reload && self.reload
+    unless person.valid? && person.save && person.reload && self.reload
+      Rails.logger.error "Failed to apply username change #{person.username_was} -> #{self.final_username}"
+      return false
+    end
 
     # ensure s/he has a tutor
-    return false unless self.person.get_tutor
+    unless self.person.get_tutor
+      Rails.logger.error "Failed to create tutor for #{person.username}"
+      return false
+    end
 
     # hknmod
     cmd = []
@@ -84,23 +97,6 @@ class Election < ActiveRecord::Base
     Rails.logger.info `./run_hknmod #{cmd.join ' '}`
     #Rails.logger.info system('./run_hknmod', *cmd)
   end
-
-#  def method_missing_with_person(sym, *args, &block)
-#    method_missing_without_person(sym, *args, &block) rescue self.person.send(sym, *args, &block) 
-#  end
-#
-#  alias_method_chain :method_missing, :person
-
-  # FIXME: idk how to do this. alias_method_chaining method_missing didn't work...
-#  [:username, :phone_number, :aim, :email, :local_address, :date_of_birth].each do |meth|
-#      attr_accessible meth
-#      define_method meth do
-#          person.send meth
-#      end
-#      define_method "#{meth}=" do |rhs|
-#          person.send "#{meth}=", rhs
-#      end
-#  end
 
 private
 
