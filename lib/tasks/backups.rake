@@ -33,6 +33,13 @@ namespace :backup do
     end
   end
 
+  def reset_id_seqs
+    ActiveRecord::Base.connection.execute("select table_name, column_name from information_schema.columns where column_default like 'nextval%';").each do |idx|
+      seqname = "#{idx[:table_name]}_#{idx[:column_name]}_seq"
+      ActiveRecord::Base.connection.execute "SELECT setval('#{seqname}', (SELECT MAX('#{idx[:column_name]}') FROM '#{idx[:table_name]}')+1);"
+    end
+  end
+
   # Backup
   # rake db:backup:dump[filename]
   # rake db:backup:dump TO=filename
@@ -58,12 +65,15 @@ namespace :backup do
     filename = args[:filename] || ENV['FROM']
     raise "Usage: rake db:backup:restore[filename] | db:backup:restore FROM=filename" if filename.blank?
     raise "Can't find #{filename}" unless File.file?(filename)
-    pg_wrapper do |config|
-      puts "Loading from #{filename}"
-      success = system "gunzip -c #{filename} | psql #{config['database']} --user #{config['username']}"
-      raise "psql error!" unless success
-      puts "Done.\n"
-    end
+    ActiveRecord::Base.transaction do
+      pg_wrapper do |config|
+        puts "Loading from #{filename}"
+        success = system "gunzip -c #{filename} | psql #{config['database']} --user #{config['username']}"
+        raise "psql error!" unless success
+        puts "Resetting sequences..." and reset_id_seqs
+        puts "Done.\n"
+      end # pg_wrapper
+    end # xact
   end
 
 end # backup
