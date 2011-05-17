@@ -102,7 +102,7 @@ private
 
   def set_current
     self.elected_time ||= Time.now
-    self.semester ||= Property.current_semester
+    self.semester ||= Property.next_semester #current_semester
   end
 
 end

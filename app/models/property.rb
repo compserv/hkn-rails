@@ -61,8 +61,9 @@ class Property < ActiveRecord::Base
     # With no arguments, calculates the current semester
     def make_semester(year_and_semester={}, options={})
       year_and_semester ||= {}
-      year     = year_and_semester.delete(:year)     || Time.now.year
-      semester = year_and_semester.delete(:semester) || 
+      year_and_semester = {:year => year_and_semester[0..3], :semester => year_and_semester[4..4]} if year_and_semester.is_a? String
+      year     = year_and_semester.delete(:year).to_i     || Time.now.year
+      semester = year_and_semester.delete(:semester).to_i || 
                  ( case (year_and_semester.delete(:month) || Time.now.month)
                    when 1..5: 1
                    when 6..7: 2
@@ -74,17 +75,32 @@ class Property < ActiveRecord::Base
       end
     end
 
-    # Convenience method
     def current_semester
       make_semester
     end
 
-    def next_semester
-      s = make_semester(nil, :hash=>true)
+    def offset_semester(year_and_semester={}, options={})
+      s = make_semester(year_and_semester, :hash=>true)
       year, sem = s[:year], s[:semester]
-      sem = (sem+1)%3
-      year += sem/3
+      dir  = (options[:dir] == -1) ? -1 : 1
+      sem  += dir
+      sem  += dir if !options[:summer] && sem == 2   # XXX in the contexts where we use next/prev, it doesn't make sense to return summer
+      if dir > 0 && sem > 3 then
+        year += 1
+        sem = 1
+      elsif sem < 1 # dir < 0
+        year -= 1
+        sem = 3
+      end # dir
       "#{year}#{sem}"
+     end
+
+    def next_semester(year_and_semester={}, options={})
+      offset_semester year_and_semester, {:summer=>false, :dir=>1}.merge(options)
+    end
+
+    def prev_semester(year_and_semester={}, options={})
+      offset_semester year_and_semester, {:summer=>false, :dir=>-1}.merge(options)
     end
 
     def current_semester_range
@@ -159,3 +175,4 @@ class Property < ActiveRecord::Base
   end
 
 end
+

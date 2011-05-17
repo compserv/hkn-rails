@@ -59,6 +59,11 @@
 }
 
 /*Officers*/
+#no-data {
+  text-align: center;
+  margin-top: 3em;
+}
+
 div.photo{
   width: 125px;
   height: 100px;
@@ -93,7 +98,7 @@ span.label{
     display: block;
 }
 
-#execs .position{
+#execs .exec{
     display: inline-block;
     width: 40%;
 }

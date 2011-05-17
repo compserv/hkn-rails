@@ -11,8 +11,10 @@ class Committeeship < ActiveRecord::Base
   # =======================
 
   @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring pub examfiles ejc)	#This generates a constant which is an array of possible committees.
-  Semester = /^\d{4}[0-4]$/	#A regex which validates the semester
-  Positions = %w(officer cmember candidate)	#A list of possible positions
+  Semester = /^\d{4}[0-4]$/                  # A regex which validates the semester
+  Positions = %w(officer cmember candidate)  # A list of possible positions
+  Execs = %w(pres vp rsec csec treas)        # Executive positions
+  NonExecs = @Committees-Execs
 
   validates_presence_of :person_id
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
@@ -28,6 +30,7 @@ class Committeeship < ActiveRecord::Base
   # Property.semester until we call the scope, not when we define it
   scope :current,    lambda{ { :conditions => { :semester => Property.semester } } }
   scope :next,       lambda{ where(:semester => Property.next_semester) }
+  scope :semester,   lambda{|s| where(:semester => s)}
   scope :committee,  lambda{|x| { :conditions => { :committee => x } } }
   scope :officers,   :conditions => { :title => "officer" }
   scope :cmembers,   :conditions => { :title => "cmember" }
@@ -38,6 +41,10 @@ class Committeeship < ActiveRecord::Base
   end
 
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
+
+  def exec?
+    Execs.include? self.committee
+  end
 
   def nice_semester
     "#{SEMESTER_MAP[semester[-1..-1].to_i]} #{semester[0..3]}"

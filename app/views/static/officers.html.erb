@@ -1,29 +1,69 @@
-<h1>HKN Officers, <%= @season %> <%= @year %></h1>
+<h1>HKN Officers, <%= Property.pretty_semester @semester %></h1>
 
-<%= link_to "Previous Semester", about_officers_path(@prev_semester) unless @prev_semester.blank? %>
-<%= link_to "Next Semester", about_officers_path(@next_semester) unless @next_semester.blank? %>
+<span id="semester-nav">
+<%= link_to "Previous Semester", about_officers_path(Property.prev_semester @semester) unless @semester.blank? %>&nbsp;|&nbsp;
+<%= link_to "Next Semester", about_officers_path(Property.next_semester @semester) unless @semester.blank? %>
+</span>
 
-<% if @no_data %>
+<%- if @committeeships.values.collect(&:empty?).all? -%>
+<div id="no-data">
   <p>No data available for this semester. If you know information about the officers for this semester and would like us to add it, please email hkn@hkn.</p>
-<% else %>
-
-<div id="execs">
-<% for position in @execs %>
-  <%= render :partial => "officers_committee", :locals => { :style_class => "position", :position => position } %>
-<% end %>
 </div>
+<%- else # there are cships for this semester -%>
 
-<div id="committees">
-<% for committee in @committees %>
-  <%= render :partial => "officers_committee", :locals => { :style_class => "committee", :position => committee } %>
-<% end %>
+<%- [:execs, :committees].each do |position_type| -%>
+<div id="<%= position_type %>">
+  <%- @committeeships[position_type].each do |c_name, cships| -%>
+    <%# begin partial %>
+
+
+
+    <div class="<%= position_type.to_s.singularize %>">
+    <h2><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h2>
+      <% for person in cships.collect(&:person).sort_by(&:full_name) %>
+      <div class="officer">
+        <div class="photo <%= "no-photo" if person.picture.blank? %>">
+          <%= image_tag person.picture  unless person.picture.blank? %>
+        </div>
+<%- if false -%>
+        <div class="photo">
+          <%= image_tag "https://hkn.eecs.berkeley.edu/images/officerpics/#{person.username}.png" %>
+        </div>
+<%- end -%>
+        <span class="name"><%= person.full_name %></span>
+        <span class="email"><%= person.username %>@hkn</span>
+      </div>
+      <% end %>
+    </div>
+
+
+
+    <%# end partial %>
+  <%- end # cships, @committeeships -%>
 </div>
+<%- end # position_type -%>
+
+<%- if false -%>
+## <div id="execs">
+## <% for position in @committeeships[:execs] %>
+##   <%= render :partial => "officers_committee", :locals => { :style_class => "position", :position => position } %>
+## <% end %>
+## </div>
+## 
+## <div id="committees">
+## <% for committee in @committees %>
+##   <%= render :partial => "officers_committee", :locals => { :style_class => "committee", :position => committee } %>
+## <% end %>
+## </div>
+## 
+<%- end # if false -%>
+
 
 <%# Alumni Advisor should go here. %>
 
 <br/>
 <div class="hbar"></div>
-To send an email, fill out the full domain name (hkn=>hkn.eecs.berkeley.edu)
+To send an email, fill out the full domain name (hkn&nbsp;&rarr;&nbsp;hkn.eecs.berkeley.edu)
 </div>
 
-<% end %>
+<%- end # there are cships -%>
