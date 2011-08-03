@@ -8,7 +8,7 @@ class DeptTourController < ApplicationController
       @errors[:email_confirmation] = "Email confirmation did not match" unless params[:email] == params[:email_confirmation]
       @errors[:name]               = "Name must not be blank"           if params[:name].length == 0
       @errors[:recaptcha]          = "Captcha validation failed"        unless verify_recaptcha
-      @errors[:date]               = "Invalid date or time specified"   unless params[:date]
+      @errors[:date]               = "Invalid date or time specified. Must be in the future, and between 10 (10am) and 18 (6pm)"   unless params[:date] && valid_date?(params[:date])
       @errors[:phone]              = "Phone must not be blank"          if params[:phone].blank?
 
       # Optional
@@ -42,6 +42,12 @@ class DeptTourController < ApplicationController
   end
 
   def success
+  end
+
+  private
+  def valid_date?(date)
+    dt = Time.mktime(date[:year].to_i, date[:month].to_i, date[:day].to_i, date[:hour].to_i, date[:minute].to_i)
+    return (10..17).include?(dt.hour) && dt > Time.now
   end
 
 end
