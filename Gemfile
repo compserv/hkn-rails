@@ -13,7 +13,7 @@ gem 'webrat'
 gem 'ZenTest'
 gem 'autotest-rails'
 gem 'authlogic', :git => 'git://github.com/binarylogic/authlogic.git'
-gem 'net-ldap'
+gem 'net-ldap', :require => 'net/http'
 gem 'nokogiri'
 gem 'will_paginate', "~> 3.0.pre2"
 gem 'yaml_db'

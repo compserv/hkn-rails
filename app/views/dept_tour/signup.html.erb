@@ -1,7 +1,6 @@
 <h1>Sign up for a Department tour!</h1>
 <p>
-  HKN provides tours of the Berkeley EECS department.
-  Sign up here, and your request will be sent to the HKN officer corps.
+HKN provides tours of the Berkeley EECS department. Sign up here, and your request will be sent to the HKN officer corps. If you have any special requests, list them in the additional comments section. Tours are offered during our open hours (MTWRF, 10am-6pm). Please allow three days for confirmation.
 </p>
 
   <% if @errors && @errors.any? %>
@@ -17,22 +16,27 @@
 
 <%= form_tag("", :method => :post) do%>
   <div class="field">
-    <%= label_tag :name, "Name:" %>
+    <%= label_tag :name, "Name", :class => 'required-field' %>
     <%= text_field_tag :name %>
   </div>
   
   <div class="field">
-    <%= label_tag :date, "Date & Time:" %>
-    <%= select_datetime Time.now, :prefix => :date %>
+    <%= label_tag :date, "Desired date & time", :class => 'required-field' %>
+    <%= select_datetime Time.now + 1.week, :prefix => :date %>
   </div>
   
   <div class="field">
-    <%= label_tag :email, "Contact email address:" %>
+    <%= label_tag :email, "Contact email address", :class => 'required-field' %>
     <%= text_field_tag :email %>
   </div>
+
+  <div class="field">
+    <%= label_tag :email_confirmation, "Re-type email", :class => 'required-field' %>
+    <%= text_field_tag :email_confirmation %>
+  </div>
   
   <div class="field">
-    <%= label_tag :phone, "Contact phone number (optional):" %>
+    <%= label_tag :phone, "Contact phone number", :class => 'required-field' %>
     <%= text_field_tag :phone %>
   </div>
   
@@ -51,5 +55,10 @@
   <div class="field-submit">
     <%= submit_tag "Submit" %>
   </div>
+
+  <div>
+    <p><span class="required-field"></span> denotes a required field</p>
+  </div>
+
 
 <% end %>
