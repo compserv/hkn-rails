@@ -6,7 +6,6 @@ class Badge < ActiveRecord::Base
   #   url        : string 
   #   created_at : datetime 
   #   updated_at : datetime 
-  #   desc       : string 
   # =======================
 
   has_and_belongs_to_many :people
