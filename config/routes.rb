@@ -31,6 +31,10 @@ HknRails::Application.routes.draw do
         get  "minutes"                => "elections#election_minutes", :as => :minutes
     end
 
+    scope "pres" do
+      match "/" => "pres#index", :as => :pres
+    end
+
     scope "vp" do
       match "/" => "vp#index", :as => :vp
       scope "eligibilities" do
@@ -187,9 +191,9 @@ HknRails::Application.routes.draw do
 
     match "rsvps" => "rsvps#my_rsvps", :as => :my_rsvps
 
-    #Routes for vp's rsvp confirmation page
-    match "confirm_rsvps" => "events#vp_confirm", :as => :vp_confirm
-    match "confirm_rsvps/event/:id" => "events#rsvps_confirm", :as => :confirm_event_rsvps
+    # Routes for RSVP confirmation page
+    match "confirm_rsvps/:group" => "events#confirm_rsvps_index", :as => :confirm_rsvps_index, :constraints => {:group => /(candidates|comms)/}
+    match "confirm_rsvps/:group/event/:id" => "events#confirm_rsvps", :as => :confirm_rsvps, :constraints => {:group => /(candidates|comms)/}
     match "confirm/:id" => "rsvps#confirm", :as => :confirm_rsvp
     match "unconfirm/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
     match "reject/:id" => "rsvps#reject", :as => :reject_rsvp

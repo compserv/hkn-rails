@@ -7,7 +7,6 @@ describe EventsController do
   # Also, all comms should be able to access the Events stuff, not just act
   before(:all) do
     EventsController.skip_before_filter :authorize_comms
-    EventsController.skip_before_filter :check_comms
   end
 
   def mock_event(stubs={})
@@ -16,9 +15,12 @@ describe EventsController do
 
   describe "GET index" do
     it "assigns all events as @events" do
-      Event.stub_chain(:with_permission, :paginate) { [mock_event] }
+      #Event.stub_chain(:with_permission, :paginate) { [mock_event] }
+      events = [mock_event]
+      Event.stub(:with_permission) { events }
+      events.stub(:paginate) { events }
       get :index
-      assigns(:events).should eq([mock_event])
+      assigns(:events).should eq(events)
     end
   end
 
@@ -354,6 +356,63 @@ describe EventsController do
       Event.stub(:find) { mock_event(:destroy => true) }
       delete :destroy, :id => "1"
       response.should redirect_to(events_url)
+    end
+  end
+
+  describe "confirm_rsvps_index" do
+    it "allows the president to view" do
+      @current_user = stub_model(Person)
+      login_as @current_user, { 'pres' => true }
+      get :confirm_rsvps_index, :group => "comms"
+      response.should be_success
+    end
+
+    it "allows the vice president to view" do
+      @current_user = stub_model(Person)
+      login_as @current_user, { 'vp' => true }
+      get :confirm_rsvps_index, :group => "candidates"
+      response.should be_success
+    end
+
+    it "redirects all other users" do
+      @current_user = stub_model(Person)
+      login_as @current_user
+      get :confirm_rsvps_index, :group => "candidates"
+      response.should_not be_success
+      response.should redirect_to(root_url)
+    end
+  end
+
+  describe "confirm_rsvps" do
+    def do_confirm_rsvps
+      get :confirm_rsvps, :group => "comms", :id => @event.id
+    end
+
+    before(:each) do
+      @event = stub_model(Event, :rsvps => [] )
+      Event.stub(:find) { @event }
+    end
+
+    it "allows the president to view" do
+      @current_user = stub_model(Person)
+      login_as @current_user, { 'pres' => true }
+      do_confirm_rsvps
+      response.should be_success
+    end
+
+    it "allows the vice president to view" do
+      @current_user = stub_model(Person)
+      login_as @current_user, { 'vp' => true }
+      do_confirm_rsvps
+      response.should be_success
+    end
+
+    it "redirects all other users" do
+      @current_user = stub_model(Person)
+      login_as @current_user
+      do_confirm_rsvps
+      response.should_not be_success
+      response.should redirect_to(root_url)
     end
   end
 

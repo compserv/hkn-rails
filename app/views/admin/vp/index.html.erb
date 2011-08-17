@@ -3,6 +3,6 @@
   <li><%= link_to "Eligibilities", admin_eligibilities_url %></li>
   <li><%= link_to "Confirm Candidate Accounts", people_list_path(:category => "candidates", :not_approved=> true) %></li>
   <li><a href="/admin/general/candidate_announcements/" class="navigation_sublevel_item">Cand Announcements</a></li>
-  <li><%= link_to "Confirm RSVPs", vp_confirm_path %></li>
+  <li><%= link_to "Confirm RSVPs", confirm_rsvps_index_path('candidates') %></li>
   <li><a href="/admin/general/super_page/" class="navigation_sublevel_item"> Super Page</a></li>
 </ul>

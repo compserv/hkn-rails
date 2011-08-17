@@ -197,7 +197,7 @@ describe RsvpsController do
       before(:each) do
         @current_user = stub_model(Person)
         login_as @current_user
-        controller.should_receive(:authorize).with(['p','vp'])
+        controller.should_receive(:authorize).with(['pres','vp'])
       end
 
       it "should set rsvp.confirmed to 't'" do
@@ -225,7 +225,7 @@ describe RsvpsController do
       before(:each) do
         @current_user = stub_model(Person)
         login_as @current_user
-        controller.should_receive(:authorize).with(['p','vp'])
+        controller.should_receive(:authorize).with(['pres','vp'])
       end
 
       it "should set rsvp.confirmed to 't'" do
@@ -253,7 +253,7 @@ describe RsvpsController do
       before(:each) do
         @current_user = stub_model(Person)
         login_as @current_user
-        controller.should_receive(:authorize).with(['p','vp'])
+        controller.should_receive(:authorize).with(['pres','vp'])
       end
 
       it "should set rsvp.confirmed to 't'" do

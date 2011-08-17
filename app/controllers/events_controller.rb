@@ -44,8 +44,10 @@ class EventsController < ApplicationController
     end
   end
 
-  #Controller action for main confirmation page that links to each event confirmation page
-  def vp_confirm
+  # Lists all events with unconfirmed RSVPs with links to individual event 
+  # RSVPs page
+  def confirm_rsvps_index
+    authorize ['pres', 'vp']
     @group = params[:group] || "candidates"
     types = ["Mandatory for Candidates", "Big Fun", "Fun", "Service"]
 
@@ -58,8 +60,9 @@ class EventsController < ApplicationController
     @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
 
-  #Rsvp confirmation for an individual event
-  def rsvps_confirm
+  # RSVP confirmation for an individual event
+  def confirm_rsvps
+    authorize ['pres', 'vp']
     @group = params[:group] || "candidates"
     @event = Event.find(params[:id])
     @rsvps = @event.rsvps.sort_by { |rsvp| rsvp.person.last_name }
