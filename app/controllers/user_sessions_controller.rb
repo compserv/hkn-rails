@@ -56,7 +56,7 @@ class UserSessionsController < ApplicationController
   def destroy
     current_user_session = UserSession.find
     current_user_session.destroy if current_user_session
-    current_user = @nil  # see applicationcontroller
+    current_user = nil  # see applicationcontroller
     flash[:notice] = "Logout successful!"
     redirect_to login_url
   end
