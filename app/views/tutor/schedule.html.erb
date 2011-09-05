@@ -39,7 +39,7 @@
 		<% @days.each do |day| %>
 		<td  class="slot soda pcell" id="<%= formatslot day, row.to_s + "S" %>">
 			<%= render Slot.get_from_string(formatslot day, row.to_s + "S") %>
-			<% tutors.concat(Slot.get_from_string(formatslot day, row.to_s + "C").tutors) %>
+			<% tutors.concat(Slot.get_from_string(formatslot day, row.to_s + "S").tutors) %>
 		</td>
 		<% end%>
 	<% end %>
