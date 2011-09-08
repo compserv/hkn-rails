@@ -1,6 +1,7 @@
 .bundle
 db/*.sqlite3
 db/goodprofornot_dump/
+db/backups
 log/*.log
 tmp/**/*
 private/**/*
