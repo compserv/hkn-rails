@@ -218,10 +218,9 @@ class EventsController < ApplicationController
     original_start = @event.start_time
     original_end = @event.end_time
 
-    @event.update_attributes!(params[:event])
+    valid = @event.update_attributes(params[:event])
 
     # Don't save event if any block is invalid
-    valid = true
     ActiveRecord::Base.transaction do
       begin
 
