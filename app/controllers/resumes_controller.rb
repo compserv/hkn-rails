@@ -15,7 +15,15 @@ class ResumesController < ApplicationController
   def create
     @person = Person.find(params[:resume][:person].to_i)
     params[:resume][:person] = @person
-    resume_file = params[:resume][:file]
+
+    unless resume_file = params[:resume][:file]
+      flash[:notice] = "Please attach your resume file"
+      @resume = Resume.new(params[:resume])
+      @person = @current_user
+      render :action => "new"
+      return
+    end
+
     resume_constructor_args = params[:resume]
     # strftime doesn't have milliseconds in ruby 1.8.7
     # So it will just put in an "L" in resume names for now
