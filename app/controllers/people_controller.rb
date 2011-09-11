@@ -7,7 +7,7 @@ class PeopleController < ApplicationController
     @category = params[:category] || "all"
 
     # Prevent people from seeing members of any group
-    if not %w[officers cmembers members candidates all].include? @category
+    if not (%w[officers cmembers members candidates all] | @current_user.groups.collect(&:name)).include? @category
       @messages << "No category named #{@category}. Displaying all people."
       @category = "all"
     end
