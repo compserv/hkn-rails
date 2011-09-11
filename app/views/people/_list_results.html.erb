@@ -19,7 +19,7 @@
       <div class="small"><%= person.status %></div>
     </td>
     <td><%= raw html_obfuscate person.email if !person.private || @auth['csec'] %></td>
-    <td><%= person.phone_number if !person.private || @auth['csec'] %></td>
+    <td><%= person.phone_number if !person.private || @auth['csec'] || !( @current_user.groups.collect(&:name) & person.groups.collect(&:name) & Committeeship.Committees).empty? %></td>
   </tr>
 <% end %>
 </table>
