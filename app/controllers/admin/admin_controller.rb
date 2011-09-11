@@ -33,6 +33,15 @@ class Admin::AdminController < ApplicationController
     done["quiz_responses"] = Hash[cand.quiz_responses.map{|x| [x.number.to_sym, {:response => x.response, :correct => x.correct}]}]
     done["course_surveys"] = false
 
+    done[:id] = cand.person_id
+    curr_person = Person.find_by_id(cand.person_id)
+    candidate_group = Group.find_by_name("candidates")
+    if curr_person.groups.include?(candidate_group)
+        done[:promoted] = false
+    else
+        done[:promoted] = true
+    end
+
     #puts done.to_s
     return done
   end 
