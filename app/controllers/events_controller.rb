@@ -317,8 +317,13 @@ class EventsController < ApplicationController
   # DELETE /events/1
   # DELETE /events/1.xml
   def destroy
-    
-    @event = Event.find(params[:id])
+    unless @event = Event.find(params[:id])
+      # no such event
+      flash[:notice] = "Invalid event #{params[:id]}"
+      redirect_to events_path
+      return
+    end
+
     @event.destroy
 
     respond_to do |format|
