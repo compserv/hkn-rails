@@ -1,5 +1,6 @@
 class CandidatesController < ApplicationController
-  before_filter :is_candidate?
+  before_filter :is_candidate?, :except => [:promote]
+  before_filter :authorize_vp, :only => [:promote]
   
   def is_candidate?
     if @current_user
@@ -178,5 +179,23 @@ class CandidatesController < ApplicationController
       @current_user.coursesurveys << coursesurvey
     end
     redirect_to(candidate_portal_path, :notice => "Signed up for surveys.")
+  end
+
+  def promote
+      @cand = Person.find_by_id(params[:id])
+      member_group = Group.find_by_name('members')
+      candidate_group = Group.find_by_name('candidates')
+      if @cand.groups.include?(candidate_group)
+          @cand.groups.delete(candidate_group)
+          @cand.groups |= [member_group]
+          if @cand.save()
+              # good to go
+          else
+              flash[:notice] = "Changes not saved to db"
+          end
+      else
+          flash[:notice] = "This person is not a member of the candidate group"
+      end
+      redirect_to "/admin/general/super_page"
   end
 end

@@ -274,6 +274,7 @@ HknRails::Application.routes.draw do
     match "find_officers" => "candidates#find_officers"
     get "coursesurvey_signup" => "candidates#coursesurvey_signup", :as => "coursesurvey_signup"
     post "coursesurvey_signup" => "candidates#coursesurvey_signup_post", :as => "coursesurvey_signup_post"
+    post "promote/:id" => "candidates#promote", :as => "promote_candidate"
   end
   #resources :user_session
 

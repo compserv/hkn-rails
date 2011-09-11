@@ -1,78 +1,83 @@
 <h1>Candidate Super Page!</h1>
 
 <style type="text/css">
-  .green { color : #008800; }
-  .red { color : #cc0000; }
-  .yellow { color : #ffff00; }
+    .green { color : #008800; }
+    .red { color : #cc0000; }
+    .yellow { color : #ffff00; }
 </style>
 <% event_requirements = Candidate.first.event_requirements if Candidate.first %>
 <% for cand in @candidates %>
-	<% if cand["candidate"] != false %>
-	<div class="candidate">
-    <h3><%= cand["candidate"] %></h3>
-		<ul>
-			<li>Events: 
-				<ul>
-					<% cand["events"].each_pair do |k,v| %>
-            <% my_color = (event_requirements[k] <= v ) ? "green" : "red" %> 
-            <li class="<%=my_color%>"><%= k.to_s %> - <%= v.to_s %></li>
-					<% end %>
-				</ul>
-			</li>
-      <li class="<%= (cand["challenges"] >= 5) ? "green" : "red" %>">
-        Challenges: <%= cand["challenges"] %>
-        <% unless cand["confirmed_challenges"].empty? %>
-          <br />
-        Confirmed challenges:
-        <ul>
-          <% cand["confirmed_challenges"].each do |challenge|  %>
-            <li>
-              <%= challenge.name %> - <%= challenge.officer.full_name %> 
-            </li>
-          <% end %>
-        </ul>
-        <% end %>
-        <% unless cand["unconfirmed_challenges"].empty? %>
-          <br />
-        Unconfirmed challenges:
-        <ul>
-          <% cand["unconfirmed_challenges"].each do |challenge|  %>
-            <li>
-              <%= challenge.name %> - <%= challenge.officer.full_name %> 
-            </li>
-          <% end %>
-        </ul>
-        <% end %>
-      </li>
-      <li class="<%= (cand["resume"] > 0) ? "green" : "red"%>">Resume: <%= cand["resume"] %></li>
-      <li class="<%= (cand["quiz"] >= 18) ? "green" : "red"%>">Quiz: <%= cand["quiz"] %></li>
-      <% quiz_numbers = [ :q1, :q2, :q3, :q4, :q5_1, :q5_2, :q6, :q7_1, :q7_2, :q7_3, :q7_4, :q7_5, :q7_6, :q8_1, :q8_2, :q8_3, :q8_4, :q9, :q10_1, :q10_2, ] %>
-      <% cand_name_no_space = cand["candidate"].gsub(/ /, '_') %>
-      <button id="quiz_toggle_<%= cand_name_no_space %>">Show Answers</button>
-        <script> $('#quiz_toggle_<%= cand_name_no_space %>').click(function(){$('#quiz_answers_<%= cand_name_no_space %>').toggle();});</script>
-      <div id="quiz_answers_<%= cand_name_no_space %>" style="display:none">
-        All Answers:
-        <ul>
-        <% quiz_numbers.each do |num| %>
-          <% next if cand["quiz_responses"][num].nil? %>
-          <li><%= num %>. <%= cand["quiz_responses"][num][:response] %></li>
-        <% end %>
-        </ul>
-      </div>
-      <br />
+    <% if cand["candidate"] != false %>
+        <div class="candidate">
+            <h3><%= cand["candidate"] %></h3>
+            <ul>
+                <li>Events: 
+                <ul>
+                    <% cand["events"].each_pair do |k,v| %>
+                        <% my_color = (event_requirements[k] <= v ) ? "green" : "red" %> 
+                        <li class="<%=my_color%>"><%= k.to_s %> - <%= v.to_s %></li>
+                    <% end %>
+                </ul>
+                </li>
+                <li class="<%= (cand["challenges"] >= 5) ? "green" : "red" %>">
+                Challenges: <%= cand["challenges"] %>
+                <% unless cand["confirmed_challenges"].empty? %>
+                    <br />
+                    Confirmed challenges:
+                    <ul>
+                        <% cand["confirmed_challenges"].each do |challenge|  %>
+                            <li>
+                            <%= challenge.name %> - <%= challenge.officer.full_name %> 
+                            </li>
+                        <% end %>
+                    </ul>
+                <% end %>
+                <% unless cand["unconfirmed_challenges"].empty? %>
+                    <br />
+                    Unconfirmed challenges:
+                    <ul>
+                        <% cand["unconfirmed_challenges"].each do |challenge|  %>
+                            <li>
+                            <%= challenge.name %> - <%= challenge.officer.full_name %> 
+                            </li>
+                        <% end %>
+                    </ul>
+                <% end %>
+                </li>
+                <li class="<%= (cand["resume"] > 0) ? "green" : "red"%>">Resume: <%= cand["resume"] %></li>
+                <li class="<%= (cand["quiz"] >= 18) ? "green" : "red"%>">Quiz: <%= cand["quiz"] %></li>
+                <% quiz_numbers = [ :q1, :q2, :q3, :q4, :q5_1, :q5_2, :q6, :q7_1, :q7_2, :q7_3, :q7_4, :q7_5, :q7_6, :q8_1, :q8_2, :q8_3, :q8_4, :q9, :q10_1, :q10_2, ] %>
+                <% cand_name_no_space = cand["candidate"].gsub(/ /, '_') %>
+                <button id="quiz_toggle_<%= cand_name_no_space %>">Show Answers</button>
+                <script> $('#quiz_toggle_<%= cand_name_no_space %>').click(function(){$('#quiz_answers_<%= cand_name_no_space %>').toggle();});</script>
+                <div id="quiz_answers_<%= cand_name_no_space %>" style="display:none">
+                    All Answers:
+                    <ul>
+                        <% quiz_numbers.each do |num| %>
+                            <% next if cand["quiz_responses"][num].nil? %>
+                            <li><%= num %>. <%= cand["quiz_responses"][num][:response] %></li>
+                        <% end %>
+                    </ul>
+                </div>
+                <br />
 
-      <% unless cand["quiz"] >= 18 %>
-        Incorrect Quiz Answers:
-        <ul>
-        <% quiz_numbers.each do |num| %>
-          <% next if cand["quiz_responses"][num].nil? || cand["quiz_responses"][num][:correct] %>
-          <li><%= num %>. <%= cand["quiz_responses"][num][:response] %></li>
-        <% end %>
-        </ul>
-      <% end %>
+                <% unless cand["quiz"] >= 18 %>
+                    Incorrect Quiz Answers:
+                    <ul>
+                        <% quiz_numbers.each do |num| %>
+                            <% next if cand["quiz_responses"][num].nil? || cand["quiz_responses"][num][:correct] %>
+                            <li><%= num %>. <%= cand["quiz_responses"][num][:response] %></li>
+                        <% end %>
+                    </ul>
+                <% end %>
 
-		</ul>
-	</div>
-	<% end %>
+            </ul>
+            <% if cand[:promoted] %>
+                <p>Promoted!</p>
+            <% else %>
+                <%= button_to "Promote", promote_candidate_path({:id=>cand[:id]}) %>
+            <% end %>
+        </div>
+    <% end %>
 <% end %>
 
