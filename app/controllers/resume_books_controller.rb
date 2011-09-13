@@ -13,7 +13,7 @@ class ResumeBooksController < ApplicationController
     @resume_book = ResumeBook.new(res_book_params)
     @hash = get_hash
     @scratch_dir = "#{@resume_book_root}/#{@hash}_scratch"
-    system "mkdir #{@scratch_dir}"
+    raise "Failed to make scratch dir" unless system "mkdir #{@scratch_dir}"
     cutoff_date = @resume_book.cutoff_date
     current_semester = Property.semester
     if current_semester[-1..-1] == 3 # Fall
@@ -28,11 +28,11 @@ class ResumeBooksController < ApplicationController
     temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers, 
                                  temp_pdf_file)
     res_book_directory = "#{@resume_book_root}/#{@hash}_resume_book"
-    system "mkdir #{res_book_directory}"
+    raise "Failed to make book dir" unless system "mkdir #{res_book_directory}"
     pdf_file = "#{res_book_directory}/HKNResumeBook.pdf"
     iso_file = "#{res_book_directory}/HKNResumeBook.iso"
-    system "cp #{temp_pdf_file} #{pdf_file}"
-    system "cp #{temp_iso_file} #{iso_file}"
+    raise "Failed to copy pdf" unless system "cp #{temp_pdf_file} #{pdf_file}"
+    raise "Failed to copy iso" unless system "cp #{temp_iso_file} #{iso_file}"
 #    cleanup
     @resume_book.details   = description
     @resume_book.directory = res_book_directory
@@ -105,7 +105,7 @@ private
     sorted_years(resumes).each do |year|
       res_book_pdfs << section_cover_page(year)
       resumes[year].each do |resume|
-        res_book_pdfs << resume.file
+        res_book_pdfs << "\"#{resume.file.to_s}\""
       end
     end
     concatenate_pdfs(res_book_pdfs, "#{@scratch_dir}/HKNResumeBook.pdf")
@@ -140,7 +140,7 @@ private
   
   def do_tex(directory, file_name)
     Dir.chdir(directory) do |dir_name|
-      system "pdflatex #{file_name}"
+      raise "Failed to pdflatex #{file_name}" unless system "pdflatex #{file_name}"
     end
   end
   
@@ -154,14 +154,15 @@ private
   end
   
   def concatenate_pdfs(pdf_file_list, output_file_name)
-    system "pdftk #{pdf_file_list.join(' ')} cat output #{output_file_name}"
+    concat_cmd = "pdftk #{pdf_file_list.join(' ')} cat output #{output_file_name}"
+    logger.error "Failed to concat pdfs (#{concat_cmd})" unless system concat_cmd
     output_file_name
   end
   
   def generate_iso(resumes, cutoff_date, indrel_officers, res_book_pdf)
     dir_name_fn = lambda {|year| year == :grads ? "grads" : year.to_s }
     iso_dir = "#{@scratch_dir}/ResumeBookISO"
-    system "cp -R #{@gen_root}/skeleton/ResumeBookISO #{iso_dir}"
+    raise "Failed to copy ISO dir" unless system "cp -R #{@gen_root}/skeleton/ResumeBookISO #{iso_dir}"
     system "sed \"s/SEMESTER/#{nice_semester}/g\" #{iso_dir}/Welcome.html > #{iso_dir}/Welcome.html.tmp"
     system "mv #{iso_dir}/Welcome.html.tmp #{iso_dir}/Welcome.html"
     system "mkdir #{iso_dir}/Resumes"
@@ -173,7 +174,7 @@ private
       end
     end
     system "cp #{res_book_pdf} #{iso_dir}/HKNResumeBook.pdf"
-    system "genisoimage -V 'HKN Resume Book' -o #{@scratch_dir}/HKNResumeBook.iso -R -J #{iso_dir}"
+    raise "Filed to genisoimage" unless system "genisoimage -V 'HKN Resume Book' -o #{@scratch_dir}/HKNResumeBook.iso -R -J #{iso_dir}"
     "#{@scratch_dir}/HKNResumeBook.iso"
   end
   
@@ -188,7 +189,7 @@ private
   end
   
   def cleanup
-    system "rm -rf #{@scratch_dir}"
+    raise "Failed to cleanup scratch dir" unless system "rm -rf #{@scratch_dir}"
   end
   
   # get the keys of resumes hash in correct order so we have increasing years
