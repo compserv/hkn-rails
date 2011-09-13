@@ -62,12 +62,12 @@ class Property < ActiveRecord::Base
     def make_semester(year_and_semester={}, options={})
       year_and_semester ||= {}
       year_and_semester = {:year => year_and_semester[0..3], :semester => year_and_semester[4..4]} if year_and_semester.is_a? String
-      year     = year_and_semester.delete(:year).to_i     || Time.now.year
-      semester = year_and_semester.delete(:semester).to_i || 
+      year     = (year_and_semester.delete(:year)     || Time.now.year).to_i
+      semester = (year_and_semester.delete(:semester) || 
                  ( case (year_and_semester.delete(:month) || Time.now.month)
                    when 1..5: 1
                    when 6..7: 2
-                   else       3 end     )
+                   else       3 end     )).to_i
       if options.delete(:hash) then
         {:year => year, :semester => semester}
       else
