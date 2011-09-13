@@ -66,8 +66,9 @@ class CoursesurveysController < ApplicationController
       next unless avg_rating = course.average_rating.to_f
 
       # Generate row
-      #instructors = course.instructors.uniq[0..3]
-      instructors = Instructor.find course.klasses.collect(&:instructor_ids).flatten.group_by{|i|i}.values.sort_by(&:length).reverse[0..3]
+      # Sort by descending instructorship count
+      #                            [    only instrctrs  ]         [ histogram  ]        [  ascending    ] [up to last 4][one of each]
+      instructors = course.klasses.collect(&:instructors).flatten.group_by{|i|i}.values.sort_by(&:length).reverse[0..3].collect(&:first)
       result = { :course      => course,
                  :instructors => instructors,
                  :mean        => avg_rating,
