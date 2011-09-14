@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  before_filter :get_current_user, :merge_messages, :check_authorizations
+  before_filter :get_current_user, :merge_messages, :check_authorizations, :set_view_variables
   layout 'application'
 
   include ::SslRequirement
@@ -112,6 +112,15 @@ class ApplicationController < ActionController::Base
       end
       @auth['comms'] = @auth['cmembers'] || @auth['officers']
     end
+  end
+
+  def set_view_variables
+    if params[:piglatin] == "true"
+      session[:piglatin] = true
+    elsif params[:piglatin] == "false"
+      session[:piglatin] = false
+    end
+    @piglatin = session[:piglatin]
   end
   
 end
