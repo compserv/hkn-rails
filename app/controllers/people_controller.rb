@@ -7,13 +7,15 @@ class PeopleController < ApplicationController
   def list
     @category = params[:category] || "all"
 
-    # Prevent people from seeing members of any group
-    if not (%w[officers cmembers members candidates all] | @current_user.groups.collect(&:name)).include? @category
+    # Can view a group if:
+    #   (1) you're a superuser
+    #   (2) you're in it
+    #   (3) it's a public group      (  vvv      one of these      vvv        )
+    unless @auth['superusers'] or (%w[officers cmembers members candidates all] | @current_user.groups.collect(&:name)).include?(@category)
       @messages << "No category named #{@category}. Displaying all people."
       @category = "all"
     end
 
-    per_page = 10
     order = params[:sort] || "first_name"
     sort_direction = case params[:sort_direction] 
                      when "up" then "ASC"
@@ -22,7 +24,10 @@ class PeopleController < ApplicationController
                      end
 
     @search_opts = {'sort' => "first_name"}.merge params
-    opts = { :page => params[:page], :per_page => 20, :order => "people.#{order} #{sort_direction}" }
+    opts = { :page     => params[:page],
+             :per_page => params[:per_page] || 20,
+             :order    => "people.#{order} #{sort_direction}"
+           }
     if %w[officers].include? @category
       opts.merge!( { :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title = ?", Property.semester, @category[0..-2]] } )
     elsif @category != "all"
