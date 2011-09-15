@@ -1,0 +1,119 @@
+<%= link_to raw("&larr; profile"), profile_path(@person.username) %>
+
+<div id="group-container">
+
+<%- groopz = [ ["my",        "#{@person.username}'s groups",  @person.groups] ]
+    groopz << ["available", "Available groups", (Group.all - @person.groups)] if @allow_edit
+    groopz.each do |group_class, title, groups|
+-%>
+  <div class="<%= group_class %> groups">
+    <h2><%= title %></h2>
+    <div class="drop-target">
+      <%- groups.each do |group| -%>
+        <span class="group"><%= group.name.titleize %></span>
+      <%- end -%>
+    </div>
+  </div>
+<%- end -%>
+</div>
+
+<style type="text/css">
+
+.my.groups
+{
+  float: left;
+}
+
+.groups
+{
+  width: 40%;
+  margin: 5%;
+}
+
+.groups h2
+{
+  text-align: center;
+}
+
+#group-container
+{
+  width: 60%;
+}
+
+.group
+{
+  margin: 2px;
+  background: #EEE;
+  border-radius: 5px;
+  text-align: center;
+  width: auto;
+  list-style-type: none;
+  cursor: default;
+  position: relative;
+  float: left;
+  width: 7em;
+}
+
+</style>
+
+<%# Admin functionality for manipulating groups %>
+<%- if @allow_edit -%>
+<%- content_for :header do -%>
+<%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
+<%- end -%>
+
+<%= link_to "Save", '#', :onclick => 'updateGroups(); return false;' %>
+
+
+<style type="text/css">
+
+.available.groups
+{
+  float: right;
+}
+
+.groups .drop-target
+{
+  min-width: 30%;
+  min-height: 30%;
+  padding: 1em;
+  display: inline-block;
+  border: 1px dashed black;
+}
+
+</style>
+
+<script type="text/javascript">
+
+updateGroups = function() {
+  $.post(
+    '<%= update_groups_person_path(@person) %>',
+    {
+      groups : $.map( $('.my.groups .group'), function(e){ return e.innerHTML }).join(' ')
+    },
+    function(data, status, xhr) {
+      window.location.reload();
+    }
+  );
+}
+
+<%# based on http://jqueryui.com/demos/droppable/#shopping-cart %>
+$(function() {
+  $(".drop-target").droppable({
+    activeClass: "ui-state-default",
+    hoverClass : "ui-state-hover",
+    accept     : ":not(.ui-sortable-helper)",
+    drop       : function( event, ui ) {
+                   $( this ).find( ".placeholder" ).remove();
+                   ui.draggable.detach().appendTo( this ).removeAttr('style');
+    }
+  });
+
+  $(".group").draggable({
+    revert : true
+  });
+});
+
+</script>
+<%- end # allow edit? -%>
+
