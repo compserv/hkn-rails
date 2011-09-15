@@ -122,8 +122,8 @@ HknRails::Application.routes.draw do
   get   "people/:login"      => "people#show",    :as => :profile, :constraints => {:login => /[^\/]+/}
   resources :people, :except => [:new, :create, :index] do
     member do
-      get  "groups", :as => :groups
-      post "groups" => "people#groups_update", :as => :update_groups
+      get  "groups", :as => :groups, :constraints => {:id => /[^\/]+/}
+      post "groups" => "people#groups_update", :as => :update_groups, :constraints => {:id => /[^\/]+/}
     end
   end
 
