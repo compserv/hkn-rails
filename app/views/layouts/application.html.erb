@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,7 +13,7 @@
   <%= javascript_include_tag "chat" %>
   <%= javascript_include_tag "piglatin" if @piglatin %>
   <%= csrf_meta_tag %>
-  <link href='https://fonts.googleapis.com/css?family=Puritan|Cuprum' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Puritan|Cuprum' rel='stylesheet' type='text/css' />
   
   <%= yield(:header) %>
   
@@ -35,6 +35,19 @@
 <div id="wrapper">
   <div id="header">
   	<div id="navigation">
+  	    <% if @current_user %>
+  	      <span id="userbar" class="userbar">
+  	        Welcome, <%= link_to @current_user.full_name, @current_user %>
+  	      </span>
+  	      <span class="userbar" id="user-dropdown">
+  	        <span class="list-item"><a href="/account-settings"><span class="icon" id="settings"></span>Settings</a></span>
+  	        <span class="list-item"><a href="/logout"><span class="icon" id="logout"></span>Logout</a></span>
+  	        <span id="username" style="display:none;"><%= @current_user.username %></span>
+  	      </span>
+  	    <% else %>
+  	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
+  	      <span id="username" style="display:none;">guest</span>
+  	    <% end %>  
   	  <ul>
   	    <li><a class="navigation_toplevel_item" id="services" href="#">Student Services</a></li>
   	    <li><a class="navigation_toplevel_item" id="indrel" href="#">Industry Relations</a></li>
@@ -51,24 +64,10 @@
   	      <li><a class="navigation_toplevel_item" id="admin" href="#">Admin</a></li>
   	    <% end %>
   	      
-  	    <% if @current_user %>
-  	      <span id="userbar" class="userbar">
-  	        Welcome, <%= link_to @current_user.full_name, @current_user %>
-  	      </span>
-  	      <span class="userbar" id="user-dropdown">
-  	        <span class="list-item"><a href="/account-settings"><span class="icon" id="settings"></span>Settings</a></span>
-  	        <span class="list-item"><a href="/logout"><span class="icon" id="logout"></span>Logout</a></span>
-  	        <span id="username" style="display:none;"><%= @current_user.username %></span>
-  	      </span>
-  	    <% else %>
-  	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
-  	      <span id="username" style="display:none;">guest</span>
-  	    <% end %>  
   	  </ul>
   	  <div class="clear"></div>
   	</div>
   	<div id="lower">
-  	  <div id="content">
   	    <div id="submenu-thin">
     	    <%= render "layouts/submenu" %>
     	  </div>
@@ -82,7 +81,6 @@
           <div class="clear"></div>
         </div>
     	  <div class="clear"></div>
-    	</div>
   	</div>
   </div>
 

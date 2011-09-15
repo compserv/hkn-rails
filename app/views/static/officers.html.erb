@@ -5,31 +5,31 @@
 <%= link_to "Next Semester", about_officers_path(Property.next_semester @semester) unless @semester.blank? %>
 </span>
 
-<%- if @committeeships.values.collect(&:empty?).all? -%>
+<% if @committeeships.values.collect(&:empty?).all? %>
 <div id="no-data">
   <p>No data available for this semester. If you know information about the officers for this semester and would like us to add it, please email hkn@hkn.</p>
 </div>
-<%- else # there are cships for this semester -%>
+<% else %><%# there are cships for this semester %>
 
-<%- [:execs, :committees].each do |position_type| -%>
+<% [:execs, :committees].each do |position_type| %>
 <div id="<%= position_type %>">
-  <%- @committeeships[position_type].each do |c_name, cships| -%>
+  <% @committeeships[position_type].each do |c_name, cships| %>
     <%# begin partial %>
 
 
 
     <div class="<%= position_type.to_s.singularize %>">
-    <h2><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h2>
+      <h2><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h2>
       <% for person in cships.collect(&:person).sort_by(&:full_name) %>
       <div class="officer">
         <div class="photo <%= "no-photo" if person.picture.blank? %>">
           <%= image_tag person.picture  unless person.picture.blank? %>
         </div>
-<%- if false -%>
+<% if false %>
         <div class="photo">
           <%= image_tag "https://hkn.eecs.berkeley.edu/images/officerpics/#{person.username}.png" %>
         </div>
-<%- end -%>
+<% end %>
         <span class="name"><%= person.full_name %></span>
         <span class="email"><%= person.username %>@hkn</span>
       </div>
@@ -39,11 +39,11 @@
 
 
     <%# end partial %>
-  <%- end # cships, @committeeships -%>
+  <% end %><%# cships, @committeeships %>
 </div>
-<%- end # position_type -%>
+<% end %><%# position_type %>
 
-<%- if false -%>
+<% if false %>
 ## <div id="execs">
 ## <% for position in @committeeships[:execs] %>
 ##   <%= render :partial => "officers_committee", :locals => { :style_class => "position", :position => position } %>
@@ -56,14 +56,15 @@
 ## <% end %>
 ## </div>
 ## 
-<%- end # if false -%>
+<% end %><%# if false %>
 
 
 <%# Alumni Advisor should go here. %>
 
 <br/>
 <div class="hbar"></div>
+<div>
 To send an email, fill out the full domain name (hkn&nbsp;&rarr;&nbsp;hkn.eecs.berkeley.edu)
 </div>
 
-<%- end # there are cships -%>
+<% end %><%# there are cships %>

@@ -130,13 +130,13 @@ h4{
   width: 100%;
   background: #403f3f url("../images/back_dark.png");
   color: white;
+  font-family: "Cuprum";
+  font-size: 1.2em;
 }
 
 #navigation ul{
   margin: 0px;
   padding: 8px 50px;
-  font-family: "Cuprum";
-  font-size: 1.2em;
 }
 
 #navigation li{
@@ -166,6 +166,7 @@ h4{
   color: white;
   line-height: 1em;
   text-transform: uppercase;
+  padding: 8px 50px 8px 1em;
 }
 
 #userbar{
@@ -211,12 +212,16 @@ h4{
 
 #lower{
   background: rgba(10, 10, 30, 0.05);
+  padding: 15px 50px;
 }
 
 #lower #content{
   padding: 15px 50px;
 }
 
+#lower ul{
+  margin-bottom: 0px;
+}
 #lower #content ul{
   margin-bottom: 0px;
 }
@@ -253,10 +258,6 @@ h4{
   #submenu-thin{
     display: none;
   }
-}
-
-.current{
-  display: block;
 }
 
 .submenu a{
@@ -438,7 +439,7 @@ h4{
 }
 
 /*Upcoming Events Sidebar*/
-ul#upcoming-events{
+ul.upcoming-events{
   -webkit-padding-start: 0px;
   padding-left: 0px;
   text-indent: 0px;

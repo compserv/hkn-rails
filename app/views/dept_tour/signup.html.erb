@@ -14,14 +14,14 @@ HKN provides tours of the Berkeley EECS department. Sign up here, and your reque
   </div>
   <%- end -%>
 
-<%= form_tag("", :method => :post) do%>
+<%= form_tag(dept_tour_signup_path, :method => :post) do%>
   <div class="field">
     <%= label_tag :name, "Name", :class => 'required-field' %>
     <%= text_field_tag :name %>
   </div>
   
   <div class="field">
-    <%= label_tag :date, "Desired date & time", :class => 'required-field' %>
+    <%= label_tag :date_year, "Desired date & time", :class => 'required-field' %>
     <%= select_datetime Time.now + 1.week, :prefix => :date %>
   </div>
   

@@ -1,1 +1,2 @@
-<a href="mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page <%= request.url %>">[Email HKN about this data]</a>
+<% url = "mailto:www-coursesurvey@hkn.eecs.berkeley.edu?subject=Comment on HKN Course Survey page #{request.url}".gsub(" ", "%20") %>
+<a href="<%= url %>">[Email HKN about this data]</a>

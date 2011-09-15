@@ -1,7 +1,7 @@
 <div id="searcharea">
   <div id="examfiles" class="searchcontrol">
     <%= form_tag(exams_search_path, :method => :get) do %>
-      <%= text_field_tag :q, params[:controller].eql?('exams') ? h(params[:q]) : '', :placeholder=>"Search Exams", :class=>"text autoclear" %>
+      <%= text_field_tag :q, params[:controller].eql?('exams') ? h(params[:q]) : '', :placeholder=>"Search Exams", :class=>"text autoclear", :id => "examfiles_q" %>
       <%= submit_tag "Search", :name=>nil %>
     <%- end -%>
     <div class="small searchhelp">
@@ -10,7 +10,7 @@
   </div>
   <div id="coursesurvey" class="searchcontrol">
     <%= form_tag(coursesurveys_search_path, :method => :get) do %>
-      <%= text_field_tag(:q, params[:controller].eql?('coursesurveys') ? h(params[:q]) : '', :class => "text", :placeholder=>"Search Course Surveys") %>
+      <%= text_field_tag :q, params[:controller].eql?('coursesurveys') ? h(params[:q]) : '', :class => "text", :placeholder=>"Search Course Surveys", :id => "coursesurvey_q" %>
       <%= submit_tag "Search", :name=>nil  %>
     <%- end -%>
     <div class="small searchhelp">

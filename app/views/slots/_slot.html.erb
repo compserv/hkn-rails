@@ -1,13 +1,13 @@
 <% if slot.tutors.any? %>
 <% slot.tutors.each do |tutor| %>
 
-<div title="<%= tutor.person.fullname %>" id="tutor-<%= tutor.id %>" class="person 
+<div title="<%= tutor.person.fullname %>" id="tutor-<%= slot.id %>-<%= tutor.id %>" class="person 
 <% for pref in tutor.course_preferences %>
 <%= pref.course.course_abbr + '_' + pref.level.to_s %>
 <% end %>"><%= tutor.person.abbr_name %></div>
 
 <!-- popup begins here -->
-<div width=400 id="boxtutor-<%= tutor.id %>" class="tutorbox">
+<div id="boxtutor-<%= slot.id %>-<%= tutor.id %>" class="tutorbox">
 <div><%= tutor.person.fullname %></div>
 <div class="imgdiv"><div class="photo <%= 'no-photo' if tutor.person.picture.blank? %>"><%= image_tag tutor.person.picture unless tutor.person.picture.blank? %></div></div>
 
@@ -34,7 +34,7 @@
     <%= "#{label.to_s.humanize.titleize}: " %></span>
     <%= courses[label].collect(&:to_s).join(", ") %>
   <% end %><br/>
-<% end # each label %>
+<% end %><%# each label %>
 
 </div>
 <!--popup ends here -->

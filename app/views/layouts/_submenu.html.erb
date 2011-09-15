@@ -7,7 +7,7 @@
   <ul class="plain">
     <li><%= link_to "Course Surveys", coursesurveys_path %></li>
     <li><%= link_to "Course Guide", "https://hkn.eecs.berkeley.edu/courseguide/index.php" %></li>
-    <li><%= link_to "Department Tours", dept_tour_signup_path %>
+    <li><%= link_to "Department Tours", dept_tour_signup_path %></li>
   </ul>
 </div>
 
@@ -43,15 +43,15 @@
     <li><%= link_to "Upcoming Events", events_category_path('future') %></li>
     <li><%= link_to "Past Events", events_category_path('past') %></li>
   </ul>
+<% if @current_user %>
   <ul class="plain">
-<%- if @current_user %>
     <li><%= link_to "My RSVPs", my_rsvps_path %></li>
-<%- end %>
-<%- if @auth['comms'] %>
+  <% if @auth['comms'] %>
     <li><%= link_to "New Event", new_event_path %></li>
     <li><%= link_to "Leaderboard", leaderboard_path %></li>
-<%- end %>
+  <% end %>
   </ul>
+<% end %>
 </div>
 
 <div class="submenu alumni_submenu">
