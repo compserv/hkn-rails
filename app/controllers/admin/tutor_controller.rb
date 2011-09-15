@@ -241,7 +241,7 @@ class Admin::TutorController < Admin::AdminController
     # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
     @officer_stats = Hash.new; @cmember_stats = Hash.new
     officer_happiness = 0; cmember_happiness = 0
-    for tutor in Tutor.all
+    for tutor in Tutor.current
       happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
 
       for slot in tutor.slots
@@ -391,15 +391,11 @@ class Admin::TutorController < Admin::AdminController
     @courses_added = tutor.courses
    
     if not tutor.courses.include? course
-      cp = CoursePreference.create
+      cp = CoursePreference.new
       cp.course_id = course.id
       cp.tutor_id = tutor.id
       cp.level = level
       cp.save
-      #tutor.courses << course
-      #cp = tutor.course_preferences.find_by_course_id(course.id)
-      #cp.level = level
-      #cp.save
       render :json => [1, course.course_abbr, cp.id]
     else
       render :json => [0, "You were already signed up for #{course}."]

@@ -17,6 +17,8 @@ class Tutor < ActiveRecord::Base
   has_many :availabilities
 
   validates :person, :presence => true
+
+  scope :current, lambda { includes(:availabilities).where(["availabilities.updated_at > ?", Property.semester_start_time]) }
   
   def to_s
     return person.fullname
