@@ -16,7 +16,7 @@ class Klass < ActiveRecord::Base
   belongs_to :course
   has_one  :coursesurvey, :dependent => :destroy
   has_many :survey_answers, :through => :instructorships, :dependent => :destroy
-  has_many :instructorships
+  has_many :instructorships, :dependent => :destroy
   has_many :instructors, :through => :instructorships, :conditions => {:instructorships => {:ta => false}}
   has_many :tas,         :through => :instructorships, :conditions => {:instructorships => {:ta => true }}, :source => :instructor
   has_many :exams, :dependent => :destroy
