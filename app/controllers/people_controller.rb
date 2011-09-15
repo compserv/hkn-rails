@@ -1,7 +1,8 @@
 class PeopleController < ApplicationController
-  before_filter :authorize, :only => [:list, :show, :edit, :update]
-  before_filter :authorize_superuser, :only => [:destroy]
+  before_filter :authorize, :only => [:list, :show, :edit, :update, :groups, :groups_update]
+  before_filter :authorize_superuser, :only => [:destroy, :groups_update]
   before_filter :authorize_vp, :only => [:approve]
+  before_filter :authorize_comms, :only => [:groups]
 
   def list
     @category = params[:category] || "all"
@@ -139,5 +140,48 @@ class PeopleController < ApplicationController
   end
 
   def destroy
+  end
+
+  def groups
+    @person = (Person.find(params[:id]) rescue nil) || (Person.find_by_username(params[:id]) rescue nil)
+    unless @person
+      flash[:notice] = "Invalid id #{params[:id]}"
+      return redirect_to people_list_path
+    end
+    @allow_edit = can_edit_profile?(@person)
+  end
+
+  def groups_update
+    unless @person = Person.find(params[:id])
+      flash[:notice] = "Invalid id #{params[:id]}"
+      return redirect_to people_list_path
+    end
+
+    params[:groups] ||= ""
+    errors = []
+    @person.groups = []
+    params[:groups].split.each do |group|
+      group.downcase!
+      unless group = Group.find_by_name(group)
+        errors << "bad group #{group}"
+      end
+      @person.groups.push(group)
+    end
+
+    if errors.empty? and @person.save
+      flash[:notice] = "ok"
+    else
+      flash[:notice] = "Error #{errors.join(', ').inspect}"
+    end
+
+    render :action => :groups
+  end
+
+  private
+  def can_edit_profile?(person)
+    # @current_user can view @person if:
+    #   1) they're the same person
+    #   2) @current_user is a superuser
+    @current_user && @current_user.id == params[:id] or @auth['superusers']
   end
 end

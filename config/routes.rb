@@ -119,8 +119,13 @@ HknRails::Application.routes.draw do
   match "account-settings"   => "people#edit",    :as => :account_settings
   match "people/:id/edit"    => "people#edit"
   match "people/:id/approve" => "people#approve", :as => :approve
-  get   "people/:login"      => "people#show",    :as => :profile, :constraints => {:login => /.+/}
-  resources :people, :except => [:new, :create, :index]
+  get   "people/:login"      => "people#show",    :as => :profile, :constraints => {:login => /[^\/]+/}
+  resources :people, :except => [:new, :create, :index] do
+    member do
+      get  "groups", :as => :groups
+      post "groups" => "people#groups_update", :as => :update_groups
+    end
+  end
 
   match "leaderboard" => "leaderboard#index", :as => :leaderboard
 
