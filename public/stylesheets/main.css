@@ -166,7 +166,7 @@ h4{
   color: white;
   line-height: 1em;
   text-transform: uppercase;
-  padding: 8px 50px 8px 1em;
+  padding: 8px 1em;
 }
 
 #userbar{
@@ -184,6 +184,7 @@ h4{
   right: 50px;
   top: 30px;
   background: #403f3f url("../images/back_dark.png");
+  padding: 0px;
 }
 
 #user-dropdown .icon{
