@@ -20,7 +20,15 @@ class HomeController < ApplicationController
 
   def factorial
     x = params[:x].to_i
-    y = x.downto(1).inject(:*)
+    y = case
+    when x < 0
+      'u dumb'
+    when x > 9000
+      redirect_to "http://www.youtube.com/watch?v=SiMHTK15Pik"
+      return
+    else
+      y = x.downto(1).inject(:*)
+    end
     redirect_to :root, :notice => y
   end
 
