@@ -115,12 +115,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_view_variables
-    if params[:piglatin] == "true"
-      session[:piglatin] = true
-    elsif params[:piglatin] == "false"
-      session[:piglatin] = false
-    end
     @piglatin = session[:piglatin]
+    @messages << "To turn off Pig Latin mode, please go <a href='#{easter_eggs_edit_path}'>here</a>.".html_safe if @piglatin
   end
   
 end

@@ -283,6 +283,10 @@ HknRails::Application.routes.draw do
   end
   #resources :user_session
 
+  # Easter Eggs
+  get "easter-eggs" => "easter_eggs#edit", :as => "easter_eggs_edit"
+  post "easter-eggs" => "easter_eggs#update", :as => "easter_eggs_update"
+
   match "factorial/:x" => "home#factorial"
 
   # The priority is based upon order of creation:
