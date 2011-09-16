@@ -175,7 +175,7 @@ function piggify_helper(node) {
     {
         node[0].nodeValue = fTranslate(node[0].nodeValue)
     }
-    else if (!node.is(".no-pig-latin"))
+    else if (!node.is(".no-translation"))
     {
         node.contents().each(function (i) {
             piggify_helper($(this))

@@ -1,6 +1,13 @@
-<%= form_tag :action => :update do %>
-  <%= check_box_tag :piglatin, true, @piglatin %>
-  <%= label_tag :piglatin, "Pig Latin mode", :class => "no-pig-latin" %>
-  <br />
-  <%= submit_tag %>
-<% end %>
+<div class="no-translation">
+  <%= form_tag :action => :update do %>
+    <%= check_box_tag :piglatin, true, @piglatin %>
+    <%= label_tag :piglatin, "Pig Latin mode" %>
+    <br />
+
+    <%= check_box_tag :moonspeak, true, @moonspeak %>
+    <%= label_tag :moonspeak, "Moonspeak mode" %>
+    <br />
+
+    <%= submit_tag %>
+  <% end %>
+</div>
