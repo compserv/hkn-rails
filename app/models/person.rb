@@ -42,6 +42,15 @@ class Person < ActiveRecord::Base
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
+
+  module Validation
+    module Regex
+      Name = /\A[a-z ']+\z/i
+    end
+  end
+
+  validates_format_of :first_name, :with => Validation::Regex::Name
+  validates_format_of :last_name,  :with => Validation::Regex::Name
   # Username, password, and email validation is done by AuthLogic
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
