@@ -225,7 +225,11 @@ HknRails::Application.routes.draw do
     match "resume-books"              => "indrel#resume_books",                   :as => "resume_books_about"
     get   "resume-books/order"        => "indrel#resume_books_order",             :as => "resume_books_order"
     post  "resume-books/order"        => "indrel#resume_books_order_post",        :as => "resume_books_order_post"
-    resources :companies
+    resources :companies do
+      member do
+        post "reset_access", :as => "reset_access"
+      end
+    end
     resources :contacts
     resources :events,      :controller => "indrel_events",      :as => "indrel_events"
     resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"

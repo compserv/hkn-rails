@@ -100,4 +100,25 @@ class CompaniesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  def reset_access
+    unless company = Company.find(params[:id])
+      return redirect_to companies_path, :notice => "Invalid company id #{params[:id]}"
+    end
+
+    notice = []
+
+    if sesh = CompanySession.find(company) and sesh.destroy and CompanySession.new(company)
+      notice << "Session invalidated"
+    else
+      notice << "INFO: No session found to invalidate"
+    end
+
+    notice << if company.reset_single_access_token!
+      "Successfully reset access key"
+    else
+      "ERROR: Failed to reset access key"
+    end
+    redirect_to companies_path, :notice => notice.join('; ')  # <br> y u no work
+  end
 end
