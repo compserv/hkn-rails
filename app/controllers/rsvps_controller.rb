@@ -1,6 +1,7 @@
 class RsvpsController < ApplicationController
   before_filter :get_event
   before_filter :rsvp_permission, :except => [:my_rsvps, :confirm, :unconfirm, :reject]
+  before_filter :authorize
   before_filter(:only => [:confirm, :unconfirm, :reject]) { |c| c.authorize(['pres', 'vp']) }
 
   # GET /rsvps
@@ -52,7 +53,11 @@ class RsvpsController < ApplicationController
   # POST /rsvps
   # POST /rsvps.xml
   def create
-    @rsvp = Rsvp.new(params[:rsvp])
+    @rsvp           = Rsvp.new(params[:rsvp])
+    @rsvp.event     = @event
+    @rsvp.person    = @current_user
+    @rsvp.confirmed = 'f'   # TODO no strings
+
     assign_blocks
 
     if @event.blocks.size == 1
@@ -178,6 +183,7 @@ class RsvpsController < ApplicationController
   def rsvp_permission
     if !@event.allows_rsvps? or !@event.can_rsvp? @current_user
       redirect_to :root, :notice => "You do not have permission to RSVP for this event"
+      return false
     end
   end
 

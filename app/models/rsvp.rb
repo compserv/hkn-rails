@@ -26,6 +26,8 @@ class Rsvp < ActiveRecord::Base
   scope :ordered, joins(:event).order('events.start_time ASC')
   scope :ordered_desc, joins(:event).order('events.start_time DESC')
 
+  attr_accessible :comment
+
   TRANSPORT_ENUM = [
     [ 'I need a ride', -1 ],
     [ "Don't worry about me", 0 ],
