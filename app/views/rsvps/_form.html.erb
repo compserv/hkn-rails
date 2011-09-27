@@ -11,9 +11,6 @@
     </div>
   <% end %>
 
-  <%= hidden_field_tag 'rsvp[person_id]', @current_user.id %>
-  <%= hidden_field_tag 'rsvp[event_id]', @event.id %>
-
   <div class="field">
     <label>Event</label>
     <div><%= link_to @event.name, @event %></div>
