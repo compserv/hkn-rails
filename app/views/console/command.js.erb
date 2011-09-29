@@ -1,0 +1,6 @@
+<%- unless @resp[:messages].blank? -%>
+response("<%= simple_format @resp[:messages].join('\n') %>");
+<%- end -%>
+<%- unless @resp[:js].blank? -%>
+<%= raw @resp[:js] -%>
+<%- end -%>

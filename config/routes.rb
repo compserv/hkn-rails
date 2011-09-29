@@ -104,9 +104,9 @@ HknRails::Application.routes.draw do
   root :to => "home#index"
 
   # Login
-  match "login" => "user_sessions#new"
+  match "login" => "user_sessions#new", :as => :login
   match "create_session" => "user_sessions#create"
-  match "logout" => "user_sessions#destroy"
+  match "logout" => "user_sessions#destroy", :as => :logout
 
   # Registration
   get  "register" => "people#new"
@@ -290,6 +290,11 @@ HknRails::Application.routes.draw do
   # Easter Eggs
   get "easter-eggs" => "easter_eggs#edit", :as => "easter_eggs_edit"
   post "easter-eggs" => "easter_eggs#update", :as => "easter_eggs_update"
+
+  scope "console", :as => :console do
+    get  "/"  => "console#open",    :as => :open
+    post "/"  => "console#command", :as => :command
+  end
 
   match "factorial/:x" => "home#factorial"
 

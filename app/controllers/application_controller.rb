@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   ssl_allowed :all
   ssl_required :all
 
+  attr_reader :current_user, :real_current_user
+
   def ssl_required?
     return Rails::Configuration::SSL if defined? Rails::Configuration::SSL
     return false if request.remote_ip.eql?('127.0.0.1') || ['development','test'].include?(Rails.env)
@@ -80,7 +82,6 @@ class ApplicationController < ActionController::Base
     true
   end
 
-
   #-----------------------------------------------------------------------
   # Private Methods
   #-----------------------------------------------------------------------
@@ -88,7 +89,14 @@ class ApplicationController < ActionController::Base
   
   def get_current_user
     if UserSession.find
-      @current_user ||= UserSession.find.person
+      @real_current_user = UserSession.find.person
+
+      if suu = current_su_user  # this checks permissions too
+        @current_user = suu
+      else
+        session.delete(:su) if session[:su]
+        @current_user = @real_current_user
+      end
     end
   end
 
@@ -120,5 +128,30 @@ class ApplicationController < ActionController::Base
     @messages << "To turn off Pig Latin mode, please go <a href='#{easter_eggs_edit_path}'>here</a>.".html_safe if @piglatin
     @messages << "To turn off Moonspeak mode, please go <a href='#{easter_eggs_edit_path}'>here</a>.".html_safe if @moonspeak
   end
+
+  def su(username)
+    if username.nil?
+      session.delete(:su)
+      get_current_user
+      return true
+    end
+
+    if @current_user and @current_user.admin? and user = Person.exists?(:username => username)
+      session[:su] = username
+      get_current_user
+      return true
+    else
+      return false
+    end
+  end
+
+  def current_su_user
+    @real_current_user and @real_current_user.admin? and session[:su] and Person.find_by_username(session[:su])
+  end
+
+  def impersonating?
+    @current_user && @current_user != @real_current_user
+  end
+
   
 end
