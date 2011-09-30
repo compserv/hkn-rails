@@ -1,4 +1,9 @@
+*.swp
+*.pyc
 .bundle
+.yardoc
+Gemfile.lock
+config/database.yml
 db/*.sqlite3
 db/goodprofornot_dump/
 db/backups
@@ -6,10 +11,6 @@ log/*.log
 tmp/**/*
 private/**/*
 !private/resume_books/templates/
-config/database.yml
-Gemfile.lock
-*.swp
-*.pyc
-nbproject
 public/cache/
 public/examfiles/
+nbproject
