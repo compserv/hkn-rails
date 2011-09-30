@@ -51,7 +51,7 @@ private
   # Fakes out current_login_at to satisfy {Console::Command#check_sudo_session}
   # @return [true] (passive filter)
   def keep_sudo_alive
-    if @real_current_user.admin? and @real_current_user.current_login_at > Console::Command::Security::SudoTimeout.ago
+    if @real_current_user.admin? and @real_current_user.current_login_at and @real_current_user.current_login_at > Console::Command::Security::SudoTimeout.ago
       @real_current_user.current_login_at = Time.now  # but don't save it!
     end
     true
