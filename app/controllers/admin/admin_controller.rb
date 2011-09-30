@@ -48,7 +48,7 @@ class Admin::AdminController < ApplicationController
 
   def candidate_announcements
     @announcements = Announcement.order("created_at desc")
-    render "admin/candidate_announcements"
+    #render "admin/candidate_announcements"
   end
 
   def create_announcement
@@ -70,7 +70,7 @@ class Admin::AdminController < ApplicationController
 
   def edit_announcement
     @announcement = Announcement.find(params[:id])
-    render "admin/edit_announcement"
+    #render "admin/edit_announcement"
   end
 
   def update_announcement

@@ -15,11 +15,18 @@ HknRails::Application.routes.draw do
       match "confirm_challenge/:id" => "admin#confirm_challenge"
       match "reject_challenge/:id" => "admin#reject_challenge"
       # Shouldn't this be done with resources?
-      match "candidate_announcements" => "admin#candidate_announcements"
-      match "create_announcement" => "admin#create_announcement"
-      match "edit_announcement/:id" => "admin#edit_announcement"
-      match "update_announcement" => "admin#update_announcement"
-      match "delete_announcement/:id" => "admin#delete_announcement"
+      scope "candidate_announcements" do
+          match "/" => "admin#candidate_announcements"
+          post "create_announcement" => "admin#create_announcement", :as => "create_announcement"
+          match "edit_announcement/:id" => "admin#edit_announcement", :as => "edit_announcement"
+          post "update_announcement" => "admin#update_announcement", :as => "update_announcement"
+          match "delete_announcement/:id" => "admin#delete_announcement", :as => "delete_announcement"
+      end
+      #match "candidate_announcements" => "admin#candidate_announcements"
+      #match "create_announcement" => "admin#create_announcement"
+      #match "edit_announcement/:id" => "admin#edit_announcement"
+      #match "update_announcement" => "admin#update_announcement"
+      #match "delete_announcement/:id" => "admin#delete_announcement"
     end
 
     scope "election", :as => "election" do
