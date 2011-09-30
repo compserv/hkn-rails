@@ -1,0 +1,8 @@
+<%= form_tag reauthenticate_path, :remote => true do %>
+  <script type="text/javascript">
+    $('#reauthenticate_password').focus();
+  </script>
+  <%= label_tag :password, "Password" %>
+  <%= password_field_tag :password, nil, :id => 'reauthenticate_password' %>
+  <%= submit_tag "Log In" %>
+<%- end -%>

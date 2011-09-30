@@ -55,9 +55,28 @@ class UserSessionsController < ApplicationController
 
   def destroy
     current_user_session = UserSession.find
-    current_user_session.destroy if current_user_session
-    current_user = nil  # see applicationcontroller
+    if current_user_session
+      @current_user.update_attribute(:current_login_at, nil)
+      current_user_session.destroy
+    end
+    current_user = nil  # see applicationcontroller.current_user=
     flash[:notice] = "Logout successful!"
     redirect_to login_url
+  end
+
+  def reauthenticate
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+  def reauthenticate_post
+    @success = !!(@real_current_user && @real_current_user.valid_password?(params[:password]))
+    if @success
+      current_user_session.save
+      render :js => "puts('Thanks. You can run superuser things now.');"
+    else
+      render :js => "puts('Sorry, try again.'); reauthenticate();"
+    end
   end
 end

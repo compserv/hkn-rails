@@ -24,6 +24,8 @@ class Person < ActiveRecord::Base
   #   perm_address        : string 
   #   grad_semester       : string 
   #   approved            : boolean 
+  #   failed_login_count  : integer 
+  #   current_login_at    : datetime 
   # =======================
 
   has_one :candidate, :dependent => :destroy

@@ -38,6 +38,10 @@ class ApplicationController < ActionController::Base
     end
   end  
 
+  def current_user_session
+    @current_user_session ||= UserSession.find
+  end
+
   def current_user=(user)
     @current_user = user
   end

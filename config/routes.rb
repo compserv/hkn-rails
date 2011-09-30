@@ -104,9 +104,11 @@ HknRails::Application.routes.draw do
   root :to => "home#index"
 
   # Login
-  match "login" => "user_sessions#new", :as => :login
-  match "create_session" => "user_sessions#create"
+  get   "login" => "user_sessions#new", :as => :login
+  post  "login" => "user_sessions#create"
   match "logout" => "user_sessions#destroy", :as => :logout
+  get   "reauthenticate" => "user_sessions#reauthenticate", :as => :reauthenticate
+  post  "reauthenticate" => "user_sessions#reauthenticate_post"
 
   # Registration
   get  "register" => "people#new"

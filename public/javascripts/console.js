@@ -29,6 +29,7 @@ function promptString() {
 function response(resp) {
   puts( promptString() + conHist[conHist.length-1] );
   puts( resp );
+  stdin.focus();
 }
 
 function consoleKey( event ) {
@@ -59,4 +60,16 @@ function specialKey( event ) {
     stdin.val( conHist[iConHist] );
     break;
   }
+}
+
+function reauthenticate() {
+  $('#reauthenticate_frame').remove();
+  puts("<div id='reauthenticate_frame'></div>");
+  $.get( '/reauthenticate', function(data) {
+    $('#reauthenticate_frame').html( data ).focus();
+    $('#reauthenticate_frame form').submit( function(){
+      $('#reauthenticate_frame').remove();
+      stdin.focus();
+    });
+  });
 }
