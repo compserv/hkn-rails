@@ -1,0 +1,32 @@
+<div>
+<%= link_to 'Back', admin_cand_applications_path %>
+</div>
+
+<table id='applications'>
+  <tr>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Phone</th>
+    <th>Committee Preferences</th>
+    <th>Suggestion</th>
+  <%- @candidates.each do |c|
+        next unless p = c.person
+  -%>
+  </tr>
+    <td><%= p.first_name %></td>
+    <td><%= p.last_name  %></td>
+    <td><%= p.phone_number %></td>
+    <td><ol>
+      <%- if c.committee_preferences
+            c.committee_preferences.split.each do |p|
+      -%>
+        <li><%= p %></li>
+      <%- end end -%>
+    </ol></td>
+    </td>
+    <td style="width: 40%;">
+      <%= simple_format c.person.suggestion.suggestion if c.person and c.person.suggestion %>
+    </td>
+  </tr>
+  <%- end -%>
+</table>

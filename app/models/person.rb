@@ -91,6 +91,12 @@ class Person < ActiveRecord::Base
     first_name + " " + last_name
   end
 
+  def phone_number
+    return nil unless n = read_attribute(:phone_number) and not n.blank?
+    n.gsub! /[^\d]/, ''
+    "(#{n[0..2]}) #{n[3..5]}-#{n[6..9]}"
+  end
+
   def current_election
       self.elections.where(:semester => Property.current_semester).elected.limit(1).first
       #Election.find_by_person_id_and_semester self.id, Property.current_semester

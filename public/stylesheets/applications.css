@@ -1,0 +1,15 @@
+.committee
+{
+  float: left;
+  margin: 1em;
+  padding: 1em;
+  height: 25%;
+  outline: 1px solid grey;
+}
+
+.committee ul
+{
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}

@@ -51,6 +51,11 @@ HknRails::Application.routes.draw do
         post  "reprocess" => "eligibilities#reprocess", :as => :reprocess_eligibilities
         get   "candidates.csv" => "eligibilities#csv",       :as => :eligibilities_csv
       end
+      scope "cand", :as => :cand do
+        get   "/"            => "applications#index", :as => :applications
+        get   "byperson"     => "applications#byperson", :as => :byperson
+        get   "bycommittee"  => "applications#bycommittee", :as => :bycommittee
+      end
     end
     
     scope "csec", :as => "csec" do

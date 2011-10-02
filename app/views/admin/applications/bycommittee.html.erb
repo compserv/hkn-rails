@@ -1,0 +1,18 @@
+<div>
+<%= link_to 'Back', admin_cand_applications_path %>
+</div>
+
+<%- @mapping.each_pair do |comm, cands|
+-%>
+  <div class="committee">
+    <h1><%= comm ? comm : 'None' %></h1>
+    <ul>
+<%-
+  cands.each do |cand|
+    next unless cand.person
+-%>
+      <li><%= cand.person.full_name %></li>
+<%- end -%>
+    </ul>
+  </div>
+<%- end -%>
