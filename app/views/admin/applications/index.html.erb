@@ -1,2 +1,3 @@
-<%= link_to 'By person', admin_cand_byperson_path %><br>
-<%= link_to 'By committee preference', admin_cand_bycommittee_path %>
+<%= link_to 'By person', admin_cand_byperson_path %> (<%= link_to 'csv', url_for(:controller => 'admin/applications', :action => :byperson, :format => :csv) %>)
+<br>
+<%= link_to 'By committee preference', admin_cand_bycommittee_path %> (<%= link_to 'csv', url_for(:controller => 'admin/applications', :action => :bycommittee, :format => :csv) %>)

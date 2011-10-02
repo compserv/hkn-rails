@@ -7,10 +7,20 @@ class Admin::ApplicationsController < ApplicationController
 
   def byperson
     @candidates = cands
+
+    respond_to do |format|
+      format.html
+      format.csv  {render :layout => false}
+    end
   end
 
   def bycommittee
     @mapping = cands.group_by {|c| c.committee_preferences and c.committee_preferences.split.first}
+
+    respond_to do |format|
+      format.html
+      format.csv   {render :layout => false}
+    end
   end
 
 private

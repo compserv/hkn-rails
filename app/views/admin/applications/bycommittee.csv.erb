@@ -1,0 +1,4 @@
+Committee,People
+<%- @mapping.each do |comm, cands| %>
+<%= comm || 'None' %>,"<%= raw cands.collect(&:person).compact.collect(&:full_name).join("\n") %>"
+<%- end -%>
