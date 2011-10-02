@@ -17,6 +17,8 @@ class Candidate < ActiveRecord::Base
   serialize :committee_preferences
 
   validates :person, :presence => true
+
+  scope :current, lambda { where(["candidates.created_at > ?", Property.semester_start_time]) }
   
   def self.committee_defaults
     defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "StudRel", "Tutoring"]
