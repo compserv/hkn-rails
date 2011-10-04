@@ -72,18 +72,24 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $.ajax({
-        url: '../find_officers',
+        url: '<%= find_officers_path %>',
         success: function(data) {
-          $("#officer").autocomplete(data);
+          $("#officer").autocomplete(data, {
+            formatItem: function(item) {
+              return item.name;
+            }
+          }).result(function(event, item){
+            $('#officer_id').val(item.id);
+          });
         }
       });
       
       $("#challenge_submit").click(function(){
-        officer_name = $("input[name=officer]").val();
+        officer_name = $("input[name=officer_id]").val();
         challenge_name = $("input[name=challenge_name]").val();
         
-        $.post("../request_challenge",  
-          { officer: officer_name, name: challenge_name},
+        $.post("<%= request_challenge_path %>",
+          { officer_id: officer_name, name: challenge_name},
           function(data) { 
             //console.log(data);
             if(data[0] == true){ //OK submission
@@ -91,7 +97,7 @@
               $("input[name=officer]").val(""); //clear fields
               $("input[name=challenge_name]").val("");
               
-              $("#challenges").load("../update_challenges");
+              $("#challenges").load("<%= update_challenges_path %>");
               //$("#challenges").append("<%= escape_javascript(render :partial => "challenges") %>");
               
             } else{
@@ -106,7 +112,7 @@
   </script>
 <% end %>
 <div id="sidebar" class="trans-bg">
-  <h2>Upcoming Events <%= link_to "(see calendar)", "/events/calendar/" %></h2>
+  <h2>Upcoming Events <%= link_to "(see calendar)", events_calendar_path %></h2>
   <%= render :partial => "events/upcoming" %>
   
   <h2>Important Information</h2>
@@ -176,6 +182,8 @@
         <%= text_field_tag "challenge_name" %>
         </div>
         
+        <%= hidden_field_tag "officer_id", "", :id => "officer_id" %>
+
         <p>
         <%= submit_tag "Send Request", :id => "challenge_submit" %>
         </p>

@@ -292,9 +292,9 @@ HknRails::Application.routes.draw do
     match "application" => "candidates#application"
     match "submit_quiz" => "candidates#submit_quiz"
     match "submit_app" => "candidates#submit_app"
-    match "request_challenge" => "candidates#request_challenge"
-    match "update_challenges" => "candidates#update_challenges"
-    match "find_officers" => "candidates#find_officers"
+    match "request_challenge" => "candidates#request_challenge", :as => :request_challenge
+    match "update_challenges" => "candidates#update_challenges", :as => :update_challenges
+    match "find_officers" => "candidates#find_officers", :as => :find_officers
     get "coursesurvey_signup" => "candidates#coursesurvey_signup", :as => "coursesurvey_signup"
     post "coursesurvey_signup" => "candidates#coursesurvey_signup_post", :as => "coursesurvey_signup_post"
     post "promote/:id" => "candidates#promote", :as => "promote_candidate"

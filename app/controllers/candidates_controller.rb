@@ -36,13 +36,13 @@ class CandidatesController < ApplicationController
       @coursesurveys = @current_user.coursesurveys
     else
       flash[:notice] = "Oops, there's no candidate information for your account."
-      redirect_to :back
+      redirect_to request.referer || root_path
     end
 
   end
   
-  def find_officers #FIXME: what's a more efficient way to do this?
-    render :json => Person.all.select {|p| p.in_group?("comms")}.map {|p| p.first_name + " " + p.last_name}
+  def find_officers
+    render :json => Person.current_comms.map {|p| {:name => p.full_name, :id => p.id} }
   end
 
   def application
@@ -76,15 +76,13 @@ class CandidatesController < ApplicationController
   end
   
   def request_challenge
-    officer_name = params[:officer].split
+    officer = Person.current_comms.where(:id => params[:officer_id]).first
     challenge_name = params[:name]
     
-    #is there a better way to look up a person like this?
-    officer = Person.find(:first, :conditions => {:first_name => officer_name[0], :last_name => officer_name[1]})
-    if(!officer or !officer.in_group?("officers")) #If officer does not exist
+    if officer.nil?
       render :json => [false, "Invalid officer."]
       return
-    elsif(challenge_name == "") #challenge name is blank
+    elsif challenge_name.blank?
        render :json => [false, "Challenge name is blank."]
        return
     end
