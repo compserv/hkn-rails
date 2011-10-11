@@ -12,12 +12,21 @@ class Rsvp < ActiveRecord::Base
   #   updated_at      : datetime 
   # =======================
 
+  TRANSPORT_ENUM = [
+    [ 'I need a ride', -1 ],
+    [ "Don't worry about me", 0 ],
+    [ 'I have a small sedan (4 seats)', 3 ],
+    [ 'I have a sedan (5 seats)', 4 ],
+    [ 'I have a minivan (7 seats)', 6 ],
+  ]
+
   belongs_to :person
   belongs_to :event
   has_and_belongs_to_many :blocks
 
   validates :person, :presence => true
   validates :event, :presence => true
+  validates_inclusion_of :transportation, :in => TRANSPORT_ENUM.collect(&:last)
   validate :at_least_one_block
 
   validates_uniqueness_of :event_id, :scope => :person_id, :message => "has already been signed up for."
@@ -27,14 +36,6 @@ class Rsvp < ActiveRecord::Base
   scope :ordered_desc, joins(:event).order('events.start_time DESC')
 
   attr_accessible :comment
-
-  TRANSPORT_ENUM = [
-    [ 'I need a ride', -1 ],
-    [ "Don't worry about me", 0 ],
-    [ 'I have a small sedan (4 seats)', 3 ],
-    [ 'I have a sedan (5 seats)', 4 ],
-    [ 'I have a minivan (7 seats)', 6 ],
-  ]
 
   def at_least_one_block
     unless blocks.size >= 1

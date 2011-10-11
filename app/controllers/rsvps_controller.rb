@@ -57,6 +57,7 @@ class RsvpsController < ApplicationController
     @rsvp.event     = @event
     @rsvp.person    = @current_user
     @rsvp.confirmed = 'f'   # TODO no strings
+    @rsvp.transportation = params[:rsvp][:transportation].to_i
 
     assign_blocks
 
