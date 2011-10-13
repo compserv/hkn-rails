@@ -20,13 +20,24 @@ class Rsvp < ActiveRecord::Base
     [ 'I have a minivan (7 seats)', 6 ],
   ]
 
+  Confirmed   = 't'
+  Unconfirmed = 'f'
+  Rejected    = 'r'
+
   belongs_to :person
   belongs_to :event
   has_and_belongs_to_many :blocks
 
   validates :person, :presence => true
   validates :event, :presence => true
-  validates_inclusion_of :transportation, :in => TRANSPORT_ENUM.collect(&:last)
+
+  validates_inclusion_of :transportation,
+    :in => TRANSPORT_ENUM.collect(&:last),
+    :if => :need_transportation
+  validates_presence_of :transportation, :if => :need_transportation
+
+  validates_inclusion_of :confirmed, :in => [Confirmed, Unconfirmed, Rejected, nil]
+
   validate :at_least_one_block
 
   validates_uniqueness_of :event_id, :scope => :person_id, :message => "has already been signed up for."
@@ -35,12 +46,18 @@ class Rsvp < ActiveRecord::Base
   scope :ordered, joins(:event).order('events.start_time ASC')
   scope :ordered_desc, joins(:event).order('events.start_time DESC')
 
-  attr_accessible :comment
+  attr_accessible :comment, :transportation
 
   def at_least_one_block
     unless blocks.size >= 1
       errors[:blocks] << "must include at least one block"
     end
+  end
+
+private
+
+  def need_transportation
+    event and event.need_transportation
   end
 
 end

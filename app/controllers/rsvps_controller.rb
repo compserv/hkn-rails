@@ -57,7 +57,6 @@ class RsvpsController < ApplicationController
     @rsvp.event     = @event
     @rsvp.person    = @current_user
     @rsvp.confirmed = 'f'   # TODO no strings
-    @rsvp.transportation = params[:rsvp][:transportation].to_i
 
     assign_blocks
 
@@ -95,8 +94,10 @@ class RsvpsController < ApplicationController
     validate_owner!(@rsvp)
     assign_blocks
 
+    @rsvp.update_attributes(params[:rsvp])
+
     respond_to do |format|
-      if @rsvp.update_attributes(params[:rsvp])
+      if @rsvp.save
         format.html { redirect_to(@event, :notice => 'Rsvp was successfully updated.') }
         format.xml  { head :ok }
       else
@@ -122,20 +123,24 @@ class RsvpsController < ApplicationController
 
   def confirm
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = "t"
-    @rsvp.save
+    @rsvp.confirmed = Rsvp::Confirmed
 
     group = params[:group] || "candidates"
 
     respond_to do |format|
-      format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Rsvp was confirmed.') }
-      format.xml  { render :xml => @rsvp }
+      if @rsvp.save
+        format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Rsvp was confirmed.') }
+        format.xml  { render :xml => @rsvp }
+      else
+        format.html { redirect_to confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Something went wrong.' }
+        format.xml  { render :xml => @rsvp.errors, :status => :unprocessable_entity }
+      end
     end
   end
 
   def unconfirm
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = "f"
+    @rsvp.confirmed = Rsvp::Unconfirmed
     @rsvp.save
 
     group = params[:group] || "candidates"
@@ -148,7 +153,7 @@ class RsvpsController < ApplicationController
 
   def reject
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = "r"
+    @rsvp.confirmed = Rsvp::Rejected
     @rsvp.save
     
     group = params[:group] || "candidates"
@@ -162,6 +167,8 @@ class RsvpsController < ApplicationController
   def my_rsvps
     @rsvps = @current_user.rsvps
   end
+
+private
 
   def validate_owner!(rsvp)
     unless @current_user == rsvp.person || @auth['superusers']
