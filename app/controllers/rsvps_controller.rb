@@ -56,7 +56,7 @@ class RsvpsController < ApplicationController
     @rsvp           = Rsvp.new(params[:rsvp])
     @rsvp.event     = @event
     @rsvp.person    = @current_user
-    @rsvp.confirmed = 'f'   # TODO no strings
+    @rsvp.confirmed = Rsvp::Unconfirmed
 
     assign_blocks
 

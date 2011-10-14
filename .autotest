@@ -1,0 +1,10 @@
+Autotest.add_hook(:initialize) do |config|
+
+  [ '.git',
+    './log',
+    './tmp'
+  ].each do |x|
+    config.add_exception x
+  end
+
+end

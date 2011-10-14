@@ -3,10 +3,6 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-
 RSpec.configure do |config|
   # == Mock Framework
   #
@@ -27,34 +23,7 @@ RSpec.configure do |config|
   load "#{Rails.root}/db/seeds.rb"
 end
 
-def admin_user(stubs = {})
-  @current_user = mock_model(Person, stubs.merge({
-    :admin? =>true}))
-end
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-def current_user(stubs = {})
-  @current_user ||= mock_model(Person, stubs)
-end
-
-def user_session(stubs = {}, user_stubs = {})
-  @current_user ||= mock_model(UserSession, {:user => current_user(user_stubs)}.merge(stubs))
-end
-
-def login(session_stubs = {}, user_stubs = {})
-  UserSession.stub!(:find).and_return(user_session(session_stubs, user_stubs))
-end
-
-def logout
-  @user_session = nil
-end
-
-def login_as(user, auth={})
-  controller.current_user = user
-  user.stub(:in_group?) { |group| auth.include? group }
-  user.stub(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k)}.reject }
-end
-
-def login_as_officer(auth={})
-	@current_user = stub_model(Person)
-	login_as @current_user, auth.merge({'officers'=>true})
-end

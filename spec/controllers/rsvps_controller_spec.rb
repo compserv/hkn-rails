@@ -5,6 +5,9 @@ describe RsvpsController do
   before(:each) do
     @event ||= mock_model(Event, :blocks => [], :can_rsvp? => true, :allows_rsvps? => true)
     Event.stub(:find).and_return(@event)
+
+    login
+    @event.stub(:can_rsvp?) {|p| true}
   end
 
   def mock_rsvp(stubs={})
@@ -30,8 +33,8 @@ describe RsvpsController do
   describe "GET index" do
     it "assigns all rsvps as @rsvps" do
       @event.stub(:rsvps) { [mock_rsvp] }
-      do_get :index
-      assigns(:rsvps).should eq([mock_rsvp])
+      do_get :index, :event_id => @event.id
+      assigns(:rsvps).should == [mock_rsvp]
     end
   end
 
@@ -39,7 +42,7 @@ describe RsvpsController do
     it "assigns the requested rsvp as @rsvp" do
       Rsvp.stub(:find).with("37") { mock_rsvp }
       do_get :show, :id => "37"
-      assigns(:rsvp).should be(mock_rsvp)
+      assigns(:rsvp).should == mock_rsvp
     end
 
     it "when current user does not have permission, redirects to root" do
@@ -59,22 +62,28 @@ describe RsvpsController do
   end
 
   describe "GET edit" do
+    before(:each) do
+      login
+    end
+
     it "assigns the requested rsvp as @rsvp when current_user is its owner" do
       Rsvp.stub(:find).with("37") { mock_rsvp }
-      @current_user = stub_model(Person)
-      mock_rsvp.stub(:person, @current_user)
+      mock_rsvp.stub(:person).and_return(current_user)
       do_get :edit, :id => "37"
       assigns(:rsvp).should be(mock_rsvp)
     end
 
     it "fails when current_user does not own the rsvp" do
       Rsvp.stub(:find).with("37") { mock_rsvp }
-      @current_user = stub_model(Person)
+      mock_rsvp.stub(:person).and_return( stub_model(Person) )
       lambda{do_get :edit, :id => "37"}.should raise_error
     end
   end
 
   describe "POST create" do
+    before :each do
+      login
+    end
 
     describe "with valid params" do
       it "assigns a newly created rsvp as @rsvp" do
@@ -87,6 +96,15 @@ describe RsvpsController do
         Rsvp.stub(:new) { mock_rsvp(:save => true) }
         do_post :create, :rsvp => {}
         response.should redirect_to(event_url(@event))
+      end
+
+      describe "with transportation required" do
+        it "should update rsvp transportation" do
+          Rsvp.stub(:new) { mock_rsvp(:save => true) }
+          Rsvp.should_receive(:new).with(hash_including :transportation => Rsvp::TRANSPORT_ENUM.first.last)
+          do_post :create, :rsvp => {:transportation => Rsvp::TRANSPORT_ENUM.first.last}
+          response.should redirect_to(event_path(@event))
+        end
       end
     end
 
@@ -110,20 +128,18 @@ describe RsvpsController do
 
     describe "with valid params" do
       before(:each) do
-        @current_user = stub_model(Person)
-        login_as @current_user
+        login
+        mock_rsvp.stub(:person).and_return(current_user)
       end
 
       it "updates the requested rsvp" do
         Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.stub(:person) { @current_user }
         mock_rsvp.should_receive(:update_attributes).with({'these' => 'params'})
         do_put :update, :id => "37", :rsvp => {'these' => 'params'}
       end
 
       it "assigns the requested rsvp as @rsvp" do
         Rsvp.stub(:find) { mock_rsvp(:update_attributes => true) }
-        mock_rsvp.stub(:person) { @current_user }
         do_put :update, :id => "1"
         assigns(:rsvp).should be(mock_rsvp)
       end
@@ -138,8 +154,8 @@ describe RsvpsController do
 
     describe "with the wrong user" do
       before(:each) do
-        @current_user = stub_model(Person)
-        login_as @current_user
+        login
+        mock_rsvp.stub(:person).and_return( stub_model(Person) )
       end
 
       it "raises an error" do
@@ -182,6 +198,7 @@ describe RsvpsController do
 
   describe "confirm" do
     it "without being logged in should redirect to login" do
+      logout
       do_get :confirm, :id => "37"
       response.should redirect_to(login_url)
     end
@@ -200,9 +217,10 @@ describe RsvpsController do
         controller.should_receive(:authorize).with(['pres','vp'])
       end
 
-      it "should set rsvp.confirmed to 't'" do
+      it "should set rsvp.confirmed to Rsvp::Confirmed" do
         Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.should_receive(:confirmed=).with('t')
+        mock_rsvp.should_receive(:confirmed=).with(Rsvp::Confirmed)
+        controller.should_receive(:authorize)
         do_get :confirm, :id => "37"
       end
     end
@@ -228,9 +246,10 @@ describe RsvpsController do
         controller.should_receive(:authorize).with(['pres','vp'])
       end
 
-      it "should set rsvp.confirmed to 't'" do
+      it "should set rsvp.confirmed to Rsvp::Unconfirmed" do
         Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.should_receive(:confirmed=).with('f')
+        mock_rsvp.should_receive(:confirmed=).with(Rsvp::Unconfirmed)
+        controller.should_receive(:authorize) # rspec sucks
         do_get :unconfirm, :id => "37"
       end
     end
@@ -256,9 +275,9 @@ describe RsvpsController do
         controller.should_receive(:authorize).with(['pres','vp'])
       end
 
-      it "should set rsvp.confirmed to 't'" do
+      it "should set rsvp.confirmed to Rsvp::Rejected" do
         Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.should_receive(:confirmed=).with('r')
+        mock_rsvp.should_receive(:confirmed=).with(Rsvp::Rejected)
         do_get :reject, :id => "37"
       end
     end

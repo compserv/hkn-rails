@@ -34,8 +34,8 @@ describe Election do
   end
 
   after(:each) do
-    @obama_election.destroy
-    @hilary_election.destroy
+    @obama_election.destroy if @obama_election
+    @hilary_election.destroy if @hilary_election
   end
 
   it "should prioritize requested username over existing one" do
