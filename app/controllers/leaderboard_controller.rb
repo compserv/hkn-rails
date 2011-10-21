@@ -3,12 +3,6 @@ class LeaderboardController < ApplicationController
 
   def index
     @people = Person.find(:all, :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title IN (?)", Property.semester, ["officer", "cmember"] ])
-    if Person.find_by_username("eunjian")
-      @people << Person.find_by_username("eunjian")
-    end
-    if Person.find_by_username("kylim")
-      @people << Person.find_by_username("kylim")
-    end
     @people_array = []
     @people.each do |person|
       # Makeshift data structure
