@@ -1,5 +1,7 @@
 <h1><%= @event.name %></h1>
 
+<%= link_to raw('&larr;back'), confirm_rsvps_index_path(@group) %>
+
 <table>
   <tr>
     <th>Name</th>

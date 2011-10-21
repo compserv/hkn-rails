@@ -65,14 +65,24 @@ describe Rsvp do
       @event = mock_model(Event, :need_transportation => true)
     end
 
-    it "should not be valid without transportation field" do
-      rsvp = new_rsvp(:event => @event, :transportation => nil)
-      rsvp.should_not be_valid
-    end
-
     it "should be valid with transportation field" do
       rsvp = new_rsvp(:event => @event, :transportation => Rsvp::TRANSPORT_ENUM.first.last)
-      rsvp.should_not be_valid
+      rsvp.errors_on(:transportation).should be_empty
+    end
+
+    describe "default transportation" do
+      it "should be set when no value provided" do
+        rsvp = new_rsvp(:event => @event, :transportation => nil)
+        rsvp.errors_on(:transportation).should be_empty
+        rsvp.transportation.should_not be_nil
+      end
+
+      it "should not be changed when a value is provided" do
+        t = 4
+        rsvp = new_rsvp(:event => @event, :transportation => t)
+        rsvp.errors_on(:transportation).should be_empty
+        rsvp.transportation.should_not == t
+      end
     end
   end
 

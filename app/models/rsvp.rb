@@ -31,16 +31,13 @@ class Rsvp < ActiveRecord::Base
   validates :person, :presence => true
   validates :event, :presence => true
 
-  validates_inclusion_of :transportation,
-    :in => TRANSPORT_ENUM.collect(&:last),
-    :if => :need_transportation
-  validates_presence_of :transportation, :if => :need_transportation
-
   validates_inclusion_of :confirmed, :in => [Confirmed, Unconfirmed, Rejected, nil]
 
   validate :at_least_one_block
 
   validates_uniqueness_of :event_id, :scope => :person_id, :message => "has already been signed up for."
+
+  before_validation :set_default_transportation
 
   scope :confirmed, where("confirmed = ?", "t")
   scope :ordered, joins(:event).order('events.start_time ASC')
@@ -54,10 +51,16 @@ class Rsvp < ActiveRecord::Base
     end
   end
 
-private
-
   def need_transportation
     event and event.need_transportation
+  end
+
+private
+
+  def set_default_transportation
+    if self.need_transportation
+      self.transportation ||= TRANSPORT_ENUM.first.last
+    end
   end
 
 end
