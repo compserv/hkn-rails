@@ -40,6 +40,7 @@ module ApplicationHelper
   def ajaxify_links(class_name='ajax-controls')
     javascript_tag \
 "$(document).ready( function() {
+  var History = window.History;
   var container = $(document.body)
 
   if (container) {
@@ -47,17 +48,42 @@ module ApplicationHelper
       var el = e.target
       if ($(el).is('.#{class_name} a')) {
         $('#spinner').show();
-        $.ajax({ 
-          url: el.href, 
-          method: 'get', 
-          dataType: 'script', 
-          success: function(data) {
-            $('#ajax-wrapper').html(data);
-          } 
-        });
+        if (History.enabled) {
+          History.pushState(null, '', el.href);
+        } else {
+          $('#spinner').show();
+          $.ajax({
+            url: el.href,
+            method: 'get',
+            dataType: 'script',
+            success: function(data) {
+              $('#ajax-wrapper').html(data);
+            }
+          });
+        }
         e.preventDefault();
       }
     })
+  }
+})
+
+$(window).bind('statechange', function(){
+  var History = window.History;
+  if (History.enabled) {
+    var rootUrl = History.getRootUrl();
+    var state = History.getState();
+    var url = state.url;
+    var relativeUrl = url.replace(rootUrl, '');
+    $('#spinner').show();
+    $.ajax({
+      url: url,
+      method: 'get',
+      //dataType: 'script',
+      success: function(data) {
+        var newContent = $(data).find('#ajax-wrapper');
+        $('#ajax-wrapper').html(newContent);
+      }
+    });
   }
 })"
   end
