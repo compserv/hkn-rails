@@ -7,11 +7,6 @@ gem 'rails', "> 3.0", "< 3.1"
 
 gem 'pg'
 
-gem 'rspec-rails'
-# webrat is needed to make some specs pass
-gem 'webrat'
-gem 'ZenTest'
-gem 'autotest-rails'
 gem 'authlogic', :git => 'git://github.com/binarylogic/authlogic.git'
 gem 'net-ldap', :require => 'net/http'
 gem 'nokogiri'
@@ -27,6 +22,15 @@ gem "exception_notification",
 gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
 
 gem 'ri_cal'
+
+group :development, :test do
+  gem 'rspec-rails'
+  # webrat is needed to make some specs pass
+  gem 'webrat'
+  gem 'ZenTest'
+  gem 'autotest-rails'
+  gem 'rcov'
+end
 
 #gem 'bartt-ssl_requirement', :require => 'ssl_requirement'
 
