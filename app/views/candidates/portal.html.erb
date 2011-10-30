@@ -67,6 +67,11 @@
       padding-left: 0px;
       text-indent: 0px;
     }
+
+    #description {
+        width: 178px;
+        height: 50px;
+    }
     
   </style>
   <script type="text/javascript">
@@ -87,15 +92,18 @@
       $("#challenge_submit").click(function(){
         officer_name = $("input[name=officer_id]").val();
         challenge_name = $("input[name=challenge_name]").val();
+        description = $("textarea[name=description]").val();
+        alert(description);
         
         $.post("<%= request_challenge_path %>",
-          { officer_id: officer_name, name: challenge_name},
+          { officer_id: officer_name, name: challenge_name, description: description},
           function(data) { 
             //console.log(data);
             if(data[0] == true){ //OK submission
               $("#request_challenge_errors").empty();
               $("input[name=officer]").val(""); //clear fields
               $("input[name=challenge_name]").val("");
+              $("textarea[name=description]").val("");
               
               $("#challenges").load("<%= update_challenges_path %>");
               //$("#challenges").append("<%= escape_javascript(render :partial => "challenges") %>");
@@ -180,6 +188,11 @@
         <div class="field">
         <%= label_tag "Challenge Name"%>
         <%= text_field_tag "challenge_name" %>
+        </div>
+
+        <div class="field">
+            <%= label_tag "Description (Optional)" %>
+            <%= text_area_tag "description"%>
         </div>
         
         <%= hidden_field_tag "officer_id", "", :id => "officer_id" %>

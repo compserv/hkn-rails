@@ -14,6 +14,8 @@ class Challenge < ActiveRecord::Base
   belongs_to :candidate
   belongs_to :officer, :class_name => "Person", :foreign_key => "officer_id"
 
+  validates :name, :length => { :maximum => 255 }
+
   #CHALLENGE_PENDING = null
   #CHALLENGE_COMPLETED = true
   #CHALLENGE_REJECTED = false
