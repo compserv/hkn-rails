@@ -93,7 +93,6 @@
         officer_name = $("input[name=officer_id]").val();
         challenge_name = $("input[name=challenge_name]").val();
         description = $("textarea[name=description]").val();
-        alert(description);
         
         $.post("<%= request_challenge_path %>",
           { officer_id: officer_name, name: challenge_name, description: description},
