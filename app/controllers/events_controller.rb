@@ -35,7 +35,16 @@ class EventsController < ApplicationController
     end
 
     @events.delete_if {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}
-    @events = @events.paginate opts
+
+    if order == "event_type"
+      opts = { :page => params[:page], :per_page => per_page }
+      @events = @events.sort{|e1, e2| e1.event_type.name <=> e2.event_type.name }
+      @events = @events.paginate opts
+    else
+      @events = @events.paginate opts
+    end
+
+ 
 
     respond_to do |format|
       format.html # index.html.erb
