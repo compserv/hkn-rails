@@ -7,7 +7,7 @@
         <th><%= sort_link 'Start Time', 'start_time' %></th>
         <th><%= sort_link 'Name', 'name' %></th>
         <th><%= sort_link 'Location', 'location' %></th>
-        <th>Event Type</th>
+        <th><%= sort_link 'Event Type', 'event_type' %></th>
         <%# th for edit/delete %>
         <% if @auth['comms'] %>
           <th></th>
