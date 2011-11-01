@@ -8,6 +8,8 @@ class Department < ActiveRecord::Base
   #   updated_at : datetime 
   # =======================
 
+  has_many :courses
+
   validates :name, :presence => true
   validates :abbr, :presence => true
   

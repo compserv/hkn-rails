@@ -21,6 +21,10 @@ class Property < ActiveRecord::Base
   MONTH_SEMESTER_MAP = { 1..5 => 1, 6..7 => 2, 8..12 => 3 }
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
 
+  module Regex
+    SemesterString = /([A-Za-z]+)\s+(\d+)/
+  end
+
   class << self
     def get_or_create
       prop = Property.first
@@ -73,6 +77,17 @@ class Property < ActiveRecord::Base
       else
         "#{year}#{semester}"
       end
+    end
+
+    # Parse a semester of the form "Fall 2011" -> "20113"
+    # @param semester [String] Like "Fall 2011"
+    # @return [String] Semester string "20113"
+    def parse_semester(semester)
+      season, year = semester.scan(Regex::SemesterString).first
+      raise ArgumentError.new("Semester must be of format 'Season yyyy': #{semester.inspect}") unless season and year
+      i_season = SEMESTER_MAP.invert[season.titleize]
+      raise ArgumentError.new("Unrecognized season #{season}") unless i_season
+      return "#{year}#{i_season}"
     end
 
     def current_semester
