@@ -10,6 +10,8 @@ class EasterEggsController < ApplicationController
 
     ok &&= set_lang_prefs
     set_easter_flag :mirror, params[:mirror]
+    puts params[:acid]
+    set_easter_flag :acid, params[:acid]
 
     flash[:notice] = "Easter Egg settings updated." if ok
     redirect_to :action => :edit

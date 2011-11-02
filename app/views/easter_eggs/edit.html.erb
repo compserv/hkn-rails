@@ -14,6 +14,10 @@
     <br />
     <%- end -%>
 
+    <%= check_box_tag :acid, true, @easter_eggs[:acid] %>
+    <%= label_tag :acid, "Acid mode" %>
+    <br />
+
     <%= submit_tag %>
   <% end %>
 </div>
