@@ -304,6 +304,7 @@ HknRails::Application.routes.draw do
   # Easter Eggs
   get "easter-eggs" => "easter_eggs#edit", :as => "easter_eggs_edit"
   post "easter-eggs" => "easter_eggs#update", :as => "easter_eggs_update"
+  get "sgge-retsae" => "easter_eggs#mirror", :as => "easter_eggs_mirror"
 
   scope "console", :as => :console do
     get  "/"  => "console#open",    :as => :open

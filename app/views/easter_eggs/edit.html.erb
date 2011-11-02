@@ -1,12 +1,18 @@
 <div class="no-translation">
   <%= form_tag :action => :update do %>
-    <%= check_box_tag :piglatin, true, @piglatin %>
+    <%= check_box_tag :piglatin, true, @easter_eggs[:piglatin] %>
     <%= label_tag :piglatin, "Pig Latin mode" %>
     <br />
 
-    <%= check_box_tag :moonspeak, true, @moonspeak %>
+    <%= check_box_tag :moonspeak, true, @easter_eggs[:moonspeak] %>
     <%= label_tag :moonspeak, "Moonspeak mode" %>
     <br />
+
+    <%- if @easter_eggs[:mirror] -%>
+    <%= check_box_tag :mirror, true, @easter_eggs[:mirror] %>
+    <%= label_tag :mirror, "Mirror mode" %>
+    <br />
+    <%- end -%>
 
     <%= submit_tag %>
   <% end %>

@@ -127,10 +127,18 @@ class ApplicationController < ActionController::Base
   end
 
   def set_view_variables
-    @piglatin = session[:piglatin]
-    @moonspeak = session[:moonspeak]
-    @messages << "To turn off Pig Latin mode, please go <a href='#{easter_eggs_edit_path}'>here</a>.".html_safe if @piglatin
-    @messages << "To turn off Moonspeak mode, please go <a href='#{easter_eggs_edit_path}'>here</a>.".html_safe if @moonspeak
+    @easter_eggs = {
+      :piglatin  => session[:piglatin],
+      :moonspeak => session[:moonspeak],
+      :mirror    => session[:mirror]
+    }
+
+    if @easter_eggs.values.any?
+      msg = ["The following easter eggs are currently enabled:"]
+      msg << @easter_eggs.select{|k,v|v}.collect{|x|x.first.to_s.titleize}.join('<br/>')
+      msg << "To change your settings, please go <a href='#{easter_eggs_edit_path}'>here</a>".html_safe
+      @messages << msg.join('<br/>').html_safe
+    end
   end
 
   def su(username)

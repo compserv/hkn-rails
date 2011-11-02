@@ -12,8 +12,9 @@
   <%= javascript_include_tag "rails" %>
   <%= javascript_include_tag "navigation" %>
   <%= javascript_include_tag "chat" %>
-  <%= javascript_include_tag "piglatin" if @piglatin %>
-  <%= javascript_include_tag "moonspeak" if @moonspeak %>
+  <%= javascript_include_tag "piglatin" if @easter_eggs[:piglatin] %>
+  <%= javascript_include_tag "moonspeak" if @easter_eggs[:moonspeak] %>
+  <%= stylesheet_link_tag 'mirror' if @easter_eggs[:mirror] %>
   <%= csrf_meta_tag %>
   <link href='https://fonts.googleapis.com/css?family=Puritan|Cuprum' rel='stylesheet' type='text/css' />
   
