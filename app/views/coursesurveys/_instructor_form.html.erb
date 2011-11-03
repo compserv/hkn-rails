@@ -1,0 +1,20 @@
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :first_name %><%= form.text_field :last_name %>
+  </div>
+
+  <%- %w(title office phone_number email home_page interests).each do |field| -%>
+    <div class="field">
+      <%= form.label field.to_sym %>
+      <%= form.text_field field.to_sym %>
+    </div>
+  <%- end -%>
+
+  <div class="field">
+    <%= form.label :private %>
+    <%= form.check_box :private %>
+  </div>
+   
+  <div class="submit">
+    <%= form.submit 'Save' %>
+  </div>
