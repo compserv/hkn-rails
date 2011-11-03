@@ -27,8 +27,15 @@ module CoursesurveysHelper
   end
 
   def rating_and_bar(score, max, url=nil, inverted=nil, options={})
-    contents = "<span class=\"rating\">#{sprintf "%.1f", score}</span><span class=\"rating2\"> / #{max}</span>\n
-    #{rating_bar(score/max.to_f, url, inverted)}"
+    if score and !score.nan? and max and max.to_f != 0
+      contents = ['<span class=\"rating\">',
+                  sprintf("%.1f", score),
+                  "</span><span class=\"rating2\"> / #{max}</span>",
+                  rating_bar(score/max.to_f, url, inverted)
+                 ].join
+    else
+      contents = ''
+    end
  
     content_tag(:span, contents.html_safe)
   end
