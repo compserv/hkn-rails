@@ -8,6 +8,9 @@
       <%= link_to "[Confirm]", "../confirm_challenge/" + challenge.id.to_s %> 
       <%= link_to "[Reject]", "../reject_challenge/" + challenge.id.to_s %>
       <span class="challenge_name"><%= challenge.name %></span> (requested by <%= challenge.candidate.person.full_name %>)
+      <% if challenge.description != nil and challenge.description != "" %>
+          <span>: <%= challenge.description %></span>
+      <% end %>
     </li>
   <% end %>
   </ul>
