@@ -130,7 +130,8 @@ class ApplicationController < ActionController::Base
     @easter_eggs = {
       :piglatin  => session[:piglatin],
       :moonspeak => session[:moonspeak],
-      :mirror    => session[:mirror]
+      :mirror    => session[:mirror],
+      :acid      => session[:acid],
     }
 
     if @easter_eggs.values.any?
