@@ -3,7 +3,7 @@ class Challenge < ActiveRecord::Base
   # === List of columns ===
   #   id           : integer 
   #   name         : string 
-  #   description  : string 
+  #   description  : text 
   #   status       : boolean 
   #   candidate_id : integer 
   #   officer_id   : integer 
