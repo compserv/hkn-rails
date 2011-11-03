@@ -65,6 +65,11 @@ class Department < ActiveRecord::Base
     name
   end
 
+  # @return [String] represents this dept in URLs
+  def slug
+    abbr
+  end
+
   def Department.find_by_nice_abbr(abbr)
     abbr.upcase!
     @@nice_abbrs.each_pair do |proper, informals|

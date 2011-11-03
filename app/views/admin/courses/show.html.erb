@@ -1,0 +1,7 @@
+<%= link_to "&larr;&nbsp;All Courses".html_safe, admin_courses_path %>
+
+<h1><%= @course.to_s %></h1>
+
+<%= form_for @course, :url => admin_courses_update_path(*@course.slug) do |f| -%>
+  <%= render 'form', :form => f %>
+<%- end -%>

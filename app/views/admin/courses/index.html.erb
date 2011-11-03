@@ -1,0 +1,25 @@
+<div class="admin">
+  <h1>Admin</h1>
+  <%= link_to 'Add course', admin_courses_new_path %>
+</div>
+
+<%- @courses.group_by(&:department).each_pair do |dept, courses| -%>
+<div class="department">
+  <h1><%= dept.name %></h1>
+
+  <table>
+    <tr>
+      <th>Course</th>
+      <th>Actions</th>
+    </tr>
+    <%- courses.each do |course| -%>
+    <tr>
+      <td><%= course.course_abbr %></td>
+      <td>
+        <%= link_to 'Edit', admin_courses_show_path(course.department.abbr, course.full_course_number) %>
+      </td>
+    </tr>
+    <%- end -%>
+  </table>
+  </div>
+<%- end -%>

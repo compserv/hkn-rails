@@ -12,7 +12,9 @@ module CourseSurveys
 
     class ImportError < StandardError; end
     class CourseMissingError < ImportError
+      attr_reader :klass
       def initialize(x)
+        @klass = x
         if x.is_a? Hash
           x = "#{x['Course'][:name]} #{[x[:prefix],x[:course_number],x[:suffix]].join}"
         end
@@ -20,7 +22,17 @@ module CourseSurveys
         super(x)
       end
     end
-    class InstructorMissingError < ImportError; end
+    class InstructorMissingError < ImportError
+      attr_reader :klass, :guesses
+
+      # @param k [Hash] internal klass data structure
+      # @param guesses [Array<Instructor>] [optional] potential matches
+      def initialize(k,guesses=nil)
+        @klass = k
+        @guesses = guesses
+        super(k['Instructor'])
+      end
+    end
 
     module Regex
       CourseName = /(.*) [PS] ([^\s]+) (.*)/  # COMPUTER SCIENCE C61C S 001 LEC
@@ -29,8 +41,13 @@ module CourseSurveys
     end
 
     DefaultOptions = {
-      :ignore => [:lab, :dis, :rec, :ind]
+      :ignore      => [:lab, :dis, :rec, :ind],
+      :interactive => true
     }
+
+    PendingCommitOrder = [
+      :courses, :klasses, :instructors, :instructorships, :coursesurveys
+    ]
 
     # Department model
     attr_accessor :department
@@ -44,6 +61,13 @@ module CourseSurveys
       @klasses = []
       @current_klass = nil
       @semester = nil
+      @pending_commits = {
+        :courses => [],
+        :klasses => [],
+        :instructors => [],
+        :instructorships => [],
+        :coursesurveys => []
+      }
 
       @debug   = true
       @verbose = true
@@ -80,6 +104,8 @@ module CourseSurveys
           skip = false
           skip ||= ((type = @current_klass["Course"][:type]) and @options[:ignore].include?(type.to_sym))
           skip ||= ((@current_klass['Restrictions'] =~ /not open/i) or @current_klass['Enrollment'][:limit] == 0)
+          skip ||= (@current_klass['Location'] =~ /cancelled/i)
+          skip ||= (@current_klass['Status/Last Changed'] =~ /cancelled/i)
           if skip
             puts "Skipping #{@current_klass.inspect}"
           else
@@ -208,50 +234,219 @@ module CourseSurveys
     
     # Commits internal data to the database.
     def save!
-      Coursesurvey.transaction do
+      #Coursesurvey.transaction do
         @klasses.each_with_index do |klass, i|
           begin
             #puts "#{i.to_s.rjust 4}. #{klass.inspect}" if @debug
 
             # Find department, course
-            dept, prefix, num, suffix = klass['Course'][:name].scan( /(.*) ([A-Z]?)(\d+)([A-Z]?)/ ).first
+            dept, prefix, num, suffix = klass['Course'][:name].scan( /(.*) ([A-Z]*)(\d+)([A-Z]*)/ ).first
             num = {:prefix => prefix, :course_number => num.to_i, :suffix => suffix}
             dept   = Department.find_by_name(dept.titleize)
+            klass[:num] = num
+            klass[:dept] = dept
             course = dept.courses.where(num).first
 
             unless course
-              raise CourseMissingError.new(klass)
-              #raise ImportError.new("Missing course #{dept.abbr} #{[num[:prefix],num[:course_number],num[:suffix]].join}")
+              course = intervene CourseMissingError.new(klass)
             end
+            @pending_commits[:courses] |= [course]
+            raise ImportError.new("nil course") unless course
 
             # Klass
-            k = Klass.find_or_initialize_by_course_id_and_semester_and_section(course.id, @semester, klass['Course'][:section])
-            if k.new_record?
+            #k = Klass.find_or_initialize_by_course_and_semester_and_section(course, @semester, klass['Course'][:section])
+            k = (!course.new_record? and Klass.find_by_course_id_and_semester_and_section(course.id, @semester, klass['Course'][:section]) ) || begin
+            #if k.new_record?
+              k = Klass.new
+              k.course   = course
+              k.semester = @semester
+              k.section  = klass['Course'][:section]
               k.location = klass['Location']
               k.time     = klass['Time']
               k.notes    = klass['Note']
               k.num_students = klass['Enrollment'][:enrolled]
-              k.save || raise(ImportError.new(k.errors.inspect))
-              # TODO instructors
+              #k.valid? || raise(ImportError.new(k.errors.inspect))
+              k
             end
-
             puts "Using #{k.inspect}" if @debug
+            @pending_commits[:klasses] |= [k]
+
+            # Instructors
+            # TODO add all of them (from Notes too)
+            i = guess_instructor(klass['Instructor'])
+            unless i.is_a? Instructor
+              i = intervene InstructorMissingError.new(klass,i)
+            end
+            @pending_commits[:instructors] |= [i]
+
+            # Instructorships
+            iship = (!k.new_record? and !i.new_record? and Instructorship.find_by_klass_id_and_instructor_id(k.id, i.id)) || begin
+              iship = Instructorship.new
+              iship.klass  = k
+              iship.instructor = i
+              iship.ta = false
+              iship
+            end
+            #iship.valid? || raise(ImportError.new(iship.errors.inspect))
+            @pending_commits[:instructorships] |= [iship]
 
             # Coursesurvey
-            c = Coursesurvey.new
-            c.max_surveyors = 2
-            c.klass = k
-            c.status = 0
-            c.save || raise(ImportError.new(c.errors.inspect))
+            c = (!k.new_record? and Coursesurvey.find_by_klass_id(k)) || begin
+              c = Coursesurvey.new
+              c.klass = k
+              c
+            end
+            c.max_surveyors ||= 2
+            c.status ||= 0
+            #c.valid? || raise(ImportError.new(c.errors.inspect))
+            @pending_commits[:coursesurveys] |= [c]
 
             puts c.inspect if @debug
+
           rescue => e
             puts "Failed to process #{klass.inspect}:\n  #{e.inspect}"
-            puts "klass: #{k.inspect}", "course: #{k.course.inspect}", "coursesurvey: #{c.inspect}"
+            puts "klass: #{k.inspect}", "course: #{k && k.course.inspect}", "coursesurvey: #{c.inspect}"
             raise
           end # b-r-e
         end # each
-      end # transaction
+
+        Coursesurvey.transaction do
+          commit!
+        end
+      #end # transaction
+    end
+
+    # Attempt to resolve a problem.
+    # If @options[:interactive] is set, user is prompted for resolution.
+    # Otherwise, raise an error.
+    # Raises an error if the situation cannot be resolved.
+    # @param potential_error [ImportError] error to raise in the event this situation can't be handled
+    # @return [Object,nil] context-dependent return value
+    def intervene(potential_error)
+      raise potential_error unless @options[:interactive]
+
+      case potential_error
+
+      when CourseMissingError
+        c = nil
+        already = @pending_commits[:courses].select do |cc|
+          x = potential_error.klass
+          x[:dept] == cc.department and [:prefix, :course_number, :suffix].all?{|s|x[:num][s]==cc.send(s)}
+        end.first
+        return already if already
+        UI::menu "Missing course #{potential_error.message}", [
+          'Quit',
+          'Automatically create it'
+        ] do |choice|
+          case choice
+          when 1
+            raise potential_error
+          when 2
+            c = course_from_klass potential_error.klass
+            (c and c.valid?) or raise ImportError.new("Create failed: #{c.errors.inspect}\n  for: #{c.inspect}")
+            puts "*** Course saved: #{c.inspect}"
+            return c # return value of intervene
+          else
+            false
+          end
+        end
+        return nil
+
+      when InstructorMissingError
+        i = nil
+        dc = 2  # num extra choices
+        UI::menu "Indecisive instructor guess: #{potential_error.klass['Instructor']} for #{potential_error.klass['Course'][:name]}",
+          [
+            'Quit',
+            'Manual',
+            *(potential_error.guesses.collect(&:full_name))
+          ] do |choice|
+          case choice
+          when 1
+            raise potential_error
+
+          when 2
+            iid = UI::request("Instructor id").to_i
+            i = Instructor.find(iid)
+            puts i.full_name
+            if UI::confirm("Correct?")
+              return i
+            else
+              false
+            end
+
+          when (1+dc)..(potential_error.guesses.count+dc)
+            chosen = potential_error.guesses[choice-1-dc]
+            puts chosen.full_name
+            return chosen
+          else
+            false
+          end
+        end # menu
+        return nil
+
+      # Unhandled error
+      else
+        puts "*** Could not intervene for #{potential_error.class} ***"
+        raise potential_error.inspect
+      end
+    end
+
+    # Convert a parsed klass Hash into a Course
+    # @param klass [Hash] internal klass data structure
+    # @return [Course]
+    def course_from_klass(klass)
+      c = Course.new
+      dname, c.prefix, c.course_number, c.suffix = klass['Course'][:name].upcase.scan(/(.*) ([A-Z]*)(\d+)([A-Z]*)/).first
+      c.course_number = c.course_number.to_i
+      c.name = klass['Course'][:name]
+      c.units = klass['Units/Credit'].scan(/\d+/).max.to_i
+
+      raise ImportError.new("Unable to find department #{dname} (#{klass['Course'][:name]})") unless d = Department.find_by_name(dname.titleize)
+      c.department_id = d.id
+      return c
+    end
+
+    # Guess an instructor from the schedule.berkeley format
+    # @param name [String] LAST NAME, F M
+    # @return [Instructor, Array<Instructor>] Confident match for instructor, or Array of potentials in case of ambiguity
+    def guess_instructor(name)
+      lname, fi = name.upcase.scan(/([A-Z]+), ([A-Z])/).first.collect(&:titleize)
+
+      guesses = Instructor.find_all_by_last_name lname
+
+      case
+
+      # One matching last name & first initial
+      when guesses.count == 1 && guesses.first.first_name.first == fi
+        return guesses.first
+
+      # Multiple matching last names
+      when guesses.count > 1
+        guesses = guesses.select {|i| i.first_name.first == fi}
+        return guesses.first if guesses.count == 1
+
+      end
+
+      # Return best guesses
+      return guesses
+    end
+
+    def commit!
+       PendingCommitOrder.each do |s|
+         @pending_commits[s].each do |m|
+           case s
+           when :klasses
+             m.course_id = m.course.id
+           when :instructorships
+             m.klass_id = m.klass.id
+           when :coursesurveys
+             m.klass_id = m.klass.id
+           end
+
+           m.save || raise(ImportError.new("Validation failed for #{m.inspect}\n  #{m.errors.inspect}"))
+         end
+       end
     end
 
   end # ScheduleImporter

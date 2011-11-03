@@ -2,7 +2,7 @@ class CoursesurveysController < ApplicationController
   include CoursesurveysHelper
 
   before_filter :show_searcharea
-  before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor]
+  before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor, :newinstructor, :createinstructor]
   before_filter :authorize_privileged
   before_filter :authorize_csec, :only => [:merge_instructors, :merge_instructors_post, :merge, :instructor_ids]
 
@@ -278,6 +278,20 @@ class CoursesurveysController < ApplicationController
         @results[klasstype].sort! {|a,b| b.first.semester <=> a.first.semester}
     end
   end #instructor
+
+  def newinstructor
+    @instructor = Instructor.new
+  end
+
+  def createinstructor
+    @instructor = Instructor.new(params[:instructor])
+
+    if @instructor.save
+      redirect_to surveys_instructor_path(@instructor), :notice => "Successfully created new instructor."
+    else
+      render :newinstructor, :notice => "Validation failed: #{@instructor.errors.join('<br/>').html_safe}"
+    end
+  end
 
   def editinstructor
     @instructor = Instructor.find_by_id(params[:id].to_i)

@@ -29,6 +29,14 @@ HknRails::Application.routes.draw do
       #match "delete_announcement/:id" => "admin#delete_announcement"
     end
 
+    scope "courses", :as => "courses" do
+      get  "/"    => "courses#index", :as => ''
+      get  "/new"  => "courses#new", :as => 'new'
+      post "/new"  => "courses#create", :as => 'create'
+      get  "/:dept/:num" => "courses#show", :as => 'show'
+      put  "/:dept/:num" => "courses#update", :as => 'update'
+    end
+
     scope "election", :as => "election" do
         get  "details"                => "elections#details",          :as => :details
 
@@ -178,6 +186,8 @@ HknRails::Application.routes.draw do
     match "course/:dept_abbr/:short_name"  => "coursesurveys#course",     :as => :coursesurveys_course
     match "course/:dept_abbr/:short_name/:semester(/:section)" => "coursesurveys#klass",      :as => :coursesurveys_klass
 
+    get   "instructor/new"                 => "coursesurveys#newinstructor", :as => :coursesurveys_new_instructor
+    post  "instructor/new"                 => "coursesurveys#createinstructor", :as => :coursesurveys_create_instructor
     get   "instructor/:id/edit"            => "coursesurveys#editinstructor", :as => :coursesurveys_edit_instructor
     match "instructor/:id/update"          => "coursesurveys#updateinstructor", :as => :coursesurveys_update_instructor
     # This is a hack to allow periods in the parameter. Otherwise, Rails automatically splits on periods

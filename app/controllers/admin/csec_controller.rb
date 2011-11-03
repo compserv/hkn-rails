@@ -38,7 +38,7 @@ class Admin::CsecController < Admin::AdminController
     # If a klass has a coursesurvey, then it should be surveyed
     current_semester = Property.get_or_create.semester
     #@klasses = Klass.joins(:course).where('klasses.semester' => current_semester).order('courses.prefix, CAST(courses.course_number AS integer), courses.course_number, courses.suffix ASC')
-    @klasses = Klass.current_semester
+    @klasses = Klass.current_semester.ordered
   end
 
   def select_classes_post

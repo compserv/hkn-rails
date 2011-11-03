@@ -25,10 +25,17 @@ class Course < ActiveRecord::Base
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
+  validates_uniqueness_of :course_number, :scope => [:department_id,:prefix,:suffix]
 
   #scope :all, order("prefix, courses.course_number, suffix")
-  scope :ordered, order("prefix, courses.course_number, suffix")
+  scope :ordered, order("courses.course_number, prefix, suffix")
   scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
+
+  attr_accessible :name, :description, :units, :prereqs, :department_id
+
+  module Regex
+    PrefixNumSuffix = /^([A-Z]*)(\d+)([A-Z]*)$/
+  end
 
   # Sunspot
   searchable do
@@ -116,16 +123,25 @@ class Course < ActiveRecord::Base
     "#{prefix}#{course_number}#{suffix}"
   end
 
-  def self.split_course_number(s)
+  # @return [String] [dept.slug, full_course_number] for use in a course url. Explode it.
+  def slug
+    [department.slug, full_course_number]
+  end
+
+  def self.split_course_number(s, options={})
     # Splits a course number string "C149" => "C", 149, nil
     cn = {}
-    cn[:prefix], cn[:course_number], cn[:suffix] = s.scan(/^([a-zA-Z]*)([0-9]*)([a-zA-Z]*)$/).first
+    cn[:prefix], cn[:course_number], cn[:suffix] = s.upcase.scan(Regex::PrefixNumSuffix).first
+    cn[:course_number] = cn[:course_number].to_i
+
+    return [cn[:prefix], cn[:course_number], cn[:suffix]] if options[:hash] == false
+
     return cn
   end
 
   # E.g. ("EE", "C149")
   def Course.find_by_short_name(dept_abbr, full_course_number, section=nil)
-    (prefix, course_number, suffix) = full_course_number.scan(/^([a-zA-Z]*)([0-9]*)([a-zA-Z]*)$/).first
+    (prefix, course_number, suffix) = full_course_number.scan(Regex::PrefixNumSuffix).first
     department = Department.find_by_nice_abbr(dept_abbr)
     #raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?
     return nil if course_number.blank? or department.nil?

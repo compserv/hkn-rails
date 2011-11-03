@@ -89,6 +89,7 @@
 
   <div id="content">
     <div id="container">
+          <%- @messages |= [flash[:notice]] if flash[:notice] -%>
   	  <% if !@messages.empty? %>
     	  <div id="messages" class="no-translation">
       		<% @messages.each do |message| %>

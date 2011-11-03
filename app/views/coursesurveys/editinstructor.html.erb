@@ -14,24 +14,5 @@
 </div>
 
 <%- form_for @instructor, :url=>coursesurveys_update_instructor_path(@instructor) do |f| -%>
-  <div class="field">
-    <%= f.label :name %>
-    <%= f.text_field :first_name %><%= f.text_field :last_name %>
-  </div>
-
-  <%- %w(title office phone_number email home_page interests).each do |field| -%>
-    <div class="field">
-      <%= f.label field.to_sym %>
-      <%= f.text_field field.to_sym %>
-    </div>
-  <%- end -%>
-
-  <div class="field">
-    <%= f.label :private %>
-    <%= f.check_box :private %>
-  </div>
-   
-  <div class="submit">
-    <%= f.submit 'Update' %>
-  </div>
+  <%= render 'instructor_form', :form => f %>
 <%- end -%>

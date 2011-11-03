@@ -1,0 +1,5 @@
+<h1><%= @instructor.new_record? ? 'New Instructor' : @instructor.full_name %></h1>
+
+<%= form_for @instructor, :url => coursesurveys_create_instructor_path(@instructor) do |f| -%>
+  <%= render 'instructor_form', :form => f -%>
+<%- end -%>
