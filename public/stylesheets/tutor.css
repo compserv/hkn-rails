@@ -59,3 +59,7 @@ html .dept-heading { font-weight: bold; }
     padding: 3px;
     cursor: pointer;
 }
+
+div.overflow {
+	overflow: auto;
+}
