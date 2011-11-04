@@ -7,6 +7,7 @@
 <p> Only tutoring officers have sufficient privileges to change the schedule.</p>
 <p>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit.</p>
 <p>Then add them back in the right places, and submit again. If you don't do that exactly, the schedule may not end up in the right state.</p>
+<div class="overflow">
 <table id="edit_schedule">
 <% @rows.each do |row| %>
 	<tr>
@@ -79,6 +80,7 @@
 	</tr>
 <% end %>
 </table>
+</div>
 <%= submit_tag "Save changes" %>
 <%= submit_tag "Reset all" %>
 <% end %><br/>
@@ -95,6 +97,7 @@
 <p>Correct Office = 2</p>
 
 <% [@officer_stats, @cmember_stats].each do |stats| %>
+<div class="overflow">
 <table>
 <tr>
 <% if stats == @officer_stats %>
@@ -118,5 +121,6 @@
 <% end %>
 </tr><% end %><% end %>
 </table>
+</div>
 <br/>
 <% end %>
