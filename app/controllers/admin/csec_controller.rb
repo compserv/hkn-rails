@@ -75,6 +75,6 @@ class Admin::CsecController < Admin::AdminController
   end
 
   def manage_candidates
-    @people = Person.current_candidates
+    @people = Person.current_candidates.alpha
   end
 end

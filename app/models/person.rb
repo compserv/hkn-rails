@@ -57,6 +57,8 @@ class Person < ActiveRecord::Base
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
   scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('comms')) }
+  scope :alpha_last, lambda {order('last_name, first_name')}
+  scope :alpha,      lambda {order('first_name, last_name')}
 
   acts_as_authentic do |c|
     # Options go here if you have any
