@@ -8,6 +8,7 @@ class EventsController < ApplicationController
   def index
     per_page = 20
     order = params[:sort] || "start_time"
+    event_filter = params[:event_filter] || "none"
     params[:sort_direction] ||= (params[:category] == 'past') ? 'down' : 'up'
     
     sort_direction = case params[:sort_direction]
@@ -21,6 +22,7 @@ class EventsController < ApplicationController
 
     category = params[:category] || 'all'
     event_finder = Event.with_permission(@current_user)
+      
     # We should paginate this
     if category == 'past'
       @events = event_finder.past
@@ -34,6 +36,11 @@ class EventsController < ApplicationController
       @heading = "All Events"
     end
 
+    if event_filter != "none"
+      puts "hello"
+      @events = @events.select {|e| e.event_type.name.downcase == event_filter}  
+    end
+
     @events.delete_if {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}
 
     if order == "event_type"
@@ -42,10 +49,9 @@ class EventsController < ApplicationController
       @events = @events.paginate opts
     else
       @events = @events.paginate opts
+      puts "doing my best to sort"
     end
-
- 
-
+        
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
