@@ -18,6 +18,9 @@
       <th>Status</th>
       <th>Course Number</th>
       <th>Section</th>
+      <th>Time</th>
+      <th>Loc</th>
+      <th># Students</th>
       <th>Notes</th>
       <th>Max Surveyors</th>
       <th>Surveyors</th>
@@ -25,8 +28,11 @@
     <% @coursesurveys.each do |coursesurvey| %>
       <tr>
         <td><%= select_tag "survey#{coursesurvey.id}[status]", options_for_select(Coursesurvey.statusmap.invert.to_a.sort{|a,b| a.last <=> b.last }, :selected => coursesurvey.status ) %></td>
-        <td><%= coursesurvey.klass.course.course_abbr %></td>
-        <td><%= coursesurvey.klass.section %></td>
+        <td><%= link_to coursesurvey.klass.course.course_abbr, admin_courses_show_path(*coursesurvey.klass.course.slug) %></td>
+        <td><%= link_to coursesurvey.klass.section.to_s.center(5).gsub(' ','&nbsp').html_safe, admin_klasses_edit_path(coursesurvey.klass) %></td>
+        <td><%= coursesurvey.klass.time %></td>
+        <td><%= coursesurvey.klass.location %></td>
+        <td><%= coursesurvey.klass.num_students %></td>
         <td><%= coursesurvey.klass.notes %></td>
         <td><%= text_field_tag "survey#{coursesurvey.id}[max_surveyors]", coursesurvey.max_surveyors %></td>
         <td>

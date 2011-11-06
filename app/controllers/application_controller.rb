@@ -166,5 +166,9 @@ class ApplicationController < ActionController::Base
     @current_user && @current_user != @real_current_user
   end
 
+  def redirect_back_or_default(path, *args)
+    send(:redirect_to, request.referer || path, *args)
+  end
+
   
 end

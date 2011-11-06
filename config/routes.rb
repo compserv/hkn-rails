@@ -35,6 +35,15 @@ HknRails::Application.routes.draw do
       post "/new"  => "courses#create", :as => 'create'
       get  "/:dept/:num" => "courses#show", :as => 'show'
       put  "/:dept/:num" => "courses#update", :as => 'update'
+
+      scope '/:dept/:num/klasses', :as => 'klasses' do
+        get  '/'    => 'klasses#index',  :as => ''
+      end
+    end
+
+    scope 'klasses', :as => 'klasses' do
+      get  '/:id' => 'klasses#edit',   :as => 'edit'
+      put  '/:id' => 'klasses#update', :as => 'update'
     end
 
     scope "election", :as => "election" do

@@ -2,6 +2,8 @@
 
 <h1><%= @course.to_s %></h1>
 
+<%= link_to 'Classes', admin_courses_klasses_path(*@course.slug) %>
+
 <%= form_for @course, :url => admin_courses_update_path(*@course.slug) do |f| -%>
   <%= render 'form', :form => f %>
 <%- end -%>

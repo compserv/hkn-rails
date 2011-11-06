@@ -32,5 +32,10 @@ class Challenge < ActiveRecord::Base
     end
   end
 
+  def is_current_challenge?
+      person_id = Candidate.find_by_id(candidate_id).person_id
+      current_candidate = Person.current_candidates.find_by_id(person_id)
+      return current_candidate ? true : false
+  end
 
 end
