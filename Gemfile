@@ -30,6 +30,7 @@ group :development, :test do
   gem 'ZenTest'
   gem 'autotest-rails'
   gem 'rcov'
+  gem 'yard'
 end
 
 #gem 'bartt-ssl_requirement', :require => 'ssl_requirement'
