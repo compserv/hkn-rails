@@ -29,6 +29,8 @@ class Klass < ActiveRecord::Base
   scope :current_semester, lambda{ joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section') }
 
   scope :ordered, lambda { order("course_number DESC, prefix ASC, suffix ASC, semester DESC") }
+
+  attr_accessible :semester, :location, :time, :section, :notes, :num_students
   
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
   ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }

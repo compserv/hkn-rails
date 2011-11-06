@@ -1,0 +1,16 @@
+<h1><%= link_to @course.to_s, admin_courses_show_path(*@course.slug) %></h1>
+
+<table>
+  <tr>
+    <th>Semester</th>
+    <th>Actions</th>
+  </tr>
+  <%- @klasses.each do |klass| -%>
+  <tr>
+    <td><%= klass.proper_semester %></td>
+    <td>
+      <%= link_to 'Edit', admin_klasses_edit_path(klass.id) %>
+    </td>
+  </tr>
+  <%- end -%>
+</table>

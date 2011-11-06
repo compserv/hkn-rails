@@ -1,0 +1,30 @@
+<h1><%= @klass.to_s %></h1>
+
+<%= link_to "&larr;&nbsp;#{@klass.course.to_s} classes".html_safe, admin_courses_klasses_path(*@klass.course.slug) %>
+
+<%= form_for @klass, :url => admin_klasses_update_path(@klass) do |f| -%>
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Value</th>
+  </tr>
+  
+  <%-
+    [
+      [ :location, :text_field ],
+      [ :time,     :text_field ],
+      [ :section,  :text_field ],
+      [ :num_students, :text_field ],
+      [ :notes,    :text_area  ]
+    ].each do |s, ftype|
+  -%>
+  <tr>
+    <td><%= f.label s %></td>
+    <td><%= f.send ftype, s %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= f.submit 'Save' %>
+
+<%- end -%>
