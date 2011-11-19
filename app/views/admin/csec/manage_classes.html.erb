@@ -37,7 +37,7 @@
         <td><%= text_field_tag "survey#{coursesurvey.id}[max_surveyors]", coursesurvey.max_surveyors %></td>
         <td>
           <% coursesurvey.surveyors.each do |person| %>
-            <%= link_to person.fullname, person %>
+            <%= link_to person.fullname, admin_csec_coursesurvey_path(coursesurvey) %>
             <%= "," if coursesurvey.surveyors.last != person %>
           <% end %>
         </td>

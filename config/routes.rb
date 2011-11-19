@@ -82,6 +82,9 @@ HknRails::Application.routes.draw do
       get "manage_classes" => "csec#manage_classes", :as => :manage_classes
       post "manage_classes" => "csec#manage_classes_post", :as => :manage_classes_post
       match "manage_candidates" => "csec#manage_candidates", :as => :manage_candidates
+      #post '/coursesurveys/swap/:id1/:id2' => 'csec#coursesurvey_swap', :as => :coursesurvey_swap
+      get  '/coursesurveys/:id' => 'csec#coursesurvey_show', :as => :coursesurvey
+      delete '/coursesurveys/:coursesurvey_id/remove/:person_id' => 'csec#coursesurvey_remove', :as => :coursesurvey_remove
 
       get  "upload_surveys" => "csec#upload_surveys",  :as => :upload_surveys
       post "upload_surveys" => "csec#upload_surveys_post", :as => :upload_surveys_post

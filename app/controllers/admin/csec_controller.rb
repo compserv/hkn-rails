@@ -74,6 +74,26 @@ class Admin::CsecController < Admin::AdminController
     redirect_to(admin_csec_manage_classes_path, :notice => "Updated classes")
   end
 
+  def coursesurvey_show
+    @coursesurvey = Coursesurvey.find_by_id(params[:id]) rescue nil
+
+    return redirect_to admin_csec_manage_classes_path, :notice => "Invalid coursesurvey ID" unless @coursesurvey
+  end
+
+  def coursesurvey_remove
+    @coursesurvey = Coursesurvey.find_by_id(params[:coursesurvey_id]) rescue nil
+    @person = Person.find_by_id(params[:person_id]) rescue nil
+
+    return redirect_to admin_csec_manage_classes_path, :notice => "Invalid coursesurvey ID" unless @coursesurvey
+    return redirect_to admin_csec_coursesurvey_path(@coursesurvey), :notice => "Invalid person ID" unless @person
+    return redirect_to admin_csec_coursesurvey_path(@coursesurvey), :notice => "#{@person.full_name} is not surveying #{@coursesurvey.klass.to_s}" unless @coursesurvey.surveyors.include?(@person)
+
+    @coursesurvey.surveyors.delete(@person)
+    @coursesurvey.save
+
+    redirect_to admin_csec_coursesurvey_path(@coursesurvey), :notice => "Removed #{@person.full_name} from #{@coursesurvey.klass.to_s} survey"
+  end
+
   def manage_candidates
     @people = Person.current_candidates.alpha
   end

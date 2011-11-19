@@ -1,0 +1,12 @@
+<h1><%= @coursesurvey.klass.to_s %></h1>
+
+<div>
+  <%- @coursesurvey.surveyors.each do |p| -%>
+  <div>
+    <%= p.full_name %>
+    <%= link_to '[delete]', admin_csec_coursesurvey_remove_path(@coursesurvey.id, p.id), :confirm => 'Are you sure?', :method => :delete %>
+  </div>
+  <%- end -%>
+</div>
+
+<%= link_to '&larr; back'.html_safe, admin_csec_manage_classes_path %>
