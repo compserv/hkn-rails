@@ -1,0 +1,37 @@
+<%# Renders the ajaxified container and collection of notifications. %>
+<div id="notifications">
+  <script type="text/javascript">
+    $(document).ready(function(){
+      var button = $('#notifications .button');
+      var wrapper = $('#notifications .wrapper');
+      var count = $('#notifications .button .count');
+
+      var updateCount = function(){
+        var c = $('#notifications .notification').length;
+        if( c == 0 )
+          count.hide();
+        else
+          count.show();
+        count.html( c );
+      };
+
+      count.hide();
+      wrapper
+        .load( "<%= notifications_path %>", updateCount )
+        .hide();
+      button.click(function(){
+        wrapper.toggle();
+      });
+    });
+  </script>
+
+  <div class="button">
+    <a href="#" onclick="return false;">
+      <span class="count"></span>
+      <%= image_tag 'icons/wheatstone.png' %>
+    </a>
+  </div>
+
+  <div class="wrapper">
+  </div>
+</div>

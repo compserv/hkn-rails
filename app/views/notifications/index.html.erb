@@ -1,0 +1,9 @@
+<%- if @notifications.empty? -%>
+  <div class="placeholder">
+      You don't have any notifications right now...
+  </div>
+<%- else -%>
+  <%- @notifications.each do |n| -%>
+    <%= render 'notifications/notification', :object => n %>
+  <%- end -%>
+<%- end -%>

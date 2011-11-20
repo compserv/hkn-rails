@@ -53,6 +53,7 @@
   	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
   	      <span id="username" style="display:none;">guest</span>
   	    <% end %>  
+          <%= render 'notifications/notifications' if @auth['comms'] %>
   	  <ul>
   	    <li><a class="navigation_toplevel_item" id="services" href="#">Student Services</a></li>
   	    <li><a class="navigation_toplevel_item" id="indrel" href="#">Industry Relations</a></li>

@@ -323,6 +323,10 @@ HknRails::Application.routes.draw do
   end
   #resources :user_session
 
+  scope 'notifications', :as => :notifications do
+    get  '/read(.:format)' => 'notifications#index', :as => ''
+  end
+
   # Easter Eggs
   get "easter-eggs" => "easter_eggs#edit", :as => "easter_eggs_edit"
   post "easter-eggs" => "easter_eggs#update", :as => "easter_eggs_update"

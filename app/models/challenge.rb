@@ -11,24 +11,35 @@ class Challenge < ActiveRecord::Base
   #   updated_at   : datetime 
   # =======================
 
+  CONFIRMED = true
+  REJECTED  = false
+  PENDING   = nil
+
   belongs_to :candidate
   belongs_to :officer, :class_name => "Person", :foreign_key => "officer_id"
 
   validates :name, :length => { :maximum => 255 }
 
-  #CHALLENGE_PENDING = null
-  #CHALLENGE_COMPLETED = true
-  #CHALLENGE_REJECTED = false
+  scope :ordered,   lambda { order(:updated_at) }
+  scope :confirmed, lambda { where(:status => CONFIRMED) }
+  scope :pending,   lambda { where(:status => PENDING) }
+
+  acts_as_notification do
+    image "/images/icons/notifications/challenge.jpg"
+    desc  lambda { |c| "#{c.candidate.person.full_name} requested a challenge from you" }
+    url   lambda { |c| '/admin/general/confirm_challenges/' }
+  end
 
   def get_status_string
-    if status
-      return "Confirmed"
+    return case status
+    when CONFIRMED
+      'Confirmed'
+    when PENDING
+      'Pending'
+    when REJECTED
+      'Rejected'
     else
-      if status == nil
-        return "Pending"
-      else
-        return "Rejected"
-      end
+      raise ArgumentError
     end
   end
 

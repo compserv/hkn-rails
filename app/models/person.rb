@@ -182,4 +182,9 @@ class Person < ActiveRecord::Base
     self.join_groups gnames
     self.save
   end
+
+  def requested_challenges
+    self.id ? Challenge.where(:officer_id => self.id) : Challenge.where(:id => nil) # dummy empty relation
+  end
+
 end
