@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Election do
   before(:each) do 
     ppl_data = [
-      {:person   => {:first_name => 'Barack "Da Rock"', :last_name => 'Obama', :username => 'bigpimpin'},
+      {:person   => {:first_name => 'Da Rock', :last_name => 'Obama', :username => 'bigpimpin'},
        :election => {:desired_username => 'bossman08', :position => 'pres'},
       },
 
