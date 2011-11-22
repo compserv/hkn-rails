@@ -26,7 +26,7 @@ class Candidate < ActiveRecord::Base
   end
   
   def event_requirements
-    req = Hash.new
+    req = Hash.new { |h,k| 0 }
     req["Mandatory for Candidates"] = 3
     req["Fun"] = 3
     req["Big Fun"] = 1
