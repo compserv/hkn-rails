@@ -72,6 +72,7 @@ HknRails::Application.routes.draw do
         get   "/"            => "applications#index", :as => :applications
         get   "byperson"     => "applications#byperson", :as => :byperson
         get   "bycommittee"  => "applications#bycommittee", :as => :bycommittee
+        post  "grade/all"    => "admin#grade_all", :as => :grade_all
       end
     end
     

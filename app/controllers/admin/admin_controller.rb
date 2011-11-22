@@ -46,6 +46,14 @@ class Admin::AdminController < ApplicationController
     return done
   end 
 
+  def grade_all
+    Candidate.current.all.each do |c|
+      c.grade_quiz
+    end
+
+    redirect_back_or_default admin_vp_path
+  end
+
   def candidate_announcements
     @announcements = Announcement.order("created_at desc")
     #render "admin/candidate_announcements"

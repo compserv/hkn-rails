@@ -74,107 +74,24 @@ class Candidate < ActiveRecord::Base
     
     return {:status => status, :rsvps => sorted_rsvps}
   end
+
+  # Updates quiz score based on submitted {quiz_responses}.
+  # Grades and updates all {QuizResponse::correct}.
   def grade_quiz
-    # These are now wrapped around with regexes
-    answers = { 
-      :q1 => "University of Illinois, Urbana-Champaign",
-      :q2 => "1904",
-      :q3 => "Mu",
-      :q4 => "1915",
-      :q5_1 => "Navy( |-)Blue",
-      :q5_2 => "Scarlet",
-      :q6 => "wheatstone bridge",
-      :q7_1 => "BRIDGE Correspondent",
-      :q7_2 => "Corresponding Secretary",
-      :q7_3 => "President",
-      :q7_4 => "Recording Secretary",
-      :q7_5 => "Vice( |-)President",
-      :q7_6 => "Treasurer",
-      :q8_1 => "Course Surveys",
-      :q8_2 => "Exam Preparation",
-      :q8_3 => "Peer Advising",
-      :q8_4 => "Tutoring",
-      :q9 => "Dan Garcia", #More answers?
-      :q10_1 => "290 Cory",
-      :q10_2 => "345 Soda"    
-    }
-    
-    score = 0
-    results = Hash.new(false)
-    quiz_resp = self.quiz_responses
-    flash ||= {}
-    q7 = []
-    q7_answers = ['(bridge|news) correspondent', 'corresponding secretary', 'president', 'recording secretary', 'vice-president', 'vice president', 'treasurer']
-    q8 = []
-    q8_answers = ['exam', 'tutor', 'course survey', 'advising', 'food run', 'review session', 'faculty retreat', 'course guide', 'department bake off', 'department bake-off', 'department tour']
-    if !quiz_resp.empty? #Fill hash with default blanks
-      for resp in quiz_resp
-        if resp.number.to_sym == :q1
-          if resp.response.downcase =~ /urbana( |-)champaign/
-            results[resp.number.to_sym] = true
-            resp.update_attributes! :correct => true
-            score += 1
-          else
-            resp.update_attributes! :correct => false
-          end
-
-        elsif [:q7_1, :q7_2, :q7_3, :q7_4, :q7_5, :q7_6].include? resp.number.to_sym
-          idx = q7_answers.index{|regex| resp.response.downcase =~ /^#{regex}$/}
-          if idx != nil and !q7.include?(idx)
-            resp.update_attributes! :correct => true
-            score += 1
-            q7 << idx
-          else
-            resp.update_attributes! :correct => false
-          end
-
-        elsif [:q8_1, :q8_2, :q8_3, :q8_4].include? resp.number.to_sym
-          idx = q8_answers.index{|regex| resp.response.downcase =~ /#{regex}/}
-          if idx != nil and !q8.include?(idx)
-            resp.update_attributes! :correct => true
-            score += 1
-            q8 << idx
-          else
-            resp.update_attributes! :correct => false
-          end
-
-        elsif resp.number.to_sym == :q9
-          if [/brewer/, /garcia/, /birdsall/, /babak/, /ayazifar/, /sahai/].delete_if{|regex| !(resp.response.downcase =~ regex)}.size >= 1
-            resp.update_attributes! :correct => true
-            score += 1
-          else
-            resp.update_attributes! :correct => false
-          end
-
-        elsif resp.number.to_sym == :q10_1
-          if resp.response.downcase =~ /290 cory/ or resp.response.downcase =~ /cory 290/
-            resp.update_attributes! :correct => true
-            score += 1
-          else
-            resp.update_attributes! :correct => false
-          end
-
-        elsif resp.number.to_sym == :q10_2
-          if resp.response.downcase =~ /345 soda/ or resp.response.downcase =~ /soda 345/
-            resp.update_attributes! :correct => true
-            score += 1
-          else
-            resp.update_attributes! :correct => false
-          end
-
-        elsif resp.response.downcase =~ /#{answers[resp.number.to_sym].downcase}/
-          results[resp.number.to_sym] = true
-          resp.update_attributes! :correct => true
-          score += 1
-
-        else
-          resp.update_attributes! :correct => false
-        end
+    quiz_responses.each do |q|
+      begin
+        q.grade
+        q.correct = true
+      rescue QuizResponse::IncorrectError
+        q.correct = false
+      ensure
+        q.update_attribute(:correct, q.correct) unless q.new_record?
       end
-    else
-      flash[:notice] = "You haven't submitted any quiz answers yet!"
+      q.save
     end
-    self.quiz_score = score
-    self.save!
+
+    quiz_score = quiz_responses.select(&:correct).count
+    update_attribute :quiz_score, quiz_score
   end
+
 end

@@ -5,6 +5,9 @@
     .red { color : #cc0000; }
     .yellow { color : #ffff00; }
 </style>
+
+<%= button_to 'Grade Quizzes', admin_cand_grade_all_path, :method => :post, :disable_with => 'Grading...', :confirm => 'Grade everything? It might take a while.' %>
+
 <% event_requirements = Candidate.first.event_requirements if Candidate.first %>
 <% for cand in @candidates %>
     <% if cand["candidate"] != false %>
