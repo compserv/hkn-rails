@@ -128,7 +128,7 @@ class RsvpsController < ApplicationController
     group = params[:group] || "candidates"
 
     respond_to do |format|
-      if @rsvp.save
+      if @rsvp.update_attribute :confirmed, Rsvp::Confirmed   # TODO (jonko) this bypasses validation
         format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Rsvp was confirmed.') }
         format.xml  { render :xml => @rsvp }
       else
@@ -140,8 +140,7 @@ class RsvpsController < ApplicationController
 
   def unconfirm
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = Rsvp::Unconfirmed
-    @rsvp.save
+    @rsvp.update_attribute :confirmed, Rsvp::Unconfirmed # TODO (jonko)
 
     group = params[:group] || "candidates"
 
@@ -153,8 +152,7 @@ class RsvpsController < ApplicationController
 
   def reject
     @rsvp = Rsvp.find(params[:id])
-    @rsvp.confirmed = Rsvp::Rejected
-    @rsvp.save
+    @rsvp.update_attribute :confirmed, Rsvp::Rejected # TODO (jonko)
     
     group = params[:group] || "candidates"
 
