@@ -23,6 +23,13 @@ module ApplicationHelper
   # This could probably be cleaned up a bit more...
   def sort_link(inner_text, sort_variable, opts = {})
     sort_direction = 'up'
+
+    @search_opts ||= {}
+    @search_opts = {
+      'sort'           => params[:sort] || sort_variable,
+      'sort_direction' => params[:sort_direction] || 'down'
+    }.merge(@search_opts)
+
     if sort_variable == @search_opts['sort'] and @search_opts['sort_direction'] != 'down'
       sort_direction = 'down'
     end

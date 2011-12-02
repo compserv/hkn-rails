@@ -124,10 +124,10 @@
   <h3 class="center">Classes <%= label %></h3>
   <table id="ratings" class="table"><tbody>
     <tr>
-      <th>Sections</th>
-      <th>Teaching Effectiveness</th>
+      <th><%= sort_link 'Sections', 'sections' %></th>
+      <th><%= sort_link 'Teaching Effectiveness', 'eff' %></th>
     <%- unless klasstype == :tad_klasses -%>
-      <th>How worthwhile was this course?</th>
+      <th><%= sort_link 'How worthwhile was this course?', 'ww' %></th>
     <%- end -%>
     <% if klasstype == :klasses %>
       <th>Other Instructors</th>

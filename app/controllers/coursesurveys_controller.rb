@@ -270,13 +270,32 @@ class CoursesurveysController < ApplicationController
 
     @totals.values.collect(&:values).flatten.collect(&:values).flatten.each {|t| t[:ww].compact!}
 
-    # Sort results by descending (semester, course)
-    # TODO: change this to use sort_by! when we upgrade to ruby 1.9
-    [ :klasses, :tad_klasses ].each do |klasstype|
-        @results[klasstype].sort! {|a,b| b.first.course.to_s <=> a.first.course.to_s}
-        @results[klasstype].sort! {|a,b| b.first.course.course_number <=> a.first.course.course_number}
-        @results[klasstype].sort! {|a,b| b.first.semester <=> a.first.semester}
+    # Sort everything
+    begin
+      case params[:sort]
+      when 'eff'
+        [ :klasses, :tad_klasses ].each do |klasstype|
+          @results[klasstype].sort! {|a,b| b[1].mean <=> a[1].mean} rescue nil
+        end
+      when 'ww'
+        [ :klasses, :tad_klasses ].each do |klasstype|
+          @results[klasstype].sort! {|a,b| b[2].mean <=> a[2].mean} rescue nil
+        end
+      else
+        # Sort results by descending (semester, course)
+        # TODO: change this to use sort_by! when we upgrade to ruby 1.9
+        [ :klasses, :tad_klasses ].each do |klasstype|
+            @results[klasstype].sort! {|a,b| b.first.course.to_s <=> a.first.course.to_s}
+            @results[klasstype].sort! {|a,b| b.first.course.course_number <=> a.first.course.course_number}
+            @results[klasstype].sort! {|a,b| b.first.semester <=> a.first.semester}
+        end
+      end
+
+      @results.values.collect(&:reverse!) if params[:sort_direction] == 'up'
+    rescue
+      raise if Rails.env == 'development'
     end
+
   end #instructor
 
   def newinstructor
