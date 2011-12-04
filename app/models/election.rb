@@ -119,6 +119,8 @@ class Election < ActiveRecord::Base
     File.open(OutputFile, 'a') do |f|
       f.puts hknmod_cmd
     end
+
+    return true
   end
 
 private
