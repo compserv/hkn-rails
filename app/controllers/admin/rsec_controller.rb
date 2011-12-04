@@ -21,8 +21,12 @@ class Admin::RsecController < Admin::AdminController
   #
   # Runs commit in a loop
   def commit_all
-    results = Election.current_semester.elected.all.collect do |e|
-      [e, e.commit]
+    Election.transaction do
+      Election.begin
+      results = Election.current_semester.elected.all.collect do |e|
+        [e, e.commit]
+      end
+      Election.end
     end
 
     redirect_to admin_rsec_election_sheet_path, :notice => 'Okay'

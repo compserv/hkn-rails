@@ -33,6 +33,22 @@ class Election < ActiveRecord::Base
 
   before_validation :set_current
 
+  OutputFile = "./elections_hknmod"
+
+  def self.semester
+    Property.next_semester
+  end
+
+  def self.begin
+    File.open(OutputFile, 'w') do |f|   # yes, overwrite contents
+      f.puts "# Elections for #{Property.pretty_semester Election.semester}"
+    end
+  end
+
+  def self.end
+    # nothing to do yet
+  end
+
   # Is this the person's first officership?
   def first_election?
     # hacky heuristic.. if they're on a committee already, assume no
@@ -93,9 +109,16 @@ class Election < ActiveRecord::Base
 #      cmd << "-m"
 #    end
 
-    Rails.logger.info "Election Create: #{self.inspect} #{self.person.inspect} 'hknmod #{cmd.join ' '}'"
-    Rails.logger.info `./run_hknmod #{cmd.join ' '}`
+    hknmod_cmd = "./run_hknmod #{cmd.join ' '}"
+
+    Rails.logger.info "Election Create: #{self.inspect} #{self.person.inspect}: #{hknmod_cmd}"
+    #Rails.logger.info `./run_hknmod #{cmd.join ' '}`
     #Rails.logger.info system('./run_hknmod', *cmd)
+
+    # Write into log file rather than directly hknmodding
+    File.open(OutputFile, 'a') do |f|
+      f.puts hknmod_cmd
+    end
   end
 
 private
