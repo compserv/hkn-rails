@@ -1,4 +1,4 @@
-<h1><%= Property.pretty_semester %> Elections</h1>
+<h1><%= Property.pretty_semester(Property.next_semester) %> Elections</h1>
 
 <%- if @auth['rsec'] -%>
   <%= link_to '[Elect people]', admin_rsec_elections_path %>
