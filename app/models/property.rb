@@ -91,7 +91,7 @@ class Property < ActiveRecord::Base
     end
 
     def current_semester
-      Property.first.semester rescue make_semester
+      make_semester
     end
 
     def offset_semester(year_and_semester={}, options={})

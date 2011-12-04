@@ -27,7 +27,7 @@ class Election < ActiveRecord::Base
       model.errors.add(attr, 'must be a committee') unless Group.committees.exists?(:name => value)
   end
 
-  scope :current_semester, lambda { where(:semester => Property.current_semester) }
+  scope :current_semester, lambda { where(:semester => Property.next_semester) }
   scope :ordered, lambda { order(:elected_time) }
   scope :elected, lambda { where(:elected => true) }
 
