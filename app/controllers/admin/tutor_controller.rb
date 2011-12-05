@@ -164,12 +164,12 @@ class Admin::TutorController < Admin::AdminController
     @slots = Hash.new
 
     for slot in Slot.all
-      @assignments[slot.to_s] = slot.tutors
+      @assignments[slot.to_s] = slot.tutors.current
       @slots[slot.to_s] = slot
       slot_tutors = []
       time = slot.time.strftime('%a%H')
 
-      for a in slot.availabilities
+      for a in slot.availabilities.current
         tutor = a.tutor
 
         str = ' ('
@@ -207,7 +207,7 @@ class Admin::TutorController < Admin::AdminController
         slot_tutors << tutor
       end
 
-      for tutor in slot.tutors
+      for tutor in slot.tutors.current
         if not slot_tutors.include?(tutor)
           if slot.room == 0
             @cory_others[time] ||= []; @cory_others[time] << tutor
@@ -219,7 +219,7 @@ class Admin::TutorController < Admin::AdminController
       end
 
       if params[:all_tutors]
-        for tutor in Tutor.all
+        for tutor in Tutor.current
           if not slot_tutors.include?(tutor)
             if slot.room == 0
               @cory_others[time] ||= []; @cory_others[time] << tutor

@@ -23,6 +23,7 @@ class Property < ActiveRecord::Base
 
   module Regex
     SemesterString = /([A-Za-z]+)\s+(\d+)/
+    Semester       = Property::Semester
   end
 
   class << self
@@ -91,7 +92,8 @@ class Property < ActiveRecord::Base
     end
 
     def current_semester
-      make_semester
+      #make_semester
+      get_or_create.semester || make_semester
     end
 
     def offset_semester(year_and_semester={}, options={})
