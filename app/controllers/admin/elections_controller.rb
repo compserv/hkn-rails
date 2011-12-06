@@ -23,7 +23,7 @@ class Admin::ElectionsController < ApplicationController
   end
 
   def edit_details
-    @user = Person.find_by_username(params[:username]) || Person.find_by_id(params[:username])
+    # @user is set by authorize_rsec_or_username
     return redirect_to admin_election_details_path, :notice => "invalid username #{params[:username]}" unless @user
 
     @election = @user.current_election
@@ -66,7 +66,9 @@ class Admin::ElectionsController < ApplicationController
 
 private
   def authorize_rsec_or_username
-      return redirect_to admin_election_details_path, :notice => "Access violation!" unless (@current_user && @current_user.username == params[:username]) || @auth['rsec']
+      @user = Person.find_by_username(params[:username]) || Person.find_by_id(params[:username])
+      @user = nil unless (@current_user && @current_user.id == @user.id) || @auth['rsec']
+      return redirect_to admin_election_details_path, :notice => "Access violation!" unless @user
   end
 
 end
