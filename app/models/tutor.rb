@@ -18,7 +18,10 @@ class Tutor < ActiveRecord::Base
 
   validates :person, :presence => true
 
-  scope :current, lambda { includes(:availabilities).where(:availabilities => {:semester => Property.current_semester}) }
+  # A current tutor has an {Election} for the current semester,
+  # as given by {Property.current_semester}.
+  # Also sorts by [{Person.first_name first_name}, {Person.last_name last_name}].
+  scope :current, lambda { joins([:person, {:person => :elections}]).where(:elections => {:semester => Property.current_semester, :elected => true}).order(:first_name,:last_name) }
   
   def to_s
     return person.fullname
