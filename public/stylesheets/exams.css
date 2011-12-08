@@ -28,3 +28,12 @@ ul.courses li {
 table.table{
   width: 100%;
 }
+
+.exam-disclaimer {
+  padding: 1em;
+  width: 60%;
+  min-width: 120pt;
+  margin: 2em auto;
+  background-color: #FFFAD6;
+  text-align: center;
+}
