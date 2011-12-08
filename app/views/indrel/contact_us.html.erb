@@ -11,16 +11,16 @@
     <br />
     Tel: 510.642.7346<br />
     Fax: 510.642.2845<br />
-    indrel@hkn
+    indrel@hkn<br />
     <%= link_to 'http://hkn.eecs.berkeley.edu', 'http://hkn.eecs.berkeley.edu' %>
   </div>
 
   <div class="light-hbar"></div>
-  
+
   <h2>The Industrial Relations Committee</h2>
   <% @indrel_officers.each do |officer| %>
     <div>
-      <%= image_tag officer.picture, :class => "indrel-officer-photo" unless officer.picture.nil? %>
+      <%= image_tag officer.picture, :class => "indrel-officer-photo" unless officer.picture.blank? %>
       <div>
         <b><%= officer.fullname %></b><br />
         <%= officer.username %>@hkn
