@@ -5,7 +5,8 @@ class LeaderboardController < ApplicationController
     @semester = params[:semester] || Property.current_semester
     @people = Person.find(:all, :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title IN (?)", @semester, ["officer", "cmember"] ])
     @people_array = []
-    @people.each do |person|
+    moar_people = [ 'eunjian' ].collect{|u|Person.find_by_username(u)}   # TODO remove when we have leaderboard opt-in
+    (@people|moar_people).each do |person|
       # Makeshift data structure
       events = person.rsvps.confirmed.joins(:event).where("events.start_time > ? AND events.start_time < ?", Property.semester_start_time(@semester), Property.semester_start_time(Property.next_semester(@semester)))
       @people_array << {
