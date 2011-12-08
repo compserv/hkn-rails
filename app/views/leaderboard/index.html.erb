@@ -1,5 +1,12 @@
 <p> Scoring system: Big fun = 2 pts; Fun = 1 pt; Service = 3 pts
 </p>
+
+<span id="semester-nav">
+<%= link_to "&larr;prev".html_safe, leaderboard_path(Property.prev_semester @semester) unless @semester.blank? %>
+&nbsp;<%= Property.pretty_semester(@semester) %>&nbsp;
+<%= link_to "next&rarr;".html_safe, leaderboard_path(Property.next_semester @semester) unless @semester.blank? %>
+</span>
+
 <table>
   <tr>
     <th>Rank</td>
