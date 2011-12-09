@@ -151,12 +151,14 @@ class Array
   def to_ul(tag='ul')
     # Converts a nested array to <ul>
     ["<#{tag}>",
-     self.collect do |e| case
-     when e.is_a?(Array):
-       e.to_ul tag
-     else
-       "<li>#{e.inspect.semi_escape}</li>"
-     end end.join,
+     self.collect do |e| 
+        case
+        when e.is_a?(Array)
+          e.to_ul tag
+        else
+          "<li>#{e.inspect.semi_escape}</li>"
+        end 
+     end.join,
      "</#{tag}>"
     ].join
   end

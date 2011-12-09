@@ -76,8 +76,8 @@ class CoursesurveysController < ApplicationController
 
       # Append course to correct list
       case course.course_number.to_i
-        when   0.. 99: @lower_div
-        when 100..199: @upper_div
+        when   0.. 99 then @lower_div
+        when 100..199 then @upper_div
         else           @grad
       end << result
  end

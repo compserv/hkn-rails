@@ -27,8 +27,8 @@ class Instructorship < ActiveRecord::Base
   #
       survey_answers.where(:survey_question_id => SurveyQuestion.find_by_keyword(
           case cat
-          when :eff: "#{ta ? 'ta' : 'prof'}_eff".to_sym
-          when :ww:  :worthwhile
+          when :eff then "#{ta ? 'ta' : 'prof'}_eff".to_sym
+          when :ww then  :worthwhile
           else raise "Bad cat!"
           end )) .average(:mean)
   end

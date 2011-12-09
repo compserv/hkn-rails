@@ -65,9 +65,9 @@ class Eligibility < ActiveRecord::Base
     # Also sets confidence level
   
     self.confidence = case
-      when p = Person.find(:first, :conditions => {:email => email}): 3
-      when p = Person.find(:first, :conditions => {:first_name => first_name, :last_name => last_name}): 2
-      when p = Person.find_by_username([first_name.first,last_name].join.downcase): 1
+      when p = Person.find(:first, :conditions => {:email => email}) then 3
+      when p = Person.find(:first, :conditions => {:first_name => first_name, :last_name => last_name}) then 2
+      when p = Person.find_by_username([first_name.first,last_name].join.downcase) then 1
       else self.confidence
     end
 

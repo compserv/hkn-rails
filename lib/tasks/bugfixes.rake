@@ -20,9 +20,9 @@ namespace :bugfix do
 
       cmd = STDIN.readline.strip
       case
-      when cmd =~ /\d+/: studinsts[cmd.to_i][0] = !studinsts[cmd.to_i][0]
-      when cmd =~ /ok/i: break
-      when cmd =~ /quit/i: raise "User aborted"
+      when cmd =~ /\d+/ then studinsts[cmd.to_i][0] = !studinsts[cmd.to_i][0]
+      when cmd =~ /ok/i then break
+      when cmd =~ /quit/i then raise "User aborted"
       else puts 'Unknown command.'
       end # case
 

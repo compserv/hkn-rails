@@ -221,7 +221,7 @@ HknRails::Application.routes.draw do
 
     # Admin stuff
     get   "instructor_ids"                 => "coursesurveys#instructor_ids", :as => :coursesurveys_instructor_ids
-    get   "merge_instructors(?id_0=:id_0(&id_1=:id_1))"              => "coursesurveys#merge_instructors",      :as => :coursesurveys_merge_instructors
+    get   "merge_instructors(/:id_0(/:id_1))"              => "coursesurveys#merge_instructors",      :as => :coursesurveys_merge_instructors
     post  "merge_instructors"              => "coursesurveys#merge_instructors_post"
   end
 
@@ -298,7 +298,7 @@ HknRails::Application.routes.draw do
   scope "exams" do
     match '/'                                     => "exams#index",
       :as => :exams
-    match "search(?q=:q)"                                => "exams#search",
+    match "search(/:q)"                                => "exams#search",
       :as => :exams_search
     match "course/:dept_abbr"                     => "exams#department",
       :as => :exams_department

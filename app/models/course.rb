@@ -72,7 +72,7 @@ class Course < ActiveRecord::Base
   def classification
   # is this an undergrad or grad class?
       case course_number
-      when 0..199: :undergrad
+      when 0..199 then :undergrad
       else         :grad
       end
   end
