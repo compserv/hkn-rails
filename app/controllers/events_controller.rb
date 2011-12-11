@@ -378,7 +378,7 @@ class EventsController < ApplicationController
     @end_date = Time.local(end_year, end_month).end_of_month
 
     @now = Time.now
-    @start_date = [@start_date,@now].min
+    @start_date = [@start_date,@now.beginning_of_month].min
 
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
     # Really convoluted way of getting the first Sunday of the calendar, 
