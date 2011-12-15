@@ -219,7 +219,7 @@ class CoursesurveysController < ApplicationController
     return redirect_to coursesurveys_search_path(params[:name].split(',').reverse.join(' ')) unless @instructor
  
     # Don't do any heavy computation if cache exists
-    return if fragment_exist? instructor_cache_path(@instructor)
+    #return if fragment_exist? instructor_cache_path(@instructor)
 
 
     #-- Individual klasses --#
