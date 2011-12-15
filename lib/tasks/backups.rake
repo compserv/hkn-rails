@@ -23,7 +23,7 @@ namespace :backup do
     #        # PGPASSWORD is now blank
     #
     begin
-      config = Rails.configuration.database_configuration[RAILS_ENV]
+      config = Rails.configuration.database_configuration[Rails.env]
       ENV['PGPASSWORD'] = config["password"]
       yield config
      rescue => e
