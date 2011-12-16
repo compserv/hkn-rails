@@ -12,7 +12,7 @@ class HomeController < ApplicationController
     @tutor_title = "#{time.strftime("%A")}'s Tutoring Schedule"
     if @tutoring_enabled
       @course_mapping = {}
-      @slots = Slot.find_by_wday(Time.now.wday)
+      @slots = Slot.includes(:tutors).where(:wday => time.wday)
     else
       @tutoring_message = prop.tutoring_message
     end

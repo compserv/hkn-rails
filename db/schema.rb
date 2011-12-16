@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111205052425) do
+ActiveRecord::Schema.define(:version => 20111216103929) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -440,13 +440,12 @@ ActiveRecord::Schema.define(:version => 20111205052425) do
   end
 
   create_table "slots", :force => true do |t|
-    t.datetime "time"
     t.integer  "room"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "hour",       :null => false
+    t.integer  "wday",       :null => false
   end
-
-  add_index "slots", ["time"], :name => "index_slots_on_time"
 
   create_table "slots_tutors", :id => false, :force => true do |t|
     t.integer "slot_id"
