@@ -18,9 +18,9 @@ class Slot < ActiveRecord::Base
   validates :room, :presence => true
   #validates :time, :presence => true
 
-  @day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
-  @shortday_to_wday = {"Mon"=>1, "Tue"=>2, "Wed"=>3, "Thu"=>4, "Fri"=>5}
-  @room_to_int = {"Cory"=>0, "Soda"=>1}
+  #@day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
+  #@shortday_to_wday = {"Mon"=>1, "Tue"=>2, "Wed"=>3, "Thu"=>4, "Fri"=>5}
+  #@room_to_int = {"Cory"=>0, "Soda"=>1}
   ROOMS = {cory: 0, soda: 1}
   #class << self
   #  attr_reader :day_to_wday, :room_to_int, :shortday_to_wday
@@ -103,15 +103,15 @@ class Slot < ActiveRecord::Base
   end
 
   def availabilities
-    return Availability.where(:time=>time)
+    return Availability.where(:hour => hour, :wday => wday)
   end
-  def get_all_tutors
-    return Availability.where(:time=>time).collect(&:tutor)
-  end
-  def get_available_tutors
-    return Availability.where(:time=>time, :preference_level=>2).collect(&:tutor)
-  end
-  def get_preferred_tutors
-    return Availability.where(:time=>time, :preference_level=>1).collect(&:tutor)
-  end
+  #def get_all_tutors
+  #  return Availability.where(:time=>time).collect(&:tutor)
+  #end
+  #def get_available_tutors
+  #  return Availability.where(:time=>time, :preference_level=>2).collect(&:tutor)
+  #end
+  #def get_preferred_tutors
+  #  return Availability.where(:time=>time, :preference_level=>1).collect(&:tutor)
+  #end
 end

@@ -9,75 +9,27 @@
 <p>Then add them back in the right places, and submit again. If you don't do that exactly, the schedule may not end up in the right state.</p>
 <div class="overflow">
 <table id="edit_schedule">
-<% @rows.each do |row| %>
-	<tr>
-	<% if row == "Hours" %>
-		<th>Hours</th>
-		<% @days.each do |day| %>
-		<th class="slot-table-header"><%= day %></th>
-		<% end %>
-	<% else %>
-		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>
-		<% @days.each do |day| %>
-		<td  class="slot cory">
-			<p> Cory </p>
-			<select name="<%= formatslot day, row + "C" %>[]" multiple="multiple">
-				<% if @cory_preferred[formatslot day, row] %>
-				<optgroup label="Preferred">
-				<% @cory_preferred[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "C" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-				<% if @cory_available[formatslot day, row] %>
-				<optgroup label="Available">
-				<% @cory_available[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "C" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-                            <% end %>
-                            <% if @cory_others[formatslot day, row] %>
-				<optgroup label="Others">
-				<% @cory_others[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-			</select>
-		</td>
-		<% end%>
-	</tr>
-	<tr>
-		<% @days.each do |day| %>
-		<td  class="slot soda">
-			<p> Soda </p>
-			<select name="<%= formatslot day, row + "S" %>[]" multiple="multiple">
-				<% if @soda_preferred[formatslot day, row] %>
-				<optgroup label="Preferred">
-				<% @soda_preferred[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "S" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-				<% if @soda_available[formatslot day, row] %>
-				<optgroup label="Available">
-				<% @soda_available[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "S" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-                            <% if @soda_others[formatslot day, row] %>
-				<optgroup label="Others">
-				<% @soda_others[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-			</select>
-		</td>
-		<% end%>
-	<% end %>
-	</tr>
+  <tr>
+    <th>Hours</th>
+    <% @days.each do |day| %>
+    <th class="slot-table-header"><%= day %></th>
+    <% end %>
+  </tr>
+<% @hours.each do |hour| %>
+  <% [:cory, :soda].each do |room_name| %>
+    <% room = Slot::ROOMS[room_name] %>
+    <tr>
+      <% if room_name == :cory %>
+        <td rowspan="2"><%= format_hour_slot hour %></td>
+      <% end %>
+      <% (1..5).each do |wday| %>
+      <td  class="slot <%= room_name.to_s %>">
+        <p><%= room_name.to_s.capitalize%></p>
+        <% select_tag "#{room}_#{wday}_#{hour}", grouped_options_for_select(@office_options[room][wday][hour], @default_options[room][wday][hour]), :multiple => true %>
+      </td>
+      <% end%>
+    </tr>
+  <% end %>
 <% end %>
 </table>
 </div>
