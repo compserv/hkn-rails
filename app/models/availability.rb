@@ -22,7 +22,8 @@ class Availability < ActiveRecord::Base
   validates :preference_level, :presence => true
   validates_presence_of :semester
   validates_format_of :semester, :with => Property::Regex::Semester
-  validates_uniqueness_of :time, :scope => :tutor_id
+  #validates_uniqueness_of :time, :scope => :tutor_id
+  validates_uniqueness_of :tutor_id, :scope => [:hour, :wday]
 
   before_validation :touch_semester
 
@@ -79,9 +80,9 @@ class Availability < ActiveRecord::Base
     end
   end
 
-  def to_s
-    time.strftime('%a%H')
-  end
+  #def to_s
+  #  time.strftime('%a%H')
+  #end
 
   private
 

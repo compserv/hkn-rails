@@ -22,10 +22,10 @@
       <% if room_name == :cory %>
         <td rowspan="2"><%= format_hour_slot hour %></td>
       <% end %>
-      <% (1..5).each do |wday| %>
+      <% @wdays.each do |wday| %>
       <td  class="slot <%= room_name.to_s %>">
         <p><%= room_name.to_s.capitalize%></p>
-        <% select_tag "#{room}_#{wday}_#{hour}", grouped_options_for_select(@office_options[room][wday][hour], @default_options[room][wday][hour]), :multiple => true %>
+        <%= select_tag "#{room}_#{wday}_#{hour}", grouped_options_for_select(@slot_options[room][wday][hour][:opts], @slot_options[room][wday][hour][:defaults]), :multiple => true %>
       </td>
       <% end%>
     </tr>

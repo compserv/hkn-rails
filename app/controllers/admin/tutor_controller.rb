@@ -151,18 +151,6 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def edit_schedule
-    expire_schedule
-        
-    def hash_hash_pref
-      ohpref = Struct.new(:preferred, :available, :others, :defaults)
-      Hash.new( Hash.new( ohpref.new([], [], [], nil) ) )
-    end
-    rooms = Slot::ROOMS
-    @form_slots = {rooms[:cory] => hash_hash_pref, rooms[:soda] => hash_hash_pref}
-
-    @assignments = Hash.new
-    @slots = Hash.new
-
     def room_preference(room_strength, preferred_room, slot_room)
       case room_strength
       when 0
@@ -176,14 +164,32 @@ class Admin::TutorController < Admin::AdminController
 
     def tutor_adjacency(adjacency)
       case adjacency
-      when 1
-        'A'
-      when -1
-        'a'
-      else
-        ''
+      when 1 then 'A' when -1 then 'a' else ''
       end
     end
+
+    expire_schedule
+
+    prop = Property.get_or_create
+    @rooms = [:cory, :soda].map{|x| Slot::ROOMS[x]}
+    @days = %w(Monday Tuesday Wednesday Thursday Friday)
+    @wdays = (1..5)
+    @hours = prop.tutoring_start .. prop.tutoring_end
+        
+    ohpref = Struct.new(:preferred, :available, :others, :defaults)
+    form_slots = {}
+    @rooms.each do |room|
+      form_slots[room] = {}
+      @wdays.each do |wday|
+        form_slots[room][wday] = {}
+        @hours.each do |hour|
+          form_slots[room][wday][hour] = ohpref.new([], [], [], nil)
+        end
+      end
+    end
+
+    @assignments = Hash.new
+    @slots = Hash.new
 
     for slot in Slot.all
       @assignments[slot.to_s] = slot.tutors.current
@@ -191,15 +197,15 @@ class Admin::TutorController < Admin::AdminController
       slot_tutors = []
       wday = slot.wday
       hour = slot.hour
-
-      form_slot = @form_slots[slot.room][wday][hour]
+      form_slot = form_slots[slot.room][wday][hour]
       form_slot.defaults = slot.tutors.current.map{|x| x.id}
+
       for a in slot.availabilities.current
         tutor = a.tutor
 
         metadata = '(%s%s)' % [room_preference(a.room_strength, a.preferred_room, slot.room),
-                          tutor_adjacency(a.tutor_adjacency)]
-        tuple = [tutor.id, "#{tutor.person.fullname} #{metadata}"]
+                          tutor_adjacency(a.tutor.adjacency)]
+        tuple = ["#{tutor.person.fullname} #{metadata}", tutor.id]
 
         if a.preference_level == 1
           form_slot.preferred << tuple
@@ -211,7 +217,7 @@ class Admin::TutorController < Admin::AdminController
 
       for tutor in slot.tutors.current
         if not slot_tutors.include?(tutor)
-          form_slot.others << [tutor.id, tutor.person.fullname]
+          form_slot.others << [tutor.person.fullname, tutor.id]
           slot_tutors << tutor
         end
       end
@@ -219,33 +225,26 @@ class Admin::TutorController < Admin::AdminController
       if params[:all_tutors]
         for tutor in Tutor.current
           if not slot_tutors.include?(tutor)
-            form_slot.others << [tutor.id, tutor.person.fullname]
+            form_slot.others << [tutor.person.fullname, tutor.id]
             slot_tutors << tutor
           end
         end
       end
-
     end
 
-    @office_options = {rooms[:cory] => Hash.new({}), rooms[:soda] => Hash.new({})}
-    @default_options = {rooms[:cory] => Hash.new({}), rooms[:soda] => Hash.new({})}
+    @slot_options = {}
 
-    prop = Property.get_or_create
-    @days = %w(Monday Tuesday Wednesday Thursday Friday)
-    @hours = prop.tutoring_start .. prop.tutoring_end
-    @rows = @hours.to_a.map! {|x| x.to_s}
-
-    [:cory, :soda].each do |room|
-      room = rooms[room]
-      (1..5).each do |wday|
+    @rooms.each do |room|
+      @slot_options[room] = {}
+      @wdays.each do |wday|
+        @slot_options[room][wday] = {}
         @hours.each do |hour|
-          form_slot = @form_slots[room][wday][hour]
-          tmp = []
-          tmp << ['Preferred', form_slot.preferred] unless form_slot.preferred.nil?
-          tmp << ['Available', form_slot.available] unless form_slot.available.nil?
-          tmp << ['Others', form_slot.others]
-          @office_options[room][wday][hour] = tmp
-          @default_options[room][wday][hour] = form_slot.defaults
+          form_slot = form_slots[room][wday][hour]
+          opts = []
+          opts << ['Preferred', form_slot.preferred] unless form_slot.preferred.empty?
+          opts << ['Available', form_slot.available] unless form_slot.available.empty?
+          opts << ['Others', form_slot.others]
+          @slot_options[room][wday][hour] = {opts: tmp, defaults: form_slot.defaults}
         end
       end
     end
