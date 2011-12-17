@@ -11,7 +11,8 @@ class Slot < ActiveRecord::Base
 
   # This is a tutoring office hours slot
 
-  has_and_belongs_to_many :tutors, :after_add => :check_tutor
+  #has_and_belongs_to_many :tutors, :after_add => :check_tutor
+  has_and_belongs_to_many :tutors
   has_many :slot_changes
 
   validate :valid_room
@@ -66,7 +67,11 @@ class Slot < ActiveRecord::Base
   #  #time.strftime('%a%H') + get_room()[0..0]
   #end
 
-  def get_room()
+  def inspect
+    "<#Slot #{room_name} #{day_name} #{hour}>"
+  end
+
+  def room_name
     if room == 0 then
       "Cory"
     elsif room == 1 then
@@ -76,31 +81,29 @@ class Slot < ActiveRecord::Base
     end
   end
 
-  #def hour
-  #  time.hour
-  #end
-
-  #def wday
-  #  time.wday
-  #end
+  def day_name
+    day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
+    day_to_wday.key(wday)
+  end
 
   def valid_room
     if !room.blank?
       errors[:room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (room == 0 or room == 1)
     end
   end
-  
-  def check_tutor(tutor)
-    otherslot = Slot.find_by_time_and_room(time, 1-room)
-    other_tutors = otherslot.tutors if otherslot
-    other_tutors ||= []
-    for other_tutor in other_tutors
-      if tutor == other_tutor
-        tutors.delete(tutor)
-        break
-      end
-    end
-  end
+
+  # TODO: Resolve this
+  #def check_tutor(tutor)
+  #  otherslot = Slot.find_by_time_and_room(time, 1-room)
+  #  other_tutors = otherslot.tutors if otherslot
+  #  other_tutors ||= []
+  #  for other_tutor in other_tutors
+  #    if tutor == other_tutor
+  #      tutors.delete(tutor)
+  #      break
+  #    end
+  #  end
+  #end
 
   def availabilities
     return Availability.where(:hour => hour, :wday => wday)

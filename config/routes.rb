@@ -8,13 +8,14 @@ HknRails::Application.routes.draw do
     match "success" => "dept_tour#success", :as => :dept_tour_success
   end
   
+  # Admin Pages
   namespace :admin do
     scope "general", :as => "general" do
       match "super_page" => "admin#super_page"
       match "confirm_challenges" => "admin#confirm_challenges"
       match "confirm_challenge/:id" => "admin#confirm_challenge"
       match "reject_challenge/:id" => "admin#reject_challenge"
-      # Shouldn't this be done with resources?
+      # TODO: Shouldn't this be done with resources?
       scope "candidate_announcements" do
           match "/" => "admin#candidate_announcements"
           post "create_announcement" => "admin#create_announcement", :as => "create_announcement"
@@ -22,11 +23,6 @@ HknRails::Application.routes.draw do
           post "update_announcement" => "admin#update_announcement", :as => "update_announcement"
           match "delete_announcement/:id" => "admin#delete_announcement", :as => "delete_announcement"
       end
-      #match "candidate_announcements" => "admin#candidate_announcements"
-      #match "create_announcement" => "admin#create_announcement"
-      #match "edit_announcement/:id" => "admin#edit_announcement"
-      #match "update_announcement" => "admin#update_announcement"
-      #match "delete_announcement/:id" => "admin#delete_announcement"
     end
 
     scope "courses", :as => "courses" do
@@ -113,7 +109,8 @@ HknRails::Application.routes.draw do
     scope "tutor" do
       match "signup_slots" => "tutor#signup_slots", :as=>:tutor_signup_slots
       match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses
-      match "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
+      get "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
+      put "update_schedule" => "tutor#update_schedule", :as=>:tutor_update_schedule
       match "params_for_scheduler" => "tutor#params_for_scheduler"
       match "/" => "tutor#settings"
       match "settings" => "tutor#settings", :as=>:tutor_settings
@@ -121,7 +118,8 @@ HknRails::Application.routes.draw do
       match "add_course" => "tutor#add_course"
       match "update_slots" => "tutor#update_slots"
     end
-  end
+  end # END Admin Pages
+
   resources :course_preferences, :only => [:destroy]
 
   resources :dept_tour_requests do

@@ -53,52 +53,52 @@ Note that there are five levels of preference, which roughly translate to "stron
 <span style="color:orange">Orange</span> = Cory, <span style="color:blue">blue</span> = Soda.</p>
 <p>Finally, you can also indicate your preference of adjacent time slots below.</p><br />
 
-<form action="/admin/tutor/update_slots" method="post">
-<%= token_tag %>
-<%= label_tag :adjacency, "Adjacent slots?" %>
-<%= select_tag :adjacency, options_for_select([["Don't care", 0], ["Yes", 1], ["No", -1]], @adjacency) %>
-<br /><br />
+<%= form_tag admin_tutor_update_slots_path, :method => :post do %>
+  <%= token_tag %>
+  <%= label_tag :adjacency, "Adjacent slots?" %>
+  <%= select_tag :adjacency, options_for_select([["Don't care", 0], ["Yes", 1], ["No", -1]], @adjacency) %>
+  <br /><br />
 
-<div id="big-slider-container"><div id="big-slider"></div></div>
-<pre><h1>Cory                                    Soda</h1></pre>
-<table id="slot-table">
-<% @rows.each do |row| %>
-	<tr>
-	<% if row == "Hours" %>
-		<th>Hours</th>
-		<% @days.each do |day| %>
-		<th class="slot-table-header"><%= day %></th>
-		<% end %>
-	<% else %>
-		<td  rowspan="4" class="slot"><%= format_hour_slot row.to_i %></td>
-		<% @days.each do |day| %>
-		<td  class="slot slot-preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 1 %> value="preferred" /></td>
-		<% end%>
-	</tr>
-	<tr>
-		<% @days.each do |day| %>
-		<td class="slot slot-available"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 2 %> value="available"/></td>
-		<% end%>
-	</tr>
-	<tr>
-		<% @days.each do |day| %>
-		<td class = "slot slot-unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 0 %> value="unavailable"/></td>
-		<% end%>
-	</tr>
-	<tr>
-	        <% @days.each do |day| %>
-		<td class="slot slider-container">
-		  <div class="slider"></div>
-		  <% a = @current_user.tutor.get_availability_by_day_hour(day,row.to_i) %>
-		  <% val = a.nil? ? 2 : a.get_slider_value %>
-		  <%= hidden_field_tag "slider-#{day[0..2]}#{row.to_i}", val %></td>
-		<% end %>
-	<% end %>
-	</tr>
-<% end %>
-</table>
-<p>DISCLAIMER: While the scheduler tries to make everyone as happy as possible, it is likely that you won't get exactly the perfect assignment that you were looking for.</p>
-<p>Depending on which is more important to you, keep in mind that a more restrictive office preference may dominate your time slot preferences (or vice-versa).</p>
-<%= submit_tag "Save changes" %>
-<%= submit_tag "Reset all" %>
-</form>
+  <div id="big-slider-container"><div id="big-slider"></div></div>
+  <pre><h1>Cory                                    Soda</h1></pre>
+  <table id="slot-table">
+  <% @rows.each do |row| %>
+    <tr>
+    <% if row == "Hours" %>
+      <th>Hours</th>
+      <% @days.each do |day| %>
+      <th class="slot-table-header"><%= day %></th>
+      <% end %>
+    <% else %>
+      <td  rowspan="4" class="slot"><%= format_hour_slot row.to_i %></td>
+      <% @days.each do |day| %>
+      <td  class="slot slot-preferred"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 1 %> value="preferred" /></td>
+      <% end%>
+    </tr>
+    <tr>
+      <% @days.each do |day| %>
+      <td class="slot slot-available"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 2 %> value="available"/></td>
+      <% end%>
+    </tr>
+    <tr>
+      <% @days.each do |day| %>
+      <td class = "slot slot-unavailable"><input type="radio" name="<%= formatslot day, row %>" <%= default_radio @prefs, day, row, 0 %> value="unavailable"/></td>
+      <% end%>
+    </tr>
+    <tr>
+            <% @days.each do |day| %>
+      <td class="slot slider-container">
+        <div class="slider"></div>
+        <% a = @current_user.tutor.get_availability_by_day_hour(day,row.to_i) %>
+        <% val = a.nil? ? 2 : a.get_slider_value %>
+        <%= hidden_field_tag "slider-#{day[0..2]}#{row.to_i}", val %></td>
+      <% end %>
+    <% end %>
+    </tr>
+  <% end %>
+  </table>
+  <p>DISCLAIMER: While the scheduler tries to make everyone as happy as possible, it is likely that you won't get exactly the perfect assignment that you were looking for.</p>
+  <p>Depending on which is more important to you, keep in mind that a more restrictive office preference may dominate your time slot preferences (or vice-versa).</p>
+  <%= submit_tag "Save changes" %>
+  <%= submit_tag "Reset all" %>
+<% end #END form %>
