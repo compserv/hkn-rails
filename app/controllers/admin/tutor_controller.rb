@@ -1,6 +1,6 @@
 class Admin::TutorController < Admin::AdminController
   before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
-  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses]
+  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_slots]
 
 
   def expire_schedule
@@ -252,7 +252,8 @@ class Admin::TutorController < Admin::AdminController
 
     @stats, @happiness = compute_stats()
     [:officer, :cmember].each do |type|
-      @stats[type] = @stats[type].sort_by{|tutor,stats| [-stats[0][0], tutor.person.fullname]}
+      # Sorts by availability desc, name asc
+      @stats[type] = @stats[type].sort_by{|tutor,stats| [-stats[0], tutor.person.fullname]}
     end
   end
 
@@ -262,6 +263,7 @@ class Admin::TutorController < Admin::AdminController
       return
     end
 
+    errors = []
     if params[:commit] == "Save changes"
       changed = false
       Slot.all.each do |slot|
@@ -281,8 +283,11 @@ class Admin::TutorController < Admin::AdminController
         end
         new_assignments.each do |tutor_id|
           unless slot.tutor_ids.include? tutor_id
-            slot.tutors << Tutor.find(tutor_id)
-            puts slot.valid?
+            begin
+              slot.tutors << Tutor.find(tutor_id)
+            rescue
+              errors << "Could not add #{Tutor.find(tutor_id)} to #{slot}."
+            end
             changed = true
           end
         end
@@ -300,6 +305,7 @@ class Admin::TutorController < Admin::AdminController
     else
       flash[:notice] = "Nothing changed in the tutoring schedule."
     end
+    flash[:notice] += ' ' + errors.join(' ')
     redirect_to :action => "edit_schedule", :all_tutors => all_tutors
   end
 
@@ -381,7 +387,7 @@ class Admin::TutorController < Admin::AdminController
     # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
     stats = {officer: {}, cmember: {}}
     happiness_total = {officer: 0, cmember: 0}
-    Tutor.current.each do |tutor|
+    Tutor.current.includes(:slots, :availabilities).each do |tutor|
       happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
 
       tutor.slots.each do |slot|
@@ -407,8 +413,9 @@ class Admin::TutorController < Admin::AdminController
         end
 
         adj_closed_list = []
-        if tutor.adjacency != 0 and tutor.person.in_group?("officers")
-          for other_slot in tutor.slots
+        # If is a current_officer
+        if tutor.adjacency != 0 and tutor.person.committeeships.current.map{|c| c.title == "officers"}.reduce(false){|x, y| x || y}
+          tutor.slots.each do |other_slot|
             if not adj_closed_list.include?(other_slot)
               if slot.adjacent_to(other_slot)
                 if tutor.adjacency == 1 or tutor.adjacency == 0
@@ -425,19 +432,19 @@ class Admin::TutorController < Admin::AdminController
         adj_closed_list << slot
       end
 
+      # This is the formula:
       happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
-      stats_vector = {}
-      stats_vector[:officer] = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
-      stats_vector[:cmember] = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
+
       if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
         position = :officer
+        stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
       elsif tutor.person.in_group?("cmembers")
         position = :cmember
+        stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
       else
         raise "Not an officer or cmember!"
       end
-      stats[position][tutor] ||= []
-      stats[position][tutor] << stats_vector[position]
+      stats[position][tutor] = stats_vector
       happiness_total[position] += happiness
     end
     return stats, happiness_total

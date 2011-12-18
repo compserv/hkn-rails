@@ -5,8 +5,9 @@
   <p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
   <p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
   <p> Only tutoring officers have sufficient privileges to change the schedule.</p>
-  <p>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit.</p>
-  <p>Then add them back in the right places, and submit again. If you don't do that exactly, the schedule may not end up in the right state.</p>
+  <p><s>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit.</s></p>
+  <p><s>Then add them back in the right places, and submit again. If you don't do that exactly, the schedule may not end up in the right state.</s></p>
+  <p>Form has been improved: You do not need to submit twice anymore.</p>
   <div class="overflow">
   <table id="edit_schedule">
     <tr>
@@ -74,7 +75,7 @@
   <% @stats[type].each do |tutor, stats| %>
     <tr>
       <td><%= tutor.person.fullname %></td>
-      <% stats[0].each do |entry| %>
+      <% stats.each do |entry| %>
         <td><%= entry %></td>
       <% end %>
     </tr>
