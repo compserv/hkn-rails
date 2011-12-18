@@ -117,4 +117,8 @@ class Slot < ActiveRecord::Base
   #def get_preferred_tutors
   #  return Availability.where(:time=>time, :preference_level=>1).collect(&:tutor)
   #end
+  #
+  def adjacent_to(other_slot)
+    other_slot.wday == wday and (other_slot.hour - hour).abs == 1
+  end
 end

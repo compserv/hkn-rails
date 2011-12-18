@@ -25,7 +25,11 @@
           <% @wdays.each do |wday| %>
           <td  class="slot <%= room_name.to_s %>">
             <p><%= room_name.to_s.capitalize%></p>
-            <%= select_tag "assignments[#{room}][#{wday}][#{hour}]", grouped_options_for_select(@slot_options[room][wday][hour][:opts], @slot_options[room][wday][hour][:defaults]), :multiple => true %>
+            <%= select_tag("assignments[#{room}][#{wday}][#{hour}]", 
+                  grouped_options_for_select(
+                    @slot_options[room][wday][hour][:opts], 
+                    @slot_options[room][wday][hour][:defaults]), 
+                  :multiple => true) %>
           </td>
           <% end%>
         </tr>
@@ -48,30 +52,33 @@
 <p>(Non)Adjacencies = 1 (officers only)</p>
 <p>Correct Office = 2</p>
 
-<% [@officer_stats, @cmember_stats].each do |stats| %>
+<% [:officer, :cmember].each do |type| %>
 <div class="overflow">
 <table>
-<tr>
-<% if stats == @officer_stats %>
-<td><h3>Officers</h3></td>
-<% else %> <td><h3>Committee members</h3></td><% end %>
-<td><h3>Availabilities</h3></td>
-<td><h3>First Choices</h3></td>
-<td><h3>Second Choices</h3></td>
-<td><h3>Wrong Times</h3></td>
-<% if stats == @officer_stats %>
-<td><h3>(Non)Adjacencies</h3></td><% end %>
-<td><h3>Correct Office</h3></td>
-<td><h3>Total Happiness = <%= stats['happiness'] %></h3></td>
-</tr>
-<% Tutor.all.sort_by{|t| [-t.availabilities.count, t.person.fullname]}.each do |tutor| %>
-<tr>
-<% if stats.keys.include?(tutor) %>
-<td><%= tutor.person.fullname %></td>
-<% stats[tutor][0].each do |entry| %>
-<td><%= entry %></td>
-<% end %>
-</tr><% end %><% end %>
+  <tr>
+    <% if type == :officer %>
+      <th>Officers</th>
+    <% else %> 
+      <th>Committee Members</th>
+    <% end %>
+    <th>Availabilities</th>
+    <th>First Choices</th>
+    <th>Second Choices</th>
+    <th>Wrong Times</th>
+    <% if type == :officer %>
+      <th>(Non)Adjacencies</th>
+    <% end %>
+    <th>Correct Office</th>
+    <th>Total Happiness = <%= @happiness[type] %></th>
+  </tr>
+  <% @stats[type].each do |tutor, stats| %>
+    <tr>
+      <td><%= tutor.person.fullname %></td>
+      <% stats[0].each do |entry| %>
+        <td><%= entry %></td>
+      <% end %>
+    </tr>
+  <% end %>
 </table>
 </div>
 <br/>

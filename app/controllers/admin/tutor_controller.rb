@@ -168,73 +168,6 @@ class Admin::TutorController < Admin::AdminController
       end
     end
 
-    def compute_stats
-      # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
-      stats = {officer: {}, cmember: {}}
-      happiness_total = {officer: 0, cmember: 0}
-      Tutor.current.each do |tutor|
-        happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
-
-        tutor.slots.each do |slot|
-          if slot.get_preferred_tutors.include?(tutor)
-            first_choice += 1
-          elsif slot.get_available_tutors.include?(tutor)
-            second_choice += 1
-          else
-            wrong_assign += 1
-          end
-
-          avail = tutor.availabilities.find(:all, :conditions => ["time=?", slot.time]).first
-          if not avail.nil?
-            if slot.room == avail.preferred_room or avail.room_strength == 0
-              correct_office += 2
-            elsif avail.room_strength == 1
-              correct_office += 1
-            end
-          end
-
-          adj_closed_list = []
-          if tutor.adjacency != 0 and tutor.person.in_group?("officers")
-            for other_slot in tutor.slots
-              if not adj_closed_list.include?(other_slot)
-                if other_slot.wday == slot.wday and (other_slot.hour - slot.hour == 1 or other_slot.hour - slot.hour == -1)
-                  if tutor.adjacency == 1 or tutor.adjacency == 0
-                    adjacencies += 1
-                  end
-                else
-                  if tutor.adjacency == -1 or tutor.adjacency == 0
-                    adjacencies += 1
-                  end
-                end
-              end
-            end
-          end
-          adj_closed_list << slot
-        end
-
-        happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
-        stats_vector = {}
-        stats_vector[:officer] = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
-        stats_vector[:cmember] = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
-        if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
-          position = :officer
-        elsif tutor.person.in_group?("cmembers")
-          position = :cmember
-        else
-          raise "Not an officer or cmember!"
-        end
-        stats[position][tutor] ||= []
-        stats[position][tutor] << stats_vector[position]
-        happiness_total[position] += happiness
-      end
-      stats[:officer]['happiness'] ||= []
-      stats[:officer]['happiness'] << happiness_total[:officer]
-      stats[:cmember]['happiness'] ||= []
-      stats[:cmember]['happiness'] << happiness_total[:cmember]
-      return stats[:officer], stats[:cmember]
-    end
-    # END helper methods
-
     expire_schedule
 
     prop = Property.get_or_create
@@ -255,23 +188,15 @@ class Admin::TutorController < Admin::AdminController
       end
     end
 
-    #@assignments = Hash.new
-    #@slots = Hash.new
-
     # Collect availability information by room, day, and hour
-    for slot in Slot.all
-      #@assignments[slot.to_s] = slot.tutors.current
-      #@slots[slot.to_s] = slot
-      slot_tutors = []
-      wday = slot.wday
-      hour = slot.hour
-      form_slot = form_slots[slot.room][wday][hour]
-      form_slot.defaults = slot.tutors.current.map{|x| x.id}
+    for a in Availability.current.includes(:tutor => :person)
+      tutor = a.tutor
+      wday = a.wday
+      hour = a.hour
 
-      for a in slot.availabilities.current
-        tutor = a.tutor
-
-        metadata = '(%s%s)' % [room_preference(a.room_strength, a.preferred_room, slot.room),
+      [:cory, :soda].map{|x| Slot::ROOMS[x]}.each do |room|
+        form_slot = form_slots[room][wday][hour]
+        metadata = '(%s%s)' % [room_preference(a.room_strength, a.preferred_room, room),
                           tutor_adjacency(a.tutor.adjacency)]
         tuple = ["#{tutor.person.fullname} #{metadata}", tutor.id]
 
@@ -280,27 +205,35 @@ class Admin::TutorController < Admin::AdminController
         else
           form_slot.available << tuple
         end
-        slot_tutors << tutor
       end
+    end
+    # Find Others per slot
+    # This is equivalent to Slot.all.each{|slot| slot.tutors = slot.tutors.current}
+    Slot.includes(:tutors => :person).joins(:tutors => {:person => :elections}).where(:elections => {:semester => Property.current_semester, :elected => true}).each do |slot|
+      wday = slot.wday
+      hour = slot.hour
+      form_slot = form_slots[slot.room][wday][hour]
+      form_slot.defaults = slot.tutors.map{|x| x.id}
+      slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]}
 
-      for tutor in slot.tutors.current
-        if not slot_tutors.include?(tutor)
+      slot.tutors.each do |tutor|
+        if not slot_tutor_ids.include?(tutor.id)
           form_slot.others << [tutor.person.fullname, tutor.id]
-          slot_tutors << tutor
+          slot_tutor_ids << tutor.id
         end
       end
 
       unless params[:all_tutors].blank?
-        for tutor in Tutor.current
-          if not slot_tutors.include?(tutor)
+        Tutor.current.includes(:person).each do |tutor|
+          if not slot_tutor_ids.include?(tutor.id)
             form_slot.others << [tutor.person.fullname, tutor.id]
-            slot_tutors << tutor
+            slot_tutor_ids << tutor.id
           end
         end
       end
     end
 
-    # Package up availabilities into list for select form input
+    # Package up availabilities into list for select form input in View
     @slot_options = {}
     @rooms.each do |room|
       @slot_options[room] = {}
@@ -317,9 +250,10 @@ class Admin::TutorController < Admin::AdminController
       end
     end
 
-    @officer_stats, @cmember_stats = compute_stats
-
-    #if params[:authenticity_token] and @current_user.in_group?("officers") and @current_user.in_group?("tutoring")
+    @stats, @happiness = compute_stats()
+    [:officer, :cmember].each do |type|
+      @stats[type] = @stats[type].sort_by{|tutor,stats| [-stats[0][0], tutor.person.fullname]}
+    end
   end
 
   def update_schedule
@@ -443,5 +377,69 @@ class Admin::TutorController < Admin::AdminController
     authorize(['officers', 'cmembers'])
   end
 
+  def compute_stats
+    # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
+    stats = {officer: {}, cmember: {}}
+    happiness_total = {officer: 0, cmember: 0}
+    Tutor.current.each do |tutor|
+      happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
 
+      tutor.slots.each do |slot|
+        av = Availability.find_by_tutor_id_and_wday_and_hour(tutor.id, slot.wday, slot.hour)
+        if av.nil?
+          wrong_assign += 1
+        else
+          if av.preference_level == Availability::PREF[:preferred]
+            first_choice += 1
+          elsif av.preference_level == Availability::PREF[:available]
+            second_choice += 1
+          else
+            raise "Availability with preference level of unavailable? Contradiction!?"
+          end
+        end
+
+        if not av.nil?
+          if slot.room == av.preferred_room or av.room_strength == 0
+            correct_office += 2
+          elsif av.room_strength == 1
+            correct_office += 1
+          end
+        end
+
+        adj_closed_list = []
+        if tutor.adjacency != 0 and tutor.person.in_group?("officers")
+          for other_slot in tutor.slots
+            if not adj_closed_list.include?(other_slot)
+              if slot.adjacent_to(other_slot)
+                if tutor.adjacency == 1 or tutor.adjacency == 0
+                  adjacencies += 1
+                end
+              else
+                if tutor.adjacency == -1 or tutor.adjacency == 0
+                  adjacencies += 1
+                end
+              end
+            end
+          end
+        end
+        adj_closed_list << slot
+      end
+
+      happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
+      stats_vector = {}
+      stats_vector[:officer] = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
+      stats_vector[:cmember] = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
+      if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
+        position = :officer
+      elsif tutor.person.in_group?("cmembers")
+        position = :cmember
+      else
+        raise "Not an officer or cmember!"
+      end
+      stats[position][tutor] ||= []
+      stats[position][tutor] << stats_vector[position]
+      happiness_total[position] += happiness
+    end
+    return stats, happiness_total
+  end
 end

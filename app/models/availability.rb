@@ -13,7 +13,7 @@ class Availability < ActiveRecord::Base
   #   wday             : integer 
   # =======================
 
-  
+  # Note: This is different from a Slot because it has no room attribute
   
   belongs_to :tutor
   
@@ -30,6 +30,7 @@ class Availability < ActiveRecord::Base
   scope :current, lambda { where(:semester => Property.current_semester) }
   
   @prefstr_to_int = {"unavailable"=>0, "preferred"=>1, "available"=>2}
+  PREF = {unavailable: 0, preferred: 1, available: 2}
 
   class << self
     attr_reader :prefstr_to_int
