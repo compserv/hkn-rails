@@ -8,45 +8,50 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def signup_slots
-    tutor = @current_user.get_tutor
-    @prefs = Hash.new 0
-    tutor.availabilities.each {|a| @prefs[a.time.strftime('%a%H')] = a.preference_level}
-    @sliders = Hash.new
-    tutor.availabilities.each {|a| @sliders[a.time.strftime('%a%H')] = a.get_slider_value}
-    @days = %w(Monday Tuesday Wednesday Thursday Friday)
     prop = Property.get_or_create
-    @hours = (prop.tutoring_start .. prop.tutoring_end).map {|x| x.to_s}
-    @rows = ["Hours"] + @hours
+    @days = %w(Monday Tuesday Wednesday Thursday Friday)
+    @wdays = 1..5
+    @hours = prop.tutoring_start .. prop.tutoring_end
+    tutor = @current_user.get_tutor
+
+    @prefs = {}
+    @wdays.each do |wday|
+      @prefs[wday] = Hash.new(0)
+    end
+    tutor.availabilities.each {|a| @prefs[a.wday][a.hour] = a.preference_level}
+    @sliders = {}
+    @wdays.each do |wday|
+      @sliders[wday] = Hash.new(2)
+    end
+    tutor.availabilities.each {|a| @sliders[a.wday][a.hour] = Availability::slider_value(a)}
+    p @sliders
     @adjacency = tutor.adjacency
   end
 
   def update_slots
     tutor = @current_user.get_tutor
-    @prefs = Hash.new 0
 
     #Save adjacency information
     tutor.adjacency = params[:adjacency].to_i
-    tutor.save
+    tutor.save!
 
     if params[:commit] == "Save changes"
-      params.keys.each do |x|
-        daytime = Slot.extract_day_time(x)
-        if daytime
-          pref = Availability.prefstr_to_int[params[x]]
-          slider = params["slider-#{x}"].to_i
+      params[:availabilities].each do |wday, hours|
+        hours.each do |hour, av|
+          pref = Availability::PREF[av[:preference_level].to_sym]
+          slider = av[:slider].to_i
           room, strength = Availability.slider_to_room_strength(slider)
-          availability = Availability.where(:time => Slot.get_time(daytime[0], daytime[1]), :tutor_id =>tutor.id).first
+          availability = Availability.where(:wday => wday, :hour => hour, :tutor_id => tutor.id).first
           if availability.nil? and pref != 0
-            tutor.availabilities << Availability.create(:time => Slot.get_time(daytime[0], daytime[1]), :preference_level => pref, :preferred_room => room, :room_strength => strength)
+            Availability.create!(:wday => wday, :hour => hour, :preference_level => pref, :preferred_room => room, :room_strength => strength, :tutor => tutor)
           elsif availability and pref == 0
             availability.destroy
           elsif availability
             availability.preference_level = pref
             availability.preferred_room = room
             availability.room_strength = strength
-            availability.save
+            availability.save!
           end
-          @prefs[x] = pref
         end
       end
     elsif params[:commit] == "Reset all"

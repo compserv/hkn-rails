@@ -16,10 +16,15 @@ class Availability < ActiveRecord::Base
   # Note: This is different from a Slot because it has no room attribute
   
   belongs_to :tutor
+
+  PREF = {unavailable: 0, preferred: 1, available: 2}
+  VALID_PREF_STRINGS = PREF.keys.map{|x| x.to_s}
+  ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
   
   validate :valid_room
   validates :tutor, :presence => true
-  validates :preference_level, :presence => true
+  validates :preference_level, :presence => true, :inclusion => {:in => PREF.values}
+  validates :room_strength, :inclusion => {:in => 0..2}
   validates_presence_of :semester
   validates_format_of :semester, :with => Property::Regex::Semester
   validates :hour, :presence => true
@@ -30,12 +35,15 @@ class Availability < ActiveRecord::Base
 
   scope :current, lambda { where(:semester => Property.current_semester) }
   
-  @prefstr_to_int = {"unavailable"=>0, "preferred"=>1, "available"=>2}
-  PREF = {unavailable: 0, preferred: 1, available: 2}
-  ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
-
   class << self
-    attr_reader :prefstr_to_int
+
+    def slider_value(availability)
+      if availability.preferred_room == 0
+        return 2 - availability.room_strength
+      else
+        return 2 + availability.room_strength
+      end
+    end
     
     def slider_to_room_strength(value)
       case value
@@ -47,20 +55,8 @@ class Availability < ActiveRecord::Base
       end
       return room, strength
     end
-
-    def time_for_weekday_and_hour(wdaystr, h)
-      wday = 1
-      case
-      when wdaystr.is_a?(String)
-        wday = %w(Monday Tuesday Wednesday Thursday Friday).index(wdaystr.capitalize)+1
-      when wdaystr.is_a?(Integer)
-        wday = wdaystr
-      else raise "Availability.time_for_weekday_and_hour: Bad weekday #{wdaystr}"
-      end
-      Time.local(1,1,wday,h,0)  # jan 2001 => wday == day
-    end
   end
-  
+
   def get_preferred_room()
     if preferred_room == 0 then
       "Cory"
@@ -74,18 +70,6 @@ class Availability < ActiveRecord::Base
       errors[:preferred_room] << ROOM_ERROR unless (preferred_room == 1 or preferred_room == 0)
     end
   end
-
-  def get_slider_value
-    if preferred_room == 0
-      return 2 - room_strength
-    else
-      return 2 + room_strength
-    end
-  end
-
-  #def to_s
-  #  time.strftime('%a%H')
-  #end
 
   private
 
