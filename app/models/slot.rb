@@ -20,7 +20,10 @@ class Slot < ActiveRecord::Base
   validate :valid_hour
   validates :room, :presence => true
   validates :wday, :presence => true, :inclusion => {:in => 1..5}
-  validates :hour, :uniqueness => {:scope => [:wday, :room]}
+  validates :hour, :presence => true, :uniqueness => {:scope => [:wday, :room]}
+
+  HOUR_RANGE_ERROR = "hour must be within tutoring hours"
+  ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
 
   def to_s
     "Slot #{room_name} #{day_name} #{hour}"
@@ -31,12 +34,10 @@ class Slot < ActiveRecord::Base
   end
 
   def room_name
-    if room == 0 then
+    if room == ROOMS[:cory] then
       "Cory"
-    elsif room == 1 then
+    elsif room == ROOMS[:soda] then
       "Soda"
-    else
-      "Undefined"
     end
   end
 
@@ -47,13 +48,13 @@ class Slot < ActiveRecord::Base
 
   def valid_room
     if !room.blank?
-      errors[:room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (room == 0 or room == 1)
+      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1)
     end
   end
 
   def valid_hour
     unless (Property.tutoring_start..Property.tutoring_end).include? hour
-      errors[:hour] << "hour must be within tutoring hours"
+      errors[:hour] << HOUR_RANGE_ERROR
     end
   end
 
@@ -65,8 +66,6 @@ class Slot < ActiveRecord::Base
       other_tutors.each do |other_tutor|
         if tutor == other_tutor
           raise "Same tutor in different offices at same time!"
-          #tutors.delete(tutor)
-          break
         end
       end
     end

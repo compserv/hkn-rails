@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe Admin::TutorController, "when an officer user is logged in" do
-  before :each do login_as_officer end
+  before :each do 
+    login_as_officer 
+    @current_user.stub(:get_tutor) { mock_model(Tutor) }
+  end
 
   describe "GET 'signup_slots'" do
     it "should be successful" do
@@ -28,7 +31,7 @@ end
 
 describe Admin::TutorController, "when a tutoring officer user is logged in" do
   before :each do
-	login_as_officer({'tutoring'=>true})
+    login_as_officer({'tutoring'=>true})
   end
 
   pending "GET 'generate_schedule'" do

@@ -54,7 +54,6 @@ Note that there are five levels of preference, which roughly translate to "stron
 <p>Finally, you can also indicate your preference of adjacent time slots below.</p><br />
 
 <%= form_tag admin_tutor_update_slots_path, :method => :post do %>
-  <%= token_tag %>
   <%= label_tag :adjacency, "Adjacent slots?" %>
   <%= select_tag :adjacency, options_for_select([["Don't care", 0], ["Yes", 1], ["No", -1]], @adjacency) %>
   <br /><br />
