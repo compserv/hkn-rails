@@ -24,18 +24,16 @@ class Admin::TutorController < Admin::AdminController
       @sliders[wday] = Hash.new(2)
     end
     tutor.availabilities.each {|a| @sliders[a.wday][a.hour] = Availability::slider_value(a)}
-    p @sliders
     @adjacency = tutor.adjacency
   end
 
   def update_slots
     tutor = @current_user.get_tutor
 
-    #Save adjacency information
-    tutor.adjacency = params[:adjacency].to_i
-    tutor.save!
-
     if params[:commit] == "Save changes"
+      tutor.adjacency = params[:adjacency]
+      tutor.save!
+
       params[:availabilities].each do |wday, hours|
         hours.each do |hour, av|
           pref = Availability::PREF[av[:preference_level].to_sym]
@@ -47,10 +45,10 @@ class Admin::TutorController < Admin::AdminController
           elsif availability and pref == 0
             availability.destroy
           elsif availability
-            availability.preference_level = pref
-            availability.preferred_room = room
-            availability.room_strength = strength
-            availability.save!
+            availability.update_attributes!(
+              preference_level: pref,
+              preferred_room: room,
+              room_strength: strength)
           end
         end
       end

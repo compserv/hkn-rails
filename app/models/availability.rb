@@ -19,6 +19,7 @@ class Availability < ActiveRecord::Base
 
   PREF = {unavailable: 0, preferred: 1, available: 2}
   VALID_PREF_STRINGS = PREF.keys.map{|x| x.to_s}
+  ROOMS = {cory: 0, soda: 1}
   ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
   
   validate :valid_room

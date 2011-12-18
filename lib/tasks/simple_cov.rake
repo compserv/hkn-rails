@@ -5,12 +5,7 @@ namespace :simple_cov do
   
   desc "Generates code coverage report."
   task :report do
-    require 'simplecov'
-    SimpleCov.start 'rails' do
-      add_filter '.bundle'
-      add_filter 'vendor'
-    end
-    puts "Running SimpleCov"
+    ENV['COVERAGE'] = "true"
     Rake::Task['spec'].invoke
   end
   

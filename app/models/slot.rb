@@ -14,13 +14,13 @@ class Slot < ActiveRecord::Base
   has_and_belongs_to_many :tutors, :before_add => :check_tutor
   has_many :slot_changes
 
-  ROOMS = {cory: 0, soda: 1}
-
   validate :valid_room
   validate :valid_hour
   validates :room, :presence => true
   validates :wday, :presence => true, :inclusion => {:in => 1..5}
   validates :hour, :presence => true, :uniqueness => {:scope => [:wday, :room]}
+
+  ROOMS = {cory: 0, soda: 1}
 
   HOUR_RANGE_ERROR = "hour must be within tutoring hours"
   ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
