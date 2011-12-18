@@ -22,7 +22,8 @@ class Availability < ActiveRecord::Base
   validates :preference_level, :presence => true
   validates_presence_of :semester
   validates_format_of :semester, :with => Property::Regex::Semester
-  #validates_uniqueness_of :time, :scope => :tutor_id
+  validates :hour, :presence => true
+  validates :wday, :presence => true
   validates_uniqueness_of :tutor_id, :scope => [:hour, :wday]
 
   before_validation :touch_semester
@@ -31,6 +32,7 @@ class Availability < ActiveRecord::Base
   
   @prefstr_to_int = {"unavailable"=>0, "preferred"=>1, "available"=>2}
   PREF = {unavailable: 0, preferred: 1, available: 2}
+  ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
 
   class << self
     attr_reader :prefstr_to_int
@@ -69,7 +71,7 @@ class Availability < ActiveRecord::Base
 
   def valid_room
     if !preferred_room.blank?
-      errors[:preferred_room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (preferred_room == 1 or preferred_room == 0)
+      errors[:preferred_room] << ROOM_ERROR unless (preferred_room == 1 or preferred_room == 0)
     end
   end
 
@@ -88,7 +90,7 @@ class Availability < ActiveRecord::Base
   private
 
   def touch_semester
-    self.semester = Property.current_semester
+    self.semester = Property.current_semester unless semester =~ Property::Regex::Semester
   end
 
 end

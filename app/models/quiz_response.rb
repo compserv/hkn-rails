@@ -24,7 +24,7 @@ class QuizResponse < ActiveRecord::Base
   #   QuizResponse.new(:number => :q7_2).split_number
   #   => [7, 2]
   def split_number
-    self.number.to_s.scan( /q(\d+)(_\d+)?/ ).first.collect {|d| d.nil? ? nil : d.to_i}
+    self.number.to_s.scan( /q(\d+)(?:_(\d+))?$/ ).first.collect {|d| d.nil? ? nil : d.to_i}
   end
 
   # Grade single-response questions, like founding year.

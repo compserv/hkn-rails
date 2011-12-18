@@ -1,20 +1,4 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-begin
-  # This actually has to be before you require Rails
-  require 'simplecov'
-  SimpleCov.start 'rails' do
-    add_filter '.bundle'
-  end
-rescue LoadError
-  # This is fine, just don't run simplecov
-end
-#begin
-#  # This actually has to be before you require Rails
-#  require 'cover_me'
-#rescue LoadError
-#  # This is fine, just don't run simplecov
-#end
-
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
