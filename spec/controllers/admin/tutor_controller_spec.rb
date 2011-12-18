@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Admin::TutorController, "when an officer user is logged in" do
   before :each do 
     login_as_officer 
-    @current_user.stub(:get_tutor) { mock_model(Tutor) }
+    tutor = mock_model(Tutor, :availabilities => [], :adjacency => 1)
+    @current_user.stub(:tutor) { tutor }
   end
 
   describe "GET 'signup_slots'" do
@@ -11,11 +12,23 @@ describe Admin::TutorController, "when an officer user is logged in" do
       get 'signup_slots'
       response.should be_success
     end
+
+    it "should set @prefs with preference levels"
+
+    it "should set @sliders with slider values"
   end
 
-  pending "GET 'signup_classes'" do
+  describe "PUT 'update_slots'" do
+    it "should be successful"
+  end
+
+  describe "GET 'signup_courses'" do
+    before :each do
+      @current_user.tutor.stub(:courses) { [] }
+    end
+
     it "should be successful" do
-      get 'signup_classes'
+      get 'signup_courses'
       response.should be_success
     end
   end
@@ -51,6 +64,14 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
   describe "GET 'edit_schedule'" do
     it "should be successful" do
       get 'edit_schedule'
+      response.should be_success
+    end
+  end
+
+  describe "PUT 'update_schedule'" do
+    it "should be successful" do
+      pending
+      put 'update_schedule'
       response.should be_success
     end
   end

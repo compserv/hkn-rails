@@ -53,7 +53,7 @@ class Admin::TutorController < Admin::AdminController
       tutor.availabilities.destroy_all
     end
 
-      redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
+    redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
   end
 
   def signup_courses
