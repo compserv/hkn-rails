@@ -29,7 +29,7 @@ end
 describe Availability do
   before(:each) do
     @good_opts = { 
-      :tutor_id => Tutor.create,
+      :tutor => mock_model(Tutor),
       :preference_level => 1,
       :preferred_room => 1,
       :hour => 11,
