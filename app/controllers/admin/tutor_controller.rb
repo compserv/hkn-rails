@@ -178,6 +178,7 @@ class Admin::TutorController < Admin::AdminController
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @wdays = (1..5)
     @hours = prop.tutoring_start .. prop.tutoring_end
+    @only_available = params[:all_tutors].blank?
 
     ohpref = Struct.new(:preferred, :available, :others, :defaults)
     form_slots = {}
@@ -226,8 +227,14 @@ class Admin::TutorController < Admin::AdminController
           slot_tutor_ids << tutor.id
         end
       end
+    end
 
-      unless params[:all_tutors].blank?
+    unless params[:all_tutors].blank?
+      Slot.all.each do |slot|
+        wday = slot.wday
+        hour = slot.hour
+        form_slot = form_slots[slot.room][wday][hour]
+        slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]} + form_slot.others.map{|x| x[1]}
         Tutor.current.includes(:person).each do |tutor|
           if not slot_tutor_ids.include?(tutor.id)
             form_slot.others << [tutor.person.fullname, tutor.id]

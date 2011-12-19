@@ -1,7 +1,8 @@
 <% stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
 <%= form_tag(admin_tutor_update_schedule_path, :method => :put) do %>
-  <input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time.</label>
+  <%= check_box_tag :only_available, true, @only_available %>
+  <%= label_tag :only_available, "Restrict to officers who are available at each time." %>
   <p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
   <p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
   <p> Only tutoring officers have sufficient privileges to change the schedule.</p>
