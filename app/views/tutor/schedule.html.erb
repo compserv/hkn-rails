@@ -3,49 +3,29 @@
 <div style="float: left; width: 80%; text-align: center; margin-bottom: 30px;">
 
 <% tutors = [] %>
-<h1>290 Cory</h1>
+<% [:cory, :soda].map{|x| Slot::ROOMS[x]}.each do |room| %>
+<h1><%= @room_numbers[room] %></h1>
 <table class="tutoring" id="cory_schedule">
-<% @rows.each do |row| %>
-	<tr>
-	<% if row == "Hours" %>
-		<th>Hours</th>
-		<% @days.each do |day| %>
-		<th><%= day %></th>
-		<% end %>
-	<% else %>
-		<td class="time"><%= format_hour_slot row %></td>
-		<% @days.each do |day| %>
-		<td  class="slot cory pcell" id="<%= formatslot day, row.to_s + "C" %>">
-			<%= render Slot.get_from_string(formatslot day, row.to_s + "C") %>
-			<% tutors.concat(Slot.get_from_string(formatslot day, row.to_s + "C").tutors) %>
-		</td>
-		<% end%>
-	<% end %>
-	</tr>
-<% end %>
+  <tr>
+    <th>Hours</th>
+    <% @days.each do |day| %>
+      <th><%= day %></th>
+    <% end %>
+  </tr>
+  <% @hours.each do |hour| %>
+    <tr>
+      <td class="time"><%= format_hour_slot hour %></td>
+      <% @wdays.each do |wday| %>
+        <td class="slot <%= Slot::ROOMS.key(room).to_s %> pcell" id="slot-<%= slot_id room, wday, hour %>">
+        <% slot = Slot.find_by_room_and_wday_and_hour(room, wday, hour) %>
+        <%= render slot %>
+        <% tutors.concat(slot.tutors) %>
+      </td>
+      <% end%>
+    </tr>
+  <% end %>
 </table>
-
-<h1>345 Soda</h1>
-<table class="tutoring" id="soda_schedule">
-<% @rows.each do |row| %>
-	<tr>
-	<% if row == "Hours" %>
-		<th>Hours</th>
-		<% @days.each do |day| %>
-		<th class="slot-table-header"><%= day %></th>
-		<% end %>
-	<% else %>
-		<td class="time"><%= format_hour_slot row %></td>
-		<% @days.each do |day| %>
-		<td  class="slot soda pcell" id="<%= formatslot day, row.to_s + "S" %>">
-			<%= render Slot.get_from_string(formatslot day, row.to_s + "S") %>
-			<% tutors.concat(Slot.get_from_string(formatslot day, row.to_s + "S").tutors) %>
-		</td>
-		<% end%>
-	<% end %>
-	</tr>
 <% end %>
-</table>
 </div>
 
 <div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 70px; line-height: 1.75em;">

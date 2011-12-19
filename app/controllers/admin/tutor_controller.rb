@@ -275,7 +275,6 @@ class Admin::TutorController < Admin::AdminController
           new_assignments = params[:assignments][room][wday][hour].map{|x| x.to_i}
         # This is in case if any of the intermediate hashes is nil
         rescue NoMethodError
-          errors << "Could not parse assignments to #{slot}"
           next
         end
         slot.tutors.current.each do |tutor|

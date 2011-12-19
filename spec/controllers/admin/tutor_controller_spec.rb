@@ -238,7 +238,8 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
 
       it "does nothing with no assignments" do
         update_schedule
-        flash[:notice].start_with?(Admin::TutorController::NOTHING_CHANGED).should be_true
+        #flash[:notice].start_with?(Admin::TutorController::NOTHING_CHANGED).should be_true
+        flash[:notice].should eq(Admin::TutorController::NOTHING_CHANGED)
       end
 
       it "removes tutors which are no longer in a slot" do

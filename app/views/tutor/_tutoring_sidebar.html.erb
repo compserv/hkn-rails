@@ -14,8 +14,8 @@
     <th>345 Soda</th>
   </tr>
 <% for hour in @hours %>
-  <% soda_slot = @slots.find_by_room_and_hour(Slot::ROOMS[:soda], hour) %>
-  <% cory_slot = @slots.find_by_room_and_hour(Slot::ROOMS[:cory], hour) %>
+  <% cory_slot = @slots.find_by_room_and_wday_and_hour(Slot::ROOMS[:cory], @day, hour) %>
+  <% soda_slot = @slots.find_by_room_and_wday_and_hour(Slot::ROOMS[:soda], @day, hour) %>
   <tr>
     <td class="time"><%= format_hour_slot hour %></td>
     <td class="pcell"><%= render cory_slot %></td>
