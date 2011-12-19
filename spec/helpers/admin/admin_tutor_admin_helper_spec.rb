@@ -11,9 +11,4 @@ require 'spec_helper'
 #   end
 # end
 describe Admin::TutorAdminHelper do 
-  describe "format slot" do
-	it "should format a slot properly" do
-	  helper.formatslot('Thursday', '11').should == 'Thu11'
-	end
-  end
 end
