@@ -1,4 +1,4 @@
-class Availability < ActiveRecord::Base
+class Availability < ApplicationModel
 
   # === List of columns ===
   #   id               : integer 

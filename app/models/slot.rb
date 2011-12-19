@@ -1,4 +1,4 @@
-class Slot < ActiveRecord::Base
+class Slot < ApplicationModel
 
   # === List of columns ===
   #   id         : integer 
