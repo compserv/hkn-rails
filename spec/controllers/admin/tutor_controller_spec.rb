@@ -129,6 +129,13 @@ describe Admin::TutorController, "when an officer user is logged in" do
     end
   end
 
+  describe "PUT 'update_schedule'" do
+      it "redirects non-tutoring officers" do
+        put 'update_schedule'
+        response.should redirect_to(:root)
+      end
+  end
+
   describe "GET 'settings'" do
     it "should be denied" do
       get 'settings'
@@ -158,17 +165,137 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
   end
 
   describe "GET 'edit_schedule'" do
+    before :each do
+      @slots = [
+        mock_model(Slot, :wday => 1, :hour => 11, :room => 0, :tutors => [])
+      ]
+      Slot.stub_chain(:includes, :foreign_scope).and_return(@slots)
+      controller.stub(:compute_stats).and_return(Hash.new({}), Hash.new({}))
+    end
+
     it "should be successful" do
       get 'edit_schedule'
       response.should be_success
     end
+
+    it "grabs all Tutors assigned to a slot even if they are 'unavailable'" do
+      all_tutors = [
+        mock_model(Tutor, :person => mock_model(Person, :fullname => "Adam")),
+        mock_model(Tutor, :person => mock_model(Person, :fullname => "Bert")),
+      ]
+      all_tutors_output = all_tutors.map{|x| [x.person.fullname, x.id]}
+      @slots.first.stub(:tutors).and_return all_tutors
+      get 'edit_schedule'
+      assigns(:slot_options)[0][1][11][:opts].last[1].should eq(all_tutors_output)
+    end
+
+    it "grabs all Tutors when given :all_params" do
+      all_tutors = [
+        mock_model(Tutor, :person => mock_model(Person, :fullname => "Adam")),
+        mock_model(Tutor, :person => mock_model(Person, :fullname => "Bert")),
+      ]
+      all_tutors_output = all_tutors.map{|x| [x.person.fullname, x.id]}
+      Tutor.stub_chain(:current, :includes).and_return all_tutors
+      get 'edit_schedule', :all_tutors => true
+      assigns(:slot_options)[0][1][11][:opts].last[1].should eq(all_tutors_output)
+    end
+  end
+
+  describe "compute_stats" do
+    it "should work" do
+      pending
+    end
   end
 
   describe "PUT 'update_schedule'" do
-    it "should be successful" do
-      pending
-      put 'update_schedule'
-      response.should be_success
+    def update_schedule(opts={})
+      put 'update_schedule', @default_opts.merge(opts)
+    end
+
+    before :each do
+      @default_opts = {
+        only_available: true,
+      }
+    end
+
+    it "should redirect to edit_schedule" do
+      update_schedule
+      response.should redirect_to(:admin_tutor_edit_schedule)
+    end
+
+    describe "Save changes" do
+      before :each do
+        s = mock_model(Slot, :wday => 1, :hour => 11, :room => 0, :tutors => mock_model("Fake", :current => []), :tutor_ids => [])
+        @slots = [s]
+        @new_assignments = []
+        assignments = {s.room.to_s => {s.wday.to_s => {s.hour.to_s => @new_assignments}}}
+        Slot.stub(:all).and_return(@slots)
+        @default_opts.merge!({
+          commit: 'Save changes',
+          assignments: assignments,
+        })
+      end
+
+      it "does nothing with no assignments" do
+        update_schedule
+        flash[:notice].start_with?(Admin::TutorController::NOTHING_CHANGED).should be_true
+      end
+
+      it "removes tutors which are no longer in a slot" do
+        tutor = mock_model(Tutor)
+        tutors = mock_model("Fake", :current => [tutor])
+        tutors.should_receive(:delete).with(tutor)
+        @slots.first.stub(:tutors) { tutors }
+        update_schedule
+      end
+
+      it "adds tutors which are not already in a slot" do
+        tutor0 = mock_model(Tutor)
+        tutor1 = mock_model(Tutor)
+        tutors = mock_model("Fake", :current => [tutor0, tutor1])
+        slot = @slots.first
+        slot.stub(:tutor_ids){ [tutor1.id] }
+        @new_assignments << tutor0.id << tutor1.id
+        Tutor.stub(:find).with(tutor0.id).and_return(tutor0)
+
+        slot.tutors.should_receive(:<<).with tutor0
+
+        update_schedule
+      end
+
+      it "does not add tutors which are not already in a slot" do
+        tutor0 = mock_model(Tutor)
+        tutor1 = mock_model(Tutor)
+        tutors = mock_model("Fake", :current => [tutor0, tutor1])
+        slot = @slots.first
+        slot.stub(:tutor_ids){ [tutor1.id] }
+        @new_assignments << tutor0.id << tutor1.id
+        Tutor.stub(:find).with(tutor0.id).and_return(tutor0)
+
+        slot.tutors.should_not_receive(:<<).with tutor1
+
+        update_schedule
+      end
+    end
+
+    describe "Reset all" do
+      before :each do
+        @default_opts.merge!({
+          commit: 'Reset all',
+        })
+      end
+
+      it "clears tutoring assignments" do
+        tutors = mock_model("Fake")
+        slots = [
+          mock_model(Slot, :tutors => tutors),
+          mock_model(Slot, :tutors => tutors),
+          mock_model(Slot, :tutors => tutors),
+        ]
+        tutors.should_receive(:clear).exactly(3).times
+        Slot.stub(:all) { slots }
+        update_schedule
+      end
     end
   end
 

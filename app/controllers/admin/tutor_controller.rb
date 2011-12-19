@@ -261,12 +261,9 @@ class Admin::TutorController < Admin::AdminController
     end
   end
 
-  def update_schedule
-    unless @auth['tutoring']
-      flash[:notice] = "Segfault! You're not authorized to modify the tutoring schedule."
-      return
-    end
+  NOTHING_CHANGED = "Nothing changed in the tutoring schedule."
 
+  def update_schedule
     errors = []
     if params[:commit] == "Save changes"
       changed = false
@@ -274,10 +271,12 @@ class Admin::TutorController < Admin::AdminController
         room = slot.room.to_s
         wday = slot.wday.to_s
         hour = slot.hour.to_s
-        if params[:assignments][room].nil? or params[:assignments][room][wday].nil? or params[:assignments][room][wday][hour].nil?
-          new_assignments = []
-        else
+        begin
           new_assignments = params[:assignments][room][wday][hour].map{|x| x.to_i}
+        # This is in case if any of the intermediate hashes is nil
+        rescue NoMethodError
+          errors << "Could not parse assignments to #{slot}"
+          next
         end
         slot.tutors.current.each do |tutor|
           unless new_assignments.include? tutor.id
@@ -299,6 +298,9 @@ class Admin::TutorController < Admin::AdminController
     elsif params[:commit] == "Reset all"
       changed = true
       Slot.all.each{|slot| slot.tutors.clear}
+    else
+      flash[:notice] = "Invalid action."
+      redirect_to :action => "edit_schedule" and return
     end
 
     all_tutors = !params[:only_available] || nil
@@ -307,9 +309,9 @@ class Admin::TutorController < Admin::AdminController
     elsif not params[:only_available]
       flash[:notice] = "Tutors shown for all slots."
     else
-      flash[:notice] = "Nothing changed in the tutoring schedule."
+      flash[:notice] = NOTHING_CHANGED
     end
-    flash[:notice] += ' ' + errors.join(' ')
+    flash[:notice] += ' ' + errors.join(' ') unless errors.empty?
     redirect_to :action => "edit_schedule", :all_tutors => all_tutors
   end
 
