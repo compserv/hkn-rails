@@ -214,7 +214,7 @@ class Admin::TutorController < Admin::AdminController
     end
     # Find Others per slot
     # This is equivalent to Slot.all.each{|slot| slot.tutors = slot.tutors.current}
-    Slot.includes(:tutors => :person).foreign_scope(:tutors, :current_scope_helper).each do |slot|
+    Slot.includes(:tutors => :person).foreign_scope(:tutors, :current_scope_helper).uniq.each do |slot|
       wday = slot.wday
       hour = slot.hour
       form_slot = form_slots[slot.room][wday][hour]
