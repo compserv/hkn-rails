@@ -178,6 +178,22 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
       response.should be_success
     end
 
+    it "grabs all Tutors who are available for a slot" do
+      @defaults = {wday: 1, hour: 11, preference_level: 0, room_strength: 0, preferred_room: 0}
+      tutor0 = mock_model(Tutor, :adjacency => 1)
+      tutor0.stub_chain(:person, :fullname) { "loller"}
+      tutor1 = mock_model(Tutor, :adjacency => 1)
+      tutor1.stub_chain(:person, :fullname) { "skates"}
+      avs = [
+        mock_model(Availability, @defaults.merge(preference_level: 2, tutor: tutor0)),
+        mock_model(Availability, @defaults.merge(preference_level: 1, tutor: tutor1)),
+      ]
+      Availability.stub_chain(:current, :includes, :foreign_scope).and_return avs
+      get 'edit_schedule'
+      assigns(:slot_options)[0][1][11][:opts][0][1].first.should eq([tutor1.person.fullname + " (pA)", tutor1.id])
+      assigns(:slot_options)[0][1][11][:opts][1][1].first.should eq([tutor0.person.fullname + " (pA)", tutor0.id])
+    end
+
     it "grabs all Tutors assigned to a slot even if they are 'unavailable'" do
       all_tutors = [
         mock_model(Tutor, :person => mock_model(Person, :fullname => "Adam")),
