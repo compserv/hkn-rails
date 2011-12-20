@@ -191,7 +191,7 @@ module SurveyData
       rescue => e
         results[:errors] << "Error #{e.inspect} parsing near line #{last_row[1]}: #{last_row[0]}"
         results[:errors] << ["Stack trace:", e.backtrace]
-        #raise if RAILS_ENV.eql?('development')
+        #raise if Rails.env.development?
       end
 
       return results
