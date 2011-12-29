@@ -1,9 +1,12 @@
-# This is meant to be an abstract class that all models inherit from. Define
-# any methods that all models will inherit here.
-class ApplicationModel < ActiveRecord::Base
-  self.abstract_class = true
+# Contains application-specific extensions to ActiveRecord::Base.
+module ApplicationModel
+  extend ActiveSupport::Concern
 
-  class << self
+  included do
+  end
+
+  module ClassMethods
+
     # This allows you to chain an associated model's scope. It requires that the
     # foreign model's scope method be defined with the function prototype:
     # (ActiveRecord::Relation, association_name)
@@ -23,8 +26,16 @@ class ApplicationModel < ActiveRecord::Base
     #   end
     # And use it in a foreign model like this:
     #   User.foreign_scope(:posts, :approved_scope_helper)
+    #
+    # @param association [Symbol] #TODO fill me in
+    # @param scope       [Symbol] #TODO fill me in
+    # @return [ActiveRecord::Scope]
     def foreign_scope(association, scope)
       reflect_on_association(association).klass.public_send(scope, self, association)
     end
+
   end
+
 end
+
+ActiveRecord::Base.send(:include, ApplicationModel)

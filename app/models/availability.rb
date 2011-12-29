@@ -1,4 +1,4 @@
-class Availability < ApplicationModel
+class Availability < ActiveRecord::Base
 
   # === List of columns ===
   #   id               : integer 
@@ -19,17 +19,26 @@ class Availability < ApplicationModel
 
   PREF = {unavailable: 0, preferred: 1, available: 2}
   VALID_PREF_STRINGS = PREF.keys.map{|x| x.to_s}
-  ROOMS = {cory: 0, soda: 1}
   ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
+  Room = Slot::Room
   
-  validate :valid_room
   validates :tutor, :presence => true
   validates :preference_level, :presence => true, :inclusion => {:in => PREF.values}
   validates :room_strength, :inclusion => {:in => 0..2}
   validates_presence_of :semester
   validates_format_of :semester, :with => Property::Regex::Semester
-  validates :hour, :presence => true
-  validates :wday, :presence => true
+  validates :hour,
+    :presence  => true,
+    :inclusion => {:in => Slot::Hour::Valid}
+  validates :wday,
+    :presence  => true,
+    :inclusion => {:in => Slot::Wday::Valid}
+  validates :preferred_room,
+    :presence  => true,
+    :inclusion => {
+      :in      => Slot::Room::Valid,
+      :message => "should be Cory (#{Slot::Room::Cory}) or Soda (#{Slot::Room::Soda})"
+    }
   validates_uniqueness_of :tutor_id, :scope => [:hour, :wday]
 
   before_validation :touch_semester
@@ -64,12 +73,6 @@ class Availability < ApplicationModel
     elsif preferred_room == 1 then
       "Soda"
     end 
-  end
-
-  def valid_room
-    if !preferred_room.blank?
-      errors[:preferred_room] << ROOM_ERROR unless (preferred_room == 1 or preferred_room == 0)
-    end
   end
 
   private

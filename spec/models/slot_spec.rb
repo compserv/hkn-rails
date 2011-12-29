@@ -99,9 +99,9 @@ describe Slot, 'utility methods' do
   end
 
   it 'should have room_name' do
-    soda = Slot.new @good_opts.merge(:room => Slot::ROOMS[:soda])
+    soda = Slot.new @good_opts.merge(:room => Slot::Room::Soda)
     soda.room_name.should == "Soda"
-    cory = Slot.new @good_opts.merge(:room => Slot::ROOMS[:cory])
+    cory = Slot.new @good_opts.merge(:room => Slot::Room::Cory)
     cory.room_name.should == "Cory"
   end
 

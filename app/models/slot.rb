@@ -1,4 +1,4 @@
-class Slot < ApplicationModel
+class Slot < ActiveRecord::Base
 
   # === List of columns ===
   #   id         : integer 
@@ -11,16 +11,33 @@ class Slot < ApplicationModel
 
   # This is a tutoring office hours slot
 
+  module Room
+    Cory  = 0
+    Soda  = 1
+    Valid = [Cory, Soda]
+    Both  = Valid         # just an alias
+  end
+
+  module Wday
+    Monday = 1
+    Friday = 5
+    Valid  = (Monday..Friday)
+  end
+
+  module Hour
+    Valid = (11 .. 16)
+  end
+
+  ROOMS = {:cory => Room::Cory, :soda => Room::Soda}
+
   has_and_belongs_to_many :tutors, :before_add => :check_tutor
   has_many :slot_changes
 
   validate :valid_room
   validate :valid_hour
-  validates :room, :presence => true
-  validates :wday, :presence => true, :inclusion => {:in => 1..5}
-  validates :hour, :presence => true, :uniqueness => {:scope => [:wday, :room]}
-
-  ROOMS = {cory: 0, soda: 1}
+  validates :room, :presence => true, :inclusion => {:in => Room::Valid}
+  validates :wday, :presence => true, :inclusion => {:in => Wday::Valid}
+  validates :hour, :presence => true, :inclusion => {:in => Hour::Valid}, :uniqueness => {:scope => [:wday, :room]}
 
   HOUR_RANGE_ERROR = "hour must be within tutoring hours"
   ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
@@ -34,9 +51,9 @@ class Slot < ApplicationModel
   end
 
   def room_name
-    if room == ROOMS[:cory] then
+    if room == Room::Cory then
       "Cory"
-    elsif room == ROOMS[:soda] then
+    elsif room == Room::Soda then
       "Soda"
     end
   end

@@ -45,6 +45,24 @@ describe Availability do
   it "should require a valid room" do
     availability = Availability.create(@good_opts.merge(:preferred_room => 5))
     availability.should_not be_valid
-    availability.errors[:preferred_room].should include(Availability::ROOM_ERROR)
+    #availability.errors[:preferred_room].should include(Availability::ROOM_ERROR)
+    availability.errors[:preferred_room].should_not be_empty
   end
+
+  describe "range check" do
+
+    [:wday, :hour, :room].each do |att|
+      it "should pass for #{att}" do
+        test_range Slot.const_get(att.to_s.capitalize)::Valid do |value, valid|
+          col_att = (att == :room) ? :preferred_room : att
+          opts = @good_opts.merge(col_att => value)
+          a = Availability.new(opts)
+          (a.valid? == valid) || raise("#{a.inspect}; #{att}=#{value}; e #{valid}, a #{a.valid?}")
+          #Availability.new(@good_opts.merge(col_att => value)).valid?.should == valid
+        end
+      end
+    end # wday, hour, room
+
+  end
+
 end

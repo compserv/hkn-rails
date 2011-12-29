@@ -74,7 +74,7 @@ describe Admin::TutorController, "when an officer user is logged in" do
         Availability.should_receive(:create!).with(wday: wday, 
           hour: hour, 
           preference_level: Availability::PREF[:preferred], 
-          preferred_room: Availability::ROOMS[:soda], 
+          preferred_room: Availability::Room::Soda, 
           room_strength: 1, 
           tutor: @current_user.tutor)
         update availabilities: avs
@@ -102,7 +102,7 @@ describe Admin::TutorController, "when an officer user is logged in" do
         Availability.should_receive(:where).and_return([av])
         av.should_receive(:update_attributes!).with(
           preference_level: Availability::PREF[:preferred], 
-          preferred_room: Availability::ROOMS[:soda], 
+          preferred_room: Availability::Room::Soda, 
           room_strength: 1)
         update availabilities: avs
       end

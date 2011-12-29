@@ -3,7 +3,7 @@
 <div style="float: left; width: 80%; text-align: center; margin-bottom: 30px;">
 
 <% tutors = [] %>
-<% [:cory, :soda].map{|x| Slot::ROOMS[x]}.each do |room| %>
+<% Slot::Room::Both.each do |room| %>
 <h1><%= @room_numbers[room] %></h1>
 <table class="tutoring" id="cory_schedule">
   <tr>

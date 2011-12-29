@@ -174,9 +174,9 @@ class Admin::TutorController < Admin::AdminController
     expire_schedule
 
     prop = Property.get_or_create
-    @rooms = [:cory, :soda].map{|x| Slot::ROOMS[x]}
+    @rooms = Slot::Room::Valid
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
-    @wdays = (1..5)
+    @wdays = Slot::Wday::Valid
     @hours = prop.tutoring_start .. prop.tutoring_end
     @only_available = params[:all_tutors].blank?
 
@@ -199,7 +199,7 @@ class Admin::TutorController < Admin::AdminController
       wday = a.wday
       hour = a.hour
 
-      [:cory, :soda].map{|x| Slot::ROOMS[x]}.each do |room|
+      Slot::Room::Both.each do |room|
         form_slot = form_slots[room][wday][hour]
         metadata = '(%s%s)' % [room_preference(a.room_strength, a.preferred_room, room),
                           tutor_adjacency(a.tutor.adjacency)]
