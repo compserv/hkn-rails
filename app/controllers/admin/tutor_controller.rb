@@ -62,6 +62,13 @@ class Admin::TutorController < Admin::AdminController
     @courses_added = tutor.courses
   end
 
+  def update_preferences
+      # a comment
+      puts params[:preferred]
+      redirect_to :admin_tutor_signup_courses, :flash => "Successfully updated your tutoring courses"
+
+  end
+
   def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False')
     prop = Property.get_or_create
     ret = "#HKN Mu Chapter parameters for tutoring schedule generator<br/>#Generated for "

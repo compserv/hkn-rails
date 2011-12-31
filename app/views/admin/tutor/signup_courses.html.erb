@@ -61,75 +61,151 @@
 <div id="add_course_errors"></div>
 <h1>Sign up for classes</h1>
 <%= form_tag("", :id => "form") do %>
-<div style="height: 30em;">
-		
-		<div style="margin: 0px auto;">
+
+    <div style="margin: 0px auto;">
         <!-- Choose a class to add: -->
         <!-- <%= select_tag(:class, options_for_select(@course_options)) %> -->
-	<%= label_tag "Search for class:" %>
-	<%= text_field_tag "course_query", "", :id => "course_query" %><br/>
-	<%= hidden_field_tag "course_id", "", :id => "course_id" %>
-	<%= label_tag "Mark as:" %>
-	<%= radio_button_tag "preference_level", "current", :checked => true %> Current
-	<%= radio_button_tag "preference_level", "completed" %> Completed
-	<%= radio_button_tag "preference_level", "preferred" %> Preferred<br/>
+        <%= label_tag "Search for class:" %>
+        <%= text_field_tag "course_query", "", :id => "course_query" %><br/>
+        <%= hidden_field_tag "course_id", "", :id => "course_id" %>
+        <%= label_tag "Mark as:" %>
+        <%= radio_button_tag "preference_level", "current", :checked => true %> Current
+        <%= radio_button_tag "preference_level", "completed" %> Completed
+        <%= radio_button_tag "preference_level", "preferred" %> Preferred<br/>
 
-	<%= submit_tag "Submit", :id => "course_submit" %>
-<% end %>
-        
-	<!--
-			Search for class (like "cs61", "cs61c", "ee", or "cheme"):
-			<input id="course_query" onkeypress="return updateonenter(event);"/> 
-			<a href="javascript:void(0);" onclick="update_courses();">Search</a> 
-		</div> 
-		<br /> 
-		<div id="results_container" style="border: 1px solid gray; width: 40%; float: left; height: 25em; overflow: hidden;"> 
-			<h2>Search Results: </h2> 
-			<div id="results" style="height: 20em; overflow: scroll"> 
-				<hr /> 
-				None yet, search above!
-			</div> 
-		</div> 
-        -->
-	<div id="classes_container" style="border: 1px solid gray; width: 40%; margin-right: 10%; float: right; height: 25em; overflow: auto;">
-	  <h2>Current Courses</h2>
-	  <table id="courses_current" style="border: 1px gray solid; width: 80%; margin-left: auto; margin-right: auto;">
-	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 0}.each do |course| %>
-	    <tr class="course" style="border: 1px gray solid;">
-	      <td class="course_name">
-		<%= course.course_abbr %>
-	      </td>
-	      <td class="course_buttons">
-		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
-	      </td>
-	    </tr>
-	    <% end %>
-	  </table>
-	  <h2>Completed Courses</h2>
-	  <table id="courses_completed" style="border: 1px gray solid; width: 80%; margin-left: auto; margin-right: auto;">
-	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 1}.each do |course| %>
-	    <tr class="course" style="border: 1px gray solid;">
-	      <td class="course_name">
-		<%= course.course_abbr %>
-	      </td>
-	      <td class="course_buttons">
-		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
-	      </td>
-	    </tr>
-	    <% end %>
-	  </table>
-	  <h2>Preferred Courses</h2>
-	  <table id="courses_preferred" style="border: 1px gray solid; width: 80%; margin-left: auto; margin-right: auto;">
-	    <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 2}.each do |course| %>
-	    <tr class="course" style="border: 1px gray solid;">
-	      <td class="course_name">
-		<%= course.course_abbr %>
-	      </td>
-	      <td class="course_buttons">
-		<%= button_to 'Destroy', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
-	      </td>
-	    </tr>
-	    <% end %>
-	  </table>
-	</div> 
+        <%= submit_tag "Submit", :id => "course_submit" %>
     </div>
+<% end %>
+
+<!--
+Search for class (like "cs61", "cs61c", "ee", or "cheme"):
+<input id="course_query" onkeypress="return updateonenter(event);"/> 
+<a href="javascript:void(0);" onclick="update_courses();">Search</a> 
+</div> 
+<br /> 
+<div id="results_container" style="border: 1px solid gray; width: 40%; float: left; height: 25em; overflow: hidden;"> 
+    <h2>Search Results: </h2> 
+    <div id="results" style="height: 20em; overflow: scroll"> 
+        <hr /> 
+        None yet, search above!
+    </div> 
+</div> 
+-->
+<!--<div id="classes_container" style="border: 1px solid gray; width: 40%; margin-right: 10%; float: right; height: 25em; overflow: auto;">-->
+    <div class="courses" id="current">
+        <h2>Current Courses</h2>
+        <div class="drop-target">
+            <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 0}.each do |course| %>
+                <div class="course">
+                    <span class="title"><%= course.course_abbr %></span>
+                    <span class="button"> 
+                        <!--<%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>-->
+                    </span>
+                </div>
+            <% end %>
+        </div>
+    </div>
+
+    <div class="courses" id="completed">
+        <h2>Completed Courses</h2>
+        <div class="drop-target">
+            <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 1}.each do |course| %>
+                <div class="course">
+                    <span class="title"><%= course.course_abbr %></span>
+                    <span class="button"> 
+                        <%= button_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
+                    </span>
+                </div>
+            <% end %>
+        </div>
+    </div>
+
+    <div class="courses" id="preferred">
+        <h2>Preferred Courses</h2>
+        <div class="drop-target">
+            <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 2}.each do |course| %>
+                <div class="course">
+                    <span class="title"><%= course.course_abbr %></span>
+                    <span class="button">
+                        <%= button_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
+                    </span>
+                </div>
+            <% end %>
+        </div>
+    </div>
+
+    <div style="clear: both;">
+    <%= link_to "Update", '#', :onclick => 'updatePreferences(); return false;' %>
+    </div>
+
+<style type="text/css">
+
+    .courses {
+        width: 30%;
+        float: left;
+    }
+
+    .courses .drop-target {
+        min-width: 30%;
+        min-height: 30%;
+        padding: 1em;
+        display: inline-block;
+        
+        border: 1px gray solid;
+
+    }
+
+    .course {
+        margin: 2px;
+        background: #EEE;
+        border-radius: 5px;
+        text-align: center;
+        width: auto;
+        list-style-type: none;
+        cursor: default;
+        position: relative;
+        float: left;
+        width: 7em;
+
+    .course * {
+        display: inline;
+    }
+
+
+</style>
+
+<%- content_for :header do -%>
+    <%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
+<%- end -%>
+
+<script type="text/javascript">
+
+    updatePreferences = function() {
+        $.post('<%= admin_update_course_preferences_path %>',
+               {
+                    current: $.map( $('#current .title'), function(e){ return $.trim(e.innerHTML) }).join(' '),
+                    completed: $.map( $('#completed .title'), function(e){ return $.trim(e.innerHTML) }).join(' '),
+                    preferred: $.map( $('#preferred .title'), function(e){ return $.trim(e.innerHTML) }).join(' ')
+               },
+               function(data, status, xhr) {
+                    window.location.reload();
+               }
+        );
+    }
+
+    $(function() {
+        $(".drop-target").droppable({
+            activeClass: "ui-state-default",
+            hoverClass: "ui-state-hover",
+            accept: ":not(.ui-sortable-helper)",
+            drop : function( event, ui) {
+                    $(this).find(".placeholder").remove();
+                    ui.draggable.detach().appendTo(this).removeAttr('style');
+            }
+        });
+
+        $(".course").draggable({
+            revert: true
+        });
+    });
+</script>
