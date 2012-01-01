@@ -1,4 +1,9 @@
 <% content_for :header do %>
+  <# autocomplete collides with the jquery-ui so must load the jquery before autocomplete>
+  <# source: http://stackoverflow.com/questions/3308935/jquery-autocomplete-this-source-is-not-a-function-error>
+  <# solution is the second or third post>
+
+  <%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
   <%= javascript_include_tag "jquery-autocomplete.min" %>
  
   <%= stylesheet_link_tag "jquery-autocomplete" %>
@@ -38,12 +43,24 @@
               $("input[name=course_query]").val(""); //clear fields
               $("input[name=preference_level]:checked").removeAttr("checked");
               //ajax
-              ch = $("<tr></tr>");
-              ch.append($("<td class=\"course_name\"></td>").html(course_name));
-              ch.append($('<td class="course_buttons"></td>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'))
-              $("#courses_"+preference_level).append(ch);
+              //ch = $("<tr></tr>");
+              //ch.append($("<td class=\"course_name\"></td>").html(course_name));
+              //ch.append($('<td class="course_buttons"></td>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'))
+              //$("#courses_"+preference_level).append(ch);
+              //$("#messages").hide("slow");
+              //$("#add_course_errors").html("");
+
+              ch = $("<div class='course ui-draggable'></div>");
+              ch.append($('<span class="title" course_id='+course_id+'></span>').html(course_name));
+              ch.append($('<span class="button"></span>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'));
+
+              ch.draggable({ revert: true});
+              
+              $(".courses#current .drop-target").append(ch);
               $("#messages").hide("slow");
               $("#add_course_errors").html("");
+
+              
             } else{
               $("#add_course_errors").html(data[1]);
             }
@@ -97,7 +114,7 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
         <div class="drop-target">
             <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 0}.each do |course| %>
                 <div class="course">
-                    <span class="title"><%= course.course_abbr %></span>
+                    <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
                     <span class="button"> 
                         <!--<%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>-->
                     </span>
@@ -111,7 +128,7 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
         <div class="drop-target">
             <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 1}.each do |course| %>
                 <div class="course">
-                    <span class="title"><%= course.course_abbr %></span>
+                    <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
                     <span class="button"> 
                         <%= button_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
                     </span>
@@ -125,7 +142,7 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
         <div class="drop-target">
             <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 2}.each do |course| %>
                 <div class="course">
-                    <span class="title"><%= course.course_abbr %></span>
+                    <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
                     <span class="button">
                         <%= button_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
                     </span>
@@ -174,18 +191,15 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
 
 </style>
 
-<%- content_for :header do -%>
-    <%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
-<%- end -%>
 
 <script type="text/javascript">
 
     updatePreferences = function() {
         $.post('<%= admin_update_course_preferences_path %>',
                {
-                    current: $.map( $('#current .title'), function(e){ return $.trim(e.innerHTML) }).join(' '),
-                    completed: $.map( $('#completed .title'), function(e){ return $.trim(e.innerHTML) }).join(' '),
-                    preferred: $.map( $('#preferred .title'), function(e){ return $.trim(e.innerHTML) }).join(' ')
+                    current: $.map( $('#current .title'), function(e){ return e.getAttribute('course_id') }).join(' '),
+                    completed: $.map( $('#completed .title'), function(e){ return e.getAttribute('course_id') }).join(' '),
+                    preferred: $.map( $('#preferred .title'), function(e){ return e.getAttribute('course_id') }).join(' ')
                },
                function(data, status, xhr) {
                     window.location.reload();

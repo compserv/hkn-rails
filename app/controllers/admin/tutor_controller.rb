@@ -65,7 +65,7 @@ class Admin::TutorController < Admin::AdminController
   def update_preferences
       # a comment
       puts params[:preferred]
-      redirect_to :admin_tutor_signup_courses, :flash => "Successfully updated your tutoring courses"
+      redirect_to :admin_tutor_signup_courses, :notice => "Successfully updated your tutoring courses"
 
   end
 
