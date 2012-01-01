@@ -163,7 +163,7 @@ HknRails::Application.routes.draw do
     end
   end
 
-  match "leaderboard" => "leaderboard#index", :as => :leaderboard
+  get  'leaderboard(/:semester)' => "leaderboard#index", :as => :leaderboard
 
   # Alumni
   resources :alumnis do

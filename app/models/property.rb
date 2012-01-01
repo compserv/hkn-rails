@@ -134,9 +134,15 @@ class Property < ActiveRecord::Base
       prop.save
     end
 
-    def semester_start_time
-      prop = get_or_create
-      semester = prop.semester.to_s
+    # @param s [String] 
+    def semester_start_time(semester=nil)
+      unless semester
+        prop = get_or_create
+        semester = prop.semester.to_s
+      end
+
+      raise ArgumentError.new("Invalid semester: #{semester}") unless semester =~ /^\d{5}$/
+
       semester_year = semester[0..3]
 
       # 1 = Spring, 2 = Summer, 3 = Fall

@@ -100,9 +100,7 @@ class Person < ActiveRecord::Base
   end
 
   def current_election
-      Election.current_semester.where(:person_id => self.id).first
-      #self.elections.where(:semester => Property.current_semester).elected.limit(1).first
-      #Election.find_by_person_id_and_semester self.id, Property.current_semester
+      Election.current_semester.elected.where(:person_id => self.id).first
   end
 
   def valid_ldap_or_password?(password)

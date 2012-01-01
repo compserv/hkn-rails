@@ -120,6 +120,8 @@ module ConsoleHelper
           m_sl
         when 'sudo'
           m_sudo(@args)
+        when 'touch'
+          m_touch(@args.first)
         else
           raise Console::Error.new("#{@cmd}: command not found")
         end
@@ -169,6 +171,19 @@ module ConsoleHelper
         c = Command.new(@controller, args)
         c.sudo = true
         c.run
+      end
+
+      # Touches someone.
+      #
+      # @param [String] username
+      #
+      def m_touch(username)
+        unless username and p = Person.find_by_username(username)
+          raise Console::Error.new("touch: cannout touch `#{username}': Permission denied")
+        end
+        if username == 'amatsukawa'
+          return Response.new("#{username} likes it")
+        end
       end
 
       # Helper method for 'su' command.
