@@ -64,7 +64,27 @@ class Admin::TutorController < Admin::AdminController
 
   def update_preferences
       # a comment
-      puts params[:preferred]
+      tutor = @current_user.get_tutor
+      preferences_options = {:current=>0, :completed=>1, :preferred=>2}
+      course_preferences = tutor.course_preferences
+
+      for option in preferences_options.keys
+          course_ids = params[option].split.map {|c_id| c_id.to_i}
+
+          selected = course_preferences.find_all {|c_id| course_ids.include? c_id.course_id}
+
+          for pref in selected
+              pref.level = preferences_options[option]
+              pref.save
+          end
+
+
+          #for course_id in course_ids
+              #Course.find(course_id)
+          #end
+
+      end
+
       redirect_to :admin_tutor_signup_courses, :notice => "Successfully updated your tutoring courses"
 
   end

@@ -53,6 +53,8 @@
               ch = $("<div class='course ui-draggable'></div>");
               ch.append($('<span class="title" course_id='+course_id+'></span>').html(course_name));
               ch.append($('<span class="button"></span>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'));
+              //ch.append($('<span class="button"></span>').append('<a style="float: right;" data-method="delete" data-confirm="Are you sure?" href="/course_preferences/'+data[2]+'>x</a>'));
+              //ch.append($('<span class="button"></span>').html('<a style="float: right;" data-method="delete" data-confirm="Are you sure?" href="/course_preferences/'+data[2]+'>x</a>'));
 
               ch.draggable({ revert: true});
               
@@ -116,7 +118,7 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
                 <div class="course">
                     <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
                     <span class="button"> 
-                        <!--<%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>-->
+                        <%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
                     </span>
                 </div>
             <% end %>
@@ -130,7 +132,7 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
                 <div class="course">
                     <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
                     <span class="button"> 
-                        <%= button_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
+                        <%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
                     </span>
                 </div>
             <% end %>
@@ -143,8 +145,8 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
             <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 2}.each do |course| %>
                 <div class="course">
                     <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
-                    <span class="button">
-                        <%= button_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
+                    <span class="button"> 
+                        <%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
                     </span>
                 </div>
             <% end %>
@@ -152,7 +154,7 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
     </div>
 
     <div style="clear: both;">
-    <%= link_to "Update", '#', :onclick => 'updatePreferences(); return false;' %>
+    <%= button_to "Update", '#', :onclick => 'updatePreferences(); return false;' %>
     </div>
 
 <style type="text/css">
