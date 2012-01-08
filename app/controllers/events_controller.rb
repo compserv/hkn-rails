@@ -7,7 +7,11 @@ class EventsController < ApplicationController
   # GET /events.xml
   def index
     per_page = 20
-    order = params[:sort] || "start_time"
+    if Event::VALID_SORT_FIELDS.include?(params[:sort])
+      order = params[:sort]
+    else
+      order = "start_time"
+    end
     event_filter = params[:event_filter] || "none"
     params[:sort_direction] ||= (params[:category] == 'past') ? 'down' : 'up'
     
@@ -37,7 +41,6 @@ class EventsController < ApplicationController
     end
 
     if event_filter != "none"
-      puts "hello"
       @events = @events.select {|e| e.event_type.name.downcase == event_filter}  
     end
 
@@ -49,7 +52,6 @@ class EventsController < ApplicationController
       @events = @events.paginate opts
     else
       @events = @events.paginate opts
-      puts "doing my best to sort"
     end
         
     respond_to do |format|
