@@ -111,47 +111,20 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
 </div> 
 -->
 <!--<div id="classes_container" style="border: 1px solid gray; width: 40%; margin-right: 10%; float: right; height: 25em; overflow: auto;">-->
-    <div class="courses" id="current">
-        <h2>Current Courses</h2>
-        <div class="drop-target">
-            <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 0}.each do |course| %>
-                <div class="course">
-                    <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
-                    <span class="button"> 
-                        <%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
-                    </span>
-                </div>
-            <% end %>
+    <% course_preferences = {0 => :current, 1 => :completed, 2 => :preferred} %>
+    <% for pref_level in [0, 1, 2] %>
+        <div class="courses" id=<%= course_preferences[pref_level] %>>
+            <h2><%= course_preferences[pref_level].to_s.capitalize %> Courses</h2>
+            <div class="drop-target">
+                <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == pref_level }.each do |course| %>
+                    <div class="course">
+                        <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
+                        <a class="delete_course" pref_id="<%= course.course_preferences.find_by_tutor_id(@current_user.tutor.id).id %>" style="float: right;">x</a>
+                    </div>
+                <% end %>
+            </div>
         </div>
-    </div>
-
-    <div class="courses" id="completed">
-        <h2>Completed Courses</h2>
-        <div class="drop-target">
-            <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 1}.each do |course| %>
-                <div class="course">
-                    <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
-                    <span class="button"> 
-                        <%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
-                    </span>
-                </div>
-            <% end %>
-        </div>
-    </div>
-
-    <div class="courses" id="preferred">
-        <h2>Preferred Courses</h2>
-        <div class="drop-target">
-            <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == 2}.each do |course| %>
-                <div class="course">
-                    <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
-                    <span class="button"> 
-                        <%= link_to 'x', course_preference_path(course.course_preferences.find_by_tutor_id(@current_user.tutor.id)), :confirm => 'Are you sure?', :method => :delete, :style => "float: right;"%>
-                    </span>
-                </div>
-            <% end %>
-        </div>
-    </div>
+    <% end %>
 
     <div style="clear: both;">
     <%= button_to "Update", '#', :onclick => 'updatePreferences(); return false;' %>
