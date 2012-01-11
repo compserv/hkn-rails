@@ -27,6 +27,24 @@
           
         }
       });
+
+      $("a.delete_course").click(function(){
+        ans = confirm('Are you sure?');
+
+        if (ans) {
+          course_pref_id = this.getAttribute('pref_id');
+          $.ajax({
+            type: 'DELETE',
+            url: '/course_preferences/' + course_pref_id,
+            success: function(data) { 
+              $(".course[pref_id="+course_pref_id+"]").remove();
+              }
+            });
+        }
+      });
+
+
+            
       
       $("#form").submit(function(){
         course_id = $("#course_id").val();
@@ -40,21 +58,27 @@
           function(data) {
             if(data[0] == 1){ //OK submission
               course_name = data[1];
+              course_pref_id = data[2];
               $("input[name=course_query]").val(""); //clear fields
               $("input[name=preference_level]:checked").removeAttr("checked");
-              //ajax
-              //ch = $("<tr></tr>");
-              //ch.append($("<td class=\"course_name\"></td>").html(course_name));
-              //ch.append($('<td class="course_buttons"></td>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'))
-              //$("#courses_"+preference_level).append(ch);
-              //$("#messages").hide("slow");
-              //$("#add_course_errors").html("");
 
-              ch = $("<div class='course ui-draggable'></div>");
+              //ajax
+              ch = $("<div class='course ui-draggable' pref_id='"+course_pref_id+"'></div>");
               ch.append($('<span class="title" course_id='+course_id+'></span>').html(course_name));
-              ch.append($('<span class="button"></span>').html('<form method="post" action="/course_preferences/'+data[2]+'"  class="button_to"><div><input name="_method" type="hidden" value="delete" /><input data-confirm="Are you sure?" style="float: right;" type="submit" value="Destroy" /><input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" /></div></form>'));
-              //ch.append($('<span class="button"></span>').append('<a style="float: right;" data-method="delete" data-confirm="Are you sure?" href="/course_preferences/'+data[2]+'>x</a>'));
-              //ch.append($('<span class="button"></span>').html('<a style="float: right;" data-method="delete" data-confirm="Are you sure?" href="/course_preferences/'+data[2]+'>x</a>'));
+              ch.append($('<a class="delete_course" pref_id="'+course_pref_id+'" style="float: right;" >x</a>').click(function() {
+                        ans = confirm('Are you sure?');
+
+                        if (ans) {
+                          $.ajax({
+                            type: 'DELETE',
+                            url: '/course_preferences/' + course_pref_id,
+                            success: function(data) { 
+                              $(".course[pref_id="+course_pref_id+"]").remove();
+                              }
+                            });
+                        }
+                      })
+                  );
 
               ch.draggable({ revert: true});
               
@@ -117,9 +141,10 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
             <h2><%= course_preferences[pref_level].to_s.capitalize %> Courses</h2>
             <div class="drop-target">
                 <% @courses_added.select{|course| course.course_preferences.find_by_tutor_id(@current_user.tutor.id).level == pref_level }.each do |course| %>
-                    <div class="course">
+                <% course_pref_id = course.course_preferences.find_by_tutor_id(@current_user.tutor.id).id %>
+                    <div class="course" pref_id="<%= course_pref_id %>" >
                         <span class="title" course_id=<%= course.id %>><%= course.course_abbr %></span>
-                        <a class="delete_course" pref_id="<%= course.course_preferences.find_by_tutor_id(@current_user.tutor.id).id %>" style="float: right;">x</a>
+                        <a class="delete_course" pref_id="<%= course_pref_id %>" style="float: right;">x</a>
                     </div>
                 <% end %>
             </div>
