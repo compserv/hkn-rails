@@ -401,17 +401,18 @@ class Admin::TutorController < Admin::AdminController
     else
       # nothing found...
     end
-    preference_level = params[:level]
+    #preference_level = params[:level]
+    preference_level = "current"
     @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
     
     if !course
       render :json => [0, "Course not found."]
       return
     end
-    if !@preference_options.include?(preference_level)
-      render :json => [0, "Please select a preference level."]
-      return
-    end
+    #if !@preference_options.include?(preference_level)
+      #render :json => [0, "Please select a preference level."]
+      #return
+    #end
 
     level = @preference_options[preference_level]
     tutor = @current_user.get_tutor

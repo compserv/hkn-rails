@@ -28,7 +28,44 @@
         }
       });
 
-      $("a.delete_course").click(function(){
+      function updatePreferences() {
+          $.post('<%= admin_update_course_preferences_path %>',
+                 {
+                    current: $.map( $('#current .title'),
+                      function(e){ return e.getAttribute('course_id')
+                                 }).join(' '),
+                    completed: $.map( $('#completed .title'),
+                      function(e){ return e.getAttribute('course_id')
+                                 }).join(' '),
+                    preferred: $.map( $('#preferred .title'),
+                      function(e){ return e.getAttribute('course_id')
+                                  }).join(' ')
+                 },
+                 function(data, status, xhr) {
+                      window.location.reload();
+                 }
+          );
+      }
+  
+      // drag and drop ui javascript
+      $(function() {
+          $(".drop-target").droppable({
+              activeClass: "ui-state-default",
+              hoverClass: "ui-state-hover",
+              accept: ":not(.ui-sortable-helper)",
+              drop : function( event, ui) {
+                      $(this).find(".placeholder").remove();
+                      ui.draggable.detach().appendTo(this).removeAttr(
+                          'style');
+              }
+          });
+  
+          $(".course").draggable({
+              revert: true
+          });
+      });
+
+      function deleteCourse() {
         ans = confirm('Are you sure?');
 
         if (ans) {
@@ -41,7 +78,9 @@
               }
             });
         }
-      });
+      };
+
+      $("a.delete_course").click(deleteCourse);
 
 
             
@@ -63,22 +102,12 @@
               $("input[name=preference_level]:checked").removeAttr("checked");
 
               //ajax
-              ch = $("<div class='course ui-draggable' pref_id='"+course_pref_id+"'></div>");
-              ch.append($('<span class="title" course_id='+course_id+'></span>').html(course_name));
-              ch.append($('<a class="delete_course" pref_id="'+course_pref_id+'" style="float: right;" >x</a>').click(function() {
-                        ans = confirm('Are you sure?');
-
-                        if (ans) {
-                          $.ajax({
-                            type: 'DELETE',
-                            url: '/course_preferences/' + course_pref_id,
-                            success: function(data) { 
-                              $(".course[pref_id="+course_pref_id+"]").remove();
-                              }
-                            });
-                        }
-                      })
-                  );
+              ch = $("<div class='course ui-draggable' pref_id='"+
+                  course_pref_id+"'></div>");
+              ch.append($('<span class="title" course_id='+
+                  course_id+'></span>').html(course_name));
+              ch.append($('<a class="delete_course" pref_id="'+
+                  course_pref_id+'" style="float: right;" >x</a>').click(deleteCourse));
 
               ch.draggable({ revert: true});
               
@@ -99,6 +128,37 @@
       
     });
   </script>
+
+  <style type="text/css">
+      .courses {
+          width: 30%;
+          float: left;
+      }
+  
+      .courses .drop-target {
+          min-height: 100px;
+          width: 90%;
+          display: inline-block;
+      }
+  
+      .course {
+          margin: 2px;
+          background: #EEE;
+          border-radius: 5px;
+          text-align: center;
+          width: auto;
+          list-style-type: none;
+          cursor: default;
+          position: relative;
+          float: left;
+          width: 7em;
+  
+      .course * {
+          display: inline;
+      }
+  
+  
+  </style>
 <% end %>
 
 <div id="add_course_errors"></div>
@@ -107,35 +167,18 @@
 
     <div style="margin: 0px auto;">
         <!-- Choose a class to add: -->
-        <!-- <%= select_tag(:class, options_for_select(@course_options)) %> -->
         <%= label_tag "Search for class:" %>
-        <%= text_field_tag "course_query", "", :id => "course_query" %><br/>
+        <%= text_field_tag "course_query", "", :id => "course_query" %>
+        <br/>
         <%= hidden_field_tag "course_id", "", :id => "course_id" %>
-        <%= label_tag "Mark as:" %>
-        <%= radio_button_tag "preference_level", "current", :checked => true %> Current
-        <%= radio_button_tag "preference_level", "completed" %> Completed
-        <%= radio_button_tag "preference_level", "preferred" %> Preferred<br/>
 
-        <%= submit_tag "Submit", :id => "course_submit" %>
+        <%= submit_tag "Add To Current", :id => "course_submit" %>
     </div>
+    <br></br>
 <% end %>
 
-<!--
-Search for class (like "cs61", "cs61c", "ee", or "cheme"):
-<input id="course_query" onkeypress="return updateonenter(event);"/> 
-<a href="javascript:void(0);" onclick="update_courses();">Search</a> 
-</div> 
-<br /> 
-<div id="results_container" style="border: 1px solid gray; width: 40%; float: left; height: 25em; overflow: hidden;"> 
-    <h2>Search Results: </h2> 
-    <div id="results" style="height: 20em; overflow: scroll"> 
-        <hr /> 
-        None yet, search above!
-    </div> 
-</div> 
--->
-<!--<div id="classes_container" style="border: 1px solid gray; width: 40%; margin-right: 10%; float: right; height: 25em; overflow: auto;">-->
-    <% course_preferences = {0 => :current, 1 => :completed, 2 => :preferred} %>
+<% course_preferences = {0 => :current, 1 => :completed,
+    2 => :preferred} %>
     <% for pref_level in [0, 1, 2] %>
         <div class="courses" id=<%= course_preferences[pref_level] %>>
             <h2><%= course_preferences[pref_level].to_s.capitalize %> Courses</h2>
@@ -152,74 +195,5 @@ Search for class (like "cs61", "cs61c", "ee", or "cheme"):
     <% end %>
 
     <div style="clear: both;">
-    <%= button_to "Update", '#', :onclick => 'updatePreferences(); return false;' %>
+    <%= button_to "Save Changes", '#', :onclick => 'updatePreferences(); return false;' %>
     </div>
-
-<style type="text/css">
-
-    .courses {
-        width: 30%;
-        float: left;
-    }
-
-    .courses .drop-target {
-        min-width: 30%;
-        min-height: 30%;
-        padding: 1em;
-        display: inline-block;
-        
-        border: 1px gray solid;
-
-    }
-
-    .course {
-        margin: 2px;
-        background: #EEE;
-        border-radius: 5px;
-        text-align: center;
-        width: auto;
-        list-style-type: none;
-        cursor: default;
-        position: relative;
-        float: left;
-        width: 7em;
-
-    .course * {
-        display: inline;
-    }
-
-
-</style>
-
-
-<script type="text/javascript">
-
-    updatePreferences = function() {
-        $.post('<%= admin_update_course_preferences_path %>',
-               {
-                    current: $.map( $('#current .title'), function(e){ return e.getAttribute('course_id') }).join(' '),
-                    completed: $.map( $('#completed .title'), function(e){ return e.getAttribute('course_id') }).join(' '),
-                    preferred: $.map( $('#preferred .title'), function(e){ return e.getAttribute('course_id') }).join(' ')
-               },
-               function(data, status, xhr) {
-                    window.location.reload();
-               }
-        );
-    }
-
-    $(function() {
-        $(".drop-target").droppable({
-            activeClass: "ui-state-default",
-            hoverClass: "ui-state-hover",
-            accept: ":not(.ui-sortable-helper)",
-            drop : function( event, ui) {
-                    $(this).find(".placeholder").remove();
-                    ui.draggable.detach().appendTo(this).removeAttr('style');
-            }
-        });
-
-        $(".course").draggable({
-            revert: true
-        });
-    });
-</script>
