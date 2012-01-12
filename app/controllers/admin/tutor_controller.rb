@@ -1,6 +1,6 @@
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule]
-  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule]
+  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule, :update_preferences]
+  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule, :update_preferences]
   
   
   def expire_schedule
@@ -63,7 +63,6 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def update_preferences
-      # a comment
       tutor = @current_user.get_tutor
       preferences_options = {:current=>0, :completed=>1, :preferred=>2}
       course_preferences = tutor.course_preferences
@@ -78,14 +77,13 @@ class Admin::TutorController < Admin::AdminController
               pref.save
           end
 
-
-          #for course_id in course_ids
-              #Course.find(course_id)
-          #end
-
       end
 
-      redirect_to :admin_tutor_signup_courses, :notice => "Successfully updated your tutoring courses"
+      flash[:notice] = "Successfully updated your tutoring preferences"
+      tutor = @current_user.get_tutor
+      @courses_added = tutor.courses
+      render :action => :signup_courses
+      #redirect_to :admin_tutor_signup_courses
 
   end
 

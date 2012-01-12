@@ -1,7 +1,7 @@
 <% content_for :header do %>
-  <# autocomplete collides with the jquery-ui so must load the jquery before autocomplete>
-  <# source: http://stackoverflow.com/questions/3308935/jquery-autocomplete-this-source-is-not-a-function-error>
-  <# solution is the second or third post>
+  <%# autocomplete collides with the jquery-ui so must load the jquery before autocomplete%>
+  <%# source: http://stackoverflow.com/questions/3308935/jquery-autocomplete-this-source-is-not-a-function-error%>
+  <%# solution is the second or third post%>
 
   <%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
   <%= javascript_include_tag "jquery-autocomplete.min" %>
@@ -28,42 +28,6 @@
         }
       });
 
-      function updatePreferences() {
-          $.post('<%= admin_update_course_preferences_path %>',
-                 {
-                    current: $.map( $('#current .title'),
-                      function(e){ return e.getAttribute('course_id')
-                                 }).join(' '),
-                    completed: $.map( $('#completed .title'),
-                      function(e){ return e.getAttribute('course_id')
-                                 }).join(' '),
-                    preferred: $.map( $('#preferred .title'),
-                      function(e){ return e.getAttribute('course_id')
-                                  }).join(' ')
-                 },
-                 function(data, status, xhr) {
-                      window.location.reload();
-                 }
-          );
-      }
-  
-      // drag and drop ui javascript
-      $(function() {
-          $(".drop-target").droppable({
-              activeClass: "ui-state-default",
-              hoverClass: "ui-state-hover",
-              accept: ":not(.ui-sortable-helper)",
-              drop : function( event, ui) {
-                      $(this).find(".placeholder").remove();
-                      ui.draggable.detach().appendTo(this).removeAttr(
-                          'style');
-              }
-          });
-  
-          $(".course").draggable({
-              revert: true
-          });
-      });
 
       function deleteCourse() {
         ans = confirm('Are you sure?');
@@ -75,8 +39,18 @@
             url: '/course_preferences/' + course_pref_id,
             success: function(data) { 
               $(".course[pref_id="+course_pref_id+"]").remove();
+
+              notice = $(".message")
+
+              if (notice.length == 0) {
+                // add the whole message thing
+                $("<div id='messages' class='no-translation'><div class='message'>Course removed.</div></div>").insertBefore("#add_course_errors");
+              } else {
+                notice_el = notice[0];
+                notice_el.textContent = "Course removed.";
               }
-            });
+            }
+          });
         }
       };
 
@@ -177,6 +151,8 @@
     <br></br>
 <% end %>
 
+<h1 style="margin: 0px auto;"><b>Preferences</b></h1>
+<p style="margin: 0px auto;">Drag and drop the courses to adjust your preferences</p>
 <% course_preferences = {0 => :current, 1 => :completed,
     2 => :preferred} %>
     <% for pref_level in [0, 1, 2] %>
@@ -197,3 +173,39 @@
     <div style="clear: both;">
     <%= button_to "Save Changes", '#', :onclick => 'updatePreferences(); return false;' %>
     </div>
+
+<%- content_for :header do -%>
+    <script type="text/javascript">
+      function updatePreferences() {
+          $.post('<%= admin_update_course_preferences_path %>',
+                 {
+                    current: $.map( $('#current .title'), function(e){ return e.getAttribute('course_id');}).join(' '),
+                    completed: $.map( $('#completed .title'), function(e){ return e.getAttribute('course_id');}).join(' '),
+                    preferred: $.map( $('#preferred .title'), function(e){ return e.getAttribute('course_id');}).join(' ')
+                 },
+                 function(data, status, xhr) {
+                      window.location.reload();
+                 }
+          );
+      }
+  
+      // drag and drop ui javascript
+      $(function() {
+          $(".drop-target").droppable({
+              activeClass: "ui-state-default",
+              hoverClass: "ui-state-hover",
+              accept: ":not(.ui-sortable-helper)",
+              drop : function( event, ui) {
+                      $(this).find(".placeholder").remove();
+                      ui.draggable.detach().appendTo(this).removeAttr(
+                          'style');
+              }
+          });
+  
+          $(".course").draggable({
+              revert: true
+          });
+      });
+    </script>
+<% end %>
+
