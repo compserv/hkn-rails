@@ -37,11 +37,11 @@ end
 
 def login_as(user, auth={})
   controller.current_user = user
+  @current_user = user
   user.stub(:in_group?) { |group| auth.include? group }
-  user.stub(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k)}.reject }
+  user.stub(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k.to_s)}.reject }
 end
 
 def login_as_officer(auth={})
-	@current_user = stub_model(Person)
-	login_as @current_user, auth.merge({'officers' => true, 'comms' => true})
+	login_as stub_model(Person), auth.merge({'officers' => true, 'comms' => true})
 end

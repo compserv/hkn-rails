@@ -1,6 +1,6 @@
 class ResumesController < ApplicationController
   
-  before_filter :authorize_indrel, :only => [:index, :resume_books]
+  before_filter :authorize_indrel, :only => [:index, :resume_books, :upload_for]
   
   def new
     @resume = Resume.new
@@ -13,6 +13,10 @@ class ResumesController < ApplicationController
   end
   
   def create
+    if params[:resume][:person].to_i != @current_user.id
+      authorize(:indrel) or return
+    end
+
     @person = Person.find(params[:resume][:person].to_i)
     params[:resume][:person] = @person
 
@@ -43,9 +47,9 @@ class ResumesController < ApplicationController
       f.write(resume_file.read)
       flash[:notice] = "Resume Uploaded"
       if @resume.person == @current_user
-	redirect_to account_settings_path
+        redirect_to account_settings_path
       else # if this is an indrel officer uploading a resume on behalf of someone
-	redirect_to resumes_path
+        redirect_to resumes_path
       end
       # Delete all older resuems:
       old_resumes = @person.resumes[(1..-1)] # All but most recent res.

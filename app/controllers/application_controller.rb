@@ -69,16 +69,15 @@ class ApplicationController < ActionController::Base
     raise 'This is a test. This is only a test.'
   end
 
-  # Moved this to public section to allow use of arguments in before_filter
-  def authorize(group_or_groups=nil)
+  def authorize(group_or_groups=[])
     # group_or_groups must be either a single Group name or an array of Group names
     # If user is in any of the groups, then s/he has access
-    groups = (group_or_groups.class == String) ? [group_or_groups] : group_or_groups
-    groups = groups | ["superusers"]
     if @current_user.nil?
       redirect_to :login, :notice => "Please log in to access this page.", :flash => {:referer => request.fullpath}
       return false
     end
+    groups = ([String, Symbol].include? group_or_groups.class) ? [group_or_groups] : group_or_groups
+    groups = groups.map(&:to_s) | ["superusers"]
     if (groups & @current_user.groups.collect(&:name)).blank?
       redirect_to :root, :notice => "Insufficient privileges to access this page."
       return false
