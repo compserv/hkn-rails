@@ -42,6 +42,21 @@ class Person < ActiveRecord::Base
   has_and_belongs_to_many :badges
   has_many :elections, :dependent => :destroy
 
+  attr_accessible :first_name
+  attr_accessible :last_name
+  attr_accessible :username
+  attr_accessible :password
+  attr_accessible :password_confirmation
+  attr_accessible :email
+  attr_accessible :phone_number
+  attr_accessible :aim
+  attr_accessible :date_of_birth
+  attr_accessible :picture
+  attr_accessible :private
+  attr_accessible :local_address
+  attr_accessible :perm_address
+  attr_accessible :grad_semester
+
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
 
