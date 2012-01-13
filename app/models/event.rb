@@ -39,6 +39,8 @@ class Event < ActiveRecord::Base
     end
   }
 
+  VALID_SORT_FIELDS = %w[start_time name location event_type]
+
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
   
   def self.upcoming_events(num, user=nil)
