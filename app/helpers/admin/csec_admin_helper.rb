@@ -26,7 +26,7 @@ module SurveyData
             # puts "Entering state #{state.to_s}"
 
             case state
-            when :init:
+            when :init
               # Initialize vars that are cross-state, but not cross-klass
               frequency_keys = []   # Ordered list of [1], [2], N/A, ...
               frequencies = {}      # Frequencies that will go into SurveyAnswer
@@ -39,7 +39,7 @@ module SurveyData
                         }            # Cross-state state
               state = :accept_klass
               redo
-            when :accept_klass:
+            when :accept_klass
               # Row like
               # ["EE 100-1 NIKNEJAD,ALI (prof)", "60 RESPONDENTS", nil, nil, nil, nil, nil, nil, nil, nil, nil, "FALL 2010", nil] 
               
@@ -119,15 +119,15 @@ module SurveyData
 
               state = :frequencies
 
-            when :frequencies:
+            when :frequencies
               row.compact!
               next if row.first =~ /FREQUENCIES/i
               row.each do |k|
                 case
-                when k =~ /\[(.+)\]/:
+                when k =~ /\[(.+)\]/
                   k = $1
                   redo
-                when k.is_int? || k =~ /N\/A|Omit/:
+                when k.is_int? || k =~ /N\/A|Omit/
                   frequency_keys.push k
                 else next  # ignore stats, these are recomputed
                 end # row case
@@ -135,10 +135,10 @@ module SurveyData
               # result << ["Read frequency keys:", frequency_keys]
               state = :data
 
-            when :data:
+            when :data
               case
-              when row.first =~ /^[A-Z ]+$/:        # e.g. CLASSROOM PRESENTATION
-              when row.first =~ /^\d\. (.+)/:    # question data
+              when row.first =~ /^[A-Z ]+$/        # e.g. CLASSROOM PRESENTATION
+              when row.first =~ /^\d\. (.+)/    # question data
 		qtext = $1.gsub(/[^a-zA-Z]/,' ')
 		q = SurveyQuestion.find_by_text(qtext) || SurveyQuestion.search {keywords qtext}.results.first
 		q = nil if !q || !SurveyQuestion.exists?(q.id)
@@ -166,9 +166,9 @@ module SurveyData
                 end
 
                 current[:answers] << a
-              when row.first =~ /^1 is a low rating/:
+              when row.first =~ /^1 is a low rating/
                 # Example scoring
-              when row.first =~ /^Data processed/:
+              when row.first =~ /^Data processed/
                 # end of klass
                 result << ["Survey responses:", current[:answers]]
                 state = :finish
@@ -179,11 +179,11 @@ module SurveyData
               end
               state = :data   # process moar
 
-            when :finish:
+            when :finish
               results[:info] << result.dup
               state = :init
 
-            when :error:
+            when :error
               raise
             end # case state
           end # CSV.open
@@ -191,7 +191,7 @@ module SurveyData
       rescue => e
         results[:errors] << "Error #{e.inspect} parsing near line #{last_row[1]}: #{last_row[0]}"
         results[:errors] << ["Stack trace:", e.backtrace]
-        #raise if RAILS_ENV.eql?('development')
+        #raise if Rails.env.development?
       end
 
       return results

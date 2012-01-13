@@ -14,12 +14,14 @@
     <th>345 Soda</th>
   </tr>
 <% for hour in @hours %>
+  <% cory_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Cory, @day, hour) %>
+  <% soda_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Soda, @day, hour) %>
   <tr>
     <td class="time"><%= format_hour_slot hour %></td>
-    <td class="pcell"><%= render Slot.get_from_string(@day + hour.to_s + "C") %></td>
-    <td class="pcell"><%= render Slot.get_from_string(@day + hour.to_s + "S") %></td>
-    <% tutors.concat(Slot.get_from_string(@day + hour.to_s + "C").tutors) %>
-    <% tutors.concat(Slot.get_from_string(@day + hour.to_s + "S").tutors) %>
+    <td class="pcell"><%= render cory_slot %></td>
+    <td class="pcell"><%= render soda_slot %></td>
+    <% tutors.concat(cory_slot.tutors) %>
+    <% tutors.concat(soda_slot.tutors) %>
   </tr>
 <% end %>
 </table>

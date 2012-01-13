@@ -76,8 +76,8 @@ class CoursesurveysController < ApplicationController
 
       # Append course to correct list
       case course.course_number.to_i
-        when   0.. 99: @lower_div
-        when 100..199: @upper_div
+        when   0.. 99 then @lower_div
+        when 100..199 then @upper_div
         else           @grad
       end << result
  end
@@ -419,7 +419,7 @@ class CoursesurveysController < ApplicationController
       @results[:courses].results = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
       @results[:instructors].results = Instructor.find(:all, :select=>[:id,:first_name,:last_name,:private,:title], :conditions => ["(first_name||' '||last_name) LIKE ?", str])
 
-      flash[:notice] = "Solr isn't started, so your results are probably lacking." if RAILS_ENV.eql?('development')
+      flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
     end
 
     # redirect if only one result

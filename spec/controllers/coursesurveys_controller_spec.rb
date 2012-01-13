@@ -76,4 +76,10 @@ describe CoursesurveysController do
     end
   end
 
+  describe "search" do
+    it "should not crash" do
+      get 'search'
+    end
+  end
+
 end # CoursesurveysController

@@ -15,7 +15,7 @@ class Admin::CsecController < Admin::AdminController
     return redirect_to admin_csec_upload_surveys_path, :notice => "Please select a file to upload." unless params[:file]
 
 ##    if params[:save] then
-##      Process.fork { system "rake db:backup:dump RAILS_ENV=#{RAILS_ENV}" }
+##      Process.fork { system "rake db:backup:dump RAILS_ENV=#{Rails.env}" }
 ##      Process.wait
 ##    end
 

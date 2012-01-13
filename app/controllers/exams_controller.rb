@@ -44,7 +44,7 @@ class ExamsController < ApplicationController
       str = "%#{@query}%"
 
       @results[:courses] = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
-      flash[:notice] = "Solr isn't started, so your results are probably lacking." if RAILS_ENV.eql?('development')
+      flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
      end
 
     # if very likely have a single match, just go to it

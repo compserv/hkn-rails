@@ -7,8 +7,10 @@ class TutorController < ApplicationController
     @tutoring_enabled = prop.tutoring_enabled
     @tutoring_message = prop.tutoring_message
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
+    @wdays = 1..5
     @hours = prop.tutoring_start .. prop.tutoring_end
-    @rows = ["Hours"] + @hours.to_a
+    @room_numbers = ["290 Cory", "345 Soda"]
+    @rows = @hours
   end
 
   def calendar

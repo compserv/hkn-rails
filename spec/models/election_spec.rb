@@ -36,6 +36,7 @@ describe Election do
   after(:each) do
     @obama_election.destroy if @obama_election
     @hilary_election.destroy if @hilary_election
+    `rm -f ./elections_hknmod` # If this file isn't deleted, then autotest goes crazy
   end
 
   it "should prioritize requested username over existing one" do

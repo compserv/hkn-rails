@@ -2,112 +2,97 @@ class Slot < ActiveRecord::Base
 
   # === List of columns ===
   #   id         : integer 
-  #   time       : datetime 
   #   room       : integer 
   #   created_at : datetime 
   #   updated_at : datetime 
+  #   hour       : integer 
+  #   wday       : integer 
   # =======================
 
-  has_and_belongs_to_many :tutors, :after_add => :check_tutor
+  # This is a tutoring office hours slot
+
+  module Room
+    Cory  = 0
+    Soda  = 1
+    Valid = [Cory, Soda]
+    Both  = Valid         # just an alias
+  end
+
+  module Wday
+    Monday = 1
+    Friday = 5
+    Valid  = (Monday..Friday)
+  end
+
+  module Hour
+    Valid = (11 .. 16)
+  end
+
+  ROOMS = {:cory => Room::Cory, :soda => Room::Soda}
+
+  has_and_belongs_to_many :tutors, :before_add => :check_tutor
   has_many :slot_changes
 
   validate :valid_room
-  validates :room, :presence => true
-  validates :time, :presence => true
+  validate :valid_hour
+  validates :room, :presence => true, :inclusion => {:in => Room::Valid}
+  validates :wday, :presence => true, :inclusion => {:in => Wday::Valid}
+  validates :hour, :presence => true, :inclusion => {:in => Hour::Valid}, :uniqueness => {:scope => [:wday, :room]}
 
-  @day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
-  @shortday_to_wday = {"Mon"=>1, "Tue"=>2, "Wed"=>3, "Thu"=>4, "Fri"=>5}
-  @room_to_int = {"Cory"=>0, "Soda"=>1}
-  class << self
-    attr_reader :day_to_wday, :room_to_int, :shortday_to_wday
-    def extract_day_time(str)
-      begin
-        wday = Slot.shortday_to_wday[str[0..2]]
-        hour = Integer(str[3..4])
-        return wday, hour
-      rescue
-        return nil
-      end
-    end
-    def get_from_string(str)
-      daytime = extract_day_time(str)
-      time = get_time(daytime[0], daytime[1])
-      room = room_to_int[str[5..8]] || {"C"=>0, "S"=>1}[str[5..5]]
-      return find_by_time_and_room(time, room) || (raise "Nil slot for time #{time.to_s} and room #{room}")
-    end
-    def get_time(wday, hour)
-#      base = Time.at(0).utc
-#      thetime = hour.hours + ((wday - base.wday) % 7).days
-#      Time.at(thetime.value)
-      
-      #Time.local(0,1,wday+1,hour,0)
-      Availability.time_for_weekday_and_hour(wday,hour)
-    end
-
-    def get_time_str(wday, hour)
-     get_time.strftime('%a%H')
-    end
-    def find_by_wday(wday)
-      all.select {|slot| slot.wday == wday}
-    end
-    def find_by_wday_and_room(wday, room)
-      find_by_wday(wday).select {|slot| slot.room == room}
-    end
-   def find_by_wday_hour_and_room(wday, hour, room)
-      all.select {|slot| slot.wday == wday && slot.hour == hour && slot.room == room}
-    end
-  end
+  HOUR_RANGE_ERROR = "hour must be within tutoring hours"
+  ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
 
   def to_s
-    time.strftime('%a%H') + get_room()[0..0]
+    "Slot #{room_name} #{day_name} #{hour}"
   end
 
-  def get_room()
-    if room == 0 then
+  def inspect
+    "<#Slot #{room_name} #{day_name} #{hour}>"
+  end
+
+  def room_name
+    if room == Room::Cory then
       "Cory"
-    elsif room == 1 then
+    elsif room == Room::Soda then
       "Soda"
-    else
-      "Undefined"
     end
   end
 
-  def hour
-    time.hour
-  end
-
-  def wday
-    time.wday
+  def day_name
+    day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
+    day_to_wday.key(wday)
   end
 
   def valid_room
     if !room.blank?
-      errors[:room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (room == 0 or room == 1)
+      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1)
     end
   end
-  
+
+  def valid_hour
+    unless (Property.tutoring_start..Property.tutoring_end).include? hour
+      errors[:hour] << HOUR_RANGE_ERROR
+    end
+  end
+
   def check_tutor(tutor)
-    otherslot = Slot.find_by_time_and_room(time, 1-room)
-    other_tutors = otherslot.tutors if otherslot
-    other_tutors ||= []
-    for other_tutor in other_tutors
-      if tutor == other_tutor
-        tutors.delete(tutor)
-        break
+    flip_room = room == 0 ? 1 : 0
+    otherslot = Slot.find_by_wday_and_hour_and_room(wday, hour, flip_room)
+    unless otherslot.nil?
+      other_tutors = otherslot.tutors
+      other_tutors.each do |other_tutor|
+        if tutor == other_tutor
+          raise "Same tutor in different offices at same time!"
+        end
       end
     end
   end
 
   def availabilities
-    return Availability.where(:time=>time)
+    return Availability.where(:hour => hour, :wday => wday)
   end
-  def get_all_tutors
-    return Availability.where(:time=>time).collect(&:tutor)
-  end
-  def get_available_tutors
-    return Availability.where(:time=>time, :preference_level=>2).collect(&:tutor)
-  end
-  def get_preferred_tutors
-    return Availability.where(:time=>time, :preference_level=>1).collect(&:tutor)
+
+  def adjacent_to(other_slot)
+    other_slot.wday == wday and (other_slot.hour - hour).abs == 1
   end
 end

@@ -13,9 +13,9 @@
 
 <div class="hours">
 <label>Tutoring Office Hours:</label><br/>
-<% for slot in tutor.slots.sort_by { |a| [a.room, a.time] } %>
+<% for slot in tutor.slots.sort_by { |a| [a.room, a.wday, a.hour] } %>
 	<span style="font-style: italic">
-	<%= slot.time.strftime("%A, %I-") + (slot.hour % 12 + 1).to_s + " @ " + slot.get_room() %>
+	<%= "%s, %s-" % [slot.day_name, slot.hour] + (slot.hour % 12 + 1).to_s + " @ " + slot.room_name %>
 	</span><br/>
 <% end %>
 </div>

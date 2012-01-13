@@ -24,10 +24,10 @@
   
   <!--Automatically includes javascript or css files with the same name as the controller -->
   <% filename = controller.controller_name %>
-  <% if FileTest.exist?  RAILS_ROOT + "/public/stylesheets/" + filename + ".css" %>
+  <% if FileTest.exist?  Rails.root.join("public", "stylesheets", filename + ".css") %>
     <%= stylesheet_link_tag "#{filename}" %>
   <% end %>
-  <% if FileTest.exist?  RAILS_ROOT + "/public/javascripts/" + filename + ".js" %>
+  <% if FileTest.exist?  Rails.root.join("public", "javascripts", filename + ".js") %>
     <%= javascript_include_tag "#{filename}" %>
   <% end %>
 </head>

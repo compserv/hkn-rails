@@ -21,16 +21,21 @@ class Tutor < ActiveRecord::Base
   # A current tutor has an {Election} for the current semester,
   # as given by {Property.current_semester}.
   # Also sorts by [{Person.first_name first_name}, {Person.last_name last_name}].
-  scope :current, lambda { joins([:person, {:person => :elections}]).where(:elections => {:semester => Property.current_semester, :elected => true}).order(:first_name,:last_name) }
+  scope :current, lambda { self.current_scope_helper.order(:first_name,:last_name) }
+
+  class << self
+    # This has been separated out like this in order to apply the scope when 
+    # using Tutor as an association.
+    # In other words, if we want all Availabilities from Tutors who are current,
+    # we write Tutor.current_scope_helper(Availabilities, :tutor).
+    def current_scope_helper(query=self, join_name=nil)
+      join = {:person => :elections}
+      join = {join_name => join} unless query == self
+      query.joins(join).where(:elections => {:semester => Property.current_semester, :elected => true})
+    end
+  end
   
   def to_s
     return person.fullname
-  end
-
-  def get_availability_by_day_hour(weekday,hour)
-    #weekdays = {"Monday" => 5, "Tuesday" => 6, "Wednesday" => 7, "Thursday" => 1, "Friday" => 2, "Saturday" => 3, "Sunday" => 4}
-    #t = Time.gm(1970,1,weekdays[weekday],hour,0,0).in_time_zone
-    t = Availability.time_for_weekday_and_hour(weekday,hour)
-    return Availability.find(:first, :conditions => { :time => t, :tutor_id => self.id })
   end
 end

@@ -6,10 +6,11 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
 def initialize_slots
-  (11..16).each do |hour|
-    (1..5).each do |day|
-      Slot.find_or_create_by_time_and_room(:time=>Slot.get_time(day, hour), :room=>0)
-      Slot.find_or_create_by_time_and_room(:time=>Slot.get_time(day, hour), :room=>1)
+  Slot::Hour::Valid.each do |hour|
+    Slot::Wday::Valid.each do |wday|
+      Slot::Room::Valid.each do |room|
+        Slot.find_or_create_by_hour_and_wday_and_room(hour, wday, room)
+      end
     end
   end
 end

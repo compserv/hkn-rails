@@ -1,88 +1,46 @@
 <% stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
-<%= form_tag do %>
-<input type="checkbox" id="only_available" name="only_available" checked="checked" /><label id="only_available">Restrict to officers who are available at each time.</label>
-<p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
-<p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
-<p> Only tutoring officers have sufficient privileges to change the schedule.</p>
-<p>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit.</p>
-<p>Then add them back in the right places, and submit again. If you don't do that exactly, the schedule may not end up in the right state.</p>
-<div class="overflow">
-<table id="edit_schedule">
-<% @rows.each do |row| %>
-	<tr>
-	<% if row == "Hours" %>
-		<th>Hours</th>
-		<% @days.each do |day| %>
-		<th class="slot-table-header"><%= day %></th>
-		<% end %>
-	<% else %>
-		<td  rowspan="2"><%= format_hour_slot row.to_i %></td>
-		<% @days.each do |day| %>
-		<td  class="slot cory">
-			<p> Cory </p>
-			<select name="<%= formatslot day, row + "C" %>[]" multiple="multiple">
-				<% if @cory_preferred[formatslot day, row] %>
-				<optgroup label="Preferred">
-				<% @cory_preferred[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "C" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-				<% if @cory_available[formatslot day, row] %>
-				<optgroup label="Available">
-				<% @cory_available[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "C" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-                            <% end %>
-                            <% if @cory_others[formatslot day, row] %>
-				<optgroup label="Others">
-				<% @cory_others[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "C" %>><%= tutor.person.fullname %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-			</select>
-		</td>
-		<% end%>
-	</tr>
-	<tr>
-		<% @days.each do |day| %>
-		<td  class="slot soda">
-			<p> Soda </p>
-			<select name="<%= formatslot day, row + "S" %>[]" multiple="multiple">
-				<% if @soda_preferred[formatslot day, row] %>
-				<optgroup label="Preferred">
-				<% @soda_preferred[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "S" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-				<% if @soda_available[formatslot day, row] %>
-				<optgroup label="Available">
-				<% @soda_available[formatslot day, row].each do |entry| %>
-				<option value="<%= entry[0].id %>" <%= default_select @assignments, day, row, entry[0], "S" %>><%= entry[0].person.fullname + entry[1] %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-                            <% if @soda_others[formatslot day, row] %>
-				<optgroup label="Others">
-				<% @soda_others[formatslot day, row].each do |tutor| %>
-				<option value="<%= tutor.id %>" <%= default_select @assignments, day, row, tutor, "S" %>><%= tutor.person.fullname %></option>
-				<% end %>
-				</optgroup>
-				<% end %>
-			</select>
-		</td>
-		<% end%>
-	<% end %>
-	</tr>
-<% end %>
-</table>
-</div>
-<%= submit_tag "Save changes" %>
-<%= submit_tag "Reset all" %>
+<%= form_tag(admin_tutor_update_schedule_path, :method => :put) do %>
+  <%= check_box_tag :only_available, true, @only_available %>
+  <%= label_tag :only_available, "Restrict to officers who are available at each time." %>
+  <p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
+  <p>'A' = prefer adjacent slots, 'a' = do not prefer adjacent slots, absence of such = no preference of adjacency</p>
+  <p> Only tutoring officers have sufficient privileges to change the schedule.</p>
+  <p><s>To edit any slots, you must do TWO submits. First remove all tutors to be switched and submit.</s></p>
+  <p><s>Then add them back in the right places, and submit again. If you don't do that exactly, the schedule may not end up in the right state.</s></p>
+  <p>Form has been improved: You do not need to submit twice anymore.</p>
+  <div class="overflow">
+  <table id="edit_schedule">
+    <tr>
+      <th>Hours</th>
+      <% @days.each do |day| %>
+      <th class="slot-table-header"><%= day %></th>
+      <% end %>
+    </tr>
+    <% @hours.each do |hour| %>
+      <% [:cory, :soda].each do |room_name| %>
+        <% room = Slot::ROOMS[room_name] %>
+        <tr>
+          <% if room_name == :cory %>
+            <td rowspan="2"><%= format_hour_slot hour %></td>
+          <% end %>
+          <% @wdays.each do |wday| %>
+          <td  class="slot <%= room_name.to_s %>">
+            <p><%= room_name.to_s.capitalize%></p>
+            <%= select_tag("assignments[#{room}][#{wday}][#{hour}]", 
+                  grouped_options_for_select(
+                    @slot_options[room][wday][hour][:opts], 
+                    @slot_options[room][wday][hour][:defaults]), 
+                  :multiple => true) %>
+          </td>
+          <% end%>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+  </div>
+  <%= submit_tag "Save changes" %>
+  <%= submit_tag "Reset all", :confirm => 'Are you sure you want to reset the tutoring schedule?' %>
 <% end %><br/>
 
 <p>Each of the following categories are simple counts, except for (Non)Adjacencies and Correct Office.</p>
@@ -96,30 +54,33 @@
 <p>(Non)Adjacencies = 1 (officers only)</p>
 <p>Correct Office = 2</p>
 
-<% [@officer_stats, @cmember_stats].each do |stats| %>
+<% [:officer, :cmember].each do |type| %>
 <div class="overflow">
 <table>
-<tr>
-<% if stats == @officer_stats %>
-<td><h3>Officers</h3></td>
-<% else %> <td><h3>Committee members</h3></td><% end %>
-<td><h3>Availabilities</h3></td>
-<td><h3>First Choices</h3></td>
-<td><h3>Second Choices</h3></td>
-<td><h3>Wrong Times</h3></td>
-<% if stats == @officer_stats %>
-<td><h3>(Non)Adjacencies</h3></td><% end %>
-<td><h3>Correct Office</h3></td>
-<td><h3>Total Happiness = <%= stats['happiness'] %></h3></td>
-</tr>
-<% Tutor.all.sort_by{|t| [-t.availabilities.count, t.person.fullname]}.each do |tutor| %>
-<tr>
-<% if stats.keys.include?(tutor) %>
-<td><%= tutor.person.fullname %></td>
-<% stats[tutor][0].each do |entry| %>
-<td><%= entry %></td>
-<% end %>
-</tr><% end %><% end %>
+  <tr>
+    <% if type == :officer %>
+      <th>Officers</th>
+    <% else %> 
+      <th>Committee Members</th>
+    <% end %>
+    <th>Availabilities</th>
+    <th>First Choices</th>
+    <th>Second Choices</th>
+    <th>Wrong Times</th>
+    <% if type == :officer %>
+      <th>(Non)Adjacencies</th>
+    <% end %>
+    <th>Correct Office</th>
+    <th>Total Happiness = <%= @happiness[type] %></th>
+  </tr>
+  <% @stats[type].each do |tutor, stats| %>
+    <tr>
+      <td><%= tutor.person.fullname %></td>
+      <% stats.each do |entry| %>
+        <td><%= entry %></td>
+      <% end %>
+    </tr>
+  <% end %>
 </table>
 </div>
 <br/>

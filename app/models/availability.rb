@@ -7,30 +7,53 @@ class Availability < ActiveRecord::Base
   #   created_at       : datetime 
   #   updated_at       : datetime 
   #   preference_level : integer 
-  #   time             : datetime 
   #   room_strength    : integer 
   #   semester         : string 
+  #   hour             : integer 
+  #   wday             : integer 
   # =======================
 
-  
+  # Note: This is different from a Slot because it has no room attribute
   
   belongs_to :tutor
+
+  PREF = {unavailable: 0, preferred: 1, available: 2}
+  VALID_PREF_STRINGS = PREF.keys.map{|x| x.to_s}
+  ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
+  Room = Slot::Room
   
-  validate :valid_room
   validates :tutor, :presence => true
-  validates :preference_level, :presence => true
+  validates :preference_level, :presence => true, :inclusion => {:in => PREF.values}
+  validates :room_strength, :inclusion => {:in => 0..2}
   validates_presence_of :semester
   validates_format_of :semester, :with => Property::Regex::Semester
-  validates_uniqueness_of :time, :scope => :tutor_id
+  validates :hour,
+    :presence  => true,
+    :inclusion => {:in => Slot::Hour::Valid}
+  validates :wday,
+    :presence  => true,
+    :inclusion => {:in => Slot::Wday::Valid}
+  validates :preferred_room,
+    :presence  => true,
+    :inclusion => {
+      :in      => Slot::Room::Valid,
+      :message => "should be Cory (#{Slot::Room::Cory}) or Soda (#{Slot::Room::Soda})"
+    }
+  validates_uniqueness_of :tutor_id, :scope => [:hour, :wday]
 
   before_validation :touch_semester
 
   scope :current, lambda { where(:semester => Property.current_semester) }
   
-  @prefstr_to_int = {"unavailable"=>0, "preferred"=>1, "available"=>2}
-
   class << self
-    attr_reader :prefstr_to_int
+
+    def slider_value(availability)
+      if availability.preferred_room == 0
+        return 2 - availability.room_strength
+      else
+        return 2 + availability.room_strength
+      end
+    end
     
     def slider_to_room_strength(value)
       case value
@@ -42,20 +65,8 @@ class Availability < ActiveRecord::Base
       end
       return room, strength
     end
-
-    def time_for_weekday_and_hour(wdaystr, h)
-      wday = 1
-      case
-      when wdaystr.is_a?(String)
-        wday = %w(Monday Tuesday Wednesday Thursday Friday).index(wdaystr.capitalize)+1
-      when wdaystr.is_a?(Integer)
-        wday = wdaystr
-      else raise "Availability.time_for_weekday_and_hour: Bad weekday #{wdaystr}"
-      end
-      Time.local(1,1,wday,h,0)  # jan 2001 => wday == day
-    end
   end
-  
+
   def get_preferred_room()
     if preferred_room == 0 then
       "Cory"
@@ -64,28 +75,10 @@ class Availability < ActiveRecord::Base
     end 
   end
 
-  def valid_room
-    if !preferred_room.blank?
-      errors[:preferred_room] << "room needs to be 0 (Cory) or 1 (Soda)" unless (preferred_room == 1 or preferred_room == 0)
-    end
-  end
-
-  def get_slider_value
-    if preferred_room == 0
-      return 2 - room_strength
-    else
-      return 2 + room_strength
-    end
-  end
-
-  def to_s
-    time.strftime('%a%H')
-  end
-
   private
 
   def touch_semester
-    self.semester = Property.current_semester
+    self.semester = Property.current_semester unless semester =~ Property::Regex::Semester
   end
 
 end

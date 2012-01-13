@@ -1,13 +1,11 @@
 source 'http://rubygems.org'
 
-gem 'rails', "> 3.0", "< 3.1"
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+#gem 'rails', "> 3.0", "< 3.1"
+gem 'rails', "~> 3.1"
 
 gem 'pg'
 
-gem 'authlogic', :git => 'git://github.com/binarylogic/authlogic.git'
+gem 'authlogic'
 gem 'net-ldap', :require => 'net/http'
 gem 'nokogiri'
 gem 'will_paginate', "~> 3.0.pre2"
@@ -29,25 +27,6 @@ group :development, :test do
   gem 'webrat'
   gem 'ZenTest'
   gem 'autotest-rails'
-  gem 'rcov'
+  gem 'simplecov', :require => false
   gem 'yard'
 end
-
-#gem 'bartt-ssl_requirement', :require => 'ssl_requirement'
-
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# Bundle the extra gems:
-# gem 'bj'
-# gem 'sqlite3-ruby', :require => 'sqlite3'
-# gem 'aws-s3', :require => 'aws/s3'
-
-# Bundle gems for certain environments:
-# gem 'rspec', :group => :test
-# group :test do
-#   gem 'webrat'
-# end

@@ -2,11 +2,11 @@
 *.pyc
 .bundle
 .yardoc
-Gemfile.lock
 config/database.yml
 db/*.sqlite3
 db/goodprofornot_dump/
 db/backups
+doc/app
 log/*.log
 tmp/**/*
 private/**/*

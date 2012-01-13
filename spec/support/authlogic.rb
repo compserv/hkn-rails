@@ -43,5 +43,5 @@ end
 
 def login_as_officer(auth={})
 	@current_user = stub_model(Person)
-	login_as @current_user, auth.merge({'officers'=>true})
+	login_as @current_user, auth.merge({'officers' => true, 'comms' => true})
 end

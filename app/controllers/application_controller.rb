@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
       redirect_to :login, :notice => "Please log in to access this page.", :flash => {:referer => request.fullpath}
       return false
     end
-    unless groups.nil? || (groups & @current_user.groups.collect(&:name)).present?
+    if (groups & @current_user.groups.collect(&:name)).blank?
       redirect_to :root, :notice => "Insufficient privileges to access this page."
       return false
     end
