@@ -30,7 +30,7 @@
 	<div class="field">
 		<!-- Spring should be selected by default unless most recent resume has a fall grad date -->
     <%= f.label :graduation_semester %>
-		<% if @current_resume && !@resume.graduation_semester && @current_resume.graduation_semester == "fall":
+		<% if @current_resume && !@resume.graduation_semester && @current_resume.graduation_semester == "fall"
 			   fall_options = {:checked => true}
 			   spring_options = {}
 		   else
@@ -47,9 +47,9 @@
 	<div class="field">
 		<!-- Should have the graduation year of most recent resume as default -->
 		<%
-		if @resume.graduation_year :
+		if @resume.graduation_year
 			grad_year_options = {}
-		elsif @current_resume : # A valid current resume should have a non-nil grad year!
+		elsif @current_resume # A valid current resume should have a non-nil grad year!
 			grad_year_options = {:value => @current_resume.graduation_year}
 		else
 			grad_year_options = {}

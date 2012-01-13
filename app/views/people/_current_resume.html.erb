@@ -5,11 +5,11 @@
 	<%= @f.label "Current résumé" %>
 	<div class="tableglue">
 	<table>
-		<% if @current_user.resumes.empty? : %>
+		<% if @current_user.resumes.empty? %>
 			<tr><td><%= "No résumés on file" %></td></tr>
 			<tr><td><%= link_to "Upload résumé", :resumes_upload %></td></tr>
 		<% else %>
-	
+
 		<% current_resume = @current_user.resumes.first %>
 		<% upload_time = current_resume.created_at.getlocal.to_datetime.strftime("%A %B %e, %Y %l:%M %p") %>
 			<tr><td><%= link_to "Uploaded #{upload_time}", resume_download_path(current_resume.id) %></td></tr>
