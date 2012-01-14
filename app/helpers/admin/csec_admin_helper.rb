@@ -20,7 +20,7 @@ module SurveyData
           frequency_keys = {}
           current = {}
 
-          CSV.open(file.path, 'r', ',') do |row|
+          CSV.foreach(file.path) do |row|
             next if row.compact.empty?
             last_row = [row.join(' '), last_row[1]+1] unless last_row[0].eql? row.join(' ')
             # puts "Entering state #{state.to_s}"
@@ -139,9 +139,9 @@ module SurveyData
               case
               when row.first =~ /^[A-Z ]+$/        # e.g. CLASSROOM PRESENTATION
               when row.first =~ /^\d\. (.+)/    # question data
-		qtext = $1.gsub(/[^a-zA-Z]/,' ')
-		q = SurveyQuestion.find_by_text(qtext) || SurveyQuestion.search {keywords qtext}.results.first
-		q = nil if !q || !SurveyQuestion.exists?(q.id)
+                qtext = $1.gsub(/[^a-zA-Z]/,' ')
+                q = SurveyQuestion.find_by_text(qtext) || SurveyQuestion.search {keywords qtext}.results.first
+                q = nil if !q || !SurveyQuestion.exists?(q.id)
                 unless q
                   results[:errors] << "Couldn't find survey question matching \"#{qtext}\"... check spelling and perhaps do a find+replace to correct it."
                   state = :error
@@ -186,7 +186,7 @@ module SurveyData
             when :error
               raise
             end # case state
-          end # CSV.open
+          end # CSV.parse
         end # transaction
       rescue => e
         results[:errors] << "Error #{e.inspect} parsing near line #{last_row[1]}: #{last_row[0]}"
