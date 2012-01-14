@@ -10,7 +10,8 @@ gem 'net-ldap', :require => 'net/http'
 gem 'nokogiri'
 gem 'will_paginate', "~> 3.0.pre2"
 gem 'yaml_db'
-gem 'sunspot_rails', ">= 1.2.rc4"
+gem 'sunspot_rails'
+gem 'sunspot_solr'
 gem 'jquery-rails', '>= 0.2.6'
 
 gem "exception_notification",
