@@ -107,7 +107,7 @@ html[xmlns] .clearfix {
 
 /*** Main Layout ***/
 body{
-  background: url("../images/back_gray.png");
+  background: url(<%= asset_path 'back_gray.png' %>);
   font-family: "Puritan", "Lucinda Grande", Helvetica, Arial, serif;
   font-size: 0.9em;
   line-height: 1.3em;
@@ -146,7 +146,7 @@ h4{
 /* Header */
 #navigation{
   width: 100%;
-  background: #403f3f url("../images/back_dark.png");
+  background: #403f3f url(<%= asset_path 'back_dark.png' %>);
   color: white;
   font-family: "Cuprum";
   font-size: 1.2em;
@@ -201,7 +201,7 @@ h4{
   position: absolute;
   right: 50px;
   top: 30px;
-  background: #403f3f url("../images/back_dark.png");
+  background: #403f3f url(<%= asset_path 'back_dark.png' %>);
   padding: 0px;
 }
 
@@ -221,11 +221,11 @@ h4{
 }
 
 #settings{
-  background: url("/images/icons/cog.png") no-repeat;
+  background: url(<%= asset_path 'icons/cog.png' %>) no-repeat;
 }
 
 #logout{
-  background: url("/images/icons/shutdown.png") no-repeat;
+  background: url(<%= asset_path 'icons/shutdown.png' %>) no-repeat;
   top: 6px;
 }
 
@@ -248,7 +248,7 @@ h4{
 #logo{
   width: 437px;
   height: 88px;
-  background: url("../images/hkn_logo.png");
+  background: url(<%= asset_path 'hkn_logo.png' %>);
   float: left;
   cursor: pointer;
 }
@@ -358,7 +358,7 @@ h4{
 #container { clear: both; width: auto; overflow: hidden; }
 
 /* Footer */
-#footer { clear: both; height: 30px; background: #403f3f url("../images/back_dark.png"); color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
+#footer { clear: both; height: 30px; background: #403f3f url(<%= asset_path 'back_dark.png' %>); color: #FFFFFF; font-size: 12px; padding: 5px 10px; text-align: left; }
 #footer a { color: #ffffff; }
 #footer a:visited { color: #ffffff; }
 #footer-right { float: right; }
@@ -404,13 +404,13 @@ h4{
 }
 
 #chat{
-  background: url("/images/icons/chat.png");
+  background: url(<%= asset_path 'icons/chat.png' %>);
 }
 
 
 
 #user{
-  background: url("/images/icons/user.png") no-repeat;
+  background: url(<%= asset_path 'icons/user.png' %>) no-repeat;
   position:relative;
   left: 3px;
 }
@@ -434,7 +434,7 @@ h4{
 .hbar{
   height: 2px;
   width: 100%;
-  background: url("/images/hbar.png") repeat-x;
+  background: url(<%= asset_path 'hbar.png' %>) repeat-x;
   margin-top: 1em;
 }
 

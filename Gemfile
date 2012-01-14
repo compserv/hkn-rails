@@ -22,6 +22,12 @@ gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
 
 gem 'ri_cal'
 
+group :assets do
+  gem 'sass-rails', '~> 3.1.0'
+  gem 'coffee-rails', '~> 3.1.0'
+  gem 'uglifier'
+end
+
 group :development, :test do
   gem 'rspec-rails'
   # webrat is needed to make some specs pass

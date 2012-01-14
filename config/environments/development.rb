@@ -14,7 +14,6 @@ HknRails::Application.configure do
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
-  #config.action_view.debug_rjs             = true
 
   if ENV['CACHING'] =~ /true|1|on|yes/ then
     config.action_controller.perform_caching = true
@@ -30,7 +29,13 @@ HknRails::Application.configure do
   config.action_mailer.perform_deliveries = false
 
   config.active_support.deprecation = :notify
-  
+
   #config.action_mailer.delivery_method = :sendmail
   #config.action_mailer.raise_delivery_errors = true
+
+  # Do not compress assets
+  config.assets.compress = false
+
+  # Expands the lines which load the assets
+  config.assets.debug = true
 end

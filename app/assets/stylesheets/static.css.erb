@@ -32,7 +32,7 @@
   position: relative;
   top: 3px;
   display: inline-block;
-  background: url("/images/icons/avi.png");
+  background: url(<%= asset_path 'icons/avi.png' %>);
 }
 
 .trans-bg:hover{
@@ -55,7 +55,7 @@
   position: relative;
   top: 3px;
   display: inline-block;
-  background: url("/images/icons/pdf.png");
+  background: url(<%= asset_path 'icons/pdf.png' %>);
 }
 
 /*Officers*/
@@ -72,7 +72,7 @@ div.photo{
 }
 
 div.no-photo{
-  background: url("../images/person_placeholder.png");
+  background: url(<%= asset_path 'person_placeholder.png' %>);
 }
 
 span.label{

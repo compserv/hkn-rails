@@ -2,34 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />  
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
+  <%= favicon_link_tag %>
   <title><%= "Eta Kappa Nu (HKN), Mu Chapter"%><%= " - #{@module_title}" unless @module_title.blank? %><%= " - #{@submodule_title}" unless @submodule_title.blank? %></title>
+  <%= javascript_include_tag 'application' %>
   <%= stylesheet_link_tag 'main' %>
   <%= stylesheet_link_tag 'print', :media => 'print' %>
-  <%= javascript_include_tag "jquery.min" %>
   <%= javascript_include_tag "jquery.history" %>
   <%= javascript_include_tag "rails" %>
   <%= javascript_include_tag "navigation" %>
   <%= javascript_include_tag "chat" %>
+  <%= javascript_include_tag 'ga' if Rails.env == 'production' %>
   <%= javascript_include_tag "piglatin" if @easter_eggs[:piglatin] %>
   <%= javascript_include_tag "moonspeak" if @easter_eggs[:moonspeak] %>
   <%= stylesheet_link_tag 'mirror' if @easter_eggs[:mirror] %>
   <%= javascript_include_tag 'acid' if @easter_eggs[:acid] %>
-  <%= javascript_include_tag 'ga' if Rails.env == 'production' %>
   <%= csrf_meta_tag %>
   <link href='https://fonts.googleapis.com/css?family=Puritan|Cuprum' rel='stylesheet' type='text/css' />
-  
+
   <%= yield(:header) %>
-  
+
   <!--Automatically includes javascript or css files with the same name as the controller -->
-  <% filename = controller.controller_name %>
-  <% if FileTest.exist?  Rails.root.join("public", "stylesheets", filename + ".css") %>
-    <%= stylesheet_link_tag "#{filename}" %>
-  <% end %>
-  <% if FileTest.exist?  Rails.root.join("public", "javascripts", filename + ".js") %>
-    <%= javascript_include_tag "#{filename}" %>
-  <% end %>
+  <%= javascript_include_tag params[:controller] unless HknRails::Application.assets.find_asset("#{params[:controller]}.js").nil? %>
+  <%= stylesheet_link_tag params[:controller] unless HknRails::Application.assets.find_asset("#{params[:controller]}.css").nil? %>
 </head>
 <body>
 <div id="bar">
