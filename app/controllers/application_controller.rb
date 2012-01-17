@@ -69,13 +69,15 @@ class ApplicationController < ActionController::Base
     raise 'This is a test. This is only a test.'
   end
 
-  def authorize(group_or_groups=[])
+  def authorize(group_or_groups=nil)
     # group_or_groups must be either a single Group name or an array of Group names
     # If user is in any of the groups, then s/he has access
+    # If group_or_groups is not specified (called authorize with no arguments), then should return true if the person is logged in, false otherwise.
     if @current_user.nil?
       redirect_to :login, :notice => "Please log in to access this page.", :flash => {:referer => request.fullpath}
       return false
     end
+    return true if group_or_groups.nil?
     groups = ([String, Symbol].include? group_or_groups.class) ? [group_or_groups] : group_or_groups
     groups = groups.map(&:to_s) | ["superusers"]
     if (groups & @current_user.groups.collect(&:name)).blank?
