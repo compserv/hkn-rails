@@ -238,6 +238,7 @@ HknRails::Application.routes.draw do
     match "confirm/:id" => "rsvps#confirm", :as => :confirm_rsvp
     match "unconfirm/:id" => "rsvps#unconfirm", :as => :unconfirm_rsvp
     match "reject/:id" => "rsvps#reject", :as => :reject_rsvp
+    get "ical/:id" => "events#ical_single_event", :as => :single_ical
   end
   
   resources :events do

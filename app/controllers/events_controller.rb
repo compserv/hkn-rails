@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical]
+  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical, :ical_single_event]
   
   #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
@@ -396,6 +396,14 @@ class EventsController < ApplicationController
   
   def ical
     return self.hkn
+  end
+
+  def ical_single_event
+    @event = [Event.with_permission(@current_user).find(params[:id])]
+    respond_to do |format|
+        format.html { render :hkn, :layout => false }
+        format.ics { render :text => generate_ical_text(@event) }
+    end
   end
   
   private
