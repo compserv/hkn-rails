@@ -82,7 +82,7 @@ describe EventsController do
         it "creates exactly one Block with the same start and end times" do
           start_time = Time.now
           end_time = Time.now + 1.minute
-          rsvp_cap = 10
+          rsvp_cap = 10.to_s  # params is always string
           @mock_event = mock_event(:save! => true, :start_time => start_time, :end_time => end_time)
           Event.stub(:new) { @mock_event }
           @mock_block = mock_model(Block, :save! => true)
@@ -92,7 +92,7 @@ describe EventsController do
           @mock_block.should_receive(:start_time=).with(start_time)
           @mock_block.should_receive(:end_time=).with(end_time)
 
-          post :create, :event => {}, :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap
+          post :create, :event => {}, :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap.to_s
         end
       end
 
@@ -180,7 +180,7 @@ describe EventsController do
     describe "with valid params" do
       it "updates the requested event" do
         Event.should_receive(:find).with("37") { mock_event }
-        mock_event.should_receive(:update_attributes!).with({'these' => 'params'})
+        mock_event.should_receive(:update_attributes).with({'these' => 'params'})
         put :update, :id => "37", :event => {'these' => 'params'}
       end
 
@@ -230,7 +230,7 @@ describe EventsController do
           it "creates one block with the same start and end times" do
             start_time = Time.now
             end_time = Time.now + 1.minute
-            rsvp_cap = 10
+            rsvp_cap = 10.to_s  # params are always strings
 
             @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
             @mock_blocks = [1, 2]
@@ -268,7 +268,7 @@ describe EventsController do
           it "updates the existing block start and end times" do
             start_time = Time.now
             end_time = Time.now + 1.minute
-            rsvp_cap = 10
+            rsvp_cap = 10.to_s  # params are always strings
 
             @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
             Event.stub(:find) { @mock_event }
@@ -297,6 +297,12 @@ describe EventsController do
           block0 = {:id => 0}
           block1 = {:id => 1}
           block2 = {:id => 2}
+          [ [0,@mock_block0],
+            [1,@mock_block1],
+            [2,@mock_block2]
+          ].each do |i,b|
+            Block.stub!(:find).with(i).and_return(b)
+          end
 
           @mock_event.stub(:blocks) { [@mock_block0, @mock_block1, @mock_block2] }
 

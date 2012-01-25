@@ -101,7 +101,7 @@ describe RsvpsController do
       describe "with transportation required" do
         it "should update rsvp transportation" do
           Rsvp.stub(:new) { mock_rsvp(:save => true) }
-          Rsvp.should_receive(:new).with(hash_including :transportation => Rsvp::TRANSPORT_ENUM.first.last)
+          Rsvp.should_receive(:new).with(hash_including 'transportation' => Rsvp::TRANSPORT_ENUM.first.last.to_s)
           do_post :create, :rsvp => {:transportation => Rsvp::TRANSPORT_ENUM.first.last}
           response.should redirect_to(event_path(@event))
         end
@@ -248,7 +248,7 @@ describe RsvpsController do
 
       it "should set rsvp.confirmed to Rsvp::Unconfirmed" do
         Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.should_receive(:confirmed=).with(Rsvp::Unconfirmed)
+        mock_rsvp.should_receive(:update_attribute).with(:confirmed, Rsvp::Unconfirmed)
         controller.should_receive(:authorize) # rspec sucks
         do_get :unconfirm, :id => "37"
       end
@@ -272,12 +272,13 @@ describe RsvpsController do
       before(:each) do
         @current_user = stub_model(Person)
         login_as @current_user
-        controller.should_receive(:authorize).with(['pres','vp'])
+        controller.should_receive(:authorize).with(no_args).once
+        controller.should_receive(:authorize).with(['pres','vp']).once
       end
 
       it "should set rsvp.confirmed to Rsvp::Rejected" do
         Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.should_receive(:confirmed=).with(Rsvp::Rejected)
+        mock_rsvp.should_receive(:update_attribute).with(:confirmed, Rsvp::Rejected)
         do_get :reject, :id => "37"
       end
     end

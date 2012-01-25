@@ -290,7 +290,9 @@ class EventsController < ApplicationController
             params.keys().reject{|x| !(x =~ /block\d+/)}.each do |block_name|
               block_hash = params[block_name]
               if block_hash.has_key?('id')
-                block = Block.find(block_hash['id'])
+                unless block = Block.find(block_hash['id'] && block_hash['id'].to_i)
+                  raise "Could not find block #{block_hash['id']} (#{block_hash.inspect})"
+                end
                 block.update_attributes(block_hash)
               else
                 block = Block.new(params[block_name])
