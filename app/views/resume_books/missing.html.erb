@@ -25,7 +25,7 @@
   <%- @people_in_book.each do |p| -%>
     <tr>
       <td><%= p.full_name %></td>
-      <td><%= p.resume.created_at %></td>
+      <td><%= render :partial => 'resumes/moderated_resume', :locals => {:moderated_resume => p.resume} %></td>
     </tr>
   <%- end -%>
   </table>

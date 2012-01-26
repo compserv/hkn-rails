@@ -164,6 +164,8 @@ private
   end
   
   def generate_iso(resumes, cutoff_date, indrel_officers, res_book_pdf)
+    # TODO there's some really shady stuff going on here..
+    #      use Ruby libs to improve security
     dir_name_fn = lambda {|year| year == :grads ? "grads" : year.to_s }
     iso_dir = "#{@scratch_dir}/ResumeBookISO"
     raise "Failed to copy ISO dir" unless system "cp -R #{@gen_root}/skeleton/ResumeBookISO #{iso_dir}"
@@ -174,6 +176,7 @@ private
       year_dir_name = "#{iso_dir}/Resumes/#{dir_name_fn.call(year)}"
       system "mkdir #{year_dir_name}"
       resumes[year].each do |resume|
+        next unless resume.included?
         system "cp #{resume.file} \"#{year_dir_name}/#{resume.person.last_name}, #{resume.person.first_name}.pdf\""
       end
     end
@@ -212,31 +215,19 @@ private
         
   def group_resumes(cutoff_date, graduating_class)
     resumes = Hash.new
-    # Resume.where wasn't working... when I figure that out I will replace the following
-    Resume.find(:all).reject{|resume| resume.created_at < cutoff_date}.each do |resume|
+
+    Resume.since(cutoff_date).approved.each do |resume|
+      # append to correct array
       if resume.graduation_year < graduating_class
-        if resumes[:grads].nil?
-          resumes[:grads] = Array.new
-        end
-        resumes[:grads] << resume
+        resumes[:grads] ||= []
       else
-        if resumes[resume.graduation_year].nil?
-          resumes[resume.graduation_year] = Array.new
-        end
-        resumes[resume.graduation_year] << resume
-      end
+        resumes[resume.graduation_year] ||= []
+      end << resume
     end
+
     # Now sort the resumes in each group by Last Name
-    resumes.each do | year, res_array |
-      res_array.sort! do |a,b| 
-        if a.person.last_name.casecmp(b.person.last_name).zero?
-          a.person.first_name.casecmp(b.person.first_name)
-        else
-          a.person.last_name.casecmp(b.person.last_name)
-        end
-      end
-    end
-    resumes
+    resumes.values.each { |a| a.sort_by! {|r| r.person.last_name} }
+    return resumes
   end
   
   def indrel_officer_names

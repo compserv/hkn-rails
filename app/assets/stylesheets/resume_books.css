@@ -1,0 +1,2 @@
+.resume .dl { color: green; }
+.resume.excluded .dl { color: maroon; }
