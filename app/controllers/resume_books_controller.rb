@@ -56,15 +56,23 @@ class ResumeBooksController < ApplicationController
   # a resume book so indrel can bug them.
   def missing
     # Getting the components of the cutoff date doesn't really work...
-    @cutoff_date = Date.new(params[:date]["cutoff_date(1i)"].to_i,params[:date]["cutoff_date(2i)"].to_i,params[:date]["cutoff_date(3i)"].to_i)
-    officers = Person.find(:all).find_all {|p| p.in_group?("officers")}
-    candidates = Person.find(:all).find_all {|p| p.in_group?("candidates")}
-    @officers_without_resumes = officers.find_all do |officer|
-      did_not_upload_a_resume_after @cutoff_date, officer
+
+    # @cutoff_date = Date.new(params[:date]["cutoff_date(1i)"].to_i,params[:date]["cutoff_date(2i)"].to_i,params[:date]["cutoff_date(3i)"].to_i)
+    @cutoff_date = (params[:date] && Date.send(:new, *params[:date].to_a.sort_by(&:first).collect(&:second).collect(&:to_i))) || Date.today
+
+    officers, candidates = ['officers', 'candidates'].collect do |group_name|
+      Group.find_by_name(group_name).people.order(:first_name).includes(:resumes)
     end
-    @candidates_without_resumes = candidates.find_all do |candidate|
-      did_not_upload_a_resume_after @cutoff_date, candidate
+
+    # limit officers to current only
+    officers &= Committeeship.current.officers.collect(&:person)
+
+    @officers_without_resumes, @candidates_without_resumes = [officers,candidates].collect do |ppl|
+      ppl.reject { |p| p.resumes.since(@cutoff_date).exists? }
     end
+
+    @people_in_book = Resume.since(@cutoff_date).includes(:person).collect(&:person).uniq.sort_by(&:full_name)
+
   end
 
   # Copied from richardxia's code in the resume file
@@ -87,10 +95,6 @@ class ResumeBooksController < ApplicationController
   end
 
 private
-
-  def did_not_upload_a_resume_after(cutoff_date,officer)
-    officer.resumes.empty? or (officer.resumes.first.created_at < cutoff_date)
-  end
 
   def generate_pdf(resumes, cutoff_date, indrel_officers)
     # @scratch_dir is the scratch work directory

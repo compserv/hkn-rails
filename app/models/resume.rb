@@ -25,7 +25,9 @@ class Resume < ActiveRecord::Base
   
   default_scope :order => 'resumes.created_at DESC'
   # so we can just pick out the 'first' of the resumes to get the most recent
-  
+
+  scope :since, lambda { |date| where(['resumes.created_at >= ?', date]) }
+
   def delete_file
     
     begin

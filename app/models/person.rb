@@ -158,6 +158,15 @@ class Person < ActiveRecord::Base
     return fullname
   end
 
+  def as_email
+    return "\"#{fullname}\" <#{email}>"
+  end
+
+  # @return [Resume] this {Person}'s most recent resume
+  def resume
+    self.resumes.first
+  end
+
   def in_group?(group)
     if group.class == String
       group = Group.find_by_name(group)
