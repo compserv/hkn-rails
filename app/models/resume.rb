@@ -33,7 +33,7 @@ class Resume < ActiveRecord::Base
 
   scope :since, lambda { |date| where(['resumes.created_at >= ?', date]) }
 
-  scope :approved, lambda { where(:included => false) }  # 'included' is reserved
+  scope :approved, lambda { where(:included => true) }  # 'included' is reserved
   scope :excluded, lambda { where(:included => false) }
 
   def delete_file
