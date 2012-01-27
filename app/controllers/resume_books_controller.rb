@@ -56,15 +56,23 @@ class ResumeBooksController < ApplicationController
   # a resume book so indrel can bug them.
   def missing
     # Getting the components of the cutoff date doesn't really work...
-    @cutoff_date = Date.new(params[:date]["cutoff_date(1i)"].to_i,params[:date]["cutoff_date(2i)"].to_i,params[:date]["cutoff_date(3i)"].to_i)
-    officers = Person.find(:all).find_all {|p| p.in_group?("officers")}
-    candidates = Person.find(:all).find_all {|p| p.in_group?("candidates")}
-    @officers_without_resumes = officers.find_all do |officer|
-      did_not_upload_a_resume_after @cutoff_date, officer
+
+    # @cutoff_date = Date.new(params[:date]["cutoff_date(1i)"].to_i,params[:date]["cutoff_date(2i)"].to_i,params[:date]["cutoff_date(3i)"].to_i)
+    @cutoff_date = (params[:date] && Date.send(:new, *params[:date].to_a.sort_by(&:first).collect(&:second).collect(&:to_i))) || Date.today
+
+    officers, candidates = ['officers', 'candidates'].collect do |group_name|
+      Group.find_by_name(group_name).people.order(:first_name).includes(:resumes)
     end
-    @candidates_without_resumes = candidates.find_all do |candidate|
-      did_not_upload_a_resume_after @cutoff_date, candidate
+
+    # limit officers to current only
+    officers &= Committeeship.current.officers.collect(&:person)
+
+    @officers_without_resumes, @candidates_without_resumes = [officers,candidates].collect do |ppl|
+      ppl.reject { |p| p.resumes.since(@cutoff_date).exists? }
     end
+
+    @people_in_book = Resume.since(@cutoff_date).includes(:person).collect(&:person).uniq.sort_by(&:full_name)
+
   end
 
   # Copied from richardxia's code in the resume file
@@ -87,10 +95,6 @@ class ResumeBooksController < ApplicationController
   end
 
 private
-
-  def did_not_upload_a_resume_after(cutoff_date,officer)
-    officer.resumes.empty? or (officer.resumes.first.created_at < cutoff_date)
-  end
 
   def generate_pdf(resumes, cutoff_date, indrel_officers)
     # @scratch_dir is the scratch work directory
@@ -160,6 +164,8 @@ private
   end
   
   def generate_iso(resumes, cutoff_date, indrel_officers, res_book_pdf)
+    # TODO there's some really shady stuff going on here..
+    #      use Ruby libs to improve security
     dir_name_fn = lambda {|year| year == :grads ? "grads" : year.to_s }
     iso_dir = "#{@scratch_dir}/ResumeBookISO"
     raise "Failed to copy ISO dir" unless system "cp -R #{@gen_root}/skeleton/ResumeBookISO #{iso_dir}"
@@ -170,6 +176,7 @@ private
       year_dir_name = "#{iso_dir}/Resumes/#{dir_name_fn.call(year)}"
       system "mkdir #{year_dir_name}"
       resumes[year].each do |resume|
+        next unless resume.included?
         system "cp #{resume.file} \"#{year_dir_name}/#{resume.person.last_name}, #{resume.person.first_name}.pdf\""
       end
     end
@@ -208,31 +215,19 @@ private
         
   def group_resumes(cutoff_date, graduating_class)
     resumes = Hash.new
-    # Resume.where wasn't working... when I figure that out I will replace the following
-    Resume.find(:all).reject{|resume| resume.created_at < cutoff_date}.each do |resume|
+
+    Resume.since(cutoff_date).approved.each do |resume|
+      # append to correct array
       if resume.graduation_year < graduating_class
-        if resumes[:grads].nil?
-          resumes[:grads] = Array.new
-        end
-        resumes[:grads] << resume
+        resumes[:grads] ||= []
       else
-        if resumes[resume.graduation_year].nil?
-          resumes[resume.graduation_year] = Array.new
-        end
-        resumes[resume.graduation_year] << resume
-      end
+        resumes[resume.graduation_year] ||= []
+      end << resume
     end
+
     # Now sort the resumes in each group by Last Name
-    resumes.each do | year, res_array |
-      res_array.sort! do |a,b| 
-        if a.person.last_name.casecmp(b.person.last_name).zero?
-          a.person.first_name.casecmp(b.person.first_name)
-        else
-          a.person.last_name.casecmp(b.person.last_name)
-        end
-      end
-    end
-    resumes
+    resumes.values.each { |a| a.sort_by! {|r| r.person.last_name} }
+    return resumes
   end
   
   def indrel_officer_names

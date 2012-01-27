@@ -1,0 +1,12 @@
+<%# Moderated resume consists of a download link and [include|exclude] ajax button
+    @param moderated_resume [Resume]
+ %>
+<%- raise ArgumentError unless moderated_resume -%>
+<span class="moderated resume <%= 'excluded' unless moderated_resume.included? %>">
+  <%= link_to moderated_resume.created_at, resume_download_path(moderated_resume.id), :class => 'dl' %>&nbsp;
+  <%- if moderated_resume.included? -%>
+    <%= link_to '[exclude]', resumes_exclude_path(moderated_resume), :remote => true, :method => :post -%>
+  <%- else -%>
+    <%= link_to '[include]', resumes_include_path(moderated_resume), :remote => true, :method => :post -%>
+  <%- end -%>
+</span>

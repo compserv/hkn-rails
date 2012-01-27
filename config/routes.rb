@@ -182,6 +182,8 @@ HknRails::Application.routes.draw do
     match "upload" => "resumes#new", :as => :resumes_upload
     match "upload_for/:id" => "resumes#upload_for", :as => :resumes_upload_for
     match "download/:id" => "resumes#download", :as => :resume_download
+    post  'include/:id' => "resumes#include", :as => :resumes_include
+    post  'exclude/:id' => "resumes#exclude", :as => :resumes_exclude
   end
   resources :resumes
   scope "resume_books" do

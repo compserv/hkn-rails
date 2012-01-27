@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111216134432) do
+ActiveRecord::Schema.define(:version => 20120126095029) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -406,6 +406,7 @@ ActiveRecord::Schema.define(:version => 20111216134432) do
     t.integer  "person_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "included",            :default => true, :null => false
   end
 
   add_index "resumes", ["person_id"], :name => "index_resumes_on_person_id"

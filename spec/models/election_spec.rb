@@ -58,7 +58,7 @@ describe Election do
     @obama_election.save
 
     assert_in_delta Time.now, @obama_election.elected_time, 2.seconds
-    assert_equal @obama_election.semester, Property.current_semester
+    assert_equal @obama_election.semester, Property.next_semester
   end
 
   context "during commit" do

@@ -1,8 +1,8 @@
 class RsvpsController < ApplicationController
   before_filter :get_event
   before_filter :rsvp_permission, :except => [:my_rsvps, :confirm, :unconfirm, :reject]
-  before_filter :authorize
   before_filter(:only => [:confirm, :unconfirm, :reject]) { |c| c.authorize(['pres', 'vp']) }
+  before_filter :authorize
 
   # GET /rsvps
   # GET /rsvps.xml

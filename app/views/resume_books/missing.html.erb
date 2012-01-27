@@ -1,13 +1,33 @@
 <%= link_to "Back to Résumé book Admin", resume_books_path %>
 
+<div>
+  <%= render :partial => 'missing_form' %>
+  <br/>
+</div>
 
+<div style="float:left;width:45%;">
 <h1> People to bug! </h1>
-<h2>Emails of officers who did not submit a resume since <%= @cutoff_date %></h2>
-<% @officers_without_resumes.each do |officer| %>
-    <%= officer.full_name %>
-<% end %>
 
-<h2>Emails of candidates who did not submit a resume since <%= @cutoff_date %></h2>
-<% @candidates_without_resumes.each do |candidate| %>
-    "<%=candidate.full_name%>" &lt;<%= candidate.email %>&gt;;
-<% end %>
+<%- [ [ 'officers', @officers_without_resumes ],
+      [ 'candidates', @candidates_without_resumes ]
+    ].each do |s,ppl|
+-%>
+  <h2>Emails of <%= s %> who did not submit a resume since <%= @cutoff_date %></h2>
+  <%- ppl.collect(&:as_email).each do |s| -%>
+    <%= s %>;<br/>
+  <%- end -%>
+<%- end -%>
+</div>
+
+<div style="float:right;width:45%;">
+  <h1>People with resumes since <%= @cutoff_date %></h1>
+  <table>
+  <%- @people_in_book.each do |p| -%>
+    <tr>
+      <td><%= p.full_name %></td>
+      <td><%= render :partial => 'resumes/moderated_resume', :locals => {:moderated_resume => p.resume} %></td>
+    </tr>
+  <%- end -%>
+  </table>
+</div>
+

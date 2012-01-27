@@ -90,7 +90,7 @@ describe Rsvp do
     r = Rsvp.new
     {
       :person => mock_model(Person),
-      :blocks => [mock_model(Block)],
+      :blocks => [stub_model(Block)],
       :event  => mock_model(Event)
     }.each_pair do |k,v|
       r.send "#{k.to_s}=".intern, (stubs.include?(k) ? stubs[k] : v)

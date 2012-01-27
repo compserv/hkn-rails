@@ -1,0 +1,5 @@
+<%= form_tag(resume_book_missing_path, :method => "post") do %>
+  <%= label_tag(:cutoff_date, "Moderate and see missing résumés for") %>
+  <%= date_select("date", :cutoff_date, :default => @cutoff_date) %>
+  <%= submit_tag("Go") %>
+<% end %>
