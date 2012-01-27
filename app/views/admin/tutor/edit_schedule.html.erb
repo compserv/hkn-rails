@@ -1,4 +1,4 @@
-<% stylesheet_link_tag "tutor.css" %>
+<%= stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
 <%= form_tag(admin_tutor_update_schedule_path, :method => :put) do %>
   <%= check_box_tag :only_available, true, @only_available %>
