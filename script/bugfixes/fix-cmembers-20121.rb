@@ -1,4 +1,4 @@
-require File.expand_path(File.join('.', 'config', 'environment'), File.dirname(__FILE__))
+require File.expand_path(File.join('..', '..', 'config', 'environment'), File.dirname(__FILE__))
 
 Renames = {
   :p1harvey     => :pharvey,
