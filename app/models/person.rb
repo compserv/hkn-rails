@@ -81,6 +81,8 @@ class Person < ActiveRecord::Base
     # Allows us to use the old password hashes. Upon successfully logging in,
     # the password hash will be automatically converted to SHA512
     c.transition_from_crypto_providers = DjangoSha1
+
+    c.validates_length_of_login_field_options = {:within => 2..100}
   end
 
   def change_username(opts)
