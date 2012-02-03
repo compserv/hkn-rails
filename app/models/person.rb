@@ -62,7 +62,7 @@ class Person < ActiveRecord::Base
 
   module Validation
     module Regex
-      Name = /\A[a-z ']+\z/i
+      Name = /\A[a-z\- ']+\z/i
     end
   end
 
