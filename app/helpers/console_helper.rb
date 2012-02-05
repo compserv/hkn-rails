@@ -179,7 +179,7 @@ module ConsoleHelper
       #
       def m_touch(username)
         unless username and p = Person.find_by_username(username)
-          raise Console::Error.new("touch: cannout touch `#{username}': Permission denied")
+          raise Console::Error.new("touch: cannot touch `#{username}': Permission denied")
         end
         if username == 'amatsukawa'
           return Response.new("#{username} likes it")
