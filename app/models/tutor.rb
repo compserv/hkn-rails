@@ -21,7 +21,8 @@ class Tutor < ActiveRecord::Base
   # A current tutor has an {Election} for the current semester,
   # as given by {Property.current_semester}.
   # Also sorts by [{Person.first_name first_name}, {Person.last_name last_name}].
-  scope :current, lambda { self.current_scope_helper.order(:first_name,:last_name) }
+  # scope :current, lambda { self.current_scope_helper.order(:first_name,:last_name) } # TODO (jonko) Election doesn't include cmembers
+  scope :current, lambda { self.includes(:availabilities).where(:availabilities => {:semester => Property.current_semester}) }
 
   class << self
     # This has been separated out like this in order to apply the scope when 
