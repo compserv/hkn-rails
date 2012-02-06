@@ -218,7 +218,8 @@ class Admin::TutorController < Admin::AdminController
 
     # Collect availability information by room, day, and hour
     # See ApplicationModel::foreign_scope for how this works
-    Availability.current.includes(:tutor => :person).foreign_scope(:tutor, :current_scope_helper).each do |a|
+    Availability.current.includes(:tutor => :person).each do |a|
+    #Availability.current.includes(:tutor => :person).foreign_scope(:tutor, :current_scope_helper).each do |a|
       tutor = a.tutor
       wday = a.wday
       hour = a.hour
@@ -238,7 +239,8 @@ class Admin::TutorController < Admin::AdminController
     end
     # Find Others per slot
     # This is equivalent to Slot.all.each{|slot| slot.tutors = slot.tutors.current}
-    Slot.includes(:tutors => :person).foreign_scope(:tutors, :current_scope_helper).uniq.each do |slot|
+    Slot.includes(:tutors => :person).uniq.each do |slot|
+    #Slot.includes(:tutors => :person).foreign_scope(:tutors, :current_scope_helper).uniq.each do |slot|
       wday = slot.wday
       hour = slot.hour
       form_slot = form_slots[slot.room][wday][hour]
