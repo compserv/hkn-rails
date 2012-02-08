@@ -11,7 +11,9 @@ class CoursesurveysController < ApplicationController
 #    caches_action :klass, :cache_path => Proc.new {|c| klass_cache_path(c.params)}, :layout => false
 
     # Cache full/partial department lists
-    caches_action :department, :layout => false, :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"}
+    caches_action :department, :layout => false,
+      :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"},
+      :unless     => Proc.new {|c| c.params[:semester].present? or c.params[:year].present?}
 
     # Separate for admins
     #caches_action_for_admins([:instructor], :groups => %w(csec superusers))
