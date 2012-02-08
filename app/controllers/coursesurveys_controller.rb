@@ -40,6 +40,7 @@ class CoursesurveysController < ApplicationController
     @upper_div   = []
     @grad        = []
     @full_list   = params[:full_list].present?
+    @semester    = Property.make_semester(:year => params[:year], :semester => params[:semester]) if params[:year].present? and params[:semester].present?
 
     # Error checking
     return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @department
@@ -54,6 +55,7 @@ class CoursesurveysController < ApplicationController
       # Find only the most recent course, optionally with a lower bound on semester
       first_klass = course.klasses
       first_klass = first_klass.where(:semester => Property.make_semester(:year=>4.years.ago.year)..Property.make_semester) unless @full_list
+      first_klass = first_klass.where(:semester => @semester) if @semester
       first_klass = first_klass.drop_while { |k| !k.survey_answers.exists? } .first
       #first_klass = first_klass.find(:first, :include => {:instructorships => :instructor} )
 
@@ -63,7 +65,7 @@ class CoursesurveysController < ApplicationController
       # Find the average, or silently fail if something is missing
       # TODO: silent is bad
       #next unless avg_rating = course.survey_answers.collect(&:mean).average #.average(:mean)
-      next unless avg_rating = course.average_rating.to_f
+      next unless avg_rating = course.average_rating(@semester).to_f
 
       # Generate row
       # Sort by descending instructorship count
@@ -80,7 +82,7 @@ class CoursesurveysController < ApplicationController
         when 100..199 then @upper_div
         else           @grad
       end << result
- end
+    end
 
   end
 

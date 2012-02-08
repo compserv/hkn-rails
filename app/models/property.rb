@@ -189,6 +189,22 @@ class Property < ActiveRecord::Base
         (set) ? set_property(m, *args) : get_property(m)
       end
     end
+
+    # @param semester [String] like "20123"
+    # @return [Integer] year part, like 2012
+    def semester_year(semester=nil)
+      semester ||= current_semester
+      raise(ArgumentError, "incorrect format: #{semester}") unless semester =~ Regex::Semester
+      return semester[0..3].to_i
+    end
+
+    # @param semester [String] like "20123"
+    # @return [Integer] semester part, like 3
+    def semester_semester(semester=nil)
+      semester ||= current_semester
+      raise(ArgumentError, "incorrect format: #{semester}") unless semester =~ Regex::Semester
+      return semester[4].to_i
+    end
   end
 
   def there_is_only_one

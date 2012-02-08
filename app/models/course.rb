@@ -77,12 +77,17 @@ class Course < ActiveRecord::Base
       end
   end
 
-  def average_rating
+  def average_rating(semester=nil)
     # BE CAREFUL, THIS IS KIND OF EXPENSIVE
-    SurveyAnswer.
-      where( :survey_question_id => SurveyQuestion.find_by_keyword(:prof_eff),
-             :id => self.instructorships.collect(&:survey_answer_ids) ).
-      average(:mean)
+    r = SurveyAnswer.where(
+      :survey_question_id => SurveyQuestion.find_by_keyword(:prof_eff),
+      :id => self.instructorships.collect(&:survey_answer_ids)
+    )
+    if semester
+      r = r.includes(:instructorship => :klass).where(:klasses => {:semester => semester})
+    end
+    r = r.average(:mean)
+    return r
   end
 
   def latest_klass

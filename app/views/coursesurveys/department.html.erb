@@ -1,15 +1,33 @@
 <h1><%= @department.name %> Courses</h1>
 
-<%- unless @full_list -%>
-  This list contains only courses which have been taught within the past 4 years. See also <%= link_to "all courses", "?full_list=true" %>.
+<%- if @semester -%>
+  Showing ratings for <%= Property.pretty_semester @semester -%>. See also <%= link_to "all courses", :full_list => 'true' %>, or <%= link_to "past 4 years", coursesurveys_department_path %>.
+<%- elsif @full_list -%>
+  Showing all courses. See also <%= link_to "past 4 years", coursesurveys_department_path %>, or <%= link_to "by semester", '#', :id => 'by-semester-link' %>.
+<%- else # past 4 years -%>
+  This list contains only courses which have been taught within the past 4 years. See also <%= link_to "all courses", "?full_list=true" %>, or <%= link_to "by semester", '#', :id => 'by-semester-link' %>.
 <%- end -%>
+<div>
+  <%= form_for coursesurveys_department_path, :method => :get, :html => {:id => 'by-semester-form'} do -%>
+    <%- first_year = (Klass.exists? ? Klass.order(:semester).limit(1).first.semester[0..3].to_i : Time.now.year) -%>
+    <%= label_tag :label, 'View data from' -%>
+    <%= select_tag :semester, options_for_select(Property::SEMESTER_MAP.invert, Property.semester_semester(@semester)) -%>
+    <%= select_tag :year, options_for_select( (first_year..Time.now.year).collect{|x|x}, Property.semester_year(@semester)) -%>
+    <%= submit_tag 'Go', :name => '' -%>
+  <%- end -%>
+</div>
 
 <table id="ratings" class="table">
   <%- [ [@lower_div, 'Lower-Division'],
         [@upper_div, 'Upper-Division'],
         [@grad,      'Graduate'      ]   ].each do |courses, course_type|
   -%>
-    <tr><th><%= course_type %></th><th>Instructors</th><th>Rating</th><th>Last Taught</th></tr>
+    <tr>
+      <th><%= course_type %></th>
+      <th>Instructors</th>
+      <th>Rating<%= " for #{Property.pretty_semester(@semester)}" if @semester %></th>
+      <th><%= @semester ? "" : "Last Taught" %></th>
+    </tr>
 
     <%- courses.each do |c| -%>
       <%# Course name %>
@@ -31,3 +49,19 @@
 
   <%- end -%>
 </table>
+<%- # By-semester
+  content_for :header do
+-%>
+<script type='text/javascript'>
+  $(document).ready(function(){
+    var form = $('#by-semester-form');
+    <%- unless @semester -%>
+    form.hide();
+    <%- end -%>
+    $('#by-semester-link').click(function(event){
+      event.preventDefault();
+      form.slideDown();
+    });
+  });
+</script>
+<%- end -%>
