@@ -107,15 +107,20 @@ class Eligibility < ActiveRecord::Base
 
     def self.import(file)
       ret = {:errors => [], :count=>0}
+      last_row = 0
       begin
         Eligibility.transaction do
-          fields = file.readline.strip.split(',')
+          fields = []
           fieldmap = {:email_address=>:email, :local_street1=>:address1, :local_street2=>:address2, :local_city=>:city, :local_state=>:state, :local_zip=>:zip, :ucb_1st_reg=>:first_reg}
-
           saw_header = false
-          current_semester = Property.get_or_create.semester
-          CSV.open(file.path, 'r', ',') do |row|
-            unless saw_header then saw_header=true; next; end
+          current_semester = Property.current_semester
+          CSV.open(file.path, 'r').each do |row|
+            last_row += 1
+            unless saw_header
+              fields = row.collect(&:downcase)
+              saw_header = true
+              next
+            end
             next unless row.length == fields.length
             e = {}
             for i in 0..fields.length-1 do
@@ -134,9 +139,11 @@ class Eligibility < ActiveRecord::Base
             ret[:count] += 1
           end # CSV
         end # transaction
-      rescue
+      rescue => e
         # Something went wrong
         ret[:errors] << "Aborted."
+        ret[:errors] << e.inspect.gsub(/[<>]/, ' ')
+        ret[:errors] << "Last row was: #{last_row.inspect}"
       ensure
         file.close if file
       end

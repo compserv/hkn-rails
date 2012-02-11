@@ -21,9 +21,9 @@
 
   <%= yield(:header) %>
 
-  <!--Automatically includes javascript or css files with the same name as the controller -->
+  <%# Automatically includes javascript or css files with the same name as the controller %>
   <%= javascript_include_tag params[:controller] unless HknRails::Application.assets.find_asset("#{params[:controller]}.js").nil? %>
-  <%= stylesheet_link_tag params[:controller] unless HknRails::Application.assets.find_asset("#{params[:controller]}.css").nil? %>
+  <%= stylesheet_link_tag controller.controller_name if Rails.application.assets.find_asset("#{controller.controller_name}.css") %>
 </head>
 <body>
 <div id="bar">
