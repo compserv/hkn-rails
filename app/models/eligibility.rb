@@ -135,6 +135,12 @@ class Eligibility < ActiveRecord::Base
             if el.is_unique?
               el.auto_assign_group
               ret[:errors] << "Error parsing #{el.inspect}" unless el.save
+            else
+              if other = Eligibility.find_by_email(el.email)
+                other.update_attribute :semester, el.semester
+              else
+                raise ScriptError, "Unable to locate duplicate entry: #{el.inspect}"
+              end
             end # exists?
             ret[:count] += 1
           end # CSV
