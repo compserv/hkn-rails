@@ -57,18 +57,15 @@ class PeopleController < ApplicationController
 
   def create
     @person = Person.new(params[:person])
-    if params[:candidate] == "true"
-      @person.groups << Group.find_by_name("candidates")
-      @person.groups << Group.find_by_name("candplus")
-      
-      #Create new candidate corresponding to this person
-      @candidate = Candidate.new
-      @candidate.person = @person
-      @candidate.save
-    else
-      @person.groups << Group.find_by_name("members")
-      @person.groups << Group.find_by_name("candplus")
-    end
+
+    # defaults to making a candidate
+    @person.groups << Group.find_by_name("candidates")
+    @person.groups << Group.find_by_name("candplus")
+    
+    #Create new candidate corresponding to this person
+    @candidate = Candidate.new
+    @candidate.person = @person
+    @candidate.save
 
     if verify_recaptcha(:message=>"Captcha validation failed", :model=>@person) && @person.save
       flash[:notice] = "Account registered!"
