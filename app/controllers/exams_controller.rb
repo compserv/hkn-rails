@@ -51,23 +51,31 @@ class ExamsController < ApplicationController
                          '2' => 'f'}
     abbr = course.course_abbr.downcase
     semester_year = semester_mapping[params[:semester]] + params[:year][-2..-1]
-    if params[:exam][:number].empty? or params[:exam][:number].to_i <= 0
-      # this means that the number field does not apply to the exam
+    if params[:exam][:exam_type] == '2'
       exam_num = exam_type_mapping[params[:exam][:exam_type]]
       params[:exam][:number] = nil
     else
-      exam_num = exam_type_mapping[params[:exam][:exam_type]]+params[:exam][:number]
-      params[:exam][:number] = params[:exam][:number].to_i
+      # the only case where we don't have a number with the exam type
+      # is for finals
+      if params[:exam][:number].empty? or params[:exam][:number].to_i <= 0
+        flash[:notice] = "Must supply number representing which exam this                          is."
+        redirect_to :action => :new
+        return
+      else
+        exam_num = exam_type_mapping[params[:exam][:exam_type]]+params[:exam][:number]
+        params[:exam][:number] = params[:exam][:number].to_i
+      end
     end
 
     params[:exam][:exam_type] = params[:exam][:exam_type].to_i
 
+    file_ext = File.extname(params[:file_info].original_filename)
     # assume for now that the file is a pdf
     if params[:exam][:is_solution] == "true"
-      exam_name = "#{abbr}_#{semester_year}_#{exam_num}_sol.pdf"
+      exam_name = "#{abbr}_#{semester_year}_#{exam_num}_sol#{file_ext}"
       params[:exam][:is_solution] = true
     else
-      exam_name = "#{abbr}_#{semester_year}_#{exam_num}.pdf"
+      exam_name = "#{abbr}_#{semester_year}_#{exam_num}#{file_ext}"
       params[:exam][:is_solution] = false
     end
 
@@ -82,7 +90,7 @@ class ExamsController < ApplicationController
 
     exam_path = exam_directory + exam_name
     allowed_file_extensions = ['.pdf', '.txt']
-    unless allowed_file_extensions.include? File.extname(params[:file_info].original_filename)
+    unless allowed_file_extensions.include? file_ext
       flash[:notice] = "An error occurred.  Currently supported file
                         types are #{allowed_file_extensions.join(', ')}.
                         Make sure the exam file is one of these"
