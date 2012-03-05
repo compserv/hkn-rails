@@ -1,4 +1,5 @@
 class ExamsController < ApplicationController
+  before_filter :authorize_tutoring, :only => [:create, :new]
 
 # [:index, :department, :course].each {|a| caches_action a, :layout => false}
 
@@ -70,7 +71,6 @@ class ExamsController < ApplicationController
     params[:exam][:exam_type] = params[:exam][:exam_type].to_i
 
     file_ext = File.extname(params[:file_info].original_filename)
-    # assume for now that the file is a pdf
     if params[:exam][:is_solution] == "true"
       exam_name = "#{abbr}_#{semester_year}_#{exam_num}_sol#{file_ext}"
       params[:exam][:is_solution] = true
@@ -112,6 +112,12 @@ class ExamsController < ApplicationController
 
     begin
       @exam = Exam.new(exam_constructor_args)
+      if File.exists? exam_path
+        flash[:notice] = "An uploaded exam already exists for that input"
+        redirect_to :action => :new
+        return
+      end
+
       f = File.open(exam_path, 'wb')
 
       if @exam.valid? and not f.nil?
