@@ -307,6 +307,9 @@ HknRails::Application.routes.draw do
     match "course/:dept_abbr/:full_course_number" => "exams#course",
       :as => :exams_course
     match 'course'                                => redirect('/exams')
+    get 'new'                                     => "exams#new"
+    post 'create'                                 => "exams#create",
+      :as => :exams_create
   end
   #resources :exams
 

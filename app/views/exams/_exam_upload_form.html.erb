@@ -1,0 +1,90 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+          url: '/admin/tutor/find_courses',
+          success: function(data) {
+            d = []
+            for(var item in data) {
+              d[item] = {text: data[item]["text"], url: data[item]["url"]}
+            }
+
+            $("#course_query").autocomplete(data, {
+              formatItem: function(item) {
+                return item.text;
+              }
+            }).result(function(event, item) {
+              $("#course_id").attr("value", item.url);
+            });
+          }
+        });
+      });
+  </script>
+
+
+<% end %>
+
+<%= form_for @exam, :url => :exams_create ,:html => { :multipart => true } do |f| %>
+
+  <div>
+    <div id="course_select">
+      <%= label_tag "Search for class:" %>
+      <%= text_field_tag "course_query", "", :id => "course_query" %>
+      <%= hidden_field :exam, :course_id, :id => "course_id", :value => "" %>
+    </div>
+
+    <!-- Need to determine what klass -->
+    <!-- Need year, maybe just enter in year? -->
+    <!-- radio for semester -->
+
+    <div id="year">
+      <%= label_tag "Enter the year:" %>
+      <%= text_field_tag "year" %>
+    </div>
+
+    <div id="semester">
+      <%= label_tag "Choose a semester:" %>
+      <br />
+      <%= radio_button_tag :semester, 1, :checked => true %> Spring
+      <%= radio_button_tag :semester, 2, %> Summer
+      <%= radio_button_tag :semester, 3, %> Fall
+    </div>
+    <br />
+
+    <div id="exam_type">
+      <!-- 0 => quiz, 1 => midterm, 2 => final -->
+      <%= label_tag "What kind of exam is this?" %>
+      <br />
+      <%= radio_button :exam, :exam_type, 0 %> Quiz
+      <%= radio_button :exam, :exam_type, 1, {:checked => true }%> Midterm
+      <%= radio_button :exam, :exam_type, 2 %> Final
+    </div>
+    <br />
+
+    <div id="number" %>
+      <%= label_tag "Which exam is it? (ie. midterm #2)
+                     Enter in a number.  If it is the only
+                     exam of its type, leave this field blank." %>
+      <br />
+      <%= text_field :exam, :number, :value => 1 %>
+    </div>
+    <br />
+
+    <div id="is_solution">
+      <%= label_tag "Is this a solution?" %>
+      <%= radio_button :exam, :is_solution, true %> Yes
+      <%= radio_button :exam, :is_solution, false, :checked => true %> No
+    </div>
+
+    <div id="upload">
+      <%= file_field_tag :file_info %>
+    </div>
+
+
+    <%= f.submit "Upload Exam File" %>
+
+  </div>
+<% end %>
