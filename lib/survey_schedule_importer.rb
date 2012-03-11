@@ -6,11 +6,15 @@
 #
 # - jonathanko
 
+require 'open-uri'
+
 module CourseSurveys
 
   class ScheduleImporter
 
     class ImportError < StandardError; end
+    class SkipKlass < StandardError; end
+    class ValidationFailedError < StandardError; end
     class CourseMissingError < ImportError
       attr_reader :klass
       def initialize(x)
@@ -135,12 +139,14 @@ module CourseSurveys
                       :section => section.to_i,
                       :type => type.downcase.to_sym
             }
+
           when 'Location'
             time, location = value.scan(Regex::Location).first
             if time and location
               @current_klass['Time'] = time
               value = location.titleize
             end
+
           when /^Enrollment/
             item = 'Enrollment'
             h = {}
@@ -148,6 +154,13 @@ module CourseSurveys
               h[cat.split.first.downcase.to_sym] = n.to_i
             end
             value = h
+
+          when 'Note'
+            # Extract more instructors
+            if also = value.scan(/Also: (.+)/).first
+              instructors = also.split('; ').reject {|x| x =~ Regex::Location}
+            end
+
           end
         end
 
@@ -158,10 +171,14 @@ module CourseSurveys
     # Parses the selected schedule into an internal data structure.
     def run
       orig_url = @url
+      orig_u = URI(@url)
 
       while @url
-        puts @url.inspect
-        doc = Nokogiri::HTML( open(@url) )
+        u = URI(@url)
+        u.scheme ||= orig_u.scheme
+        u.host ||= orig_u.host
+        puts u.to_s
+        doc = Nokogiri::HTML( open(u.to_s) )
 
         # SCHEDULE.BERKELEY IS THE MOST HORRIBLY STRUCTURED WEB PAGE EVER OMFG
 
@@ -182,7 +199,7 @@ module CourseSurveys
               item = item.at_xpath('./font/b')
 
               begin
-                item = item.text[0..-4]   # WTH IS THAT CHARACTER AT THE END
+                item = item.text[0..-3]   # WTH IS THAT CHARACTER AT THE END
               rescue => fuckaduck         # WHY DOESNT THE OTHER RESCUE WORK FOR THIS LINE
                 puts "fuckaduck"
                 #exit
@@ -235,7 +252,7 @@ module CourseSurveys
     # Commits internal data to the database.
     def save!
       #Coursesurvey.transaction do
-        @klasses.each_with_index do |klass, i|
+        @klasses.each_with_index do |klass, i_klass|
           begin
             #puts "#{i.to_s.rjust 4}. #{klass.inspect}" if @debug
 
@@ -248,7 +265,7 @@ module CourseSurveys
             course = dept.courses.where(num).first
 
             unless course
-              course = intervene CourseMissingError.new(klass)
+                course = intervene CourseMissingError.new(klass)
             end
             @pending_commits[:courses] |= [course]
             raise ImportError.new("nil course") unless course
@@ -303,6 +320,10 @@ module CourseSurveys
 
             puts c.inspect if @debug
 
+          rescue SkipKlass
+            puts "Skipping klass #{klass.inspect}", '-'*20
+            @klasses.delete_at(i_klass)
+            next
           rescue => e
             puts "Failed to process #{klass.inspect}:\n  #{e.inspect}"
             puts "klass: #{k.inspect}", "course: #{k && k.course.inspect}", "coursesurvey: #{c.inspect}"
@@ -325,6 +346,8 @@ module CourseSurveys
     def intervene(potential_error)
       raise potential_error unless @options[:interactive]
 
+      puts '-'*80,"Encountered error for:\n  #{potential_error.klass}" rescue nil
+
       case potential_error
 
       when CourseMissingError
@@ -336,7 +359,8 @@ module CourseSurveys
         return already if already
         UI::menu "Missing course #{potential_error.message}", [
           'Quit',
-          'Automatically create it'
+          'Automatically create it',
+          "Skip klass #{potential_error.message}-#{potential_error.klass[:section]}"
         ] do |choice|
           case choice
           when 1
@@ -346,6 +370,8 @@ module CourseSurveys
             (c and c.valid?) or raise ImportError.new("Create failed: #{c.errors.inspect}\n  for: #{c.inspect}")
             puts "*** Course saved: #{c.inspect}"
             return c # return value of intervene
+          when 3
+            raise SkipKlass
           else
             false
           end
@@ -354,11 +380,12 @@ module CourseSurveys
 
       when InstructorMissingError
         i = nil
-        dc = 2  # num extra choices
+        dc = 3  # num extra choices
         UI::menu "Indecisive instructor guess: #{potential_error.klass['Instructor']} for #{potential_error.klass['Course'][:name]}",
           [
             'Quit',
             'Manual',
+            "Skip klass #{potential_error.klass[:name]}-#{potential_error.klass[:section]}",
             *(potential_error.guesses.collect(&:full_name))
           ] do |choice|
           case choice
@@ -375,6 +402,9 @@ module CourseSurveys
               false
             end
 
+          when 3
+            raise SkipKlass
+
           when (1+dc)..(potential_error.guesses.count+dc)
             chosen = potential_error.guesses[choice-1-dc]
             puts chosen.full_name
@@ -383,6 +413,24 @@ module CourseSurveys
             false
           end
         end # menu
+        return nil
+
+      when ValidationFailedError
+        UI::menu "#{potential_error}",
+          [
+            'Quit',
+            "That's okay, continue anyways"
+          ] do |choice|
+          case choice
+          when 1
+            raise potential_error
+          when 2
+            puts "Skipping validation error..."
+            true # continue
+          else
+            false
+          end
+        end
         return nil
 
       # Unhandled error
@@ -411,7 +459,12 @@ module CourseSurveys
     # @param name [String] LAST NAME, F M
     # @return [Instructor, Array<Instructor>] Confident match for instructor, or Array of potentials in case of ambiguity
     def guess_instructor(name)
+      return [] unless name
+      begin
       lname, fi = name.upcase.scan(/([A-Z]+), ([A-Z])/).first.collect(&:titleize)
+      rescue
+        puts "*** FAILED parsing instructor name '#{name}'"
+      end
 
       guesses = Instructor.find_all_by_last_name lname
 
@@ -444,7 +497,7 @@ module CourseSurveys
              m.klass_id = m.klass.id
            end
 
-           m.save || raise(ImportError.new("Validation failed for #{m.inspect}\n  #{m.errors.inspect}"))
+           m.save || intervene(ValidationFailedError.new("Validation failed for #{m.inspect}\n  #{m.errors.inspect}"))
          end
        end
     end
