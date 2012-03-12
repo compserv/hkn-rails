@@ -23,7 +23,8 @@
       <% else %>
         <ul>
         <% block.rsvps.each do |rsvp| %>
-          <li><%= rsvp.person.fullname %></li>
+          <li><%= rsvp.person.fullname %><%= " (#{rsvp.person.email})" if @auth_event_owner %>
+          </li>
         <% end %>
         </ul>
       <% end %>

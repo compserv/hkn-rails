@@ -123,6 +123,7 @@ class EventsController < ApplicationController
       @total_transportation = @event.rsvps.collect{|r| r.transportation || -1}.sum
       #@total_transportation = @event.rsvps.map{|rsvp| rsvp.transportation}.sum
     end
+    @auth_event_owner = (@event.event_type.name == "Service" ? @auth['serv'] : @auth['act'])
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @event }
@@ -317,8 +318,9 @@ class EventsController < ApplicationController
         @blocks.each do |block| 
           block.save!
         end
-      rescue ActiveRecord::ActiveRecordError
+      rescue ActiveRecord::ActiveRecordError => e
         valid = false
+        puts "*** VALIDATION ERROR: #{e.inspect}"
       end
     end # end transaction
 
