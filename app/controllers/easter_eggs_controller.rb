@@ -19,7 +19,7 @@ class EasterEggsController < ApplicationController
 
   def mirror
     set_easter_flag :mirror, true
-    redirect_to request.referer or easter_eggs_edit_path
+    redirect_to request.referer || easter_eggs_edit_path
   end
 
   private
