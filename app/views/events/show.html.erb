@@ -9,6 +9,7 @@
   <% events.each do |rsvp| %>
     <% person = rsvp.person %>
     <%= link_to person.fullname, person %>
+    <%= " (#{person.email})" if @auth_event_owner %>
     <% if @auth["comms"] and @event.need_transportation %>
       (<%= rsvp.transportation %>)
     <% end %>
