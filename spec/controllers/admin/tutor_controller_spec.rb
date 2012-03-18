@@ -169,7 +169,7 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
       @slots = [
         mock_model(Slot, :wday => 1, :hour => 11, :room => 0, :tutors => [])
       ]
-      Slot.stub_chain(:includes, :foreign_scope).and_return(@slots)
+      Slot.stub(:includes).and_return(@slots)
       controller.stub(:compute_stats).and_return(Hash.new({}), Hash.new({}))
     end
 
@@ -188,7 +188,7 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
         mock_model(Availability, @defaults.merge(preference_level: 2, tutor: tutor0)),
         mock_model(Availability, @defaults.merge(preference_level: 1, tutor: tutor1)),
       ]
-      Availability.stub_chain(:current, :includes, :foreign_scope).and_return avs
+      Availability.stub_chain(:current, :includes).and_return avs
       get 'edit_schedule'
       assigns(:slot_options)[0][1][11][:opts][0][1].first.should eq([tutor1.person.fullname + " (pA)", tutor1.id])
       assigns(:slot_options)[0][1][11][:opts][1][1].first.should eq([tutor0.person.fullname + " (pA)", tutor0.id])

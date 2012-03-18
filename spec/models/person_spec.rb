@@ -23,12 +23,12 @@ describe Person, "when created with blank parameters" do
 
   it "should require a username of correct length" do
     @person.should_not be_valid
-    @person.errors[:username].should include("is too short (minimum is 3 characters)") 
+    @person.errors[:username].should include("is too short (minimum is 2 characters)")
   end
 
   it "should require a password of correct length" do
     @person.should_not be_valid
-    @person.errors[:password].should include("is too short (minimum is 8 characters)") 
+    @person.errors[:password].should include("is too short (minimum is 8 characters)")
   end
 end
 
@@ -47,10 +47,10 @@ describe Person do
     person.should be_valid
   end
 
-  it "should require a username to be at least 3 characters long" do
-    person = Person.create(@good_opts.merge(:username => "ab"))
+  it "should require a username to be at least 2 characters long" do
+    person = Person.create(@good_opts.merge(:username => "a"))
     person.should_not be_valid
-    person.errors[:username].should include("is too short (minimum is 3 characters)") 
+    person.errors[:username].should include("is too short (minimum is 2 characters)")
   end
 
   it "should require an email to be correctly formatted" do

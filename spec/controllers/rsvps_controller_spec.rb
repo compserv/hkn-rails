@@ -198,7 +198,7 @@ describe RsvpsController do
 
   describe "confirm" do
     it "without being logged in should redirect to login" do
-      logout
+      unlogin
       do_get :confirm, :id => "37"
       response.should redirect_to(login_url)
     end
@@ -228,6 +228,7 @@ describe RsvpsController do
 
   describe "unconfirm" do
     it "without being logged in should redirect to login" do
+      unlogin
       do_get :unconfirm, :id => "37"
       response.should redirect_to(login_url)
     end
@@ -257,6 +258,7 @@ describe RsvpsController do
 
   describe "reject" do
     it "without being logged in should redirect to login" do
+      unlogin
       do_get :reject, :id => "37"
       response.should redirect_to(login_url)
     end

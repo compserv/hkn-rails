@@ -1,4 +1,5 @@
 class CoursesurveysController < ApplicationController
+  # TODO: Refactor most of these into a model
   include CoursesurveysHelper
 
   before_filter :show_searcharea

@@ -35,6 +35,11 @@ def logout
   @user_session = nil
 end
 
+def unlogin
+  UserSession.unstub(:find)
+  @user_session = nil
+end
+
 def login_as(user, auth={})
   controller.current_user = user
   @current_user = user

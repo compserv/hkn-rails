@@ -46,6 +46,7 @@ describe AlumnisController do
       it "redirects to the created alumni" do
         Alumni.stub(:new) { mock_alumni(:save => true) }
         Alumni.stub(:find).and_return(mock_alumni)
+        @current_user.stub(:save).and_return true
         post :create, :alumni => {}
 
         response.should redirect_to(alumni_url(mock_alumni))
@@ -53,6 +54,10 @@ describe AlumnisController do
     end
 
     describe "with invalid params" do
+      before :each do
+        @current_user.stub(:alumni=)
+      end
+
       it "assigns a newly created but unsaved alumni as @alumni" do
         Alumni.stub(:new).with({'these' => 'params'}) { mock_alumni(:save => false) }
         post :create, :alumni => {'these' => 'params'}
