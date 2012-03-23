@@ -133,6 +133,7 @@ class ApplicationController < ActionController::Base
       :moonspeak => session[:moonspeak],
       :mirror    => session[:mirror],
       :acid      => session[:acid],
+      :b         => session[:b],
     }
 
     if @easter_eggs.values.any?
