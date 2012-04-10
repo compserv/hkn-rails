@@ -59,6 +59,8 @@ class Person < ActiveRecord::Base
   attr_accessible :local_address
   attr_accessible :perm_address
   attr_accessible :grad_semester
+  attr_accessible :sms_alerts
+  attr_accessible :mobile_carrier_id
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true

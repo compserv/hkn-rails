@@ -95,6 +95,8 @@ class PeopleController < ApplicationController
     else
       @person = @current_user
     end
+
+    @mobile_carriers = MobileCarrier.all
   end
 
   def approve

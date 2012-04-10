@@ -52,6 +52,16 @@ Note: You must enter in your current password to make any changes to your settin
     <%= f.text_field :phone_number %>
   </div>
   <div class="field">
+    <%= f.label :mobile_carrier_id, "Mobile Carrier" %>
+    <%= collection_select(:person, :mobile_carrier_id, @mobile_carriers, :id, :name) %>
+  </div>
+  <div class="field">
+    <%= f.label :sms_alerts, "Would you like to receive SMS alerts for events?" %>
+    <%= f.check_box :sms_alerts %>
+    <div>Checking this box will enable you to receive an SMS text message two hours before events you have RSVP'd for. (Requires you to enter in a valid 10-digit phone number and a mobile carrier.) (Disclaimer: HKN is not responsible for any surcharges incurred from receiving SMS messages.)
+    </div>
+  </div>
+  <div class="field">
     <%= f.label :aim, "AIM Screenname" %>
     <%= f.text_field :aim %>
   </div>
