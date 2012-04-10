@@ -130,6 +130,17 @@ class Person < ActiveRecord::Base
     n.gsub /[^\d]/, ''
   end
 
+  def sms_email_address
+    return "" unless phone_number_is_valid? and not mobile_carrier.blank?
+    "#{phone_number_compact}#{mobile_carrier.sms_email}"
+  end
+
+  # Sends an SMS message with the provided text if the user has sms_alerts enabled
+  def send_sms!(msg)
+    return false unless sms_alerts and phone_number_is_valid? and not mobile_carrier.blank?
+    PersonMailer.send_sms(self, msg)
+  end
+
   def current_election
       Election.current_semester.elected.where(:person_id => self.id).first
   end

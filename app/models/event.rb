@@ -101,4 +101,12 @@ class Event < ActiveRecord::Base
     end
   end
 
+  # Notifies all people who want to receive event alerts
+  def rsvp_notify_people!
+    message = "#{name} starts at #{short_start_time}. Meet at #{location}!"
+    rsvps.each do |rsvp|
+      rsvp.person.send_sms! message
+    end
+  end
+
 end

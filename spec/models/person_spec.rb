@@ -115,5 +115,13 @@ describe Person do
         person.phone_number_compact.should == "5555555555"
       end
     end
+
+    describe "#sms_email_address" do
+      it "should return sms email address" do
+        person = Person.new(:phone_number => "(555) 555-5555")
+        mc = double('mobile carrier', :sms_email => "@example.com")
+        person.sms_email_address.should == "5555555555@example.com"
+      end
+    end
   end
 end
