@@ -26,6 +26,8 @@ class Person < ActiveRecord::Base
   #   approved            : boolean 
   #   failed_login_count  : integer 
   #   current_login_at    : datetime 
+  #   mobile_carrier_id   : integer 
+  #   sms_alerts          : boolean 
   # =======================
 
   has_one :candidate, :dependent => :destroy
@@ -41,6 +43,7 @@ class Person < ActiveRecord::Base
   has_and_belongs_to_many :coursesurveys
   has_and_belongs_to_many :badges
   has_many :elections, :dependent => :destroy
+  belongs_to :mobile_carrier
 
   attr_accessible :first_name
   attr_accessible :last_name
@@ -114,6 +117,21 @@ class Person < ActiveRecord::Base
     return nil unless n = read_attribute(:phone_number) and not n.blank?
     n.gsub! /[^\d]/, ''
     "(#{n[0..2]}) #{n[3..5]}-#{n[6..9]}"
+  end
+
+  def phone_number_is_valid?
+    return false unless n = read_attribute(:phone_number) and not n.blank?
+    n.gsub! /[^\d]/, ''
+    if n.size == 10
+      n
+    else
+      false
+    end
+  end
+
+  def phone_number_compact
+    return false unless n = read_attribute(:phone_number) and not n.blank?
+    n.gsub /[^\d]/, ''
   end
 
   def current_election
