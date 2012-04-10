@@ -138,7 +138,7 @@ class Person < ActiveRecord::Base
   # Sends an SMS message with the provided text if the user has sms_alerts enabled
   def send_sms!(msg)
     return false unless sms_alerts and phone_number_is_valid? and not mobile_carrier.blank?
-    PersonMailer.send_sms(self, msg)
+    PersonMailer.send_sms(self, msg).deliver
   end
 
   def current_election
