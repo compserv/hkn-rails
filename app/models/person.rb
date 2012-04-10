@@ -120,17 +120,11 @@ class Person < ActiveRecord::Base
   end
 
   def phone_number_is_valid?
-    return false unless n = read_attribute(:phone_number) and not n.blank?
-    n.gsub! /[^\d]/, ''
-    if n.size == 10
-      n
-    else
-      false
-    end
+    phone_number_compact.size == 10
   end
 
   def phone_number_compact
-    return false unless n = read_attribute(:phone_number) and not n.blank?
+    return "" unless n = read_attribute(:phone_number) and not n.blank?
     n.gsub /[^\d]/, ''
   end
 
