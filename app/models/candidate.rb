@@ -14,11 +14,10 @@ class Candidate < ActiveRecord::Base
   has_many :quiz_responses
   has_many :challenges
   
-  serialize :committee_preferences
-
   validates :person, :presence => true
 
   scope :current, lambda { where(["candidates.created_at > ?", Property.semester_start_time]) }
+  scope :approved, lambda { includes(:person).where(:people => {:approved => true}) }
   
   def self.committee_defaults
     defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "StudRel", "Tutoring"]
