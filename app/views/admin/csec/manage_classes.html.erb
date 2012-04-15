@@ -24,6 +24,7 @@
       <th>Notes</th>
       <th>Max Surveyors</th>
       <th>Surveyors</th>
+      <th></th>
     </tr>
     <% @coursesurveys.each do |coursesurvey| %>
       <tr>
@@ -37,10 +38,12 @@
         <td><%= text_field_tag "survey#{coursesurvey.id}[max_surveyors]", coursesurvey.max_surveyors %></td>
         <td>
           <% coursesurvey.surveyors.each do |person| %>
-            <%= link_to person.fullname, admin_csec_coursesurvey_path(coursesurvey) %>
+            <%# link_to person.fullname, admin_csec_coursesurvey_path(coursesurvey) %>
+            <%= link_to person.fullname, person %>
             <%= "," if coursesurvey.surveyors.last != person %>
           <% end %>
         </td>
+        <td><%= link_to "Edit", admin_csec_coursesurvey_path(coursesurvey) %></td>
       </tr>
     <% end %>
   </table>
