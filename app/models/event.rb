@@ -45,8 +45,13 @@ class Event < ActiveRecord::Base
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
   
   def self.upcoming_events(num, user=nil)
-    self.with_permission(user).find(:all, :conditions => ['end_time >= ? AND end_time <= ?',
-    Time.now, Time.now + 7.days], :order => "start_time asc", :limit => num)
+    if num != 0
+      self.with_permission(user).find(:all, :conditions => ['end_time >= ? AND end_time <= ?',
+      Time.now, Time.now + 7.days], :order => "start_time asc", :limit => num)
+    else
+      self.with_permission(user).find(:all, :conditions => ['end_time >= ? AND end_time <= ?',
+      Time.now, Time.now + 7.days], :order => "start_time asc")
+    end
     
   end
   

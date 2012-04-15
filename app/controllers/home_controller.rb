@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   def index
-    @events = Event.upcoming_events(5, @current_user)
+    @events = Event.upcoming_events(0, @current_user)
     @show_searcharea = true
     prop = Property.get_or_create
     @tutoring_enabled = prop.tutoring_enabled
