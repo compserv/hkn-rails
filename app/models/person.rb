@@ -26,6 +26,8 @@ class Person < ActiveRecord::Base
   #   approved            : boolean 
   #   failed_login_count  : integer 
   #   current_login_at    : datetime 
+  #   mobile_carrier_id   : integer 
+  #   sms_alerts          : boolean 
   # =======================
 
   has_one :candidate, :dependent => :destroy
@@ -41,6 +43,7 @@ class Person < ActiveRecord::Base
   has_and_belongs_to_many :coursesurveys
   has_and_belongs_to_many :badges
   has_many :elections, :dependent => :destroy
+  belongs_to :mobile_carrier
 
   attr_accessible :first_name
   attr_accessible :last_name
@@ -56,6 +59,8 @@ class Person < ActiveRecord::Base
   attr_accessible :local_address
   attr_accessible :perm_address
   attr_accessible :grad_semester
+  attr_accessible :sms_alerts
+  attr_accessible :mobile_carrier_id
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
@@ -114,6 +119,26 @@ class Person < ActiveRecord::Base
     return nil unless n = read_attribute(:phone_number) and not n.blank?
     n.gsub! /[^\d]/, ''
     "(#{n[0..2]}) #{n[3..5]}-#{n[6..9]}"
+  end
+
+  def phone_number_is_valid?
+    phone_number_compact.size == 10
+  end
+
+  def phone_number_compact
+    return "" unless n = read_attribute(:phone_number) and not n.blank?
+    n.gsub /[^\d]/, ''
+  end
+
+  def sms_email_address
+    return "" unless phone_number_is_valid? and not mobile_carrier.blank?
+    "#{phone_number_compact}#{mobile_carrier.sms_email}"
+  end
+
+  # Sends an SMS message with the provided text if the user has sms_alerts enabled
+  def send_sms!(msg)
+    return false unless sms_alerts and phone_number_is_valid? and not mobile_carrier.blank?
+    PersonMailer.send_sms(self, msg).deliver
   end
 
   def current_election

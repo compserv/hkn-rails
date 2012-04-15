@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120126095029) do
+ActiveRecord::Schema.define(:version => 20120410073133) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -339,29 +339,38 @@ ActiveRecord::Schema.define(:version => 20120126095029) do
     t.text     "comments"
   end
 
+  create_table "mobile_carriers", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "sms_email",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "people", :force => true do |t|
-    t.string   "first_name",                            :null => false
-    t.string   "last_name",                             :null => false
-    t.string   "username",                              :null => false
-    t.string   "email",                                 :null => false
-    t.string   "crypted_password",                      :null => false
-    t.string   "password_salt",                         :null => false
-    t.string   "persistence_token",                     :null => false
-    t.string   "single_access_token",                   :null => false
-    t.string   "perishable_token",                      :null => false
+    t.string   "first_name",                             :null => false
+    t.string   "last_name",                              :null => false
+    t.string   "username",                               :null => false
+    t.string   "email",                                  :null => false
+    t.string   "crypted_password",                       :null => false
+    t.string   "password_salt",                          :null => false
+    t.string   "persistence_token",                      :null => false
+    t.string   "single_access_token",                    :null => false
+    t.string   "perishable_token",                       :null => false
     t.string   "phone_number"
     t.string   "aim"
     t.date     "date_of_birth"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "picture"
-    t.boolean  "private",             :default => true, :null => false
+    t.boolean  "private",             :default => true,  :null => false
     t.string   "local_address",       :default => ""
     t.string   "perm_address",        :default => ""
     t.string   "grad_semester",       :default => ""
     t.boolean  "approved"
-    t.integer  "failed_login_count",  :default => 0,    :null => false
+    t.integer  "failed_login_count",  :default => 0,     :null => false
     t.datetime "current_login_at"
+    t.integer  "mobile_carrier_id"
+    t.boolean  "sms_alerts",          :default => false
   end
 
   create_table "properties", :force => true do |t|

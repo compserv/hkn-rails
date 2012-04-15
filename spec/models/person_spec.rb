@@ -89,3 +89,39 @@ describe Person do
     person2.errors[:email].should include("has already been taken")
   end
 end
+
+describe Person do
+  context "phone number validation" do
+    describe "#phone_number_is_valid?" do
+      it "should be true for 10-digit phone numbers" do
+        person = Person.new(:phone_number => "5555555555")
+        person.phone_number_is_valid?.should be_true
+      end
+
+      it "should be true for 10-digit phone numbers ignoring extra characters" do
+        person = Person.new(:phone_number => "(555) 555-5555")
+        person.phone_number_is_valid?.should be_true
+      end
+
+      it "should be invalid for 9-digit phone numbers" do
+        person = Person.new(:phone_number => "123456789")
+        person.phone_number_is_valid?.should be_false
+      end
+    end
+
+    describe "#phone_number_compact" do
+      it "should return phone numbers without extra characters" do
+        person = Person.new(:phone_number => "(555) 555-5555")
+        person.phone_number_compact.should == "5555555555"
+      end
+    end
+
+    describe "#sms_email_address" do
+      it "should return sms email address" do
+        person = Person.new(:phone_number => "(555) 555-5555")
+        mc = double('mobile carrier', :sms_email => "@example.com")
+        person.sms_email_address.should == "5555555555@example.com"
+      end
+    end
+  end
+end

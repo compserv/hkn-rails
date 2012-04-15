@@ -102,9 +102,27 @@ def initialize_people
   end
 end
 
+def initialize_mobile_carriers
+  mobile_carriers = [
+    {:name => "Alltel",             :sms_email => "@message.alltel.com"},
+    {:name => "AT&T",               :sms_email => "@txt.att.net"},
+    {:name => "Boost Mobile",       :sms_email => "@myboostmobile.com"},
+    {:name => "Nextel",             :sms_email => "@messaging.nextel.com"},
+    {:name => "Sprint",             :sms_email => "@messaging.sprintpcs.com"},
+    {:name => "T-Mobile",           :sms_email => "@tmomail.net"},
+    {:name => "US Cellular",        :sms_email => "@email.uscc.net"},
+    {:name => "Verizon",            :sms_email => "@vtext.com"},
+    {:name => "Virgin Mobile USA",  :sms_email => "@vmobl.com"},
+  ]
+  mobile_carriers.each do |mobile_carrier|
+    MobileCarrier.find_or_create_by_name_and_sms_email(mobile_carrier)
+  end
+end
+
 
 initialize_slots
 initialize_groups
 initialize_eventtypes
 initialize_departments
 initialize_people
+initialize_mobile_carriers

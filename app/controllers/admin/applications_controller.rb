@@ -25,7 +25,7 @@ class Admin::ApplicationsController < ApplicationController
 
 private
   def cands
-    Candidate.current.sort_by {|c| (c.person && c.person.last_name.downcase) || "zzz"  }
+    Candidate.approved.current.sort_by {|c| (c.person && c.person.last_name.downcase) || "zzz"  }
   end
 
 end
