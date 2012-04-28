@@ -25,11 +25,6 @@
         <div class="photo <%= "no-photo" if person.picture.blank? %>">
           <%= image_tag person.picture  unless person.picture.blank? %>
         </div>
-<% if false %>
-        <div class="photo">
-          <%= image_tag "https://hkn.eecs.berkeley.edu/images/officerpics/#{person.username}.png" %>
-        </div>
-<% end %>
         <span class="name"><%= person.full_name %></span>
         <span class="email"><%= person.username %>@hkn</span>
       </div>
@@ -42,21 +37,6 @@
   <% end %><%# cships, @committeeships %>
 </div>
 <% end %><%# position_type %>
-
-<% if false %>
-## <div id="execs">
-## <% for position in @committeeships[:execs] %>
-##   <%= render :partial => "officers_committee", :locals => { :style_class => "position", :position => position } %>
-## <% end %>
-## </div>
-## 
-## <div id="committees">
-## <% for committee in @committees %>
-##   <%= render :partial => "officers_committee", :locals => { :style_class => "committee", :position => committee } %>
-## <% end %>
-## </div>
-## 
-<% end %><%# if false %>
 
 
 <%# Alumni Advisor should go here. %>
