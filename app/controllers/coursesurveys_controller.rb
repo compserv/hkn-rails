@@ -339,9 +339,13 @@ class CoursesurveysController < ApplicationController
   def rating
     @answer = SurveyAnswer.find(params[:id])
     return redirect_to coursesurveys_path, :notice => "Error: Couldn't find that rating." unless @answer
+    @instructor = @answer.instructor
+    if @instructor.private && !@privileged
+      return redirect_to(coursesurveys_path, :notice => "You are not authorized to view that page.")
+    end
+
     @klass  = @answer.klass
     @course = @klass.course
-    @instructor = @answer.instructor
     @results = []
     @frequencies = ActiveSupport::JSON.decode(@answer.frequencies)
     @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}

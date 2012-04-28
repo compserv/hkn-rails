@@ -1,6 +1,10 @@
 
 <h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> - <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %></h1>
 
+<%- if @instructor.private %>
+<%= @instructor.full_name %>'s results are private. You're seeing these survey results because you are currently logged in with privileged access. These results are not publicly available.
+<% end %>
+
 <h2><%= @answer.survey_question.text %></h2>
 <span class="edit">
 <%- if @can_edit -%>
