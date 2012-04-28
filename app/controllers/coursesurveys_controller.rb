@@ -346,7 +346,6 @@ class CoursesurveysController < ApplicationController
 
     @klass  = @answer.klass
     @course = @klass.course
-    @results = []
     @frequencies = ActiveSupport::JSON.decode(@answer.frequencies)
     @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
     @mode = @frequencies.values.max # TODO: i think this is wrong and always returns the highest score...
