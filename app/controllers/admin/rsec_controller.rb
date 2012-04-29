@@ -64,7 +64,7 @@ class Admin::RsecController < Admin::AdminController
     if e then
         e.destroy || msg = "Failed to remove #{e.person.full_name}..."
     end
-    redirect_to admin_rsec_elections_path, :notice => msg
+    redirect_to with_anchor(admin_rsec_elections_path,e.position), :notice => msg
   end
 
   # POST elect [:election_id]
@@ -76,7 +76,7 @@ class Admin::RsecController < Admin::AdminController
         e.elected = true
         e.save || msg = "Failed to elect #{e.person.full_name}... #{e.errors.inspect}"
     end
-    redirect_to admin_rsec_elections_path, :notice => msg
+    redirect_to with_anchor(admin_rsec_elections_path,e.position), :notice => msg
   end
 
   def election_sheet
