@@ -274,6 +274,10 @@ module ActionView
   end # Helpers
 end # ActionView
 
+def pp_time(t)
+  t.strftime "%b %d %I:%M%P"
+end
+
 # SSL links by default
 #if defined? Rails::Configuration::SSL && Rails::Configuration::SSL
 #  module ActionDispatch
