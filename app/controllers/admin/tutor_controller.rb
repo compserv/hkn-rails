@@ -244,6 +244,7 @@ class Admin::TutorController < Admin::AdminController
       wday = slot.wday
       hour = slot.hour
       form_slot = form_slots[slot.room][wday][hour]
+      next unless form_slot
       form_slot.defaults = slot.tutors.map{|x| x.id}
       slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]}
 
@@ -260,6 +261,7 @@ class Admin::TutorController < Admin::AdminController
         wday = slot.wday
         hour = slot.hour
         form_slot = form_slots[slot.room][wday][hour]
+        next unless form_slot
         slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]} + form_slot.others.map{|x| x[1]}
         Tutor.current.includes(:person).each do |tutor|
           if not slot_tutor_ids.include?(tutor.id)
