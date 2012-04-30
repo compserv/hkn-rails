@@ -21,7 +21,13 @@ class Election < ActiveRecord::Base
 
   validates_uniqueness_of   :person_id, :scope => [:position, :semester]
   validates_presence_of     :person_id, :position, :semester
-  #validates_numericality_of :sid, :keycard, :on => :update
+  validates                 :keycard, :numericality => {
+    :greater_than_or_equal_to => 10000,
+    :less_than_or_equal_to    => 999999,
+    :message                  => "must be a 5- or 6-digit number",
+    :allow_nil                => true
+  }
+  validates                 :sid, :numericality => { :allow_nil => true }
   validates_associated      :person
   validates_each            :position do |model, attr, value|
       model.errors.add(attr, 'must be a committee') unless Group.committees.exists?(:name => value)
