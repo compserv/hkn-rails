@@ -55,6 +55,12 @@ HknRails::Application.routes.draw do
       match "/" => "pres#index", :as => :pres
     end
 
+    scope "bridge", :as => 'bridge'  do
+      get "/" => "bridge#index", :as => :index
+      get "/photo_upload" => "bridge#photo_upload", :as => :photo_upload
+      post "/photo_upload" => "bridge#photo_upload_post", :as => :photo_upload_post
+    end
+
     scope "vp" do
       match "/" => "vp#index", :as => :vp
       scope "eligibilities" do

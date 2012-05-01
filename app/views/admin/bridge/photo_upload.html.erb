@@ -1,0 +1,16 @@
+<h1>Officer Photo Upload</h1>
+<%= form_for :Person, :html => { :multipart => true} do %>
+  <div class="field">
+    <%= label :name, "Officer Name" %>
+    <%= collection_select(:person, :id, @Officers, :id, :full_name) %> </br>
+  </div>
+  <div class="field">
+    <%= label :picture, "Picture" %>
+    <%= file_field_tag :file_info %>
+  </div>
+  <div class="field">
+    <%= label :submit, "" %>
+    <label>&nbsp;</label>
+    <%= submit_tag "Save changes" %>
+  </div>
+<% end %>

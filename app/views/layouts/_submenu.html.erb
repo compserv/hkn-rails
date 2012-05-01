@@ -110,6 +110,9 @@
     <% if @auth["indrel"] %>
       <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel Admin</a></li>
     <% end %>
+    <% if @auth["bridge"] %>
+      <li><%= link_to 'Bridge Admin', admin_bridge_index_path, :class => 'navigation_sublevel_item'  %></li>
+    <% end %> 
     <% if @auth["vp"] %>
       <li><%= link_to "VP Admin", admin_vp_path, :class => "navigation_sublevel_item" %></li>
     <% end %>
