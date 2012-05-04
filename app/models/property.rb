@@ -120,6 +120,11 @@ class Property < ActiveRecord::Base
       offset_semester year_and_semester, {:summer=>false, :dir=>-1}.merge(options)
     end
 
+    # @return [Boolean] is it the end of the semester?
+    def end_of_semester?
+      Property.current_semester > Property.make_semester
+    end
+
     def current_semester_range
       MONTH_SEMESTER_MAP.each_pair do |months, sem|
         next if Time.now.month > months.last

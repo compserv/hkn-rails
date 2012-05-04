@@ -145,6 +145,15 @@ class Person < ActiveRecord::Base
       Election.current_semester.elected.where(:person_id => self.id).first
   end
 
+  def last_election
+    self.elections.elected.ordered.last
+  end
+
+  def needs_to_fill_out_election?
+    l = last_election
+    l and Property.end_of_semester? and l.semester == Property.current_semester and !l.filled_out?
+  end
+
   def valid_ldap_or_password?(password)
     return valid_password?(password) || valid_ldap?(password)
   end

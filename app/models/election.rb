@@ -55,6 +55,10 @@ class Election < ActiveRecord::Base
     # nothing to do yet
   end
 
+  def filled_out?
+    [ sid, keycard, non_hkn_email ].none? {|x| x.blank?}
+  end
+
   # Is this the person's first officership?
   def first_election?
     # hacky heuristic.. if they're on a committee already, assume no

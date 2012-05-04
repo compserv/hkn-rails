@@ -12,6 +12,7 @@
   <%= javascript_include_tag "navigation" %>
   <%= javascript_include_tag "chat" %>
   <%= javascript_include_tag 'ga' if Rails.env == 'production' %>
+  <%= javascript_include_tag 'election-annoy' if @current_user and @current_user.needs_to_fill_out_election? %>
   <%= render :partial => 'easter_eggs/js' %>
   <%= csrf_meta_tag %>
   <link href='https://fonts.googleapis.com/css?family=Puritan|Cuprum' rel='stylesheet' type='text/css' />
