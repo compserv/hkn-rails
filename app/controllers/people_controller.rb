@@ -2,7 +2,7 @@ class PeopleController < ApplicationController
   before_filter :authorize, :only => [:list, :show, :edit, :update, :groups, :groups_update]
   before_filter :authorize_superuser, :only => [:destroy, :groups_update]
   before_filter :authorize_vp, :only => [:approve]
-  before_filter :authorize_comms, :only => [:groups]
+  before_filter :authorize_comms, :only => [:groups, :contact_card]
 
   def list
     @category = params[:category] || "all"
@@ -17,7 +17,7 @@ class PeopleController < ApplicationController
     end
 
     order = params[:sort] || "first_name"
-    sort_direction = case params[:sort_direction] 
+    sort_direction = case params[:sort_direction]
                      when "up" then "ASC"
                      when "down" then "DESC"
                      else "ASC"
@@ -61,7 +61,7 @@ class PeopleController < ApplicationController
     # defaults to making a candidate
     @person.groups << Group.find_by_name("candidates")
     @person.groups << Group.find_by_name("candplus")
-    
+
     #Create new candidate corresponding to this person
     @candidate = Candidate.new
     @candidate.person = @person
@@ -81,7 +81,7 @@ class PeopleController < ApplicationController
       if params[:login].to_i != 0
         @person = Person.find(params[:login].to_i) #Find by id
       end
-      if @person == nil        
+      if @person == nil
         redirect_to :root, :notice => "The person you tried to view does not exist."
         return
       end
@@ -123,7 +123,7 @@ class PeopleController < ApplicationController
     else
       path = account_settings_path
     end
-	
+
     # Verify password
     if params[:password][:current]
       if @current_user.valid_ldap_or_password?(params[:password][:current])
@@ -181,6 +181,26 @@ class PeopleController < ApplicationController
     render :action => :groups
   end
 
+  def contact_card
+    comms = Person.joins(:committeeships)
+      .where("committeeships.semester" => Property.semester)
+      .where("committeeships.title IN (?)", ["officer", "cmember"])
+
+    csv_string = CSV.generate do |csv|
+      csv << ['First Name', 'Last Name', 'Email Address', 'Mobile Phone']
+
+      comms.each do |person|
+        csv << [:first_name, :last_name, :phone_number, :email]
+          .collect{ |s| person.send(s) }
+      end
+    end
+
+    send_data csv_string,
+              :type => 'text/csv',
+              :disposition => "attachment",
+              :filename => "hkn-contacts.csv"
+  end
+
   private
   def can_edit_profile?(person)
     # @current_user can view @person if:
@@ -188,4 +208,6 @@ class PeopleController < ApplicationController
     #   2) @current_user is a superuser
     @current_user && @current_user.id == params[:id] or @auth['superusers']
   end
+
+
 end

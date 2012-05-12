@@ -33,6 +33,9 @@
   <ul class="plain">
     <li><%= link_to "Candidates",        people_list_path("candidates") %></li>
     <li><%= link_to 'Election Details', admin_election_details_path, :class => "navigation_sublevel_item" %></li>
+    <% if @auth["comms"] %>
+    <li><%= link_to 'Contact Card', contact_card_path, :class => 'navigation_sublevel_item'  %></li>
+    <% end %>
   </ul>
 </div>
 <% end %>
@@ -113,7 +116,7 @@
     <% end %>
     <% if @auth["bridge"] %>
       <li><%= link_to 'Bridge Admin', admin_bridge_index_path, :class => 'navigation_sublevel_item'  %></li>
-    <% end %> 
+    <% end %>
     <% if @auth["vp"] %>
       <li><%= link_to "VP Admin", admin_vp_path, :class => "navigation_sublevel_item" %></li>
     <% end %>

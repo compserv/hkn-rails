@@ -7,7 +7,7 @@ HknRails::Application.routes.draw do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup
     match "success" => "dept_tour#success", :as => :dept_tour_success
   end
-  
+
   # Admin Pages
   namespace :admin do
     scope "general", :as => "general" do
@@ -77,7 +77,7 @@ HknRails::Application.routes.draw do
         post  "grade/all"    => "admin#grade_all", :as => :grade_all
       end
     end
-    
+
     scope "csec", :as => "csec" do
       match "/" => "csec#index"
       get "select_classes" => "csec#select_classes", :as => :select_classes
@@ -136,7 +136,7 @@ HknRails::Application.routes.draw do
       post "dismiss" => "dept_tour_requests#destroy"
     end
   end
-  
+
   get "home/index"
 
   root :to => "home#index"
@@ -155,6 +155,7 @@ HknRails::Application.routes.draw do
   # People
   scope "people" do
     match "list(/:category)" => "people#list", :as => :people_list
+    match "contact_card"     => "people#contact_card", :as => :contact_card
   end
   match "account-settings"   => "people#edit",    :as => :account_settings
   match "people/:id/edit"    => "people#edit"
@@ -175,7 +176,7 @@ HknRails::Application.routes.draw do
       get 'me'
     end
   end
-  
+
   scope "alumni" do
     match "registration" => "alumnis#new"
     match "newsletter" => "alumnis#newsletter"
@@ -232,7 +233,7 @@ HknRails::Application.routes.draw do
     post  "merge_instructors"              => "coursesurveys#merge_instructors_post"
   end
 
-  
+
   scope "events" do
     match "calendar" => "events#calendar", :as => :events_calendar
     match "hkn" => "events#hkn", :as => :events_ical
@@ -248,7 +249,7 @@ HknRails::Application.routes.draw do
     match "reject/:id" => "rsvps#reject", :as => :reject_rsvp
     get "ical/:id" => "events#ical_single_event", :as => :single_ical
   end
-  
+
   resources :events do
     collection do
       get 'ical'
@@ -280,7 +281,7 @@ HknRails::Application.routes.draw do
     resources :event_types, :controller => "indrel_event_types", :as => "indrel_event_types"
     resources :locations
   end
-  
+
   #remove later for coming soon pages
   scope "service" do
     match "comingsoon" => "static#comingsoon"
