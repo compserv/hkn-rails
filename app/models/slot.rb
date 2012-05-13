@@ -2,11 +2,10 @@ class Slot < ActiveRecord::Base
 
   # === List of columns ===
   #   id         : integer 
+  #   time       : datetime 
   #   room       : integer 
   #   created_at : datetime 
   #   updated_at : datetime 
-  #   hour       : integer 
-  #   wday       : integer 
   # =======================
 
   # This is a tutoring office hours slot
