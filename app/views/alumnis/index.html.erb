@@ -2,11 +2,13 @@
 
 <table>
   <tr>
+    <th>Permanent email</th>
     <th>Grad semester</th>
     <th>Grad school</th>
     <th>Job title</th>
     <th>Company</th>
     <th>Salary</th>
+    <th>Location</th>
     <th>Person</th>
     <th></th>
     <th></th>
@@ -15,11 +17,13 @@
 
 <% @alumnis.each do |alumni| %>
   <tr>
+    <td><%= alumni.perm_email %></td>
     <td><%= alumni.grad_semester %></td>
     <td><%= alumni.grad_school %></td>
     <td><%= alumni.job_title %></td>
     <td><%= alumni.company %></td>
     <td><%= alumni.salary %></td>
+    <td><%= alumni.location %></td>
     <td><%= alumni.person %></td>
     <td><%= link_to 'Show', alumni %></td>
     <td><%= link_to 'Edit', edit_alumni_path(alumni) %></td>

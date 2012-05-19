@@ -82,10 +82,14 @@ class AlumnisController < ApplicationController
   # POST /alumnis.xml
   def create
     @alumni = Alumni.new(params[:alumni])
-    @current_user.alumni = @alumni
+    #@current_user.alumni = @alumni
 
     respond_to do |format|
       if @alumni.save and @current_user.save
+        if @alumni.mailing_list
+          @alumni.subscribe
+        end
+ 
         format.html { redirect_to(@alumni, :notice => 'Alumni was successfully created.') }
         format.xml  { render :xml => @alumni, :status => :created, :location => @alumni }
       else
@@ -102,6 +106,12 @@ class AlumnisController < ApplicationController
 
     respond_to do |format|
       if @alumni.update_attributes(params[:alumni])
+        if !@alumni.mailing_list && params[:on_mailing_list].eql?('true')
+          @alumni.unsubscribe
+        elsif @alumni.mailing_list && params[:on_mailing_list].eql?('false')
+          @alumni.subscribe
+        end
+
         format.html { redirect_to(@alumni, :notice => 'Alumni was successfully updated.') }
         format.xml  { head :ok }
       else

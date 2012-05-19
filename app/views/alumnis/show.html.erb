@@ -1,6 +1,11 @@
 <h1>Viewing alumni information for <%= @alumni.person.full_name %></h1>
 
 <p>
+  <b>Permanent email</b>
+  <%= @alumni.perm_email %>
+</p>
+
+<p>
   <b>Grad semester:</b>
   <%= @alumni.grad_semester %>
 </p>
@@ -26,10 +31,9 @@
 </p>
 
 <p>
-  <b>Person:</b>
-  <%= @alumni.person %>
+  <b>Location:</b>
+  <%= @alumni.location %>
 </p>
-
 
 <%= link_to 'Edit', edit_alumni_path(@alumni) %> | 
 <%= link_to (if @alumni.person == @current_user then  "I'm not alumni!" else "Destroy" end), @alumni, :confirm=> "Destroy this alumni information entry?", :method=>:delete %>

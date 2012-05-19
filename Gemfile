@@ -22,6 +22,8 @@ gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
 
 gem 'ri_cal'
 
+gem 'mechanize'
+
 group :assets do
   gem 'therubyracer'
   gem 'sass-rails', '~> 3.1.0'
