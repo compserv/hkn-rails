@@ -17,13 +17,13 @@
     <%= f.text_field :perm_email %>
   </div>
   <div class="field">
-    <%= f.label :mailing_list, "Yes, add me to the alumni mailing list!" %>
+    <%= f.label :mailing_list, 'Yes, add me to the alumni mailing list!' %>
     <div>You'll receive periodic news/updates about HKN, including Alumni events.</div>
     <%= f.check_box :mailing_list%>
   </div>
   <%= hidden_field_tag(:on_mailing_list, @alumni.mailing_list) %>
   <div class="field">
-    <%= f.label :grad_semester %>
+    <%= f.label :grad_semester, 'Semester graduated (from Ugrad)' %>
     <%= f.text_field :grad_semester %>
   </div>
   <div class="field">
