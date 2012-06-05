@@ -22,11 +22,12 @@ class Alumni < ActiveRecord::Base
   validates_presence_of :perm_email, :grad_semester
 
   MAILING_LIST_URL = 'https://hkn.eecs.berkeley.edu/mailman/listinfo/alumni'
-
+  SEASONS = ['Fall', 'Spring', 'Summer']
+ 
   def subscribe
     agent = Mechanize.new
     agent.get(MAILING_LIST_URL) do |page|
-      page.form_with(:action => '../subscribe/alumni') do |form|
+      spage.form_with(:action => '../subscribe/alumni') do |form|
         form['email'] = self.perm_email
         form['fullname'] = self.person.fullname
       end.submit
@@ -43,5 +44,14 @@ class Alumni < ActiveRecord::Base
         form.click_button(form.button_with(:value => 'Unsubscribe'))
       end
     end
+  end
+
+  def self.years
+    current = Time.now.year
+    return ((current - 7)..current).to_a
+  end
+
+  def self.grad_semester(semester, year)
+    return semester + ' ' + year
   end
 end

@@ -23,8 +23,9 @@
   </div>
   <%= hidden_field_tag(:on_mailing_list, @alumni.mailing_list) %>
   <div class="field">
-    <%= f.label :grad_semester, 'Semester graduated (from Ugrad)' %>
-    <%= f.text_field :grad_semester %>
+    <%= label_tag :grad_semester, 'Semester graduated (from Ugrad)' %>
+    <%= select_tag :grad_season, options_for_select(Alumni::SEASONS, @grad_season) %>
+    <%= select_tag :grad_year, options_for_select(Alumni.years, @grad_year) %> 
   </div>
   <div class="field">
     <%= f.label :grad_school %>

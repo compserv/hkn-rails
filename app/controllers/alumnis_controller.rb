@@ -76,14 +76,23 @@ class AlumnisController < ApplicationController
   def edit
     # not strictly needed
     @alumni = Alumni.find_by_id(params[:id])
+    grad_semester = @alumni.grad_semester.split
+    @grad_season = grad_semester[0] # Spring or Fall
+    @grad_year = grad_semester[1] # the actual year
   end
 
   # POST /alumnis
   # POST /alumnis.xml
   def create
     @alumni = Alumni.new(params[:alumni])
-    #@current_user.alumni = @alumni
-
+    @alumni.grad_semester = Alumni.grad_semester(params[:grad_season], params[:grad_year])
+    # params[:grad_season] is Spring or Fall
+    # params[:grad_year] is the actual year
+    # This is so hacky. grad_season and grad_year are separate from the
+    # other Alumni attributes when we're processing the form input because
+    # it would be silly to have grad_season, grad_year, and grad_semester
+    # when grad_semester is just the concatenation of grad_season and grad_year.
+    # Similar funny business in update.
     respond_to do |format|
       if @alumni.save and @current_user.save
         if @alumni.mailing_list
@@ -105,7 +114,9 @@ class AlumnisController < ApplicationController
     @alumni = Alumni.find(params[:id])
 
     respond_to do |format|
-      if @alumni.update_attributes(params[:alumni])
+      # params[:grad_season] is Spring or Fall
+      if @alumni.update_attributes(params[:alumni].
+	merge(:grad_semester => Alumni.grad_semester(params[:grad_season], params[:grad_year])))
         if !@alumni.mailing_list && params[:on_mailing_list].eql?('true')
           @alumni.unsubscribe
         elsif @alumni.mailing_list && params[:on_mailing_list].eql?('false')
