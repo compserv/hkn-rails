@@ -32,6 +32,10 @@ class EasterEggsController < ApplicationController
   easter_enabler :mirror
   easter_enabler :b
 
+  def erection
+    render :status => 411
+  end
+
   private
 
   def set_lang_prefs
