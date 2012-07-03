@@ -301,7 +301,7 @@ HknRails::Application.routes.draw do
     match "schedule" => "tutor#schedule"
     match "calendar" => "tutor#calendar"
   end
-  
+
   # Exams
   scope "exams" do
     match '/'                                     => "exams#index",
@@ -345,6 +345,7 @@ HknRails::Application.routes.draw do
   post "easter-eggs" => "easter_eggs#update", :as => "easter_eggs_update"
   get "sgge-retsae" => "easter_eggs#mirror", :as => "easter_eggs_mirror"
   get "b" => "easter_eggs#b", :as => "easter_eggs_b"
+  get 'erection' => 'easter_eggs#erection', :as => 'erection'
 
   scope "console", :as => :console do
     get  "/"  => "console#open",    :as => :open
