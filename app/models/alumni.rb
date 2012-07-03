@@ -27,7 +27,7 @@ class Alumni < ActiveRecord::Base
   def subscribe
     agent = Mechanize.new
     agent.get(MAILING_LIST_URL) do |page|
-      spage.form_with(:action => '../subscribe/alumni') do |form|
+      page.form_with(:action => '../subscribe/alumni') do |form|
         form['email'] = self.perm_email
         form['fullname'] = self.person.fullname
       end.submit
