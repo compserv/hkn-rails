@@ -56,6 +56,10 @@
 <%- end -%>
 <%= link_to "Add to iCal", single_ical_path(@event.id, :format => :ics) %>
   |
+<% if @auth["comms"] %>
+  <%= link_to "View RSVPs", event_rsvps_path(@event) %>
+    |
+<%- end -%>
 <% if @event.allows_rsvps? and @auth["candplus"] %>
   <% if @current_user_rsvp %>
     <%= link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp) %> |

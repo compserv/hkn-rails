@@ -3,6 +3,10 @@
 <table>
   <tr>
     <th>Person</th>
+    <th>Comment</th>
+    <% if @event.need_transportation %>
+      <th>Transportation</th>
+    <% end %>
     <th></th>
     <% if @auth['comms'] %>
     <th></th>
@@ -13,6 +17,10 @@
 <% @rsvps.each do |rsvp| %>
   <tr>
     <td><%= rsvp.person.fullname %></td>
+    <td><%= rsvp.comment %></td>
+    <% if @event.need_transportation %>    
+      <td><%= rsvp.transportation %></td>
+    <% end %>
     <td><%= link_to 'Show', event_rsvp_path(@event, rsvp) %></td>
     <% if @auth['superusers'] %>
     <td class='admin'><%= link_to 'Edit', edit_event_rsvp_path(@event, rsvp) %></td>
