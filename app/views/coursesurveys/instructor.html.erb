@@ -4,7 +4,7 @@
 
   <div style="float:left; margin-right: 1em;">
     <% if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank? %>
-      <%= image_tag @instructor.picture, :class=>"instructor-photo" unless @instructor.picture.blank? %>
+      <%= image_tag "https://hkn.eecs.berkeley.edu/#{@instructor.picture}", :class=>"instructor-photo" unless @instructor.picture.blank? %>
     <% elsif @instructor.instructor? # guess the picture, but only if instructor.. %>
       <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor-photo' %>
     <% else %>
