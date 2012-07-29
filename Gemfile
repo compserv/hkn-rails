@@ -6,6 +6,7 @@ gem 'rails', "~> 3.1"
 gem 'pg'
 
 gem 'authlogic'
+gem 'haml-rails'
 gem 'net-ldap', :require => 'net/http'
 gem 'nokogiri'
 gem 'will_paginate', "~> 3.0.pre2"
