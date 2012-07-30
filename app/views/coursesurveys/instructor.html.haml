@@ -118,7 +118,7 @@
 -# THIS IS IN A LOOP
 - [ [:klasses,     "Taught"], [:tad_klasses, "TA'd"  ]].each do |klasstype, label|
   - next if @results[klasstype].empty?
-  / Classes #{label} 
+  <!-- Classes #{label} -->
   %div{:id => (klasstype == :klasses) ? "instructor_table" : "ta_table"}
     #table
       %h3.center Classes #{label}
@@ -135,7 +135,7 @@
               %th Instructors
           - @results[klasstype].each do |klass, eff_a, ww_a, others|
             - next unless eff_a #&& ww_a
-            / #{klass.to_s}
+            <!-- #{klass.to_s} -->
             %tr
               %td
                 %span.semester= link_to klass.to_s, surveys_klass_path(klass, :instructor => @instructor.full_name_r_strip)
@@ -163,7 +163,7 @@
               - courses = @totals[klasstype][classification]
               - courses.keys.sort_by(&:to_s).sort_by(&:course_number).each do |course|
                 - stats = courses[course]
-                / #{course.to_s}
+                <!-- #{course.to_s} -->
                 %tr
                   %td
                     = link_to course.to_s, surveys_course_path(course)
@@ -176,7 +176,7 @@
                     %td= rating_and_bar(stats[:ww].avg, stats[:ww_max]) if stats[:ww].any?
                   %td
               -# end courses
-              / #{classification}
+              <!-- #{classification} -->
               %tr
                 %td
                   %strong
