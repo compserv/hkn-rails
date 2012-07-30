@@ -139,7 +139,10 @@
             %tr
               %td
                 %span.semester= link_to klass.to_s, surveys_klass_path(klass, :instructor => @instructor.full_name_r_strip)
-              %td= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a
+              - if !@instructor.private || @privileged
+                %td= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a
+              - else
+                %td{:style => "font-style:italic;"} hidden
               - unless klasstype == :tad_klasses
                 %td= rating_and_bar ww_a.mean, ww_a.survey_question.max, surveys_rating_path(ww_a) if ww_a
               %td
@@ -165,7 +168,10 @@
                   %td
                     = link_to course.to_s, surveys_course_path(course)
                     (#{stats[:eff].count})
-                  %td= rating_and_bar(stats[:eff].avg, stats[:eff_max]) if stats[:eff].any?
+                  - if !@instructor.private || @privileged
+                    %td= rating_and_bar(stats[:eff].avg, stats[:eff_max]) if stats[:eff].any?
+                  - else
+                    %td{:style => "font-style:italic;"} hidden
                   - unless klasstype == :tad_klasses
                     %td= rating_and_bar(stats[:ww].avg, stats[:ww_max]) if stats[:ww].any?
                   %td
@@ -179,7 +185,10 @@
                 - [:eff,:ww].each do |s|
                   - next if klasstype == :tad_klasses && s == :ww
                   - numz = courses.values.collect{|v|v[s]}.flatten
-                  %td= rating_and_bar(numz.avg, courses.values.drop_while{|x|x.nil?}.collect{|x|x["#{s}_max".to_sym]}.compact.first || 1) unless courses.empty? || !numz.any?
+                  - if s != :eff || !@instructor.private || @privileged
+                    %td= rating_and_bar(numz.avg, courses.values.drop_while{|x|x.nil?}.collect{|x|x["#{s}_max".to_sym]}.compact.first || 1) unless courses.empty? || !numz.any?
+                  - else
+                    %td{:style => "font-style:italic;"} hidden
                 %td
             -# end classification
     / end "table" div
