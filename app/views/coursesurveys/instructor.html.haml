@@ -1,0 +1,189 @@
+/ Header
+#instructor_box.trans-bg
+  %h1= @instructor.full_name
+
+  %div{:style => "float:left; margin-right: 1em;"}
+    - if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank?
+      = image_tag "https://hkn.eecs.berkeley.edu/#{@instructor.picture}", :class=>"instructor-photo" unless @instructor.picture.blank?
+    - elsif @instructor.instructor? # guess the picture, but only if instructor..
+      = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor-photo'
+    - else
+      -# no picture
+  
+  %div{:style => "float:left;"}
+    - if @can_edit
+      = link_to '[Edit]', coursesurveys_edit_instructor_path(@instructor)
+      = link_to '[Merge]', coursesurveys_merge_instructors_path(@instructor.id)
+
+    %table#instructor_info.infobox
+      %tr
+        %th Title
+        %td= @instructor.title
+      - unless @instructor.office.blank?      
+        %tr
+          %th Office
+          %td= @instructor.office
+      - unless @instructor.phone_number.blank?
+        %tr
+          %th Phone Number
+          %td= @instructor.phone_number
+      - unless @instructor.email.blank?
+        %tr
+          %th Email
+          %td= @instructor.email
+      - unless @instructor.home_page.blank?
+        %tr 
+          %th Home Page
+          %td= link_to @instructor.home_page, @instructor.home_page
+      - unless @instructor.interests.blank?
+        %tr
+          %th Research Interests
+          %td= @instructor.interests
+  .clear
+
+-# cache instructor_cache_path(@instructor) do
+-# if true
+
+- unless @results[:klasses].blank?
+  -# content_for :header do
+  %script{:type => "text/javascript", :src => "https://www.google.com/jsapi"}
+  :javascript
+    google.load("visualization", "1", {packages:["corechart"]});
+    
+    google.setOnLoadCallback(function(){drawChart('instructor');});
+    google.setOnLoadCallback(function(){drawChart('ta');});
+    
+    function drawChart(type) {
+      if (typeof(type) == 'undefined')
+      {
+        type = "instructor"
+      }
+      if (typeof(data) == 'undefined')
+      {
+        var data = new Array();
+      }
+      data[type] = new google.visualization.DataTable();
+      data[type].addColumn('string', 'Semester');
+      data[type].addColumn('number', 'Teaching Effectiveness');
+      data[type].addColumn('number', 'Worthwhile Course?');
+      data[type].addRows($("#" + type + "_table .semester").length);
+      
+      count = 0;
+      $("#" + type + "_table #ratings tbody tr").each(function(){
+        dat = $($(this)).children("td")
+        year = $(dat[0]).find(".semester a").html();
+        eff = parseFloat($(dat[1]).find(".rating").html(), 10);
+        worth = parseFloat($(dat[2]).find(".rating").html(), 10);
+        
+        if(year != null){
+          data[type].setValue(count, 0, year);
+          data[type].setValue(count, 1, eff);
+          data[type].setValue(count, 2, worth);
+          count++;
+        }
+        
+      }); 
+
+      console.log (data[type].getNumberOfRows());
+      if (data[type].getNumberOfRows() > 0)
+      {
+        if (type == "instructor")
+        {
+          var chart = new google.visualization.ColumnChart($("#instructor_chart_div")[0]);
+          chart.draw(data['instructor'], 
+            {width: $(window).width() * 0.9, height: 300, title: 'Instructor Ratings', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}, direction: -1}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 7}}
+          );
+        } else if (type == "ta")
+        {
+          var ta_chart = new google.visualization.ColumnChart($("#ta_chart_div")[0]);
+          ta_chart.draw(data['ta'], 
+            {width: $(window).width() * 0.9, height: 300, title: 'TA Ratings', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}, direction: -1}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 5}}
+          );
+        }
+      }
+    }
+
+  -# end content_for
+-# end unless results.blank
+
+#instructor_chart_div
+#ta_chart_div
+
+- if @instructor.private
+  %p This instructor&#39;s ratings are #{link_to "hidden", coursesurveys_ferpa_path}. If you are #{@instructor.full_name} and would like to allow HKN to display your teaching evaluation ratings on the web, please #{link_to "opt-in", coursesurveys_ferpa_path}.
+  - if @privileged
+    %p You're seeing these survey results because you are currently logged in with privileged access. These results are not publicly available.
+
+-# Instructed and tad klasses
+-# THIS IS IN A LOOP
+- [ [:klasses,     "Taught"], [:tad_klasses, "TA'd"  ]].each do |klasstype, label|
+  - next if @results[klasstype].empty?
+  / Classes #{label} 
+  %div{:id => (klasstype == :klasses) ? "instructor_table" : "ta_table"}
+    #table
+      %h3.center Classes #{label}
+      %table#ratings.table
+        %tbody
+          %tr
+            %th= sort_link 'Sections', 'sections'
+            %th= sort_link 'Teaching Effectiveness', 'eff'
+            - unless klasstype == :tad_klasses
+              %th= sort_link 'How worthwhile was this course?', 'ww'
+            - if klasstype == :klasses
+              %th Other Instructors
+            - else
+              %th Instructors
+          - @results[klasstype].each do |klass, eff_a, ww_a, others|
+            - next unless eff_a #&& ww_a
+            / #{klass.to_s}
+            %tr
+              %td
+                %span.semester= link_to klass.to_s, surveys_klass_path(klass, :instructor => @instructor.full_name_r_strip)
+              %td= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a
+              - unless klasstype == :tad_klasses
+                %td= rating_and_bar ww_a.mean, ww_a.survey_question.max, surveys_rating_path(ww_a) if ww_a
+              %td
+                %span.others= raw (                                            |
+        (klass.instructors - [@instructor]).collect { |instructor|             |
+            link_to(instructor.full_name, surveys_instructor_path(instructor)) |
+        } .join(", ") )  #ends results                                         |
+
+          / Aggregate stats
+          -# Warning: unreadable mass of code
+          %tr
+            %th Totals
+            %th Teaching Effectiveness
+            - unless klasstype == :tad_klasses
+              %th How worthwhile was this course?
+            %th
+            - [ :undergrad, :grad ].each do |classification|
+              - courses = @totals[klasstype][classification]
+              - courses.keys.sort_by(&:to_s).sort_by(&:course_number).each do |course|
+                - stats = courses[course]
+                / #{course.to_s}
+                %tr
+                  %td
+                    = link_to course.to_s, surveys_course_path(course)
+                    (#{stats[:eff].count})
+                  %td= rating_and_bar(stats[:eff].avg, stats[:eff_max]) if stats[:eff].any?
+                  - unless klasstype == :tad_klasses
+                    %td= rating_and_bar(stats[:ww].avg, stats[:ww_max]) if stats[:ww].any?
+                  %td
+              -# end courses
+              / #{classification}
+              %tr
+                %td
+                  %strong
+                    = "#{classification}uate".capitalize
+                    Courses (#{courses.values.collect{|v|v[:eff].count}.sum})
+                - [:eff,:ww].each do |s|
+                  - next if klasstype == :tad_klasses && s == :ww
+                  - numz = courses.values.collect{|v|v[s]}.flatten
+                  %td= rating_and_bar(numz.avg, courses.values.drop_while{|x|x.nil?}.collect{|x|x["#{s}_max".to_sym]}.compact.first || 1) unless courses.empty? || !numz.any?
+                %td
+            -# end classification
+    / end "table" div
+-# end klasstype
+
+-# end cache
+
