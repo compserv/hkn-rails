@@ -325,9 +325,10 @@ class CoursesurveysController < ApplicationController
 
     return redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(params[:instructor])
 
-    (@instructor.klasses+@instructor.tad_klasses).each do |k|
-      expire_action(:action => klass_cache_path(k))
-    end
+    #(@instructor.klasses+@instructor.tad_klasses).each do |k|
+    #  expire_action(:action => klass_cache_path(k))
+    #end
+
     return redirect_to surveys_instructor_path(@instructor), :notice => "Successfully updated #{@instructor.full_name}."
   end
 

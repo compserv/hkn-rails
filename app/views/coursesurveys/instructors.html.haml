@@ -1,0 +1,25 @@
+%h1
+  = {:ta=>"Teaching Assistants", :prof=>"Instructors"}[@category]
+
+%table#ratings.table
+  %tr
+    %th Name
+    %th Recent Courses
+    %th Rating
+  - @results.each do |result|
+    - instructor, courses, rating = result[:instructor], result[:courses], result[:rating]
+    %tr
+      %td
+        = link_to instructor.full_name_r, surveys_instructor_path(instructor)
+      %td
+        - courses.each do |course|
+          - if course != courses.last
+            #{link_to course.course_abbr, surveys_course_path(course)},
+          - else
+            = link_to course.course_abbr, surveys_course_path(course)
+      %td
+        - unless rating.present?
+          [private]
+        - else
+          #{sprintf "%.1f", rating} / #{@eff_q.max.to_f}
+          = rating_bar(rating/@eff_q.max)
