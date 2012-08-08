@@ -1,0 +1,16 @@
+.field
+  = form.label :name
+  = form.text_field :first_name
+  = form.text_field :last_name
+
+- %w(title office phone_number email home_page interests).each do |field|
+  .field
+    = form.label field.to_sym
+    = form.text_field field.to_sym
+
+.field
+  = form.label :private
+  = form.check_box :private
+   
+.submit
+  = form.submit 'Save'
