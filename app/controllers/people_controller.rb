@@ -190,7 +190,7 @@ class PeopleController < ApplicationController
       csv << ['First Name', 'Last Name', 'Email Address', 'Mobile Phone']
 
       comms.each do |person|
-        csv << [:first_name, :last_name, :phone_number, :email]
+        csv << [:first_name, :last_name, :email, :phone_number]
           .collect{ |s| person.send(s) }
       end
     end
