@@ -82,9 +82,10 @@
         - klass, ratings = result[:klass], result[:ratings]
         - ratings.each do |rating|
           - instructor, effectiveness, worthwhileness = rating[:instructor], rating[:effectiveness], rating[:worthwhile]
-          %tr
-            %td
-              %span.semester= link_to klass.proper_semester, surveys_klass_path(klass)
+          %tr{:class => @results.index(result) % 2 == 0 ? "even" : "odd"}
+            - if rating == ratings.first
+              %td{rowspan: ratings.size}
+                %span.semester= link_to klass.proper_semester, surveys_klass_path(klass)
             %td
               = link_to instructor.full_name, surveys_instructor_path(instructor)
             - [ :effectiveness, :worthwhile ].each do |qname|
