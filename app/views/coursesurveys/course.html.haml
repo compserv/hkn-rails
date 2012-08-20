@@ -1,0 +1,106 @@
+-#%script{:src => "https://www.google.com/jsapi", :type => "text/javascript"}
+  :javascript
+    google.load("visualization", "1", {packages:["corechart"]});
+    
+    google.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Semester');
+      data.addColumn('number', 'Teaching Effectiveness');
+      data.addColumn('number', 'Worthwhile Course?');
+      data.addRows($(".semester").length);
+      
+      count = 0;
+      $("#ratings tbody tr").each(function(){
+        dat = $($(this)).children("td")
+        year = $(dat[0]).find(".semester a").html();
+        eff = parseFloat($(dat[2]).find(".rating").html(), 10);
+        worth = parseFloat($(dat[3]).find(".rating").html(), 10);
+        
+        console.log(year + ": " + eff + " " + worth);
+        
+        if(year != null){
+          data.setValue(count, 0, year);
+          data.setValue(count, 1, eff);
+          data.setValue(count, 2, worth);
+          count++;
+        }
+        
+      }); 
+      var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
+      chart.draw(data, 
+        { width: $(window).width() * 0.9, height: 400,
+          title: 'Course Survey', colors:['#235185','#f9df49'],
+          backgroundColor: 'none',
+          hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}},
+          isStacked: false,
+          reverseCategories: true,
+          vAxis: {minValue: 0, maxValue: 7}
+        }
+      );
+    }
+.trans-bg
+  %h1= @course.course_name
+  %table#course_info.infobox
+    - unless @course.name.eql?("(No title)")
+      %tr
+        %th Title
+        %td= @course.name
+    - unless @instructors.blank?
+      %tr
+        %th
+          = 'Instructor'.pluralize_for(@instructors.size)
+          in Charge
+        %td
+          - @instructors.each do |instructor|
+            = link_to instructor.full_name, surveys_instructor_path(instructor)
+    - unless @course.units.nil?
+      %tr
+        %th Units
+        %td= @course.units
+    - unless @course.prereqs.blank?
+      %tr
+        %th Prerequisites
+        %td= @course.prereqs
+    - unless @course.description.blank?
+      %tr
+        %th Description
+        %td= @course.description
+- if @course.klasses.blank?
+  %p No survey data available for this course.
+- else
+  #chart_div
+  #table
+    %table#ratings.table
+      %tr
+        %th Sections
+        %th Instructor
+        %th Teaching Effectiveness
+        %th How worthwhile was this course?
+      - @results.each do |result|
+        - klass, ratings = result[:klass], result[:ratings]
+        - ratings.each do |rating|
+          - instructor, effectiveness, worthwhileness = rating[:instructor], rating[:effectiveness], rating[:worthwhile]
+          %tr
+            %td
+              %span.semester= link_to klass.proper_semester, surveys_klass_path(klass)
+            %td
+              = link_to instructor.full_name, surveys_instructor_path(instructor)
+            - [ :effectiveness, :worthwhile ].each do |qname|
+              %td
+                = rating_and_bar rating[qname], @overall[qname][:max]
+      %tr
+        %th{:colspan => "2"} Overall Rating
+        %th Teaching Effectiveness
+        %th How worthwhile was this course?
+      %tr
+        %td{:colspan => "2"}
+        - [:effectiveness, :worthwhile].each do |qname|
+          %td
+            = rating_and_bar @overall[qname][:score], @overall[qname][:max]
+.clear
+%div{:style => "text-align: center; padding-top: 1em;"}
+  = render :partial => 'emailhkn'
+  = link_to "[Info about this page]", coursesurveys_how_to_path
+  text here

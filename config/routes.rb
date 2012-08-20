@@ -204,7 +204,7 @@ HknRails::Application.routes.draw do
   scope "coursesurveys" do
     match "/"                              => "coursesurveys#index",      :as => :coursesurveys
     match "course/:dept_abbr"              => "coursesurveys#department", :as => :coursesurveys_department
-    match "course/:dept_abbr/:short_name"  => "coursesurveys#course",     :as => :coursesurveys_course
+    match "course/:dept_abbr/:course_number" => "coursesurveys#course", :as => :coursesurveys_course
     match "course/:dept_abbr/:short_name/:semester(/:section)" => "coursesurveys#klass",      :as => :coursesurveys_klass
 
     get   "instructor/new"                 => "coursesurveys#newinstructor", :as => :coursesurveys_new_instructor

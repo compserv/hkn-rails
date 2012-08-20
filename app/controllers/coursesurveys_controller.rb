@@ -90,10 +90,10 @@ class CoursesurveysController < ApplicationController
   end
 
   def course
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:short_name])
+    @course = Course.find_by_short_name(params[:dept_abbr], params[:course_number])
 
     # Try searching if no course was found
-    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @course
+    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:course_number]}") unless @course
 
     # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
     @course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}])
@@ -108,28 +108,36 @@ class CoursesurveysController < ApplicationController
 
     @course.klasses.each do |klass|
       next unless klass.survey_answers.exists?
-      result = { :klass         => klass,
-                 :instructors   => klass.instructors,
-                 :effectiveness => { },
-                 :worthwhile    => { }
-               }
+      result = { klass: klass, ratings: [] }
 
-      # Some heavier computations
-      [ [:effectiveness, effective_q ],
-        [:worthwhile,    worthwhile_q]
-      ].each do |qname, q|
-        result[qname][:score] = klass.survey_answers.where(:survey_question_id => q.id).average(:mean)
-        if result[qname][:score].nil? then
-          logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
-          raise
+      klass.instructors.sort{|x,y| x.last_name <=> y.last_name}.each do |instructor|
+        rating = { instructor: instructor }
+
+        # Some heavier computations
+        [ [:effectiveness, effective_q ],
+          [:worthwhile,    worthwhile_q]
+        ].each do |qname, q|
+          answer = klass.survey_answers.where(:survey_question_id => q.id, :instructorships => { :instructor_id => instructor.id}).first
+          if answer.nil?
+            logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
+            throw :nil_answer
+          else
+            rating[qname] = answer.mean
+          end
         end
-      end rescue next
+        result[:ratings] << rating
+        catch :nil_answer do
+          next
+        end
+      end
 
       @results << result
     end # @course.klasses
 
     [ :effectiveness, :worthwhile ].each do |qname|
-      @overall[qname][:score] = @results.collect{|r|r[qname][:score]}.sum / @results.size.to_f
+      @overall[qname][:score] = @results.collect do |result|
+        result[:ratings].map{|r| r[qname]}.sum/result[:ratings].size
+      end.sum / @results.size.to_f
     end
 
   end
