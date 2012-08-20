@@ -7,9 +7,10 @@ class Availability < ActiveRecord::Base
   #   created_at       : datetime 
   #   updated_at       : datetime 
   #   preference_level : integer 
-  #   time             : datetime 
   #   room_strength    : integer 
   #   semester         : string 
+  #   hour             : integer 
+  #   wday             : integer 
   # =======================
 
   # Note: This is different from a Slot because it has no room attribute
