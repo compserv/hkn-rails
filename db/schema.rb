@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120410073133) do
+ActiveRecord::Schema.define(:version => 20120515094922) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -22,6 +22,10 @@ ActiveRecord::Schema.define(:version => 20120410073133) do
     t.integer  "person_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "perm_email"
+    t.string   "location"
+    t.text     "suggestions"
+    t.boolean  "mailing_list"
   end
 
   create_table "announcements", :force => true do |t|
