@@ -113,21 +113,20 @@ class CoursesurveysController < ApplicationController
       klass.instructors.sort{|x,y| x.last_name <=> y.last_name}.each do |instructor|
         rating = { instructor: instructor }
 
-        # Some heavier computations
-        [ [:effectiveness, effective_q ],
-          [:worthwhile,    worthwhile_q]
-        ].each do |qname, q|
-          answer = klass.survey_answers.where(:survey_question_id => q.id, :instructorships => { :instructor_id => instructor.id}).first
-          if answer.nil?
-            logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
-            throw :nil_answer
-          else
-            rating[qname] = answer.mean
-          end
-        end
-        result[:ratings] << rating
         catch :nil_answer do
-          next
+          # Some heavier computations
+          [ [:effectiveness, effective_q ],
+            [:worthwhile,    worthwhile_q]
+          ].each do |qname, q|
+            answer = klass.survey_answers.where(:survey_question_id => q.id, :instructorships => { :instructor_id => instructor.id}).first
+            if answer.nil?
+              logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
+              throw :nil_answer
+            else
+              rating[qname] = answer.mean
+            end
+          end
+          result[:ratings] << rating
         end
       end
 
@@ -136,7 +135,7 @@ class CoursesurveysController < ApplicationController
 
     [ :effectiveness, :worthwhile ].each do |qname|
       @overall[qname][:score] = @results.collect do |result|
-        result[:ratings].map{|r| r[qname]}.sum/result[:ratings].size
+        result[:ratings].map{|r| r[qname]}.sum.to_f/result[:ratings].size
       end.sum / @results.size.to_f
     end
 

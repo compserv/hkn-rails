@@ -75,6 +75,31 @@ describe CoursesurveysController do
     end
 
     it "should redirect to search for nonexistent class" do
+      pending
+    end
+
+    context "when klass is missing surveys" do
+      before :each do
+        Course.stub(:find_by_short_name) { mock_model(Course, :id => 0) }
+        @klass = mock_model(Klass)
+        @course = mock_model(Course, :klasses => [@klass])
+        Course.stub(:find) { @course }
+        SurveyQuestion.stub(:find_by_keyword) { mock_model(SurveyQuestion, :max => 7) }
+        @klass.stub_chain(:survey_answers, :exists?) { true }
+        @klass.stub_chain(:survey_answers, :where) { [] }
+        @instructor = mock_model(Instructor)
+        @klass.stub(:instructors => [@instructor])
+      end
+
+      it "logs the error" do
+        controller.logger.should_receive(:warn)
+        get 'course', :dept_abbr => 'CS', :course_number => '194'
+      end
+
+      it "still renders successfully" do
+        get 'course', :dept_abbr => 'CS', :course_number => '194'
+        response.should be_success
+      end
     end
   end
 

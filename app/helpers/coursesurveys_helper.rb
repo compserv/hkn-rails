@@ -28,9 +28,9 @@ module CoursesurveysHelper
 
   def rating_and_bar(score, max, url=nil, inverted=nil, options={})
     if score and !score.to_f.nan? and max and max.to_f != 0
-      contents = ['<span class=\"rating\">',
+      contents = ['<span class="rating">',
                   sprintf("%.1f", score.round(1)),
-                  "</span><span class=\"rating2\"> / #{max}</span>",
+                  %Q{</span><span class="rating2"> / #{max}</span>},
                   rating_bar(score/max.to_f, url, inverted)
                  ].join
     else
