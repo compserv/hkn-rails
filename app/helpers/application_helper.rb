@@ -96,7 +96,7 @@ $(window).bind('statechange', function(){
   end
 
   def spinner
-    raw '<div id="spinner"><img src="/images/site/spinner.gif" alt="Loading..."/></div>'
+    raw '<div id="spinner"><img src="/assets/site/spinner.gif" alt="Loading..."/></div>'
   end
 end # ApplicationHelper
 
