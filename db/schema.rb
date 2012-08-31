@@ -373,6 +373,8 @@ ActiveRecord::Schema.define(:version => 20120515094922) do
     t.boolean  "approved"
     t.integer  "failed_login_count",  :default => 0,     :null => false
     t.datetime "current_login_at"
+    t.string   "reset_password_link"
+    t.datetime "reset_password_at"
     t.integer  "mobile_carrier_id"
     t.boolean  "sms_alerts",          :default => false
   end

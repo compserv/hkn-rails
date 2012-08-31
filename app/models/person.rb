@@ -26,6 +26,8 @@ class Person < ActiveRecord::Base
   #   approved            : boolean 
   #   failed_login_count  : integer 
   #   current_login_at    : datetime 
+  #   reset_password_link : string 
+  #   reset_password_at   : datetime 
   #   mobile_carrier_id   : integer 
   #   sms_alerts          : boolean 
   # =======================

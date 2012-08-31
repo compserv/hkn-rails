@@ -147,6 +147,12 @@ HknRails::Application.routes.draw do
   match "logout" => "user_sessions#destroy", :as => :logout
   get   "reauthenticate" => "user_sessions#reauthenticate", :as => :reauthenticate
   post  "reauthenticate" => "user_sessions#reauthenticate_post"
+  
+  # Reset Password
+  get  "resetpassword" => "reset_password#reset_password", :as => :reset_password
+  post "resetpassword" => "reset_password#reset_password_post", :as => :reset_password_submit
+  get  "resetpassword/confirm" => "reset_password#reset_password_confirm", :as => :reset_password_confirm
+  post "resetpassword/confirm" => "reset_password#reset_password_confirm_post", :as => :reset_password_confirm_submit
 
   # Registration
   get  "register" => "people#new"
