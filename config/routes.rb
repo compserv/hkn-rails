@@ -233,6 +233,7 @@ HknRails::Application.routes.draw do
     post  "merge_instructors"              => "coursesurveys#merge_instructors_post"
   end
 
+  match "calendar" => "events#calendar", :as => :calendar
 
   scope "events" do
     match "calendar" => "events#calendar", :as => :events_calendar
