@@ -4,6 +4,7 @@
   <tr>
     <th>Person</th>
     <th>Comment</th>
+    <th>RSVP date</th>
     <% if @event.need_transportation %>
       <th>Transportation</th>
     <% end %>
@@ -18,6 +19,7 @@
   <tr>
     <td><%= rsvp.person.fullname %></td>
     <td><%= rsvp.comment %></td>
+    <td><%= rsvp.created_at.strftime('%a %m/%d/%y %I:%M%p') %></td>
     <% if @event.need_transportation %>    
       <td><%= rsvp.transportation %></td>
     <% end %>

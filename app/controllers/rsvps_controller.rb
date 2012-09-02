@@ -7,7 +7,8 @@ class RsvpsController < ApplicationController
   # GET /rsvps
   # GET /rsvps.xml
   def index
-    @rsvps = @event.rsvps
+    # Most recently created RSVPs will show on top of the list
+    @rsvps = @event.rsvps.order("created_at DESC")
 
     respond_to do |format|
       format.html # index.html.erb
