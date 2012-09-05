@@ -9,7 +9,7 @@
 #calendar .date-cell { min-height: 3em; }
 .calendar .event a { color: white; }
 .calendar .event a:hover { color: white; text-decoration: none; }
-.calendar .event { background-color: #8888FF; -moz-border-radius: 0.8em; margin: 2px 0; padding: 0 3px; font-size: 0.8em; }
+.calendar .event { background-color: #8888FF; border-radius: 3px; margin: 2px 0; padding: 0 3px; font-size: 0.8em; }
 .calendar .event { color: white; background-color: #8888FF; }
 .calendar .event:hover { color: white; background-color: #444488; }
 #ajax-wrapper .title {display: inline-block; width: 100%; text-align: center; font-family: "Cuprum"; font-size: 2em; text-transform: uppercase; padding-top: 1em; text-shadow: white 0px -2px 0px;}
