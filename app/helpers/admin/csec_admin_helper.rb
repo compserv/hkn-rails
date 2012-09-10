@@ -139,7 +139,8 @@ module SurveyData
               case
               when row.first =~ /^[A-Z ]+$/        # e.g. CLASSROOM PRESENTATION
               when row.first =~ /^\d\. (.+)/    # question data
-                qtext = $1.gsub(/[^a-zA-Z]/,' ')
+                # qtext = $1.gsub(/[^a-zA-Z]/,' ')
+                qtext = $1
                 q = SurveyQuestion.find_by_text(qtext) || SurveyQuestion.search {keywords qtext}.results.first
                 q = nil if !q || !SurveyQuestion.exists?(q.id)
                 unless q
