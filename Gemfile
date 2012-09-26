@@ -14,6 +14,7 @@ gem 'yaml_db'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'jquery-rails', '>= 0.2.6'
+gem 'rdiscount'
 
 gem "exception_notification",
         :git => "git://github.com/rails/exception_notification.git",

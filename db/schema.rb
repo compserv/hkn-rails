@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120515094922) do
+ActiveRecord::Schema.define(:version => 20120926002949) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(:version => 20120515094922) do
     t.boolean  "need_transportation",      :default => false
     t.integer  "view_permission_group_id"
     t.integer  "rsvp_permission_group_id"
+    t.boolean  "markdown",                 :default => false
   end
 
   create_table "exams", :force => true do |t|
@@ -373,10 +374,10 @@ ActiveRecord::Schema.define(:version => 20120515094922) do
     t.boolean  "approved"
     t.integer  "failed_login_count",  :default => 0,     :null => false
     t.datetime "current_login_at"
-    t.string   "reset_password_link"
-    t.datetime "reset_password_at"
     t.integer  "mobile_carrier_id"
     t.boolean  "sms_alerts",          :default => false
+    t.string   "reset_password_link"
+    t.datetime "reset_password_at"
   end
 
   create_table "properties", :force => true do |t|

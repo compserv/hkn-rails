@@ -14,6 +14,7 @@ class Event < ActiveRecord::Base
   #   need_transportation      : boolean 
   #   view_permission_group_id : integer 
   #   rsvp_permission_group_id : integer 
+  #   markdown                 : boolean 
   # =======================
 
   has_many :blocks, :dependent => :destroy

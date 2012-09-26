@@ -1,0 +1,177 @@
+:javascript
+  function update_rsvp_type(e) {
+    var value = $('#rsvp_type option:selected')[0].value
+    if (value == 'No RSVPs') {
+      $('#rsvp_blocks').hide();
+      $('#rsvp_permission_group_id_div').hide();
+      $('#rsvp_cap_div').hide();
+    } else if (value == 'Whole Event RSVPs') {
+      $('#rsvp_blocks').hide();
+      $('#rsvp_permission_group_id_div').show();
+      $('#rsvp_cap_div').show();
+    } else if (value == 'Block RSVPs') {
+      $('#rsvp_blocks').show();
+      $('#rsvp_permission_group_id_div').show();
+      if ($('#uniform_blocks').attr('checked')) {
+        $('#rsvp_cap_div').show();
+      } else {
+        $('#rsvp_cap_div').hide();
+      }
+    }
+  }
+
+  function new_block_form(i) {
+    var block = $('#block_template').clone();
+    var block_id = 'block'+i;
+    // Update fields with block number i
+    block.attr('id', block_id);
+    block.find('select').each( function(index) {
+      var old_name = $(this).attr('name');
+      var new_name = old_name.replace('block', block_id);
+      $(this).attr('name', new_name);
+      var old_id = $(this).attr('id');
+      var new_id = old_id.replace('block', block_id);
+      $(this).attr('id', new_id);
+    });
+    block.find('input').each( function(index) {
+      var old_name = $(this).attr('name');
+      var new_name = old_name.replace('block', block_id);
+      $(this).attr('name', new_name);
+      var old_id = $(this).attr('id');
+      var new_id = old_id.replace('block', block_id);
+      $(this).attr('id', new_id);
+    });
+    block.show();
+    return block;
+  }
+
+  block_num = #{@event.blocks.size};
+
+  function update_blocks(e) {
+    var value = $('#rsvp_type option:selected')[0].value
+    if (value == 'Block RSVPs') {
+      if ($('#uniform_blocks').attr('checked')) {
+        $('#blocks').hide();
+        $('#rsvp_cap_div').show();
+        $('#num_blocks_div').show();
+      } else {
+        $('#blocks').show();
+        $('#rsvp_cap_div').hide();
+        $('#num_blocks_div').hide();
+      }
+    }
+  }
+
+  function add_block() {
+    $('#blocks').append(new_block_form(block_num));
+    block_num += 1;
+  }
+
+  $(document).ready(function() {
+    update_rsvp_type();
+    update_blocks();
+    $('#rsvp_type').change(update_rsvp_type);
+    $('#uniform_blocks').change(update_blocks);
+  });
+= form_for(@event) do |f|
+  - if @event.errors.any? or @blocks.map{|b| b.errors.any?}.reduce{|x,y| x ||= y}
+    #errorExplanation
+      %h2
+        = pluralize(@event.errors.count, "error")
+        prohibited this event from being saved:
+      %ul
+        - @event.errors.full_messages.each do |msg|
+          %li= msg
+      - @blocks.size.times do |block_num|
+        - block = @blocks[block_num]
+        Block ##{block_num}
+        %ul
+          - block.errors.full_messages.each do |msg|
+            %li= msg
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :slug
+    = f.text_field :slug
+  .field
+    = f.label :location
+    = f.text_field :location
+  .field
+    = f.label :description
+    = f.text_area :description
+  .field
+    = f.label :markdown
+    = f.check_box :markdown
+  .field
+    = f.label :event_type
+    = f.select :event_type_id, EventType.all.map{|x| [x.name, x.id]}
+  .field
+    = f.label :start_time
+    = datetime_select :event, :start_time
+  .field
+    = f.label :end_time
+    = datetime_select :event, :end_time
+  - permission_options = options_for_select([['All', nil]]+['candplus', 'candidates', 'members', 'comms'].map{|name| g = Group.find_by_name(name); [g.description, g.id]}, @event.view_permission_group_id)
+  .field
+    = f.label :view_permission_group_id, 'View Permission'
+    = f.select :view_permission_group_id, permission_options
+  .field
+    = label_tag :rsvp_type, 'RSVP Type'
+    = select_tag :rsvp_type, options_for_select(['No RSVPs', 'Whole Event RSVPs', 'Block RSVPs'], :selected => case(@event.blocks.size) when 0 then 'No RSVPs' when 1 then 'Whole Event RSVPs' else 'Block RSVPs' end)
+  - rsvp_permission_options = options_for_select(['candplus', 'candidates', 'members', 'comms'].map{|name| g = Group.find_by_name(name); [g.description, g.id]}, @event.rsvp_permission_group_id)
+  #rsvp_permission_group_id_div.field
+    = f.label :rsvp_permission_group_id, 'RSVP Permission'
+    = f.select :rsvp_permission_group_id, rsvp_permission_options
+  #rsvp_cap_div.field
+    = label_tag :rsvp_cap, 'Maximum # of RSVPs'
+    - if @event.blocks.size == 1
+      = number_field_tag :rsvp_cap, @event.blocks.first.rsvp_cap
+    - else
+      = number_field_tag :rsvp_cap
+  #rsvp_blocks.field
+    .field
+      = label_tag :uniform_blocks, 'Uniform Blocks'
+      = check_box_tag :uniform_blocks, true, (@event.blocks.size == 0)
+    #num_blocks_div.field
+      = label_tag :num_blocks, 'Number of blocks'
+      = number_field_tag :num_blocks, @event.blocks.size
+    #blocks
+      %div
+        = link_to_function 'Add Block', 'add_block();'
+      - @event.blocks.size.times do |block_num|
+        - block = @event.blocks[block_num]
+        - block_name = "block#{block_num}"
+        .form-group{:id => "block#{block_num}"}
+          = hidden_field block_name, :id, :value => block.id
+          .field
+            = label_tag :rsvp_cap, 'Maximum # of RSVPs'
+            = number_field block_name, :rsvp_cap, :value => block.rsvp_cap
+          .field
+            = label_tag :start_time, 'Start Time'
+            = datetime_select block_name, :start_time, :default => block.start_time
+          .field
+            = label_tag :end_time, 'End Time'
+            = datetime_select block_name, :end_time, :default => block.end_time
+          %div
+            - unless block.rsvps.empty?
+              This block has RSVPs from the following people:
+              - block.rsvps.each do |rsvp|
+                = rsvp.person.fullname
+          = link_to_function 'Delete', :onclick => "$(this).parent().remove();"
+    #block_template.form-group{:style => "display:none"}
+      .field
+        = label_tag :rsvp_cap, 'Maximum # of RSVPs'
+        = number_field :block, :rsvp_cap
+      .field
+        = label_tag :start_time, 'Start Time'
+        = datetime_select :block, :start_time
+      .field
+        = label_tag :end_time, 'End Time'
+        = datetime_select :block, :end_time
+      = link_to_function 'Delete', :onclick => "$(this).parent().remove();"
+  .field
+    = f.label :need_transportation
+    = f.check_box :need_transportation
+  .field-submit
+    = f.submit
