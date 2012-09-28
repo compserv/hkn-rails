@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical, :ical_single_event]
-  
+
   #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
   # GET /events
@@ -14,7 +14,7 @@ class EventsController < ApplicationController
     end
     event_filter = params[:event_filter] || "none"
     params[:sort_direction] ||= (params[:category] == 'past') ? 'down' : 'up'
-    
+
     sort_direction = case params[:sort_direction]
                      when "up" then "ASC"
                      when "down" then "DESC"
@@ -26,7 +26,7 @@ class EventsController < ApplicationController
 
     category = params[:category] || 'all'
     event_finder = Event.with_permission(@current_user)
-      
+
     # We should paginate this
     if category == 'past'
       @events = event_finder.past
@@ -41,7 +41,7 @@ class EventsController < ApplicationController
     end
 
     if event_filter != "none"
-      @events = @events.select {|e| e.event_type.name.downcase == event_filter}  
+      @events = @events.select {|e| e.event_type.name.downcase == event_filter}
     end
 
     @events.delete_if {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}
@@ -53,7 +53,7 @@ class EventsController < ApplicationController
     else
       @events = @events.paginate opts
     end
-        
+
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
@@ -61,7 +61,7 @@ class EventsController < ApplicationController
     end
   end
 
-  # Lists all events with unconfirmed RSVPs with links to individual event 
+  # Lists all events with unconfirmed RSVPs with links to individual event
   # RSVPs page
   def confirm_rsvps_index
     authorize ['pres', 'vp']
@@ -71,7 +71,7 @@ class EventsController < ApplicationController
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
-    #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)    
+    #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)
     # Sorry, this is kind of a bad query
     @events = Event.current.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "(rsvps.confirmed IS NULL OR rsvps.confirmed = 'f') AND groups.id = #{Group.find_by_name(@group).id}").uniq
     @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
@@ -84,7 +84,7 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     @rsvps = @event.rsvps.sort_by { |rsvp| rsvp.person.last_name }
   end
-        
+
   def calendar
     month = (params[:month] || Time.now.month).to_i
     year = (params[:year] || Time.now.year).to_i
@@ -93,7 +93,7 @@ class EventsController < ApplicationController
     @end_date = Time.local(year, month).end_of_month
     @events = Event.with_permission(@current_user).find(:all, :conditions => {:start_time => @start_date..@end_date}, :order => :start_time)
     @events.delete_if {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}
-    # Really convoluted way of getting the first Sunday of the calendar, 
+    # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
     @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
     # Ditto for last Saturday
@@ -151,7 +151,7 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.xml
   def create
-    
+
     @event = Event.new(params[:event])
     duration = @event.end_time - @event.start_time
     @blocks = []
@@ -175,7 +175,7 @@ class EventsController < ApplicationController
           block = Block.new
           block.event = @event
           start_time = @event.start_time + (block_length * i)
-          block.start_time = start_time 
+          block.start_time = start_time
           block.end_time = start_time + block_length
           block.rsvp_cap = params[:rsvp_cap]
           @blocks << block
@@ -207,7 +207,7 @@ class EventsController < ApplicationController
         # Don't save event if any block is invalid
         ActiveRecord::Base.transaction do
           @event.save!
-          @blocks.each do |block| 
+          @blocks.each do |block|
             block.save!
           end
         end
@@ -230,7 +230,7 @@ class EventsController < ApplicationController
   # PUT /events/1
   # PUT /events/1.xml
   def update
-    
+
     @event = Event.find(params[:id])
     @blocks = @event.blocks
     original_start = @event.start_time
@@ -267,7 +267,7 @@ class EventsController < ApplicationController
           num_blocks = params[:num_blocks].to_i # Invalid strings are mapped to 0
           # We will destroy all existing blocks if uniform_blocks is selected.
           # Even if event was originally created with uniform_blocks selected,
-          # the edit page should display it in manual block mode, which will 
+          # the edit page should display it in manual block mode, which will
           # preserve any blocks that the user does not explicitly delete.
           if params[:uniform_blocks]
             @event.blocks.delete_all
@@ -278,7 +278,7 @@ class EventsController < ApplicationController
               block = Block.new
               block.event = @event
               start_time = @event.start_time + (block_length * i)
-              block.start_time = start_time 
+              block.start_time = start_time
               block.end_time = start_time + block_length
               block.rsvp_cap = params[:rsvp_cap]
               @blocks << block
@@ -315,7 +315,7 @@ class EventsController < ApplicationController
           @event.errors[:base] << "Invalid RSVP type"
         end
 
-        @blocks.each do |block| 
+        @blocks.each do |block|
           block.save!
         end
       rescue ActiveRecord::ActiveRecordError => e
@@ -387,9 +387,9 @@ class EventsController < ApplicationController
     @start_date = [@start_date,@now.beginning_of_month].min
 
     @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
-    # Really convoluted way of getting the first Sunday of the calendar, 
+    # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
-    
+
     respond_to do |format|
       format.html { render :hkn, :layout => false }
       format.ics {
@@ -397,7 +397,7 @@ class EventsController < ApplicationController
       }
     end
   end
-  
+
   def ical
     return self.hkn
   end
@@ -409,9 +409,9 @@ class EventsController < ApplicationController
         format.ics { render :text => generate_ical_text(@event) }
     end
   end
-  
+
   private
-  
+
   def generate_ical_text(events)
     cal = RiCal.Calendar do |cal|
       events.each do |event|
