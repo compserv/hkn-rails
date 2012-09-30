@@ -12,6 +12,7 @@ class Course < ActiveRecord::Base
   #   prereqs       : text 
   #   department_id : integer 
   #   course_number : integer 
+  #   course_guide  : text 
   # =======================
 
   belongs_to :department
@@ -25,13 +26,14 @@ class Course < ActiveRecord::Base
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
+  validates :course_guide, :presence => true
   validates_uniqueness_of :course_number, :scope => [:department_id,:prefix,:suffix]
 
   #scope :all, order("prefix, courses.course_number, suffix")
   scope :ordered, order("courses.course_number, prefix, suffix")
   scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
 
-  attr_accessible :name, :description, :units, :prereqs, :department_id
+  attr_accessible :name, :description, :units, :prereqs, :department_id, :course_guide
 
   module Regex
     PrefixNumSuffix = /^([A-Z]*)(\d+)([A-Z]*)$/

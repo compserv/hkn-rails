@@ -67,6 +67,10 @@
       %tr
         %th Description
         %td= @course.description
+    - unless @course.course_guide.blank?
+      %tr
+        %th Course Guide
+        %td= link_to "Course Guide", courseguide_show_path(@course.dept_abbr, @course.full_course_number)
 - if @course.klasses.blank?
   %p No survey data available for this course.
 - else

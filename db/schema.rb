@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120926002949) do
+ActiveRecord::Schema.define(:version => 20120927064801) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -157,6 +157,7 @@ ActiveRecord::Schema.define(:version => 20120926002949) do
     t.text     "prereqs"
     t.integer  "department_id"
     t.integer  "course_number"
+    t.text     "course_guide"
   end
 
   create_table "coursesurveys", :force => true do |t|

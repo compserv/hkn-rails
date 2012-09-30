@@ -206,6 +206,14 @@ HknRails::Application.routes.draw do
   end
   resources :resume_books
 
+  # Course Guides
+  scope "courseguides" do
+    match "/"                              => "courseguide#index", :as => :courseguide
+    match "/:dept_abbr/:course_number"     => "courseguide#show", :as => :courseguide_show
+    get "/:dept_abbr/:course_number/edit"  => "courseguide#edit", :as => :courseguide_edit
+    match "/:dept_abbr/:course_number/update" => "courseguide#update", :as => :courseguide_update
+  end
+
   # Course Surveys
   scope "coursesurveys" do
     match "/"                              => "coursesurveys#index",      :as => :coursesurveys

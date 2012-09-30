@@ -1,0 +1,5 @@
+%h1
+  = "Editing Course Guide for #{@course.course_abbr} : #{@course.name}"
+%p= link_to "View Course Guide", courseguide_show_path(@course.dept_abbr, @course.full_course_number)
+= form_for @course, :url => courseguide_update_path(@course.dept_abbr, @course.full_course_number) do |f|
+  = render 'form', :form => f
