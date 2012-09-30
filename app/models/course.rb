@@ -26,7 +26,6 @@ class Course < ActiveRecord::Base
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
-  validates :course_guide, :presence => true
   validates_uniqueness_of :course_number, :scope => [:department_id,:prefix,:suffix]
 
   #scope :all, order("prefix, courses.course_number, suffix")
