@@ -125,6 +125,10 @@ HknRails::Application.routes.draw do
       match "add_course" => "tutor#add_course"
       match "update_slots" => "tutor#update_slots", :as => :tutor_update_slots
     end
+
+    scope "studrel" do
+      match "/" => "studrel#index"
+    end
   end # END Admin Pages
 
   resources :course_preferences, :only => [:destroy]
