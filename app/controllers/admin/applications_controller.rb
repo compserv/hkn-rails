@@ -23,6 +23,15 @@ class Admin::ApplicationsController < ApplicationController
     end
   end
 
+  def byperson_without_application
+    @candidates = cands.reject {|c| c.committee_preferences}
+
+    respond_to do |format|
+      format.html
+      format.csv  {render :layout => false}
+    end
+  end
+
 private
   def cands
     Candidate.approved.current.sort_by {|c| (c.person && c.person.last_name.downcase) || "zzz"  }

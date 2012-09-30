@@ -1,7 +1,7 @@
 class CandidatesController < ApplicationController
   before_filter :is_candidate?, :except => [:promote]
   before_filter :authorize_vp, :only => [:promote]
-  
+
   def is_candidate?
     if @current_user
       if !@current_user.in_group?("candidates")
@@ -21,9 +21,9 @@ class CandidatesController < ApplicationController
       @status = requirements[:status]
       @rsvps = requirements[:rsvps]
       @events = Event.upcoming_events(5, @current_user)
-    
+
       @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
-    
+
       @done["events"] = !@status.has_value?(false)
       @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 5
       @done["resume"] = @current_user.resumes.length >= 0
@@ -40,7 +40,7 @@ class CandidatesController < ApplicationController
     end
 
   end
-  
+
   def find_officers
     render :json => Person.current_comms.map {|p| {:name => p.full_name, :id => p.id} }
   end
@@ -48,7 +48,7 @@ class CandidatesController < ApplicationController
   def application
     if(@current_user.candidate)
       @app_details = {
-        :aim => @current_user.aim, 
+        :aim => @current_user.aim,
         :phone => @current_user.phone_number,
         :local_address => @current_user.local_address,
         :perm_address => @current_user.perm_address,
@@ -61,7 +61,7 @@ class CandidatesController < ApplicationController
       flash[:notice] = "Oops, there's no candidate information for your account."
       redirect_to :back
     end
-    
+
   end
 
   def quiz
@@ -72,14 +72,14 @@ class CandidatesController < ApplicationController
         @quiz_resp[resp.number.to_sym] = resp.response
       end
     end
-      
+
   end
-  
+
   def request_challenge
     officer = Person.current_comms.where(:id => params[:officer_id]).first
     challenge_name = params[:name]
     description = params[:description]
-    
+
     if officer.nil?
       render :json => [false, "Invalid officer."]
       return
@@ -87,19 +87,19 @@ class CandidatesController < ApplicationController
        render :json => [false, "Challenge name is blank."]
        return
     end
-    
+
     challenge = Challenge.new(:name => challenge_name, :status => nil, :officer_id => officer.id, :description => description)
     challenge.candidate = @current_user.candidate
     saved = challenge.save
-    
+
     if(!saved) #challenge didn't save for some reason
       render :json => [false, "Oops, something went wrong!"]
       return
     end
-    
+
     render :json => [true, challenge.id]
   end
-  
+
   def update_challenges
     render :partial => "challenges"
   end
@@ -113,7 +113,7 @@ class CandidatesController < ApplicationController
           q = QuizResponse.new(:number => key.to_s)
           q.candidate = @current_user.candidate
         else #Update existing quiz responses
-          q = quiz_resp.select {|x| x.number == key.to_s}.first      
+          q = quiz_resp.select {|x| x.number == key.to_s}.first
         end
           q.response = value.to_s
           q.save
@@ -122,7 +122,7 @@ class CandidatesController < ApplicationController
     flash[:notice] = "Your quiz responses have been recorded."
     redirect_to :back
   end
-  
+
   def submit_app
     @current_user.update_attributes({
       :aim => params[:aim],
@@ -131,12 +131,12 @@ class CandidatesController < ApplicationController
       :perm_address => params[:perm_address],
       :grad_semester => params[:grad_sem]
     })
-    
+
     @current_user.candidate.update_attributes({
       :committee_preferences => params[:committee_prefs],
       :release => params[:release] ? true : false
     })
-    
+
     suggestion = @current_user.suggestion
     if(@current_user.suggestion) #already has a suggestion, edit
       suggestion.suggestion = params[:suggestion]
@@ -145,7 +145,7 @@ class CandidatesController < ApplicationController
       suggestion = Suggestion.new(:suggestion => params[:suggestion])
       @current_user.suggestion = suggestion
     end
-    
+
     flash[:notice] = "Your application has been saved."
     redirect_to :back
   end
