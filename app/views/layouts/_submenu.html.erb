@@ -100,6 +100,9 @@
   </ul>
   <ul class="plain">
     <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
+    <% if @auth["studrel"] %>
+      <li><a href="/admin/studrel/" class="navigation_sublevel_item">Studrel Admin</a></li>
+    <% end %>
     <% if @auth["tutoring"] %>
       <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
     <% end %>

@@ -1,6 +1,6 @@
-First Name,Last Name,Phone,Committee Preferences,Suggestion
+First Name,Last Name,Phone,Email Address,Committee Preferences,Suggestion
 <%- @candidates.each do |c|
       next unless p = c.person
 -%>
-<%= [:first_name, :last_name, :phone_number].collect{|s| p.send(s)}.join(',') %>,"<%= c.committee_preferences.split.join("\n") if c.committee_preferences %>","<%= c.person.suggestion.suggestion.gsub(/"/,"\\\"") if c.person and c.person.suggestion %>"
+<%= [:first_name, :last_name, :phone_number, :email].collect{|s| p.send(s)}.join(',') %>,"<%= c.committee_preferences.split.join("\n") if c.committee_preferences %>","<%= c.person.suggestion.suggestion.gsub(/"/,"\\\"") if c.person and c.person.suggestion %>"
 <%- end -%>

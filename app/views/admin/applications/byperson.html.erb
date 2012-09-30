@@ -7,6 +7,7 @@
     <th>First Name</th>
     <th>Last Name</th>
     <th>Phone</th>
+    <th>Email</th>
     <th>Committee Preferences</th>
     <th>Suggestion</th>
   <%- @candidates.each do |c|
@@ -16,6 +17,7 @@
     <td><%= p.first_name %></td>
     <td><%= p.last_name  %></td>
     <td><%= p.phone_number %></td>
+    <td><%= p.email %></td>
     <td><ol>
       <%- if c.committee_preferences
             c.committee_preferences.split.each do |p|

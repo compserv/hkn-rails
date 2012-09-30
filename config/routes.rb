@@ -74,6 +74,7 @@ HknRails::Application.routes.draw do
         get   "/"            => "applications#index", :as => :applications
         get   "byperson"     => "applications#byperson", :as => :byperson
         get   "bycommittee"  => "applications#bycommittee", :as => :bycommittee
+        get   "byperson/without_application" => "applications#byperson_without_application", :as => :byperson_without_application
         post  "grade/all"    => "admin#grade_all", :as => :grade_all
       end
     end
@@ -125,6 +126,10 @@ HknRails::Application.routes.draw do
       match "add_course" => "tutor#add_course"
       match "update_slots" => "tutor#update_slots", :as => :tutor_update_slots
     end
+
+    scope "studrel" do
+      match "/" => "studrel#index"
+    end
   end # END Admin Pages
 
   resources :course_preferences, :only => [:destroy]
@@ -147,7 +152,7 @@ HknRails::Application.routes.draw do
   match "logout" => "user_sessions#destroy", :as => :logout
   get   "reauthenticate" => "user_sessions#reauthenticate", :as => :reauthenticate
   post  "reauthenticate" => "user_sessions#reauthenticate_post"
-  
+
   # Reset Password
   get  "resetpassword" => "reset_password#reset_password", :as => :reset_password
   post "resetpassword" => "reset_password#reset_password_post", :as => :reset_password_submit
