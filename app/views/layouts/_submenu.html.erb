@@ -8,6 +8,8 @@
     <li><%= link_to "Course Surveys", coursesurveys_path %></li>
     <% if @current_user %>
       <li><%= link_to "Course Guide", courseguide_path %></li>
+    <% else %>
+      <li><%= link_to "Course Guide", "/courseguide/index.php/Main_Page" %></li>
     <% end %>
     <li><%= link_to "Department Tours", dept_tour_signup_path %></li>
   </ul>
