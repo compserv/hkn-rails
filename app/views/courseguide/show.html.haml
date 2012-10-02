@@ -5,14 +5,15 @@
     %li= link_to "Exam Archive", exams_course_path(@course.dept_abbr, @course.full_course_number)
     - if @can_edit
       %li= link_to "Edit this page", courseguide_edit_path(@course.dept_abbr, @course.full_course_number)
-%h1
-  = @course.course_name
-  != " &mdash; "
-  = @course.name
-  = "(#{pluralize(@course.units, "Unit")})"
-
-- if !@course.course_guide.blank?
-  :markdown
-    #{@course.course_guide}
-- else
-  %p We're still building the guide for this course, please check back later!
+#main
+  %h1
+    = @course.course_name
+    != " &mdash; "
+    = @course.name
+    = "(#{pluralize(@course.units, "Unit")})"
+  
+  - if !@course.course_guide.blank?
+    :markdown
+      #{@course.course_guide}
+  - else
+    %p We're still building the guide for this course, please check back later!
