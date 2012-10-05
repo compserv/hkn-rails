@@ -15,7 +15,7 @@ Second and third choice committees in parentheses.
   cands.each do |cand|
     next unless cand.person
 -%>
-      <li><%= cand.person.full_name %><%= cand.committee_preferences ? %{(#{cand.committee_preferences.split[1]}, #{cand.committee_preferences.split[1]})} : 'None' %></li>
+      <li><%= cand.person.full_name %><%= cand.committee_preferences ? %{(#{cand.committee_preferences.split[1]}, #{cand.committee_preferences.split[2]})} : 'None' %></li>
 <%- end -%>
     </ul>
   </div>
