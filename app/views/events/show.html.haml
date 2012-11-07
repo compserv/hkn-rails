@@ -1,5 +1,8 @@
 #sidebar{:style => "width:50%;"}
-  %h1 Who's coming?
+  - if @auth['comms']
+    %h1 Who's DT#{@event.name.first.upcase}?
+  - else
+    %h1 Who's coming?
   %p
     Total RSVPs: #{@event.rsvps.size}
   - if @auth["comms"] and @event.need_transportation
