@@ -1,5 +1,5 @@
 #sidebar{:style => "width:50%;"}
-  - if @auth['comms']
+  - if @auth['comms'] and @easter_eggs[:dt]
     %h1 Who's DT#{@event.name.first.upcase}?
   - else
     %h1 Who's coming?
