@@ -15,7 +15,7 @@
     <%= f.text_field :name %>
     <br/>
     <%= f.label :date, "Date & Time: "%>
-    <%= f.datetime_select :date %>
+    <%= f.text_field :date, :size => 20, :class => "datetimepicker" %>
     <br/>
     <%= f.label :contact, "Contact Email Address: "%>
     <%= f.text_field :contact %>

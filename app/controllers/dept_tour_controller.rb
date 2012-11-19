@@ -2,7 +2,6 @@ class DeptTourController < ApplicationController
   def signup
     if request.post?
       @errors = {}
-
       # Mandatory
       @errors[:email]              = "Invalid email address"            unless (params[:email] =~ Authlogic::Regex.email)
       @errors[:email_confirmation] = "Email confirmation did not match" unless params[:email] == params[:email_confirmation]
@@ -17,7 +16,7 @@ class DeptTourController < ApplicationController
       if @errors.empty?
         begin
           @messages << params[:date]
-          date = "#{params[:date][:year]}-#{params[:date][:month]}-#{params[:date][:day]} #{params[:date][:hour]}:#{params[:date][:minute]}:#{params[:date][:second]}"
+          date = "#{params[:date]}"
 
           mail = DeptTourMailer.dept_tour_email params[:name], date, params[:email], params[:phone], params[:comments]
           mail.deliver
@@ -46,7 +45,7 @@ class DeptTourController < ApplicationController
 
   private
   def valid_date?(date)
-    dt = Time.mktime(date[:year].to_i, date[:month].to_i, date[:day].to_i, date[:hour].to_i, date[:minute].to_i)
+    dt = Time.parse(date)
     return (10..17).include?(dt.hour) && dt > Time.now
   end
 
