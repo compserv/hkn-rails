@@ -314,6 +314,7 @@ HknRails::Application.routes.draw do
     match "yearbook"  => "static#yearbook"
     match "slideshow" => "static#slideshow"
     match "officers(/:semester)" => "static#officers", :as => "about_officers"
+    match "cmembers(/:semester)" => "static#cmembers", :as => "about_cmembers"
   end
 
   #Tutoring pages

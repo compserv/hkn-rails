@@ -23,6 +23,21 @@ class StaticController < ApplicationController
   def slideshow
   end
 
+  def cmembers
+    @semester = params[:semester] || Election.maximum(:semester)
+    
+    cships = Committeeship.semester(@semester).cmembers.sort_by do |c|
+    [0, c.committee].join
+    
+    end.ordered_group_by(&:committee)
+
+    @committeeships = cships.group_by do |c_ary|  # c_ary = [committee_name, [cships]]
+      Committeeship::Execs.include?(c_ary[0])  ?  :execs  :  :committees
+    end
+
+    [:execs, :committees].each {|s| @committeeships[s] ||= {}}   # NPEs are bad
+  end
+
 
   def officers
     @semester = params[:semester] || Election.maximum(:semester)
