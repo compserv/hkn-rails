@@ -1,0 +1,46 @@
+<h1>HKN Committee Members, <%= Property.pretty_semester @semester %></h1>
+
+<span id="semester-nav">
+<%= link_to "Previous Semester", about_cmembers_path(Property.prev_semester @semester) unless @semester.blank? %>&nbsp;|&nbsp;
+<%= link_to "Next Semester", about_cmembers_path(Property.next_semester @semester) unless @semester.blank? %>
+</span>
+
+<% if @committeeships.values.collect(&:empty?).all? %>
+<div id="no-data">
+  <p>No data available for this semester. If you know information about the committee members for this semester and would like us to add it, please email hkn@hkn.</p>
+</div>
+<% else %><%# there are cships for this semester %>
+
+<% [:execs, :committees].each do |position_type| %>
+<div id="<%= position_type %>">
+  <% @committeeships[position_type].each do |c_name, cships| %>
+    <%# begin partial %>
+
+
+
+    <div class="<%= position_type.to_s.singularize %>">
+      <h2><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h2>
+      <% for person in cships.collect(&:person).sort_by(&:full_name) %>
+      <div class="cmember">
+        <div class="photo <%= "no-photo" if person.picture.blank? %>">
+          <%= image_tag person.picture  unless person.picture.blank? %>
+        </div>
+        <span class="name"><%= person.full_name %></span>
+        <span class="email"><%= person.username %>@hkn</span>
+      </div>
+      <% end %>
+    </div>
+
+
+
+    <%# end partial %>
+  <% end %><%# cships, @committeeships %>
+</div>
+<% end %><%# position_type %>
+
+
+<%# Alumni Advisor should go here. %>
+
+<br/>
+
+<% end %><%# there are cships %>

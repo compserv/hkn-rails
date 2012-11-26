@@ -28,13 +28,18 @@ class PeopleController < ApplicationController
              :per_page => params[:per_page] || 20,
              :order    => "people.#{order} #{sort_direction}"
            }
+    
     if %w[officers].include? @category
       opts.merge!( { :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title = ?", Property.semester, @category[0..-2]] } )
     elsif @category != "all"
       @group = Group.find_by_name(@category)
-      opts.merge!( { :joins => "JOIN groups_people ON groups_people.person_id = people.id", :conditions => ["groups_people.group_id = ?", @group.id] } )
+      if @category == "cmembers"
+        opts.merge!( {:joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title = ?", Property.semester, "cmember"]})
+      else
+        opts.merge!( { :joins => "JOIN groups_people ON groups_people.person_id = people.id", :conditions => ["groups_people.group_id = ?", @group.id] } )
+      end
     end
-
+   
     person_selector = Person
     if @auth["vp"] and params[:not_approved]
       person_selector = person_selector.where(:approved => nil )
