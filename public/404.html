@@ -23,10 +23,10 @@
   else window.onload = blink;
 
   document.onkeydown = function(event) {
-    document.onkeydown = function() {};
     var key_press = String.fromCharCode(event.keyCode);
     var key_code = event.keyCode;
     if (key_code !== 17 && key_code !== 18) {
+      document.onkeydown = function() {};
       $(".error_message").fadeOut();
       window.setTimeout(loading_page, 1000);
       if (key_code === 8) {
