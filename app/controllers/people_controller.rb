@@ -34,7 +34,9 @@ class PeopleController < ApplicationController
     elsif @category != "all"
       @group = Group.find_by_name(@category)
       if @category == "cmembers"
-        opts.merge!( {:joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title = ?", Property.semester, "cmember"]})
+        opts.merge!( {:joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => \
+                       ["committeeships.semester = ? AND (committeeships.title = ? OR committeeships.title = ?) AND (committeeships.committee != ? AND committeeships.committee != ? AND committeeships.committee != ? AND committeeships.committee != ? AND committeeships.committee != ? AND committeeships.committee != ?)" \
+                        , Property.semester, "cmember", "officer","deprel","treas","csec","rsec","vp","pres"]})
       else
         opts.merge!( { :joins => "JOIN groups_people ON groups_people.person_id = people.id", :conditions => ["groups_people.group_id = ?", @group.id] } )
       end
