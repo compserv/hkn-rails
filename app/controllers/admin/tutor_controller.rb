@@ -226,6 +226,11 @@ class Admin::TutorController < Admin::AdminController
 
       Slot::Room::Both.each do |room|
         form_slot = form_slots[room][wday][hour]
+
+        if form_slot == nil
+          next
+        end
+
         metadata = '(%s%s)' % [room_preference(a.room_strength, a.preferred_room, room),
                           tutor_adjacency(a.tutor.adjacency)]
         tuple = ["#{tutor.person.fullname} #{metadata}", tutor.id]
