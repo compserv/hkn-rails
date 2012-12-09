@@ -1,5 +1,5 @@
 <h1>Account Settings <%= "for #{@person.fullname}" if @person.id != @current_user.id %></h1>
-Note: You must enter in your current password to make any changes to your settings.
+<p>Note: You must enter in your current password to make any changes to your settings.</p>
 
 <%= form_for @person do |f| %>
   <% if @person.errors.any? %>
@@ -33,10 +33,7 @@ Note: You must enter in your current password to make any changes to your settin
   </div>  
   
   <h4>Change Password</h4>
-  <div class="field">
-    <%= label :password, :current, "Current Password" %>
-    <%= password_field :password, :current %>
-  </div>
+
   <div class="field">
     <%= label :password, :new, "New Password" %>
     <%= password_field :password, :new %>
@@ -69,6 +66,13 @@ Note: You must enter in your current password to make any changes to your settin
     <%= f.label :date_of_birth %>
     <%= f.date_select :date_of_birth, :start_year=>1950, :end_year => Time.now.year %>
   </div>
+
+  <h4>Password</h4>
+  <div class="field">
+    <%= label :password, :current, "Current Password" %>
+    <%= password_field :password, :current %>
+  </div>
+
   <div class="actions">
     <%= f.submit "Update" %>
   </div>
