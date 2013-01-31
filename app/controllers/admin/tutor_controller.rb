@@ -433,7 +433,9 @@ class Admin::TutorController < Admin::AdminController
     # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
     stats = {officer: {}, cmember: {}}
     happiness_total = {officer: 0, cmember: 0}
-    Tutor.current.includes(:slots, :availabilities).each do |tutor|
+    
+    Tutor.all.each do |tutor|
+    #Tutor.current.includes(:slots, :availabilities).each do |tutor|
       happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
 
       tutor.slots.each do |slot|
@@ -488,7 +490,8 @@ class Admin::TutorController < Admin::AdminController
         position = :cmember
         stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
       else
-        raise "Not an officer or cmember!"
+        next
+        #raise "Not an officer or cmember!"
       end
       stats[position][tutor] = stats_vector
       happiness_total[position] += happiness
