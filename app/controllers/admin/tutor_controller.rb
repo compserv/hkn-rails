@@ -143,8 +143,7 @@ class Admin::TutorController < Admin::AdminController
           firstAvail = true
           for avail in slot.availabilities
             person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
-            if person.in_group?("officers")
-
+      	    if person.in_group?("officers") and not person.committeeships.find_by_semester(Property.semester).nil?
               if firstAvail
                 firstAvail = false
               else
