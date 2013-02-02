@@ -3,7 +3,7 @@
 
   <div class="field">
     <%= f.label :time %><br />
-    <%= f.datetime_select :time %> PST
+    <%= f.text_field :time, :size => 20, :class => "datetimepicker" %> PST
   </div>
   <div class="field">
     <%= f.label :location %><br />
