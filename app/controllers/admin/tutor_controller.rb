@@ -317,7 +317,8 @@ class Admin::TutorController < Admin::AdminController
         rescue NoMethodError
           next
         end
-        slot.tutors.current.each do |tutor|
+        slot.tutors.all.each do |tutor|
+        #slot.tutors.current.each do |tutor|
           unless new_assignments.include? tutor.id
             slot.tutors.delete tutor
             changed = true
