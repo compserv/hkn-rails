@@ -270,6 +270,9 @@ class Admin::TutorController < Admin::AdminController
         slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]} + form_slot.others.map{|x| x[1]}
         Tutor.all.each do |tutor|
         #Tutor.current.includes(:person).each do |tutor|
+          if tutor.person.committeeships.find_by_semester(Property.semester).nil?
+            next
+          end
           if not slot_tutor_ids.include?(tutor.id)
             form_slot.others << [tutor.person.fullname, tutor.id]
             slot_tutor_ids << tutor.id
