@@ -268,7 +268,8 @@ class Admin::TutorController < Admin::AdminController
         form_slot = form_slots[slot.room][wday][hour]
         next unless form_slot
         slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]} + form_slot.others.map{|x| x[1]}
-        Tutor.current.includes(:person).each do |tutor|
+        Tutor.all.each do |tutor|
+        #Tutor.current.includes(:person).each do |tutor|
           if not slot_tutor_ids.include?(tutor.id)
             form_slot.others << [tutor.person.fullname, tutor.id]
             slot_tutor_ids << tutor.id
