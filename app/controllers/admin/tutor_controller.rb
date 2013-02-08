@@ -143,8 +143,30 @@ class Admin::TutorController < Admin::AdminController
           firstAvail = true
           for avail in slot.availabilities
             person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
-            committeeship = person.committeeships.find_by_semester(Property.semester)
-      	    if person.in_group?("officers") and not committeeship.nil? and committeeship.title == "officer"
+            committeeships = person.committeeships.find_all_by_semester(Property.semester)
+            officer = false
+            cmember = false
+            if committeeships.empty?
+              next
+            end
+
+            for comm in committeeships
+              if comm.title == "officer"
+                officer = true
+                cmember = false
+                break
+              elsif comm.title == "cmember"
+                cmember = true
+              end
+            end
+
+            if (params[:which] == "cmembers")
+              check = cmember
+            else
+              check = officer
+            end
+
+            if check == true #person.in_group?("officers") and not committeeship.nil? and committeeship.title == "officer"
               if firstAvail
                 firstAvail = false
               else
@@ -268,8 +290,8 @@ class Admin::TutorController < Admin::AdminController
         form_slot = form_slots[slot.room][wday][hour]
         next unless form_slot
         slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]} + form_slot.others.map{|x| x[1]}
-        Tutor.all.each do |tutor|
-        #Tutor.current.includes(:person).each do |tutor|
+
+        Tutor.current.includes(:person).each do |tutor|
           if tutor.person.committeeships.find_by_semester(Property.semester).nil?
             next
           end
@@ -321,8 +343,8 @@ class Admin::TutorController < Admin::AdminController
         rescue NoMethodError
           next
         end
-        slot.tutors.all.each do |tutor|
-        #slot.tutors.current.each do |tutor|
+        #slot.tutors.all.each do |tutor|
+        slot.tutors.current.each do |tutor|
           unless new_assignments.include? tutor.id
             slot.tutors.delete tutor
             changed = true
@@ -439,8 +461,7 @@ class Admin::TutorController < Admin::AdminController
     stats = {officer: {}, cmember: {}}
     happiness_total = {officer: 0, cmember: 0}
     
-    Tutor.all.each do |tutor|
-    #Tutor.current.includes(:slots, :availabilities).each do |tutor|
+    Tutor.current.includes(:slots, :availabilities).each do |tutor|
       happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
 
       tutor.slots.each do |slot|
