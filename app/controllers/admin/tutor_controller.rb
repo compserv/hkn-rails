@@ -516,8 +516,7 @@ class Admin::TutorController < Admin::AdminController
         position = :cmember
         stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
       else
-        next
-        #raise "Not an officer or cmember!"
+        raise "Not an officer or cmember!"
       end
       stats[position][tutor] = stats_vector
       happiness_total[position] += happiness
