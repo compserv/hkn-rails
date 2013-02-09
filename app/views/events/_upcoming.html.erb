@@ -3,8 +3,12 @@
   <li class="event <%= " current" if event.start_time < Time.now %>">
     <span class="name">
       <%= link_to event.name, event %> (<span class="location"><%= event.location %></span>)
-      <% if event.allows_rsvps? && event.can_rsvp?(@current_user) && @current_user && !@current_user.events.include?(event) %>
-        <span class="rsvp_link">[<%= link_to "RSVP", "/events/" + event.id.to_s + "/rsvps/new" %>]</span>
+      <% if event.allows_rsvps? && event.can_rsvp?(@current_user) && @current_user %>
+        <% if @current_user.events.include?(event) %>
+          <span class="rsvp_link">[<%= link_to "RSVP'ed", "/events/" + event.id.to_s + "/rsvps/" + @current_user.rsvps.find_by_event_id(event.id).id.to_s + "/edit" %>]</span>   
+        <% else %>
+          <span class="rsvp_link">[<%= link_to "RSVP", "/events/" + event.id.to_s + "/rsvps/new" %>]</span>
+	<% end %>
       <% end %>
     </span>
     <span>

@@ -61,7 +61,7 @@
     |
   - if @event.allows_rsvps? and @auth["candplus"]
     - if @current_user_rsvp
-      = link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp)
+      = link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp), :id=>'edit_rsvp'
       |
       = link_to 'Remove My RSVP', event_rsvp_path(@event, @current_user_rsvp), :confirm => 'Are you sure?', :method => :delete
       |
