@@ -22,4 +22,5 @@
 <% end %>
 	<br /><br />
 	<%= "Get scheduling parameters for running the scheduler locally." %>
-	<%= button_to "Officer Parameters", :action => "params_for_scheduler" %>
+	<%= button_to "Officer Parameters", :action => "params_for_scheduler", :which => "officer" %>
+	<%= button_to "Committee Member Parameters", :action => "params_for_scheduler", :which => "cmember" %>
