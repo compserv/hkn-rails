@@ -144,29 +144,25 @@ class Admin::TutorController < Admin::AdminController
           for avail in slot.availabilities
             person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
             committeeships = person.committeeships.find_all_by_semester(Property.semester)
-            officer = false
-            cmember = false
-            if committeeships.empty?
-              next
+
+            slots_for = params["which"]
+            if slots_for.nil?
+              slots_for = "officer"
             end
 
-            for comm in committeeships
-              if comm.title == "officer"
-                officer = true
-                cmember = false
-                break
-              elsif comm.title == "cmember"
-                cmember = true
-              end
-            end
+            # Users can have multiple committeeships. effective_title indicates their highest position out
+            # of all their current committeeships.
+            effective_title = nil
 
-            if (params[:which] == "cmembers")
-              check = cmember
-            else
-              check = officer
+            committeeship_titles = committeeships.collect{ |comm| comm.title }.uniq
+            if committeeship_titles.include? "cmember" and not committeeship_titles.include? "officer"
+              effective_title = "cmember"
+            elsif committeeship_titles.include? "officer"
+              effective_title = "officer"
             end
+              
 
-            if check == true #person.in_group?("officers") and not committeeship.nil? and committeeship.title == "officer"
+            if effective_title == slots_for
               if firstAvail
                 firstAvail = false
               else
