@@ -92,6 +92,11 @@ class Person < ActiveRecord::Base
     c.validates_length_of_login_field_options = {:within => 2..100}
   end
 
+  def current_officer?
+    committeeship_titles = committeeships.find_all_by_semester(Property.semester).collect{ |comm| comm.title }.uniq
+    return committeeship_titles.include? "officer"
+  end
+
   def change_username(opts)
       new_uname, pw = opts[:username], opts[:password]
       return false unless new_uname && pw
