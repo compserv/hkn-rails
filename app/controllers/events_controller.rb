@@ -145,6 +145,8 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     @event = Event.find(params[:id])
+    @event.start_time = @event.start_time.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %I:%M %P")
+    @event.end_time = @event.end_time.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %I:%M %P")
     @blocks = @event.blocks
   end
 
