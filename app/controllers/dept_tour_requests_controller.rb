@@ -38,6 +38,7 @@ class DeptTourRequestsController < ApplicationController
   # GET /dept_tour_requests/1/edit
   def edit
     @dept_tour_request = DeptTourRequest.find(params[:id])
+    @dept_tour_request.date = @dept_tour_request.date.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %I:%M %P")
   end
 
   # POST /dept_tour_requests

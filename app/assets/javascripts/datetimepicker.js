@@ -43,8 +43,13 @@
     {
       hours = "0" + hours;
     }
+    if (month < 10)
+    {
+      month = "0" + month;
+    }
     var dateOneWeekFromNow = year + "-" + month + "-" + day + " ";
     dateOneWeekFromNow += hours + ":" + minutes + " " + suffix;
+    
     $("body").on("click", ".datetimepickerdepttour", function(){
     $(this).datetimepicker({
         defaultValue: dateOneWeekFromNow,
@@ -54,7 +59,7 @@
         stepMinute: 5,
         hourGrid: 6,
         minuteGrid: 15
-    });
+    });    
     $(this).datepicker("show");
     });
 
