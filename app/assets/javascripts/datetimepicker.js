@@ -1,8 +1,7 @@
 $(document).ready(function() {
   //calculate date one week from now
   var currentTime = new Date();
-  var oneWeekFromNow = new Date();
-  oneWeekFromNow.setDate(currentTime.getDate()+7);
+  var oneWeekFromNow = new Date(currentTime.getTime() + 7*24*60*60*1000);
   var year = oneWeekFromNow.getFullYear();
   var month = oneWeekFromNow.getMonth() + 1;
   var day = oneWeekFromNow.getDate();
@@ -37,16 +36,19 @@ $(document).ready(function() {
   }
   var dateOneWeekFromNow = year + "-" + month + "-" + day + " ";
   dateOneWeekFromNow += hours + ":" + minutes + " " + suffix;
-  $(".datetimepicker").click(function() {
-    $(this).datetimepicker({
+  $(function() {
+    $(".datetimepicker").datetimepicker({
       defaultValue: dateOneWeekFromNow,
       dateFormat: 'yy-mm-dd',
       timeFormat: 'hh:mm tt',
       stepHour: 1,
       stepMinute: 5,
       hourGrid: 6,
-      minuteGrid: 15
+      minuteGrid: 15,
+      showOn: "button",
+      buttonImage: "../assets/icons/calendar.gif",
+      buttonImageOnly: true,
+      buttonText: "show calendar"
     });
-    $(this).datepicker("show");
   });
 });
