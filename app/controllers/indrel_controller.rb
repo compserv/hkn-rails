@@ -47,6 +47,26 @@ class IndrelController < ApplicationController
     IndrelMailer.infosession_registration(@fields, request.host).deliver
   end
 
+  def resume_books
+    most_recent_book = ResumeBook.last
+    @resumes = Hash.new
+    @total = 0
+    Resume.since(most_recent_book.cutoff_date).approved.each do |resume| 
+      if resume.graduation_year < Property.semester[0..3].to_i 
+        @resumes[-1] ||= []
+      else
+        @resumes[resume.graduation_year] ||= []
+      end << resume
+      @total += 1
+    end
+
+    @resumes.each do |year, resume_list|
+      @resumes[year] = resume_list.length
+    end
+
+    @resume_array = @resumes.to_a.sort_by{ | obj | obj[0] }.reverse
+  end
+
   def resume_books_order
     @fields = {}
   end
