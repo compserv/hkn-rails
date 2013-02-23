@@ -26,8 +26,7 @@ class StaticController < ApplicationController
   def cmembers
     @semester = params[:semester] || Election.maximum(:semester)
     
-    cships = Committeeship.semester(@semester).cmembers.sort_by do |c|
-    
+    cships = Committeeship.semester(@semester).cmembers.sort_by do |c|    
     [0, c.committee].join
     
     end.ordered_group_by(&:committee)
