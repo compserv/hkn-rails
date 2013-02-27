@@ -1,22 +1,22 @@
 <ul class="upcoming-events plain">
 <% for event in @events.reject {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)} %>
-  <li class="event <%= " current" if event.start_time < Time.now %>">
-    <span class="name">
-      <%= link_to event.name, event %> (<span class="location"><%= event.location %></span>)
-      <% if event.allows_rsvps? && event.can_rsvp?(@current_user) && @current_user %>
-        <% if @current_user.events.include?(event) %>
-          <span class="rsvp_link">[<%= link_to "RSVP'ed", edit_event_rsvp_path(event, @current_user.rsvps.find_by_event_id(event.id)), "data-rsvp_id" => @current_user.rsvps.find_by_event_id(event.id).id.to_s %>]</span>   
-        <% else %>
-          <span class="rsvp_link">[<%= link_to "RSVP", new_event_rsvp_path(event.id) %>]</span>
-	<% end %>
-      <% end %>
-    </span>
-    <span>
-      <span class="time">
-        <%= event.nice_time_range %>
-      </span>
-    </span>
-    <span class="description"><%= event.description %></span>
-  </li>
+    <li class="event <%= " current" if event.start_time < Time.now %>">
+        <span class="name">
+            <%= link_to event.name, event %> (<span class="location"><%= event.location %></span>)
+            <% if event.allows_rsvps? && event.can_rsvp?(@current_user) && @current_user %>
+                <% if @current_user.events.include?(event) %>
+                    <span class="rsvp_link">[<%= link_to "RSVP'ed", edit_event_rsvp_path(event, @current_user.rsvps.find_by_event_id(event.id)), "data-rsvp_id" => @current_user.rsvps.find_by_event_id(event.id).id.to_s %>]</span>   
+                <% else %>
+                    <span class="rsvp_link">[<%= link_to "RSVP", new_event_rsvp_path(event.id) %>]</span>
+                <% end %>
+            <% end %>
+        </span>
+        <span>
+            <span class="time">
+                <%= event.nice_time_range %>
+            </span>
+        </span>
+        <span class="description"><%= event.description %></span>
+    </li>
 <% end %>
 </ul>
