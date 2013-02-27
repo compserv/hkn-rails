@@ -48,23 +48,22 @@ class IndrelController < ApplicationController
   end
 
   def resume_books
-    most_recent_book = ResumeBook.last
-    @resumes = Hash.new
-    @total = 0
-    Resume.since(most_recent_book.cutoff_date).approved.each do |resume| 
-      if resume.graduation_year < Property.semester[0..3].to_i 
-        @resumes[-1] ||= []
-      else
-        @resumes[resume.graduation_year] ||= []
-      end << resume
-      @total += 1
+    cutoff = ResumeBook.last.cutoff_date
+    year = Property.semester[0..3].to_i
+
+    @year_counts = Resume.select("graduation_year").where("updated_at > :cutoff AND graduation_year >= :year", 
+      { :cutoff => cutoff, :year => year}).reorder("graduation_year desc").group("graduation_year").count
+
+    @grad_counts = Resume.select("graduation_year").where("updated_at > :cutoff AND graduation_year < :year",
+      { :cutoff => cutoff, :year => year}).count
+
+    @sum = 0
+    @year_counts.each do |year, count|
+      @sum += count
     end
 
-    @resumes.each do |year, resume_list|
-      @resumes[year] = resume_list.length
-    end
+    @sum += @grad_counts
 
-    @resume_array = @resumes.to_a.sort_by{ | obj | obj[0] }.reverse
   end
 
   def resume_books_order

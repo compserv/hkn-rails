@@ -18,14 +18,13 @@
     <h2>What kinds of students would I be able to find in the Resume Book?</h2>
 
     <table>
-      <tr><th>Total:</th><td><%= @total %> Students</td></tr>
-      <% @resume_array.each do |resume| %>
-	<% if resume[0] > 0 %>
-          <tr><th>Graduating <%= resume[0] %></th><td><%= resume[1] %></td></tr>
-        <% else %>
-          <tr><th>Graduates</th><td><%= resume[1] %></td></tr>
-        <% end %>
-      <% end %> 
+      <tr><th>Total:</th><td><%= @sum %> Students</td></tr>
+      <% @year_counts.each do |year, count| %>
+        <tr><th>Graduating <%= year %></th><td><%= count %></td></tr>
+      <% end %>
+      <% if @grad_counts > 0 %>
+        <tr><th>Graduates</th><td><%= @grad_counts %></td></tr>
+      <% end %>
     </table>
 
     <h2>How do I order it?</h2>
