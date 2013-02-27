@@ -47,6 +47,25 @@ class IndrelController < ApplicationController
     IndrelMailer.infosession_registration(@fields, request.host).deliver
   end
 
+  def resume_books
+    cutoff = ResumeBook.last.cutoff_date
+    year = Property.semester[0..3].to_i
+
+    @year_counts = Resume.select("graduation_year").where("updated_at > :cutoff AND graduation_year >= :year", 
+      { :cutoff => cutoff, :year => year}).reorder("graduation_year desc").group("graduation_year").count
+
+    @grad_counts = Resume.select("graduation_year").where("updated_at > :cutoff AND graduation_year < :year",
+      { :cutoff => cutoff, :year => year}).count
+
+    @sum = 0
+    @year_counts.each do |year, count|
+      @sum += count
+    end
+
+    @sum += @grad_counts
+
+  end
+
   def resume_books_order
     @fields = {}
   end
