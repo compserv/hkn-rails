@@ -90,9 +90,6 @@
       <%= label_tag "Committee Preferences" %><br/>
     <%= hidden_field_tag(:committee_prefs, "", :id=>"committee_prefs") %>
     <b>Click and drag</b> the bars to sort by your committee preferences (top being the most preferable).
-    <% @app_details[:committee_prefs].each do |pref| %>
-      <%= pref %>,
-    <% end %>
     <ul id="sortable" class="plain">
       <% for pref in @app_details[:committee_prefs] %>
         <li class="ui-state-default">
