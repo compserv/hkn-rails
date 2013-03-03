@@ -1,23 +1,5 @@
 #sidebar.trans-bg
-  %h1 Quicklinks
-  %h2 Search For an Instructor or Course
-  = form_tag(coursesurveys_search_path, :method=>:get) do
-    = text_field_tag(:q, "")
-    = submit_tag "Search", :name => nil
-  %h2 Browse Instructors and Courses
-  %ul.plain
-    %li= link_to "Instructors", coursesurveys_instructors_path
-    %li= link_to "Teaching Assistants", coursesurveys_tas_path
-    %li= link_to "Electrical Engineering Courses", coursesurveys_department_path("EE")
-    %li= link_to "Computer Science Courses", coursesurveys_department_path("CS")
-
-  %h2 More Information
-  %ul.plain
-    %li= link_to "How to use the course survey system", coursesurveys_how_to_path
-    %li= link_to "Information for professors and TAs", coursesurveys_info_profs_path
-    %li= link_to "Information about hidden GSI ratings", coursesurveys_ferpa_path
-    %li= link_to "Aggregate statistics", comingsoon_path
-
+  = render :partial => "quick_nav"
 #main
   %h1 Course Surveys
   %p
