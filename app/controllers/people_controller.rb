@@ -144,6 +144,11 @@ class PeopleController < ApplicationController
   end
 
   def destroy
+    @person = Person.find(params[:id])
+    @person.destroy
+
+    flash[:notice] = "Deleted \"" + @person.fullname + "\"."
+    redirect_to people_list_path
   end
 
   def groups
