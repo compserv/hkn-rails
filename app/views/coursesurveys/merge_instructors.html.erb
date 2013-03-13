@@ -6,21 +6,22 @@
     profname = function(prof) { return prof.name; }
     $(document).ready( function() {
       $.ajax({ url: <%= raw coursesurveys_instructor_ids_path.inspect %>,
-               success: function(data) {
-               <%-[0,1].each do |i|-%>
-               $('#ibox<%=i%>').
-                 autocomplete(data, {formatItem: profname} ).
-                 result( function(event,item) {
-                   $('#id_<%=i%>')[0].value = item.id;
-                   $('#ibox<%=i%>')[0].disabled = true;
-                 });
-               $('#ibox<%=i%>').keypress(function(event){if(event.which == 13) event.preventDefault();});
-<%-end-%> }
-             });
+                success: function(data) {
+                  [0,1].map(function(i) {
+                    $('#ibox' + i).
+                      autocomplete(data, {formatItem: profname} ).
+                    result( function(event,item) {
+                      $('#id_' + i)[0].value = item.id;
+                      $('#ibox' + i)[0].disabled = true;
+                    });
+                    $('#ibox' + i).keypress(function(event){if(event.which == 13) event.preventDefault();});
+                  });
+                }
+      });
       $("#submit").click( function() {
       });
         
-      });
+    });
   </script>
 
   <style type="text/css">
