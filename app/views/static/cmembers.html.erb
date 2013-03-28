@@ -11,7 +11,7 @@
 </div>
 <% else %><%# there are cships for this semester %>
 
-<% [:execs, :committees].each do |position_type| %>
+<% [:committees].each do |position_type| %>
 <div id="<%= position_type %>">
   <% @committeeships[position_type].each do |c_name, cships| %>
     <%# begin partial %>

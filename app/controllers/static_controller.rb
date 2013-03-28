@@ -24,18 +24,18 @@ class StaticController < ApplicationController
   end
 
   def cmembers
+    # Get the most recent semester
     @semester = params[:semester] || Election.maximum(:semester)
-    
+    # Using the semester, get the committeeships, sorted by committee
     cships = Committeeship.semester(@semester).cmembers.sort_by do |c|    
-    [0, c.committee].join
-    
+      c.committee
     end.ordered_group_by(&:committee)
-
-    @committeeships = cships.group_by do |c_ary|  # c_ary = [committee_name, [cships]]
-      Committeeship::Execs.include?(c_ary[0])  ?  :execs  :  :committees
+    # Group cships by committee
+    @committeeships = cships.group_by do |c_ary|
+      :committees
     end
-
-    [:execs, :committees].each {|s| @committeeships[s] ||= {}}   # NPEs are bad
+    # If @committeeships[:committees] is null, make it empty
+    @committeeships[:committees] ||= {}
   end
 
 
