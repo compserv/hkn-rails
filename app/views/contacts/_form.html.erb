@@ -1,28 +1,28 @@
-<% form_for(@contact) do |f| %>
+<%= form_for(@contact) do |f| %>
   <%= f.error_messages %>
 
   <div class="field">
-    <%= f.label :name %><br />
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :email %><br />
+    <%= f.label :email %>
     <%= f.text_field :email %>
   </div>
   <div class="field">
-    <%= f.label :phone %><br />
+    <%= f.label :phone %>
     <%= f.text_field :phone %>
   </div>
   <div class="field">
-    <%= f.label :cellphone %><br />
+    <%= f.label :cellphone %>
     <%= f.text_field :cellphone %>
   </div>
   <div class="field">
-    <%= f.label 'contact[company_id]', 'Company' %><br />
+    <%= f.label 'contact[company_id]', 'Company' %>
     <%= collection_select :contact, :company_id, Company.all, :id, :name, {:include_blank => "None"} %>
   </div>
   <div class="field">
-    <%= f.label :comments %><br />
+    <%= f.label :comments %>
     <%= f.text_area :comments %>
   </div>
   <div class="field-submit">
