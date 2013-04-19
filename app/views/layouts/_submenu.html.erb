@@ -130,6 +130,9 @@
     <% if @auth["pres"] %>
       <li><%= link_to "Pres Admin", admin_pres_path, :class => "navigation_sublevel_item" %></li>
     <% end %>
+    <% if @auth["alumrel"] %>
+      <li><%= link_to "Alumrel Admin", alumnis_path, :class => "navigation_sublevel_item" %></li>
+    <% end %>
   </ul>
 </div>
 <% end %>
