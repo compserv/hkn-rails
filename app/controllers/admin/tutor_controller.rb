@@ -89,154 +89,111 @@ class Admin::TutorController < Admin::AdminController
 
   end
 
-  def gen_course_list 
-    # Create ["cs61a", "cs61b", ... ] 
-    courseSet = Set.new 
-    Course.joins(:course_preferences).where(:course_preferences => { :tutor_id=>Tutor.current}).ordered.uniq.each do |c| 
-      courseSet.add c.course_abbr 
-    end 
-    courseArray = courseSet.to_a 
-    return courseArray 
-  end 
-   
-  def gen_tutor_course_prefs 
-    courseArray = gen_course_list 
-     
-    # Create {"cs61a" : 0, "cs61b" : 1, ...} 
-    courseIndices = Hash.new 
-    for i in 0..courseArray.length 
-      courseIndices[courseArray[i]] = i 
-    end 
-         
-    # Create list of "prefs": [1, 0, 1] for each tutor 
-    # -1: Not taken, 0: Currently taking, 1: Has taken, 2: Preferred 
-    tutorPrefs = Hash.new 
-    for tutor in Tutor.current 
-      coursePref = Array.new(courseArray.length, -1) 
-      for course in tutor.course_preferences 
-        coursePref[courseIndices[course.course.course_abbr]] = course.level 
-      end
-      tutorPrefs[tutor.person.id] = coursePref 
-    end 
-        
-  return tutorPrefs 
-  end 
-   
-  def slot_id(day, hour, office) 
-    return (6*(day - 1)) + (hour - 11) + (office * 30) 
-  end 
-   
-  def adj_slots(slot_id) 
-    if slot_id % 6 == 0 
-      return [slot_id + 1] 
-    elsif slot_id % 6 == 5 
-      return [slot_id - 1] 
-    else 
-      return [slot_id - 1, slot_id + 1] 
-    end 
-  end 
-   
-  def tutor_slot_prefs(tutor) 
-    timePrefs = Array.new(60, 0) 
-    officePrefs = Array.new(60, 0) #Cory >> -2, -1, 0, 1, 2 >> Soda 
-    for slot in tutor.availabilities 
-      thisSlotID = slot_id(slot.wday, slot.hour, "Cory" == slot.preferred_room ? 0 : 1) 
-         
-      officePrefs[thisSlotID] = 1 * slot.room_strength 
-      if slot.preferred_room == 0 # If cory or no pref, set pref to neg 
-        officePrefs[thisSlotID] *= -1
-      end 
-      officePrefs[(thisSlotID + 30) % 60] = -1 * officePrefs[thisSlotID]
-   
-      timePrefs[thisSlotID] = slot.preference_level # Either 1 or 2... I think...
-      timePrefs[(thisSlotID + 30) % 60] = timePrefs[thisSlotID]
-    end 
-    return timePrefs, officePrefs 
-  end 
-   
-  def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False') 
-    # Room 0 = Cory; Room 1 = Soda 
-    # Adjacency -1 = Does not want adjacent, 0 = Don't care, 1 = Wants adjacent 
-     
-    i1 = "&nbsp;&nbsp;&nbsp;&nbsp;" 
-    i2 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" 
-    ret = "{<br/>" 
-     
-    # Course names 
-    ret += i1 + '"courseNames":[' 
-     
-    courseList = gen_course_list 
-    coryCoursePref = courseList.map{|course| (course[0..1] == "EE" or course[0..3] == "PHYS") ? 1 : 0} 
-    sodaCoursePref = courseList.map{|course| (course[0..1] == "CS" or course[0..3] == "MATH") ? 1 : 0}
- 
-    for courseName in gen_course_list 
-      ret += '"' + courseName + '", ' 
-    end 
-    ret = ret[0..-3] + "],<br/><br/>" 
-     
-     
-    # Tutors 
-    tutorCoursePrefs = gen_tutor_course_prefs 
-     
-    ret += i1 + '"tutors"' + ":<br/>" 
-    ret += i1 + "[<br/>" 
-    
-    allTutors = Hash.new 
-    for tutor in Tutor.current 
-      
-      # Not sure why some tutors are listed multiple times
-      if allTutors.has_key?(tutor)
-        next
+  def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False')
+    prop = Property.get_or_create
+    ret = "#HKN Mu Chapter parameters for tutoring schedule generator<br/>#Generated for "
+    ret += prop.semester
+    ret += Time.now.strftime(" on %a, %m/%d/%Y at %H:%M:%S <br/>")
+    ret += "#To use this data, put it into a file parameters.py in the same location as scheduler.py.<br/>"
+    ret += '#See https://hkn.eecs.berkeley.edu/prot/Tutoring_Scheduler on how to run the program.<br/>'
+    ret += "</br>options = {'patience': " + patience
+    ret += ", 'machineNum': " + machineNum
+    ret += ", 'randomSeed': " + randomSeed
+    ret += ", 'maximumCost': " + maximumCost + "}<br/>"
+
+    ret += 'CORY = "Cory"</br>SODA = "Soda"</br>'
+    ret += "#The following data may be modified as needed.</br>"
+    ret += "TUTORING_DAYS = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')</br>"
+    ret += "TUTORING_TIMES = ('11a-12', '12-1', '1-2', '2-3', '3-4', '4-5')</br>"
+    ret += "SCORE_CORRECT_OFFICE = 2</br>"
+    ret += "SCORE_MISS_PENALTY = 10000</br>"
+    ret += "SCORE_PREFERENCE = {1: 6, 2: 0}</br>"
+    ret += "SCORE_ADJACENT = 1</br>"
+    ret += "SCORE_ADJACENT_SAME_OFFICE = 2</br>"
+    ret += "DEFAULT_HOURS = 2</br>"
+    ret += "#Input exceptions to the number of tutoring hours below. Ex: exceptions = {u'201DummyA':3, u'597DummyB':1}</br>"
+    ret += "exceptions = {} </br>"
+    ret += "defaultHours = 2</br>"
+    ret += "scoring = {'adjacent_same_office': 2, 'correct_office': 2, 'adjacent': 1, 'miss_penalty': 10000, 'preference': {1: 6, 2: 0}}</br></br>"
+
+    for room in 0..1
+      if room == 0
+        ret += 'coryTimes = "'
+      else
+        ret += 'sodaTimes = "'
       end
 
-      allTutors[tutor] = 1
-      tutorSlotPrefs = tutor_slot_prefs(tutor) 
-     
-      ret += i2 + "{<br/>" 
-      ret += i2 + '"tid":' + tutor.person.id.to_s + ",<br/>"
-      ret += i2 + '"name":"' + tutor.person.fullname + '"' + ",<br/>"
-      ret += i2 + '"timeSlots":' + tutorSlotPrefs[0].to_s + ",<br/>"
-      ret += i2 + '"officePrefs":' + tutorSlotPrefs[1].to_s + ",<br/>"
-      ret += i2 + '"courses":' + tutorCoursePrefs[tutor.person.id].to_s + ",<br/>"
-      ret += i2 + '"adjacentPref":' + tutor.adjacency.to_s + "<br/>"
-      ret += i2 + "},<br/><br/>" 
-    end 
-        
-    ret = ret[0..-12] + "<br/>" 
-    ret += i1 + "],<br/><br/>" 
-     
-     
-    # Timeslots 
-    days = {1=>"Monday", 2=>"Tuesday", 3=>"Wednesday", 4=>"Thursday", 5=>"Friday"} 
-    rooms = {0=>"CORY", 1=>"SODA"} 
-     
-    ret += i1 + '"slots"' + ":<br/>" 
-    ret += i1 + "[<br/>" 
-     
-    for slot in Slot.all 
-      officeCoursePrefs = (slot.room == 0 ? coryCoursePref : sodaCoursePref) 
-      thisSlotID = slot_id(slot.wday, slot.hour, slot.room) 
-      ret += i2 + "{<br/>" 
-      ret += i2 + '"sid":' + thisSlotID.to_s + ",<br/>" # ID for future use 
-      ret += i2 + '"name":"' + "InternalSlot" + slot.id.to_s() + '"' + ",<br/>" # Database ID 
-      ret += i2 + '"adjacentSlotIDs":' + adj_slots(thisSlotID).to_s + ",<br/>" 
-      ret += i2 + '"courses":' + officeCoursePrefs.to_s + ",<br/>" 
-      ret += i2 + '"day":"' + days[slot.wday] + '"' + ",<br/>" 
-      ret += i2 + '"hour":' + slot.hour.to_s() + ",<br/>" 
-      ret += i2 + '"office":"' + rooms[slot.room] + '"' + "<br/>" 
-      ret += i2 + "},<br/><br/>" 
-    end
+      firstHour = true
+      for hour in 11..16
+        if firstHour
+          firstHour = false
+        else
+          ret += '\n'
+        end
 
-    ret = ret[0..-12] + "<br/>" 
-    ret += i1 + "]<br/>" 
-     
-    ret += "}"
-    render :text => ret 
+        firstDay = true
+        for wday in 1..5
+          if firstDay
+            firstDay = false
+          else
+            ret += ','
+          end
+
+          slot = Slot.select{|slot| slot.room == room and slot.hour == hour and slot.wday == wday}.first
+          firstAvail = true
+          for avail in slot.availabilities
+            person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
+            committeeships = person.committeeships.find_all_by_semester(Property.semester)
+
+            slots_for = params["which"]
+            if slots_for.nil?
+              slots_for = "officer"
+            end
+
+            # Users can have multiple committeeships. effective_title indicates their highest position out
+            # of all their current committeeships.
+            effective_title = nil
+
+            committeeship_titles = committeeships.collect{ |comm| comm.title }.uniq
+            if committeeship_titles.include? "cmember" and not committeeship_titles.include? "officer"
+              effective_title = "cmember"
+            elsif committeeship_titles.include? "officer"
+              effective_title = "officer"
+            end
+              
+
+            if effective_title == slots_for
+              if firstAvail
+                firstAvail = false
+              else
+                ret += ' '
+              end
+              ret += avail.tutor.id.to_s
+              ret += person.first_name + person.last_name[0..0]
+              ret += avail.preference_level.to_s
+
+              if avail.room_strength == 0
+                ret += 'p'
+              elsif avail.preferred_room == room
+                ret += 'P'
+              elsif avail.room_strength == 1
+                ret += 'p'
+              end
+              if avail.tutor.adjacency == 1
+                ret += 'A'
+              elsif avail.tutor.adjacency == -1
+                ret += 'a'
+              end
+
+            end #officer check
+          end #avail
+        end #day
+      end #hour
+      ret += '"</br>'
+    end #office
+
+    render :text => ret
   end
-      
-    
-
-
 
   def edit_schedule
     def room_preference(room_strength, preferred_room, slot_room)
