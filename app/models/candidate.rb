@@ -15,7 +15,7 @@ class Candidate < ActiveRecord::Base
   has_many :challenges
   
   validates :person, :presence => true
-  validate :committees_must_be_valid
+  #validate :committees_must_be_valid
 
   scope :current, lambda { where(["candidates.created_at > ?", Property.semester_start_time]) }
   scope :approved, lambda { includes(:person).where(:people => {:approved => true}) }
