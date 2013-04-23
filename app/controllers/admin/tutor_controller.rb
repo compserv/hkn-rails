@@ -134,7 +134,7 @@ class Admin::TutorController < Admin::AdminController
     else 
       return [slot_id - 1, slot_id + 1] 
     end 
-  end 
+  end
    
   def tutor_slot_prefs(tutor) 
     timePrefs = Array.new(60, 0) 
@@ -153,7 +153,17 @@ class Admin::TutorController < Admin::AdminController
     end 
     return timePrefs, officePrefs 
   end 
-   
+  
+  def num_slot_assignments(tutor)
+    if tutor.person.in_group?("officers")
+      return 2
+    elsif tutor.person.in_group?("cmembers")
+      return 1
+    else
+      return 0 # Not sure how this person got in the system
+    end
+  end
+
   def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False') 
     # Room 0 = Cory; Room 1 = Soda 
     # Adjacency -1 = Does not want adjacent, 0 = Don't care, 1 = Wants adjacent 
@@ -198,7 +208,8 @@ class Admin::TutorController < Admin::AdminController
       ret += i2 + '"timeSlots":' + tutorSlotPrefs[0].to_s + ",<br/>"
       ret += i2 + '"officePrefs":' + tutorSlotPrefs[1].to_s + ",<br/>"
       ret += i2 + '"courses":' + tutorCoursePrefs[tutor.person.id].to_s + ",<br/>"
-      ret += i2 + '"adjacentPref":' + tutor.adjacency.to_s + "<br/>"
+      ret += i2 + '"adjacentPref":' + tutor.adjacency.to_s + ",<br/>"
+      ret += i2 + '"numAssignments":' + num_slot_assignments(tutor).to_s + "<br/>"
       ret += i2 + "},<br/><br/>" 
     end 
         
@@ -234,9 +245,6 @@ class Admin::TutorController < Admin::AdminController
     render :text => ret 
   end
       
-    
-
-
 
   def edit_schedule
     def room_preference(room_strength, preferred_room, slot_room)
