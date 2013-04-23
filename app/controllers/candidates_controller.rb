@@ -146,7 +146,6 @@ class CandidatesController < ApplicationController
       @current_user.suggestion = suggestion
     end
 
-    #flash[:notice] = "Your application has been saved."
     errors = @current_user.candidate.errors
     if not errors.empty?
       if errors.include?(:committee_preferences)
