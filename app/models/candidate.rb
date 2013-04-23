@@ -8,14 +8,14 @@ class Candidate < ActiveRecord::Base
   #   committee_preferences : string 
   #   release               : string 
   #   quiz_score            : integer 
-  # =======================
+  # ======================#=
 
   belongs_to :person
   has_many :quiz_responses
   has_many :challenges
   
   validates :person, :presence => true
-  #validate :committees_must_be_valid
+  validate :committees_must_be_valid
 
   scope :current, lambda { where(["candidates.created_at > ?", Property.semester_start_time]) }
   scope :approved, lambda { includes(:person).where(:people => {:approved => true}) }
@@ -27,6 +27,10 @@ class Candidate < ActiveRecord::Base
 
   def committees_must_be_valid
     defaults = Candidate.committee_defaults.collect {|c| c.downcase}
+    if committee_preferences.blank?
+      # nil is a valid committee
+      return
+    end
     for comm in committee_preferences.split
       if not defaults.include?(comm.downcase)
         errors.add(:committee_preferences, "contains invalid committees")
