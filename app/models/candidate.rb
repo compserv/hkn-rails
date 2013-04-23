@@ -8,7 +8,7 @@ class Candidate < ActiveRecord::Base
   #   committee_preferences : string 
   #   release               : string 
   #   quiz_score            : integer 
-  # ======================#=
+  # =======================
 
   belongs_to :person
   has_many :quiz_responses
