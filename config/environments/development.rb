@@ -24,14 +24,13 @@ HknRails::Application.configure do
     config.action_controller.perform_caching = false
   end
 
-  # Don't care if the mailer can't send
-  config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.perform_deliveries = false
-
   config.active_support.deprecation = :notify
 
-  #config.action_mailer.delivery_method = :sendmail
-  #config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :file
+  config.action_mailer.file_settings = {
+    location: File.join(Rails.root, 'tmp', 'mails')
+  }
+  config.action_mailer.raise_delivery_errors = true
 
   # Do not compress assets
   config.assets.compress = false
