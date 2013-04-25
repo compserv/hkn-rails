@@ -146,15 +146,14 @@ class CandidatesController < ApplicationController
       @current_user.suggestion = suggestion
     end
 
-    flash[:notice] = "Your application has been saved."
-    #errors = @current_user.candidate.errors
-    #if not errors.empty?
-    #  if errors.include?(:committee_preferences)
-    #    flash[:notice] = "Your application has invalid committees listed. Please notify compserv@hkn."
-    #  end
-    #else
-    #  flash[:notice] = "Your application has been saved."
-    #end
+    errors = @current_user.candidate.errors
+    if not errors.empty?
+      if errors.include?(:committee_preferences)
+        flash[:notice] = "Your application has invalid committees listed. Please notify compserv@hkn."
+      end
+    else
+      flash[:notice] = "Your application has been saved."
+    end
     redirect_to :back
   end
 
