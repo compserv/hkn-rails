@@ -1,3 +1,13 @@
+Welcome to HKN
+==============
+
+TODO: Add useful information.
+
+Stuff that used to be in README.d
+---------------------------------
+
+### How to use Solr ###
+
 1) bundle install
 2) add searchables to your model
    http://github.com/outoftime/sunspot/wiki/Setting-up-classes-for-search-and-indexing
@@ -6,7 +16,7 @@
 
 Sunspot includes its own version of solr that's easy to use, and you don't have to
 install Solr on Tomcat/Jetty/etc. yourself.
- Note: Puts index files somewhere in your /tmp 
+ Note: Puts index files somewhere in your /tmp
 1) rake sunspot:solr:start
 2) rake sunspot:solr:reindex whenever you change the 'searchable' information in your model.
    You don't have to reindex when you change data.

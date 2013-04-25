@@ -1,13 +1,6 @@
-GIT
-  remote: git://github.com/rails/exception_notification.git
-  revision: 192a49a02d63d28b23ed41cebadfedd490929cf1
-  specs:
-    exception_notification (1.0.0)
-
 GEM
   remote: http://rubygems.org/
   specs:
-    ZenTest (4.8.3)
     actionmailer (3.1.10)
       actionpack (= 3.1.10)
       mail (~> 2.3.3)
@@ -40,8 +33,7 @@ GEM
     authlogic (3.2.0)
       activerecord (>= 3.0.0)
       activesupport (>= 3.0.0)
-    autotest-rails (4.1.2)
-      ZenTest (~> 4.5)
+    autotest-standalone (4.5.11)
     builder (3.0.4)
     coffee-rails (3.1.1)
       coffee-script (>= 2.2.0)
@@ -54,6 +46,8 @@ GEM
     domain_name (0.5.7)
       unf (~> 0.0.3)
     erubis (2.7.0)
+    exception_notification (3.0.1)
+      actionmailer (>= 3.0.4)
     execjs (1.4.0)
       multi_json (~> 1.0)
     haml (3.1.7)
@@ -184,11 +178,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  ZenTest
   authlogic
-  autotest-rails
+  autotest-standalone
   coffee-rails (~> 3.1.0)
-  exception_notification!
+  exception_notification (~> 3.0.0)
   haml-rails
   jquery-rails (>= 0.2.6)
   mechanize
@@ -207,6 +200,6 @@ DEPENDENCIES
   therubyracer
   uglifier
   webrat
-  will_paginate (~> 3.0.pre2)
+  will_paginate (~> 3.0.0)
   yaml_db
   yard
