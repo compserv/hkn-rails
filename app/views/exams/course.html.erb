@@ -20,9 +20,15 @@
       </td>
       <%- ['mt1', 'mt2', 'mt3', 'f'].each do |short_type| -%>
 	<td>
-	<%- exam = exams[short_type] -%>
-	<%- sol = solutions[short_type] -%>
+	<%- exam = exams[short_type] -%> 
+	<%- sol = solutions[short_type] -%> 
 	<%= (link_to "[#{exam.file_type}]", @exam_path+exam.filename) unless exam.nil?%><%= (link_to '[solution]', @exam_path+sol.filename) unless sol.nil? %>
+	<% if @auth["studrel"] %>
+	<%= (link_to '[Remove exam]', exams_destroy_path(exam.id) , :method => :delete, :confirm => 'Are you sure?') unless exam.nil?%>
+	<%= (link_to '[Update exam]', exams_update_form_path(exam.id), :method => :get) unless exam.nil?%>
+	<%= (link_to '[Remove solution]' , exams_destroy_path(sol.id) , :method => :delete, :confirm => 'Are you sure?') unless sol.nil?%>
+	<%= (link_to '[Update solution]' , exams_update_form_path(sol.id) , :method => :get) unless sol.nil?%>
+	<% end %>
       </td>
       <%- end -%>
     </tr>

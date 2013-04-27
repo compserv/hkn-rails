@@ -1,3 +1,10 @@
 <h1>Studrel Admin</h1>
 <h3>Add a new exam file</h3>
 <%= button_to "New Exam File", exams_new_path, :method => :get %>
+<h3>Delete or Update an exam file</h3>
+  <div id="examfiles" class="searchcontrol">
+    <%= form_tag(exams_search_path, :method => :get) do %>
+      <%= text_field_tag :q, params[:controller].eql?('exams') ? h(params[:q]) : '', :placeholder=>"Search Exams", :class=>"text autoclear", :id => "examfiles_q" %>
+      <%= submit_tag "Search", :name=>nil %>
+    <%- end -%>
+  </div>
