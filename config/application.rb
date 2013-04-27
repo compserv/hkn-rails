@@ -51,9 +51,9 @@ module HknRails
 
     #Exception Notification
     config.middleware.use ExceptionNotifier,
-      :email_prefix => "[hkn-rails Exception] ",
-      :sender_address => '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
-      :exception_recipients => ['website-errors@hkn.eecs.berkeley.edu']
+      email_prefix: '[hkn-rails Exception] ',
+      sender_address: '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
+      exception_recipients: ['website-errors@hkn.eecs.berkeley.edu']
 
     # Enable the asset pipeline
     config.assets.enabled = true

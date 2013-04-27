@@ -1,0 +1,19 @@
+<%= form_for(@location) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :capacity %>
+    <%= f.text_field :capacity %>
+  </p>
+  <p>
+    <%= f.label :comments %>
+    <%= f.text_area :comments %>
+  </p>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end %>

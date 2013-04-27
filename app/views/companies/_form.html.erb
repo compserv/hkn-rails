@@ -1,20 +1,20 @@
-<% form_for(@company) do |f| %>
+<%= form_for(@company) do |f| %>
   <%= f.error_messages %>
 
   <div class="field">
-    <%= f.label :name %><br />
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :address %><br />
+    <%= f.label :address %>
     <%= f.text_area :address %>
   </div>
   <div class="field">
-    <%= f.label :website %><br />
+    <%= f.label :website %>
     <%= f.text_field :website %>
   </div>
   <div class="field">
-    <%= f.label :comments %><br />
+    <%= f.label :comments %>
     <%= f.text_area :comments %>
   </div>
   <div class="field-submit">

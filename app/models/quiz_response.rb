@@ -76,14 +76,16 @@ class QuizResponse < ActiveRecord::Base
           1
         when /^corresponding secretary$/i
           2
-        when /^president$/i
+        when /^faculty advisor$/i
           3
-        when /^recording secretary$/i
+        when /^president$/i
           4
-        when /^vice[\s-]president$/i
+        when /^recording secretary$/i
           5
-        when /^treasurer$/i
+        when /^vice[\s-]president$/i
           6
+        when /^treasurer$/i
+          7
         else
           false
         end
@@ -124,7 +126,8 @@ class QuizResponse < ActiveRecord::Base
         /Brewer/,
         /Birdsall/,
         /Babak|Ayazifar/,
-        /Sahai/
+        /Sahai/,
+        /Kamil/
       ].any? {|f| r =~ f}
 
     # Our offices
