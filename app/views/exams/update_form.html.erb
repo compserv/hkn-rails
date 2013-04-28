@@ -1,0 +1,41 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+          url: '/admin/tutor/find_courses',
+          success: function(data) {
+            d = []
+            for(var item in data) {
+              d[item] = {text: data[item]["text"], url: data[item]["url"]}
+            }
+
+            $("#course_query").autocomplete(data, {
+              formatItem: function(item) {
+                return item.text;
+              }
+            }).result(function(event, item) {
+              $("#course_id").attr("value", item.url);
+            });
+          }
+        });
+      });
+  </script>
+
+
+<% end %>
+
+<%= form_for @exam, :url => :exams_update , :html => { :multipart => true , :method => :post } do |f| %>
+
+  <div>
+
+    <div id="upload">
+      <%= file_field_tag :file_info %>
+    </div>
+
+    <%= f.submit "Update Exam File" %>
+
+  </div>
+<% end %>
