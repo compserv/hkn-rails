@@ -146,9 +146,9 @@ class PeopleController < ApplicationController
   def destroy
     @person = Person.find(params[:id])
 
-    if (@auth['vp'] and @person.approved != true) || @auth['superuser']
+    if (@auth['vp'] && not(@person.approved)) || @auth['superuser']
       @person.destroy
-      flash[:notice] = "Deleted \"" + @person.fullname + "\"."
+      flash[:notice] = %(Deleted "#{@person.fullname}".)
     else
       flash[:notice] = "You do not have the authorization to do that."
     end
