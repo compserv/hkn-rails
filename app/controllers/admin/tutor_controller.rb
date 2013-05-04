@@ -92,26 +92,26 @@ class Admin::TutorController < Admin::AdminController
   def gen_course_list 
     # Create ["cs61a", "cs61b", ... ] 
     return Course.joins(:course_preferences).
-      where(:course_preferences => { :tutor_id=>Tutor.current}).
-      ordered.uniq.collect{|c| c.course_abbr}
+      where(:course_preferences => {:tutor_id=>Tutor.current}).
+      ordered.uniq.collect{&:course_abbr}
   end 
    
   def gen_tutor_course_prefs 
-    courseArray = gen_course_list 
+    course_array = gen_course_list 
      
     # Create {"cs61a" : 0, "cs61b" : 1, ...} 
-    courseIndices = Hash.new 
-    for i in 0..courseArray.length 
-      courseIndices[courseArray[i]] = i 
+    course_indices = {} 
+    for i in 0..course_array.length 
+      course_indices[course_array[i]] = i 
     end 
          
     # Create list of "prefs": [1, 0, 1] for each tutor 
     # -1: Not taken, 0: Currently taking, 1: Has taken, 2: Preferred 
-    tutorPrefs = Hash.new 
+    tutorPrefs = {} 
     for tutor in Tutor.current 
-      coursePref = Array.new(courseArray.length, -1) 
+      coursePref = Array.new(course_array.length, -1) 
       for course in tutor.course_preferences 
-        coursePref[courseIndices[course.course.course_abbr]] = course.level 
+        coursePref[course_indices[course.course.course_abbr]] = course.level 
       end
       tutorPrefs[tutor.person.id] = coursePref 
     end 
@@ -188,7 +188,7 @@ class Admin::TutorController < Admin::AdminController
     ret += i1 + '"tutors"' + ":<br/>" 
     ret += i1 + "[<br/>" 
     
-    allTutors = Hash.new 
+    allTutors = {}
     for tutor in Tutor.current.uniq
       allTutors[tutor] = 1
       tutorSlotPrefs = tutor_slot_prefs(tutor) 
