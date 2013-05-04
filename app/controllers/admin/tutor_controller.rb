@@ -92,8 +92,8 @@ class Admin::TutorController < Admin::AdminController
   def gen_course_list 
     # Create ["cs61a", "cs61b", ... ] 
     return Course.joins(:course_preferences).
-	  where(:course_preferences => { :tutor_id=>Tutor.current}).
-	  ordered.uniq.collect{|c| c.course_abbr}
+      where(:course_preferences => { :tutor_id=>Tutor.current}).
+      ordered.uniq.collect{|c| c.course_abbr}
   end 
    
   def gen_tutor_course_prefs 
