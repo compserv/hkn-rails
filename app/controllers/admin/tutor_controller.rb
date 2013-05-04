@@ -91,12 +91,9 @@ class Admin::TutorController < Admin::AdminController
 
   def gen_course_list 
     # Create ["cs61a", "cs61b", ... ] 
-    courseSet = Set.new 
-    Course.joins(:course_preferences).where(:course_preferences => { :tutor_id=>Tutor.current}).ordered.uniq.each do |c| 
-      courseSet.add c.course_abbr 
-    end 
-    courseArray = courseSet.to_a 
-    return courseArray 
+    return Course.joins(:course_preferences).
+	  where(:course_preferences => { :tutor_id=>Tutor.current}).
+	  ordered.uniq.collect{|c| c.course_abbr}
   end 
    
   def gen_tutor_course_prefs 
@@ -119,7 +116,7 @@ class Admin::TutorController < Admin::AdminController
       tutorPrefs[tutor.person.id] = coursePref 
     end 
         
-  return tutorPrefs 
+    return tutorPrefs 
   end 
    
   def slot_id(day, hour, office) 
@@ -192,13 +189,7 @@ class Admin::TutorController < Admin::AdminController
     ret += i1 + "[<br/>" 
     
     allTutors = Hash.new 
-    for tutor in Tutor.current 
-      
-      # Not sure why some tutors are listed multiple times
-      if allTutors.has_key?(tutor)
-        next
-      end
-
+    for tutor in Tutor.current.uniq
       allTutors[tutor] = 1
       tutorSlotPrefs = tutor_slot_prefs(tutor) 
      
