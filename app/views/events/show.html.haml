@@ -34,7 +34,7 @@
 %table#event_info.infobox{:style => "width: auto; margin-right: 20px;"}
   %tr
     %th Date
-    %td= @event.nice_time_range
+    %td= @event.nice_time_range :year => true
   %tr
     %th Location
     %td= @event.location
