@@ -79,19 +79,15 @@ class Event < ActiveRecord::Base
   end
 
   def nice_time_range(year = false)
-    if not(year)
-      if start_time.to_date == end_time.to_date 
-        "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%I:%M%p')}"
-      else 
-        "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%a %m/%d %I:%M%p')}"
-      end
-    else 
-      if start_time.to_date == end_time.to_date 
-        "#{start_time.strftime('%a %m/%d/%y %I:%M%p')} - #{end_time.strftime('%I:%M%p')}"
-      else 
-        "#{start_time.strftime('%a %m/%d/%y %I:%M%p')} - #{end_time.strftime('%a %m/%d/%y %I:%M%p')}"
-      end
+    date_format = year ? '%a %m/%d/%y' : '%a %m/%d'
+    time_format = '%I:%M%p'
+    start_format = "#{date_format} #{time_format}"
+    if start_time.to_date == end_time.to_date
+      end_format = time_format
+    else
+      end_format = "#{date_format} #{time_format}"
     end
+    "#{start_time.strftime(start_format)} - #{end_time.strftime(end_format)}"
   end
 
   def can_view? user
