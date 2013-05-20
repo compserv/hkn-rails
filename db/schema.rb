@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120927064801) do
+ActiveRecord::Schema.define(:version => 20130519233001) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -318,9 +318,10 @@ ActiveRecord::Schema.define(:version => 20120927064801) do
   create_table "instructorships", :force => true do |t|
     t.integer  "klass_id"
     t.integer  "instructor_id"
-    t.boolean  "ta",            :null => false
+    t.boolean  "ta",                               :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "hidden",        :default => false
   end
 
   add_index "instructorships", ["klass_id", "ta"], :name => "index_instructorships_on_klass_id_and_ta"
