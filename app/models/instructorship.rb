@@ -7,10 +7,13 @@ class Instructorship < ActiveRecord::Base
   #   ta            : boolean 
   #   created_at    : datetime 
   #   updated_at    : datetime 
+  #   hidden        : boolean 
   # =======================
 
   belongs_to :klass
   belongs_to :instructor
+
+  default_scope where(:hidden => false)
 
   has_many :survey_answers, :order => 'survey_answers.order', :dependent => :destroy
   has_one  :course,         :through => :klass
