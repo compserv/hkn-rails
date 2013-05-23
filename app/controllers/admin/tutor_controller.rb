@@ -28,6 +28,23 @@ class Admin::TutorController < Admin::AdminController
     tutor = @current_user.get_tutor
 
     if params[:commit] == "Save changes"
+      
+      availability_count = 0
+      params[:availabilities].each do |wday, hours|
+        hours.each do |hour, av|
+          pref = Availability::PREF[av[:preference_level].to_sym]
+          if pref != 0
+            availability_count += 1
+          end
+        end
+      end
+      
+      if availability_count < 5 # Force at least 5 time slot availabilities per tutor
+        redirect_to :admin_tutor_signup_slots, 
+          :notice=>"Please provide at least 5 time slot availabilities."
+        return
+      end
+    
       tutor.adjacency = params[:adjacency]
       tutor.save!
 
