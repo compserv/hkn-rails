@@ -1,11 +1,9 @@
+require 'json'
+
 class Admin::TutorController < Admin::AdminController
   before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule, :update_preferences]
   before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule, :update_preferences]
-
-  def expire_schedule
-    #expire_action(:controller => :tutor, :action => :schedule)
-  end
-
+  
   def signup_slots
     prop = Property.get_or_create
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
@@ -89,9 +87,13 @@ class Admin::TutorController < Admin::AdminController
 
   end
 
+  @@OFFICES = [:Cory, :Soda]
+  @@DAYS = [:Monday, :Tuesday, :Wednesday, :Thursday, :Friday]
+  @@HOURS = (11..16).to_a
+  
   def gen_course_list 
     # Create ["cs61a", "cs61b", ... ] 
-    return Course.joins(:course_preferences).
+    Course.joins(:course_preferences).
       where(:course_preferences => {:tutor_id=>Tutor.current}).
       ordered.uniq.collect(&:course_abbr)
   end 
@@ -101,63 +103,76 @@ class Admin::TutorController < Admin::AdminController
      
     # Create {"cs61a" : 0, "cs61b" : 1, ...} 
     course_indices = {} 
-    for i in 0..course_array.length 
-      course_indices[course_array[i]] = i 
+    course_array.each_with_index do |course, index|
+      course_indices[course] = index
     end 
          
     # Create list of "prefs": [1, 0, 1] for each tutor 
     # -1: Not taken, 0: Currently taking, 1: Has taken, 2: Preferred 
     tutorPrefs = {} 
-    for tutor in Tutor.current 
-      coursePref = Array.new(course_array.length, -1) 
-      for course in tutor.course_preferences 
-        coursePref[course_indices[course.course.course_abbr]] = course.level 
+    Tutor.current.each do |tutor|
+      course_prefs = Array.new(course_array.length, -1) 
+      tutor.course_preferences.each do |course_pref|
+        course_prefs[course_indices[course_pref.course.course_abbr]] = course_pref.level
       end
-      tutorPrefs[tutor.person.id] = coursePref 
-    end 
-        
-    return tutorPrefs 
-  end 
+      tutorPrefs[tutor.person.id] = course_prefs
+    end
+
+    tutorPrefs
+  end
+
+  def slot_id(day, hour, office)
+    num_hours = @@HOURS.length
+    num_days = @@DAYS.length
+    (num_hours*(day - 1)) + (hour - @@HOURS[0]) + (office * num_hours * num_days) 
+  end
    
-  def slot_id(day, hour, office) 
-    return (6*(day - 1)) + (hour - 11) + (office * 30) 
-  end 
-   
-  def adj_slots(slot_id) 
-    if slot_id % 6 == 0 
-      return [slot_id + 1] 
-    elsif slot_id % 6 == 5 
-      return [slot_id - 1] 
-    else 
-      return [slot_id - 1, slot_id + 1] 
+  def adj_slots(slot) 
+    this_slot_id = slot_id(slot.wday, slot.hour, slot.room)
+    hour = slot.hour
+    
+    if hour == @@HOURS[0]
+      [this_slot_id + 1]
+    elsif hour == @@HOURS[-1]
+      [this_slot_id - 1]
+    else
+      [this_slot_id - 1, this_slot_id + 1] 
     end 
   end
    
-  def tutor_slot_prefs(tutor) 
-    timePrefs = Array.new(60, 0) 
-    officePrefs = Array.new(60, 0) #Cory >> -2, -1, 0, 1, 2 >> Soda 
-    for slot in tutor.availabilities 
-      thisSlotID = slot_id(slot.wday, slot.hour, "Cory" == slot.preferred_room ? 0 : 1) 
-         
-      officePrefs[thisSlotID] = 1 * slot.room_strength 
-      if slot.preferred_room == 0 # If cory or no pref, set pref to neg 
-        officePrefs[thisSlotID] *= -1
+  def get_tutor_slot_prefs(tutor)
+    num_times = @@HOURS.length * @@DAYS.length
+    num_slots = @@HOURS.length * @@DAYS.length * @@OFFICES.length
+    
+    time_prefs = Array.new(num_slots, 0) 
+    office_prefs = Array.new(num_slots, 0) #Cory >> -2, -1, 0, 1, 2 >> Soda 
+    tutor.availabilities.each do |slot|
+      if slot.semester != '20131'
+        next
       end 
-      officePrefs[(thisSlotID + 30) % 60] = -1 * officePrefs[thisSlotID]
-   
-      timePrefs[thisSlotID] = slot.preference_level # Either 1 or 2... I think...
-      timePrefs[(thisSlotID + 30) % 60] = timePrefs[thisSlotID]
-    end 
-    return timePrefs, officePrefs 
+      this_slot_id = slot_id(slot.wday, slot.hour, 'Cory' == slot.preferred_room ? 0 : 1) 
+         
+      office_prefs[this_slot_id] = 1 * slot.room_strength 
+      # If cory or no pref, set pref to negative
+      # (Because EE is currently less popular than CS)
+      if slot.preferred_room == 0
+        office_prefs[this_slot_id] *= -1
+      end 
+      
+      office_prefs[(this_slot_id + num_times) % num_slots] = -1 * office_prefs[this_slot_id]
+      time_prefs[this_slot_id] = slot.preference_level # Either 1 or 2... I think...
+      time_prefs[(this_slot_id + num_times) % num_slots] = time_prefs[this_slot_id]
+    end
+    return time_prefs, office_prefs
   end 
   
   def num_slot_assignments(tutor)
-    if tutor.person.in_group?("officers")
-      return 2
-    elsif tutor.person.in_group?("cmembers")
-      return 1
+    if tutor.person.in_group?('officers')
+      2
+    elsif tutor.person.in_group?('cmembers')
+      1
     else
-      return 0 # Not sure how this person got in the system
+      raise 'Not sure how a non-officer, non-cmember got into the system'
     end
   end
 
@@ -165,75 +180,59 @@ class Admin::TutorController < Admin::AdminController
     # Room 0 = Cory; Room 1 = Soda 
     # Adjacency -1 = Does not want adjacent, 0 = Don't care, 1 = Wants adjacent 
      
-    i1 = "&nbsp;&nbsp;&nbsp;&nbsp;" 
-    i2 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" 
-    ret = "{<br/>" 
-     
     # Course names 
-    ret += i1 + '"courseNames":[' 
-     
-    courseList = gen_course_list 
-    coryCoursePref = courseList.map{|course| (course[0..1] == "EE" or course[0..3] == "PHYS") ? 1 : 0} 
-    sodaCoursePref = courseList.map{|course| (course[0..1] == "CS" or course[0..3] == "MATH") ? 1 : 0}
- 
-    for courseName in gen_course_list 
-      ret += '"' + courseName + '", ' 
-    end 
-    ret = ret[0..-3] + "],<br/><br/>" 
-     
-     
-    # Tutors 
-    tutorCoursePrefs = gen_tutor_course_prefs 
-     
-    ret += i1 + '"tutors"' + ":<br/>" 
-    ret += i1 + "[<br/>" 
+    course_list = gen_course_list
     
-    allTutors = {}
-    for tutor in Tutor.current.uniq
-      allTutors[tutor] = 1
-      tutorSlotPrefs = tutor_slot_prefs(tutor) 
-     
-      ret += i2 + "{<br/>" 
-      ret += i2 + '"tid":' + tutor.person.id.to_s + ",<br/>"
-      ret += i2 + '"name":"' + tutor.person.fullname + '"' + ",<br/>"
-      ret += i2 + '"timeSlots":' + tutorSlotPrefs[0].to_s + ",<br/>"
-      ret += i2 + '"officePrefs":' + tutorSlotPrefs[1].to_s + ",<br/>"
-      ret += i2 + '"courses":' + tutorCoursePrefs[tutor.person.id].to_s + ",<br/>"
-      ret += i2 + '"adjacentPref":' + tutor.adjacency.to_s + ",<br/>"
-      ret += i2 + '"numAssignments":' + num_slot_assignments(tutor).to_s + "<br/>"
-      ret += i2 + "},<br/><br/>" 
-    end 
-        
-    ret = ret[0..-12] + "<br/>" 
-    ret += i1 + "],<br/><br/>" 
-     
+    # Course prefs
+    cory_course_pref = course_list.map{|course| (course[0..1] == 'EE' or course[0..3] == 'PHYS') ? 1 : 0} 
+    soda_course_pref = course_list.map{|course| (course[0..1] == 'CS' or course[0..3] == 'MATH') ? 1 : 0}
+
+    # Tutors 
+    all_tutors = []
+    tutor_course_prefs = gen_tutor_course_prefs
+    Tutor.current.uniq.each do |tutor|
+      tutor_slot_prefs = get_tutor_slot_prefs(tutor) 
+      
+      tutor_obj = {
+        'tid' => tutor.person.id, 
+        'name' => tutor.person.fullname,
+        'timeSlots' => tutor_slot_prefs[0],
+        'officePrefs' => tutor_slot_prefs[1],
+        'courses' => tutor_course_prefs[tutor.person.id],
+        'adjacentPref' => tutor.adjacency,
+        'numAssignments' => num_slot_assignments(tutor)
+      }
+      
+      all_tutors.push(tutor_obj)
+    end
      
     # Timeslots 
-    days = {1=>"Monday", 2=>"Tuesday", 3=>"Wednesday", 4=>"Thursday", 5=>"Friday"} 
-    rooms = {0=>"CORY", 1=>"SODA"} 
-     
-    ret += i1 + '"slots"' + ":<br/>" 
-    ret += i1 + "[<br/>" 
-     
-    for slot in Slot.all 
-      officeCoursePrefs = (slot.room == 0 ? coryCoursePref : sodaCoursePref) 
-      thisSlotID = slot_id(slot.wday, slot.hour, slot.room) 
-      ret += i2 + "{<br/>" 
-      ret += i2 + '"sid":' + thisSlotID.to_s + ",<br/>" # ID for future use 
-      ret += i2 + '"name":"' + "InternalSlot" + slot.id.to_s() + '"' + ",<br/>" # Database ID 
-      ret += i2 + '"adjacentSlotIDs":' + adj_slots(thisSlotID).to_s + ",<br/>" 
-      ret += i2 + '"courses":' + officeCoursePrefs.to_s + ",<br/>" 
-      ret += i2 + '"day":"' + days[slot.wday] + '"' + ",<br/>" 
-      ret += i2 + '"hour":' + slot.hour.to_s() + ",<br/>" 
-      ret += i2 + '"office":"' + rooms[slot.room] + '"' + "<br/>" 
-      ret += i2 + "},<br/><br/>" 
+    all_slots = []
+    Slot.all.each do |slot|
+      office_course_prefs = (slot.room == 0 ? cory_course_pref : soda_course_pref) 
+      this_slot_id = slot_id(slot.wday, slot.hour, slot.room)
+      
+      slot_obj = {
+        'sid' => this_slot_id,
+        'name' => 'InternalSlot' + slot.id.to_s,
+        'adjacentSlotIDs' => adj_slots(slot),
+        'courses' => office_course_prefs,
+        'day' => @@DAYS[slot.wday],
+        'hour' => slot.hour,
+        'office' => @@OFFICES[slot.room]
+      }
+      
+      all_slots.push(slot_obj)
     end
 
-    ret = ret[0..-12] + "<br/>" 
-    ret += i1 + "]<br/>" 
-     
-    ret += "}"
-    render :text => ret 
+    # Generate JSON output
+    ret = {
+      'courseName' => course_list,
+      'tutors' => all_tutors,
+      'slots' => all_slots
+    }
+    
+    render :text => ret.to_json
   end
       
 
@@ -254,8 +253,6 @@ class Admin::TutorController < Admin::AdminController
       when 1 then 'A' when -1 then 'a' else ''
       end
     end
-
-    expire_schedule
 
     prop = Property.get_or_create
     @rooms = Slot::Room::Valid
@@ -545,7 +542,7 @@ class Admin::TutorController < Admin::AdminController
       end
 
       # This is the formula:
-      happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
+      happiness += 6*first_choice - 10000*wrong_assign + adjacencies + 2*correct_office
 
       if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
         position = :officer
