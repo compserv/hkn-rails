@@ -93,13 +93,15 @@ class Person < ActiveRecord::Base
   end
 
   def current_officer?
-    committeeship_titles = committeeships.find_all_by_semester(Property.semester).collect{ |comm| comm.title }.uniq
-    return committeeship_titles.include? "officer"
+    titles = committeeships.find_all_by_semester(Property.semester).
+      collect(&:title).uniq
+    titles.include? "officer"
   end
 
   def current_cmember?
-    committeeship_titles = committeeships.find_all_by_semester(Property.semester).collect{ |comm| comm.title }.uniq
-    return committeeship_titles.include? "cmember"
+    titles = committeeships.find_all_by_semester(Property.semester).
+      collect(&:title).uniq
+    titles.include? "cmember"
   end
 
   def change_username(opts)
