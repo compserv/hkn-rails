@@ -57,7 +57,7 @@ class Instructor < ActiveRecord::Base
 
     things.each do |thing|
       puts "  updating #{thing.inspect}"
-      raise "Failed update" unless thing.update_attribute(:instructor_id, self.id)
+      raise "Failed update" unless thing.update_attributes(:instructor_id => self.id)
       thing.reload
       raise "Failed check" unless thing.instructor_id == self.id
     end
