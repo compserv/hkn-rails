@@ -505,10 +505,10 @@ class Admin::TutorController < Admin::AdminController
       # This is the formula:
       happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
 
-      if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
+      if tutor.person.current_officer?
         position = :officer
         stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
-      elsif tutor.person.in_group?("cmembers")
+      elsif tutor.person.current_cmember?
         position = :cmember
         stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
       else
