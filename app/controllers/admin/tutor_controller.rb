@@ -163,10 +163,7 @@ class Admin::TutorController < Admin::AdminController
     
     time_prefs = Array.new(num_slots, 0) 
     office_prefs = Array.new(num_slots, 0) #Cory >> -2, -1, 0, 1, 2 >> Soda 
-    tutor.availabilities.each do |slot|
-      if slot.semester != '20131'
-        next
-      end 
+    tutor.availabilities.where(:semester => Property.semester).each do |slot|
       this_slot_id = slot_id(slot.wday, slot.hour, 'Cory' == slot.preferred_room ? 0 : 1) 
          
       office_prefs[this_slot_id] = 1 * slot.room_strength 
@@ -184,12 +181,12 @@ class Admin::TutorController < Admin::AdminController
   end 
   
   def num_slot_assignments(tutor)
-    if tutor.person.in_group?('officers')
+    if tutor.person.current_officer?
       2
-    elsif tutor.person.in_group?('cmembers')
+    elsif tutor.person.current_cmember?
       1
-    else
-      raise 'Not sure how a non-officer, non-cmember got into the system'
+    else # For former officers and cmembers
+      0
     end
   end
 
