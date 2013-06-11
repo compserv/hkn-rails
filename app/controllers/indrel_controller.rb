@@ -49,13 +49,24 @@ class IndrelController < ApplicationController
 
   def resume_books
     cutoff = ResumeBook.last.cutoff_date
+    creation = ResumeBook.last.created_at
     year = Property.semester[0..3].to_i
 
-    @year_counts = Resume.select("graduation_year").where("updated_at > :cutoff AND graduation_year >= :year", 
-      { :cutoff => cutoff, :year => year}).reorder("graduation_year desc").group("graduation_year").count
+    @year_counts = Resume.select("graduation_year")
+      .where("updated_at > :cutoff
+              AND updated_at < :creation
+              AND graduation_year >= :year",
+              { :cutoff => cutoff, :year => year, :creation => creation })
+      .reorder("graduation_year desc")
+      .group("graduation_year")
+      .count
 
-    @grad_counts = Resume.select("graduation_year").where("updated_at > :cutoff AND graduation_year < :year",
-      { :cutoff => cutoff, :year => year}).count
+    @grad_counts = Resume.select("graduation_year")
+      .where("updated_at > :cutoff
+              AND updated_at < :creation
+              AND graduation_year < :year",
+              { :cutoff => cutoff, :year => year, :creation => creation })
+      .count
 
     @sum = 0
     @year_counts.each do |year, count|
