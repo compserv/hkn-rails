@@ -76,7 +76,9 @@ class Person < ActiveRecord::Base
 
   validates_format_of :first_name, :with => Validation::Regex::Name
   validates_format_of :last_name,  :with => Validation::Regex::Name
-  validates_format_of :picture,    :with => Validation::Regex::Https
+  validates_format_of :picture,    :with => Validation::Regex::Https,
+                                   :allow_nil => true,
+                                   :allow_blank => true
   # Username, password, and email validation is done by AuthLogic
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
