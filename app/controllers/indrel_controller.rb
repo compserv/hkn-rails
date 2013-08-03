@@ -48,8 +48,13 @@ class IndrelController < ApplicationController
   end
 
   def resume_books
-    cutoff = ResumeBook.last.cutoff_date
-    creation = ResumeBook.last.created_at
+    book = ResumeBook.select("cutoff_date, created_at")
+                     .order("created_at desc")
+                     .limit(1)
+                     .last
+
+    cutoff = book.cutoff_date
+    creation = book.created_at
     year = Property.semester[0..3].to_i
 
     @year_counts = Resume.select("graduation_year")
