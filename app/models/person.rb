@@ -101,6 +101,10 @@ class Person < ActiveRecord::Base
     write_attribute(:last_name, last_name.strip)
   end
 
+  def username=(username)
+    write_attribute(:username, username.strip)
+  end
+
   def current_officer?
     titles = committeeships.find_all_by_semester(Property.semester)
                            .collect(&:title)
