@@ -93,6 +93,18 @@ class Person < ActiveRecord::Base
     c.validates_length_of_login_field_options = {:within => 2..100}
   end
 
+  def first_name=(first_name)
+    write_attribute(:first_name, first_name.strip)
+  end
+
+  def last_name=(last_name)
+    write_attribute(:last_name, last_name.strip)
+  end
+
+  def username=(username)
+    write_attribute(:username, username.strip)
+  end
+
   def current_officer?
     titles = committeeships.find_all_by_semester(Property.semester)
                            .collect(&:title)
