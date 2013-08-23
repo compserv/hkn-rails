@@ -69,13 +69,10 @@ class Person < ActiveRecord::Base
 
   module Validation
     module Regex
-      Name = /\A[a-z\- ']+\z/i
       Https = /\A(https:\/\/|\/).*\z/i
     end
   end
 
-  validates_format_of :first_name, :with => Validation::Regex::Name
-  validates_format_of :last_name,  :with => Validation::Regex::Name
   validates_format_of :picture,    :with => Validation::Regex::Https,
                                    :allow_nil => true,
                                    :allow_blank => true
