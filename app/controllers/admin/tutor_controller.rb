@@ -143,8 +143,26 @@ class Admin::TutorController < Admin::AdminController
           firstAvail = true
           for avail in slot.availabilities
             person = Person.find(:first, :conditions => ["id = ?", avail.tutor.person_id])
-            if person.in_group?("officers")
+            committeeships = person.committeeships.find_all_by_semester(Property.semester)
 
+            slots_for = params["which"]
+            if slots_for.nil?
+              slots_for = "officer"
+            end
+
+            # Users can have multiple committeeships. effective_title indicates their highest position out
+            # of all their current committeeships.
+            effective_title = nil
+
+            committeeship_titles = committeeships.collect{ |comm| comm.title }.uniq
+            if committeeship_titles.include? "cmember" and not committeeship_titles.include? "officer"
+              effective_title = "cmember"
+            elsif committeeship_titles.include? "officer"
+              effective_title = "officer"
+            end
+              
+
+            if effective_title == slots_for
               if firstAvail
                 firstAvail = false
               else
@@ -226,6 +244,11 @@ class Admin::TutorController < Admin::AdminController
 
       Slot::Room::Both.each do |room|
         form_slot = form_slots[room][wday][hour]
+
+        if form_slot == nil
+          next
+        end
+
         metadata = '(%s%s)' % [room_preference(a.room_strength, a.preferred_room, room),
                           tutor_adjacency(a.tutor.adjacency)]
         tuple = ["#{tutor.person.fullname} #{metadata}", tutor.id]
@@ -263,7 +286,11 @@ class Admin::TutorController < Admin::AdminController
         form_slot = form_slots[slot.room][wday][hour]
         next unless form_slot
         slot_tutor_ids = form_slot.preferred.map{|x| x[1]} + form_slot.available.map{|x| x[1]} + form_slot.others.map{|x| x[1]}
+
         Tutor.current.includes(:person).each do |tutor|
+          if tutor.person.committeeships.find_by_semester(Property.semester).nil?
+            next
+          end
           if not slot_tutor_ids.include?(tutor.id)
             form_slot.others << [tutor.person.fullname, tutor.id]
             slot_tutor_ids << tutor.id
@@ -312,6 +339,7 @@ class Admin::TutorController < Admin::AdminController
         rescue NoMethodError
           next
         end
+        #slot.tutors.all.each do |tutor|
         slot.tutors.current.each do |tutor|
           unless new_assignments.include? tutor.id
             slot.tutors.delete tutor
@@ -428,6 +456,7 @@ class Admin::TutorController < Admin::AdminController
     # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
     stats = {officer: {}, cmember: {}}
     happiness_total = {officer: 0, cmember: 0}
+    
     Tutor.current.includes(:slots, :availabilities).each do |tutor|
       happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
 
@@ -476,10 +505,10 @@ class Admin::TutorController < Admin::AdminController
       # This is the formula:
       happiness += 6*first_choice  - 10000*wrong_assign + adjacencies + 2*correct_office
 
-      if tutor.person.in_group?("officers") and not tutor.person.committeeships.find_by_semester(Property.semester).nil?
+      if tutor.person.current_officer?
         position = :officer
         stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, adjacencies, correct_office, happiness]
-      elsif tutor.person.in_group?("cmembers")
+      elsif tutor.person.current_cmember?
         position = :cmember
         stats_vector = [tutor.availabilities.count, first_choice, second_choice, wrong_assign, correct_office, happiness]
       else

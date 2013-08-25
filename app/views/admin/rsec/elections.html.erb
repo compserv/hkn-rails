@@ -41,8 +41,12 @@
     <h2><%= group[:name].titleize %></h2>
     <% for position in group[:positions] %>
         <div class="elected-person">
+          <% if position.person != nil %>
             <%= link_to position.person.full_name, admin_election_edit_details_path(position.person.username) %>
             <%= link_to '[X]', admin_rsec_unelect_path(position.id), :onClick => "return confirm('Really un-elect #{position.person.full_name} from #{group[:name]}?');" %>
+          <% else %>
+            There is an error here...
+          <% end %>
             <%= link_to '[Elect]', admin_rsec_elect_path(position.id) unless position.elected %>
         </div>
     <%- end -%>

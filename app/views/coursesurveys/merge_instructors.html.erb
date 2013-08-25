@@ -8,13 +8,13 @@
       $.ajax({ url: <%= raw coursesurveys_instructor_ids_path.inspect %>,
                success: function(data) {
                <%-[0,1].each do |i|-%>
-               $(<%="'#ibox#{i}'"%>).
+               $('#ibox<%=i%>').
                  autocomplete(data, {formatItem: profname} ).
                  result( function(event,item) {
-                   $(<%="'#id_#{i}'"%>)[0].value = item.id;
-                   $(<%="'#ibox#{i}'"%>)[0].disabled = true;
+                   $('#id_<%=i%>')[0].value = item.id;
+                   $('#ibox<%=i%>')[0].disabled = true;
                  });
-               $(<%="'#ibox#{i}'"%>).keypress(function(event){if(event.which == 13) event.preventDefault();});
+               $('#ibox<%=i%>').keypress(function(event){if(event.which == 13) event.preventDefault();});
 <%-end-%> }
              });
       $("#submit").click( function() {

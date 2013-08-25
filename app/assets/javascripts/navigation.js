@@ -12,9 +12,6 @@
   richardxia: ported this to Prototype
  */
 $(document).ready(function() {
-  $("#logo").click(function(){
-    window.location = "/";
-  });
   $(".submenu").hide();
 	current = location.pathname.replace('/','');
   if (current.indexOf('/') != -1)

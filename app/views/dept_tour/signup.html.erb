@@ -21,8 +21,8 @@ HKN provides tours of the Berkeley EECS department. Sign up here, and your reque
   </div>
   
   <div class="field">
-    <%= label_tag :date_year, "Desired date & time", :class => 'required-field' %>
-    <%= select_datetime Time.now + 1.week, :prefix => :date %>
+    <%= label_tag :date, "Desired date & time", :class => 'required-field' %>
+    <%= text_field_tag :date, nil, :class => "datetimepicker" %>
   </div>
   
   <div class="field">

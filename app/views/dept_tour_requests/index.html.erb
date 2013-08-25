@@ -9,12 +9,13 @@
 </h2>
 <table>
   <tr>
-    <th>Requestee&nbsp;Name</th>
-    <th>Requested&nbsp;Date</th>
-    <th>Date&nbsp;Submitted</th>
-    <th>Contact&nbsp;e-mail</th>
-    <th>Contact&nbsp;phone</th>
-    <th>Additional&nbsp;Comments</th>
+    <th>Requestee Name</th>
+    <th>Requested Date</th>
+    <th>Date Submitted</th>
+    <th>Contact e-mail</th>
+    <th>Contact phone</th>
+    <th>Additional Comments</th>
+    <th colspan="3">Actions</th>
   </tr>
 
 <% @dept_tour_requests_unresponded.each do |dept_tour_request| %>
@@ -27,11 +28,9 @@
     <td><%= dept_tour_request.comments %></td>
     <td><%= link_to 'Show and Respond', dept_tour_request %></td>
     <td><%= link_to 'Edit', edit_dept_tour_request_path(dept_tour_request) %></td>
-    <!-- <td><%= link_to 'Dismiss', dept_tour_request, :confirm => 'Are you sure?', :method => :delete %></td> -->
     <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request),:method=>:post) do %>
       <%= submit_tag "Dismiss" %>
     <% end %></td>
-    <td></td>
   </tr>
 <% end %>
 </table>
@@ -47,12 +46,13 @@
 
 <table>
   <tr>
-    <th>Requestee&nbsp;Name</th>
-    <th>Requested&nbsp;Date</th>
-    <th>Date&nbsp;Submitted</th>
-    <th>Contact&nbsp;e-mail</th>
-    <th>Contact&nbsp;phone</th>
-    <th>Additional&nbsp;Comments</th>
+    <th>Requestee Name</th>
+    <th>Requested Date</th>
+    <th>Date Submitted</th>
+    <th>Contact e-mail</th>
+    <th>Contact phone</th>
+    <th>Additional Comments</th>
+    <th colspan="3">Actions</th>
   </tr>
 
 <% @dept_tour_requests_pending.each do |dept_tour_request| %>
@@ -65,14 +65,9 @@
     <td><%= dept_tour_request.comments %></td>
     <td><%= link_to 'Show', dept_tour_request %></td>
     <td><%= link_to 'Edit', edit_dept_tour_request_path(dept_tour_request) %></td>
-    <!-- <td><%= link_to 'Dismiss', dept_tour_request, :confirm => 'Are you sure?', :method => :delete %></td> -->
     <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request),:method=>:post) do %>
       <%= submit_tag "Dismiss" %>
     <% end %></td>
-    <td></td>
   </tr>
 <% end %>
 </table>
-
-
-<!-- <%= link_to 'New Dept tour request', new_dept_tour_request_path %> -->

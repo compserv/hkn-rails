@@ -45,6 +45,7 @@
     return block;
   }
 
+
   block_num = #{@event.blocks.size};
 
   function update_blocks(e) {
@@ -108,10 +109,10 @@
     = f.select :event_type_id, EventType.all.map{|x| [x.name, x.id]}
   .field
     = f.label :start_time
-    = datetime_select :event, :start_time
+    = f.text_field :start_time, :size => 20, :class => "datetimepicker"
   .field
     = f.label :end_time
-    = datetime_select :event, :end_time
+    = f.text_field :end_time, :size => 20, :class => "datetimepicker"
   - permission_options = options_for_select([['All', nil]]+['candplus', 'candidates', 'members', 'comms'].map{|name| g = Group.find_by_name(name); [g.description, g.id]}, @event.view_permission_group_id)
   .field
     = f.label :view_permission_group_id, 'View Permission'
@@ -149,10 +150,10 @@
             = number_field block_name, :rsvp_cap, :value => block.rsvp_cap
           .field
             = label_tag :start_time, 'Start Time'
-            = datetime_select block_name, :start_time, :default => block.start_time
+            = text_field block_name, :start_time, :size => 20, :class => "datetimepicker", :default => block.start_time
           .field
             = label_tag :end_time, 'End Time'
-            = datetime_select block_name, :end_time, :default => block.end_time
+            = text_field block_name, :end_time, :size => 20, :class => "datetimepicker", :default => block.end_time
           %div
             - unless block.rsvps.empty?
               This block has RSVPs from the following people:
@@ -165,11 +166,11 @@
         = number_field :block, :rsvp_cap
       .field
         = label_tag :start_time, 'Start Time'
-        = datetime_select :block, :start_time
+        = text_field :block, :start_time, :size => 20, :class => "datetimepicker"
       .field
         = label_tag :end_time, 'End Time'
-        = datetime_select :block, :end_time
-      = link_to_function 'Delete', :onclick => "$(this).parent().remove();"
+        = text_field :block, :end_time, :size => 20, :class => "datetimepicker"
+      = link_to_function 'Delete', "$(this).parent().remove()"
   .field
     = f.label :need_transportation
     = f.check_box :need_transportation

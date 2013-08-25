@@ -30,6 +30,7 @@ class Rsvp < ActiveRecord::Base
 
   validates :person, :presence => true
   validates :event, :presence => true
+  validates :comment, :length => { :maximum => 500 }
 
   validates_inclusion_of :confirmed, :in => [Confirmed, Unconfirmed, Rejected, nil]
 
