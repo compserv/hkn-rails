@@ -98,6 +98,10 @@ class Course < ActiveRecord::Base
       k.first
   end
 
+  def num_exams
+    exams.select("klass_id, exam_type, number").group([:klass_id, :exam_type, :number]).count.size
+  end
+
   def invalid?
     # Some courses are invalid, and shouldn't be listed.
     !!(name =~ /INVALID/)

@@ -69,12 +69,13 @@ class Person < ActiveRecord::Base
 
   module Validation
     module Regex
-      Name = /\A[a-z\- ']+\z/i
+      Https = /\A(https:\/\/|\/).*\z/i
     end
   end
 
-  validates_format_of :first_name, :with => Validation::Regex::Name
-  validates_format_of :last_name,  :with => Validation::Regex::Name
+  validates_format_of :picture,    :with => Validation::Regex::Https,
+                                   :allow_nil => true,
+                                   :allow_blank => true
   # Username, password, and email validation is done by AuthLogic
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
@@ -90,6 +91,20 @@ class Person < ActiveRecord::Base
     c.transition_from_crypto_providers = DjangoSha1
 
     c.validates_length_of_login_field_options = {:within => 2..100}
+  end
+
+  def current_officer?
+    titles = committeeships.find_all_by_semester(Property.semester)
+                           .collect(&:title)
+                           .uniq
+    titles.include? "officer"
+  end
+
+  def current_cmember?
+    titles = committeeships.find_all_by_semester(Property.semester)
+                           .collect(&:title)
+                           .uniq
+    titles.include? "cmember"
   end
 
   def change_username(opts)

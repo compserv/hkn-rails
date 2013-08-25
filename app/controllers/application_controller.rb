@@ -134,6 +134,7 @@ class ApplicationController < ActionController::Base
       :mirror    => session[:mirror],
       :acid      => session[:acid],
       :b         => session[:b],
+      :dt        => session[:dt],
     }
 
     if @easter_eggs.values.any?

@@ -1,5 +1,8 @@
 #sidebar{:style => "width:50%;"}
-  %h1 Who's coming?
+  - if @auth['comms'] and @easter_eggs[:dt]
+    %h1 Who's DT#{@event.name.first.upcase}?
+  - else
+    %h1 Who's coming?
   %p
     Total RSVPs: #{@event.rsvps.size}
   - if @auth["comms"] and @event.need_transportation
@@ -31,7 +34,7 @@
 %table#event_info.infobox{:style => "width: auto; margin-right: 20px;"}
   %tr
     %th Date
-    %td= @event.nice_time_range
+    %td= @event.nice_time_range(true) # Enable year
   %tr
     %th Location
     %td= @event.location
@@ -58,7 +61,7 @@
     |
   - if @event.allows_rsvps? and @auth["candplus"]
     - if @current_user_rsvp
-      = link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp)
+      = link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp), :id=>'edit_rsvp', "data-rsvp_id" => @current_user_rsvp.id.to_s
       |
       = link_to 'Remove My RSVP', event_rsvp_path(@event, @current_user_rsvp), :confirm => 'Are you sure?', :method => :delete
       |

@@ -1,53 +1,58 @@
-<h1><%= s = []
-        s << (params[:q].blank? ? 'All' : 'Search')
-        s << @dept.name.titleize if @dept
-        s << 'results'
-        s << "for '#{params[:q]}'" unless params[:q].blank?
-        s.join(' ')
-     %></h1>
+<div id="sidebar" class="trans-bg">
+  <%= render :partial => "quick_nav" %>
+</div>
+<div id="main"> 
+  <h1><%= s = []
+          s << (params[:q].blank? ? 'All' : 'Search')
+          s << @dept.name.titleize if @dept
+          s << 'results'
+          s << "for '#{params[:q]}'" unless params[:q].blank?
+          s.join(' ')
+       %></h1>
 
 
-<%- unless @results[:courses].results.empty? -%>
-<table id="ratings" class="table courses">
-  <tr>
-    <th>Course</th>
-    <th>Name</th>
-    <th>Latest Class</th>
-  </tr>
-  <% @results[:courses].results.each do |c| %>
-    <% next if c.klasses.empty? # some classes don't have any data... %>
+  <%- unless @results[:courses].results.empty? -%>
+  <table id="ratings" class="table courses">
     <tr>
-      <td><%= link_to c.course_abbr, surveys_course_path(c) %></td>
-      <td><%= c.name %></td>
-      <td><%= link_to c.klasses.first.proper_semester, surveys_klass_path(c.klasses.first) %></td>
+      <th>Course</th>
+      <th>Name</th>
+      <th>Latest Class</th>
     </tr>
-  <% end %>
-</table>
-<%- end # courses -%>
+    <% @results[:courses].results.each do |c| %>
+      <% next if c.klasses.empty? # some classes don't have any data... %>
+      <tr>
+        <td><%= link_to c.course_abbr, surveys_course_path(c) %></td>
+        <td><%= c.name %></td>
+        <td><%= link_to c.klasses.first.proper_semester, surveys_klass_path(c.klasses.first) %></td>
+      </tr>
+    <% end %>
+  </table>
+  <%- end # courses -%>
 
 
 
 
-<%- unless @results[:instructors].results.empty? -%>
-<table id="ratings" class="table instructors">
-  <tr>
-    <th>Instructor</th>
-    <th>Recent Courses</th>
-    <th>Rating</th>
-  </tr>
-  <% @results[:instructors].results.each do |i|
-       courses = (i.instructed_courses.limit(4)+i.tad_courses.limit(4))
-   %>
-    <% next if courses.empty? # some classes don't have any data... %>
+  <%- unless @results[:instructors].results.empty? -%>
+  <table id="ratings" class="table instructors">
     <tr>
-      <td><%= link_to i.full_name_r, surveys_instructor_path(i) %></td>
-      <td><%= raw courses[0..3].collect {|c| link_to c.course_abbr, surveys_course_path(c)}.join(', ') %></td>
-      <td><%- if i.private -%>
-        [private]
-        <%- else rating = i.average_rating -%>
-        <%= rating ? rating_and_bar(rating, (i.ta? ? @ta_eff_q.max : @prof_eff_q.max)) : '' %>
-        <%- end -%></td>
+      <th>Instructor</th>
+      <th>Recent Courses</th>
+      <th>Rating</th>
     </tr>
-  <% end %>
-</table>
-<%- end # courses -%>
+    <% @results[:instructors].results.each do |i|
+         courses = (i.instructed_courses.limit(4)+i.tad_courses.limit(4))
+     %>
+      <% next if courses.empty? # some classes don't have any data... %>
+      <tr>
+        <td><%= link_to i.full_name_r, surveys_instructor_path(i) %></td>
+        <td><%= raw courses[0..3].collect {|c| link_to c.course_abbr, surveys_course_path(c)}.join(', ') %></td>
+        <td><%- if i.private -%>
+          [private]
+          <%- else rating = i.average_rating -%>
+          <%= rating ? rating_and_bar(rating, (i.ta? ? @ta_eff_q.max : @prof_eff_q.max)) : '' %>
+          <%- end -%></td>
+      </tr>
+    <% end %>
+  </table>
+  <%- end # courses -%>
+</div>

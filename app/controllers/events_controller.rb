@@ -97,7 +97,7 @@ class EventsController < ApplicationController
     # which usually lies in the previous month
     @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
     # Ditto for last Saturday
-    @calendar_end_date = (@end_date == 0) ? @end_date.since(6.days) : @end_date.next_week.ago(2.days)
+    @calendar_end_date = (@end_date.wday == 0) ? @end_date.since(6.days) : @end_date.next_week.ago(2.days)
 
     respond_to do |format|
       format.html
@@ -145,6 +145,8 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     @event = Event.find(params[:id])
+    @event.start_time = @event.start_time.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %I:%M %P")
+    @event.end_time = @event.end_time.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %I:%M %P")
     @blocks = @event.blocks
   end
 

@@ -8,7 +8,11 @@
     <th>Image</th>
     <th>Name (<%= sort_link 'First', 'first_name' %> <%= sort_link 'Last', 'last_name' %>)</th>
     <th><%= sort_link 'Email', 'email' %></th>
-    <th>Phone</th></tr>
+    <th>Phone</th>
+    <% if params[:not_approved] %>
+      <th>Registered</th>
+    <% end %>
+  </tr>
 <% @people.each do |person| %>
   <tr>
     <td>
@@ -18,8 +22,11 @@
       <%= link_to person.fullname, profile_path(:login => person.username) %>
       <div class="small"><%= person.status %></div>
     </td>
-    <td><%= raw html_obfuscate person.email if !person.private || @auth['csec'] %></td>
+    <td><%= raw html_obfuscate person.email if !person.private || @auth['csec'] || @auth['vp'] %></td>
     <td><%= person.phone_number if !person.private || @auth['csec'] || !( @current_user.groups.collect(&:name) & person.groups.collect(&:name) & Committeeship.Committees).empty? %></td>
+    <% if params[:not_approved] %>
+      <td><%= person.created_at %></td>
+    <% end %>
 <% end %>
 
 </table>

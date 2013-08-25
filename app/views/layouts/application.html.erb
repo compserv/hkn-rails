@@ -13,6 +13,11 @@
   <%= javascript_include_tag "chat" %>
   <%= javascript_include_tag "quick-rsvp" %>
   <%= javascript_include_tag 'ga' if Rails.env == 'production' %>
+  <%= stylesheet_link_tag "jquery-ui-1.10.0.custom.min.css" %>
+  <%= stylesheet_link_tag "jquery-ui-timepicker-addon.css" %>
+  <%= javascript_include_tag "jquery-ui-1.10.0.custom.min.js" %>
+  <%= javascript_include_tag "jquery-ui-timepicker-addon.js" %>
+  <%= javascript_include_tag "datetimepicker" %>
   <%= render :partial => 'easter_eggs/js' %>
   <%= csrf_meta_tag %>
   <link href='https://fonts.googleapis.com/css?family=Puritan|Cuprum' rel='stylesheet' type='text/css' />
@@ -70,6 +75,9 @@
     	    <%= render "layouts/submenu" %>
     	  </div>
   	    <div id="logo">
+          <%= link_to ("/") do %>
+            <%= image_tag("hkn_logo.png", :alt => "Eta Kappa Nu, Mu Chapter") %>
+          <% end %>
     	  </div>
     	  <div id="submenu">
     	    <%= render "layouts/submenu" %>

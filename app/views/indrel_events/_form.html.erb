@@ -1,48 +1,48 @@
-<% form_for(@event) do |f| %>
+<%= form_for(@event) do |f| %>
   <%= f.error_messages %>
 
   <div class="field">
-    <%= f.label :time %><br />
-    <%= f.datetime_select :time %> PST
+    <%= f.label :time %>
+    <%= f.text_field :time, :size => 20, :class => "datetimepicker" %> PST
   </div>
   <div class="field">
-    <%= f.label :location %><br />
+    <%= f.label :location %>
     <%= collection_select :indrel_event, :location_id, Location.all, :id, :name, {:include_blank => "None"} %>
   </div>
   <div class="field">
-    <%= f.label :indrel_event_type %><br />
+    <%= f.label :indrel_event_type %>
     <%= collection_select :indrel_event, :indrel_event_type_id, IndrelEventType.all, :id, :name, {:include_blank => "None"} %>
   </div>
   <div class="field">
-    <%= f.label :food %><br />
+    <%= f.label :food %>
     <%= f.text_area :food %>
   </div>
   <div class="field">
-    <%= f.label :prizes %><br />
+    <%= f.label :prizes %>
     <%= f.text_area :prizes %>
   </div>
   <div class="field">
-    <%= f.label :turnout %><br />
+    <%= f.label :turnout %>
     <%= f.text_field :turnout %>
   </div>
   <div class="field">
-    <%= f.label :company %><br />
+    <%= f.label :company %>
     <%= collection_select :indrel_event, :company_id, Company.all, :id, :name %>
   </div>
   <div class="field">
-    <%= f.label :contact %><br />
+    <%= f.label :contact %>
     <%= collection_select :indrel_event, :contact_id, Contact.all, :id, :name, {:include_blank => "None"} %>
   </div>
   <div class="field">
-    <%= f.label :officer %><br />
+    <%= f.label :officer %>
     <%= f.text_field :officer %>
   </div>
   <div class="field">
-    <%= f.label :feedback %><br />
+    <%= f.label :feedback %>
     <%= f.text_area :feedback %>
   </div>
   <div class="field">
-    <%= f.label :comments %><br />
+    <%= f.label :comments %>
     <%= f.text_area :comments %>
   </div>
   <div class="field-submit">

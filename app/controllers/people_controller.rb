@@ -1,7 +1,7 @@
 class PeopleController < ApplicationController
   before_filter :authorize, :only => [:list, :show, :edit, :update, :groups, :groups_update]
-  before_filter :authorize_superuser, :only => [:destroy, :groups_update]
-  before_filter :authorize_vp, :only => [:approve]
+  before_filter :authorize_superuser, :only => [:groups_update]
+  before_filter :authorize_vp, :only => [:approve, :destroy]
   before_filter :authorize_comms, :only => [:groups, :contact_card]
 
   def list
@@ -145,6 +145,16 @@ class PeopleController < ApplicationController
   end
 
   def destroy
+    @person = Person.find(params[:id])
+
+    if (@auth['vp'] && not(@person.approved)) || @auth['superuser']
+      @person.destroy
+      flash[:notice] = %(Deleted "#{@person.fullname}".)
+    else
+      flash[:notice] = "You do not have the authorization to do that."
+    end
+
+    redirect_to people_list_path
   end
 
   def groups

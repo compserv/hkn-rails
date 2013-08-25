@@ -136,6 +136,12 @@ class ExamsController < ApplicationController
       Exam.get_dept_name_courses_tuples(dept_abbr)
     end
 
+    @counts = {}
+    Exam.select("klass_id, course_id, exam_type, number").
+      group([:course_id, :klass_id, :number, :exam_type]).
+      count.each {|course, count| 
+        @counts[course[0]] ? @counts[course[0]] += 1 : @counts[course[0]] = 1}
+
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @exams }
