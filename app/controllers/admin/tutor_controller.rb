@@ -126,16 +126,16 @@ class Admin::TutorController < Admin::AdminController
          
     # Create list of "prefs": [1, 0, 1] for each tutor 
     # -1: Not taken, 0: Currently taking, 1: Has taken, 2: Preferred 
-    tutorPrefs = {} 
+    tutor_prefs = {} 
     Tutor.current.each do |tutor|
       course_prefs = Array.new(course_array.length, -1) 
       tutor.course_preferences.each do |course_pref|
         course_prefs[course_indices[course_pref.course.course_abbr]] = course_pref.level
       end
-      tutorPrefs[tutor.person.id] = course_prefs
+      tutor_prefs[tutor.person.id] = course_prefs
     end
 
-    tutorPrefs
+    tutor_prefs
   end
 
   def slot_id(day, hour, office)
