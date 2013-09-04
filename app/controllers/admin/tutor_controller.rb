@@ -231,7 +231,7 @@ class Admin::TutorController < Admin::AdminController
         'name' => 'InternalSlot' + slot.id.to_s,
         'adjacentSlotIDs' => adj_slots(slot),
         'courses' => office_course_prefs,
-        'day' => @@DAYS[slot.wday],
+        'day' => @@DAYS[slot.wday-1],
         'hour' => slot.hour,
         'office' => @@OFFICES[slot.room]
       }
