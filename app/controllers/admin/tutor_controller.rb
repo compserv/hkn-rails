@@ -163,7 +163,7 @@ class Admin::TutorController < Admin::AdminController
     
     time_prefs = Array.new(num_slots, 0) 
     office_prefs = Array.new(num_slots, 0) #Cory >> -2, -1, 0, 1, 2 >> Soda 
-    tutor.availabilities.where(:semester => Property.semester).each do |slot|
+    tutor.availabilities.each do |slot|
       this_slot_id = slot_id(slot.wday, slot.hour, 'Cory' == slot.preferred_room ? 0 : 1) 
          
       office_prefs[this_slot_id] = 1 * slot.room_strength 
