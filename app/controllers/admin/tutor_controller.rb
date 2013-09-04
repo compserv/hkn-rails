@@ -246,7 +246,7 @@ class Admin::TutorController < Admin::AdminController
       'slots' => all_slots
     }
     
-    render :text => ret.to_json
+    render :text => JSON.pretty_generate(ret)
   end
       
 
