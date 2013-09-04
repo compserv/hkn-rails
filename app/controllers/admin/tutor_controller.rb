@@ -7,7 +7,7 @@ class Admin::TutorController < Admin::AdminController
   def signup_slots
     prop = Property.get_or_create
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
-    @wdays = 1..5
+    @wdays = 0..4
     @hours = prop.tutoring_start .. prop.tutoring_end
     tutor = @current_user.get_tutor
 
@@ -231,7 +231,7 @@ class Admin::TutorController < Admin::AdminController
         'name' => 'InternalSlot' + slot.id.to_s,
         'adjacentSlotIDs' => adj_slots(slot),
         'courses' => office_course_prefs,
-        'day' => @@DAYS[slot.wday-1],
+        'day' => @@DAYS[slot.wday],
         'hour' => slot.hour,
         'office' => @@OFFICES[slot.room]
       }
