@@ -1,6 +1,6 @@
 class ResumesController < ApplicationController
   
-  before_filter :authorize_indrel, :only => [:index, :resume_books, :upload_for, :include, :exclude]
+  before_filter :authorize_indrel, :only => [:index, :resume_books, :upload_for, :include, :exclude, :status_list]
   
   def new
     @resume = Resume.new
