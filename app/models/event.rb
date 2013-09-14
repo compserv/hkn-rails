@@ -26,6 +26,8 @@ class Event < ActiveRecord::Base
   validates :location, :presence => true
   validates :description, :presence => true
   validates :event_type, :presence => true
+  validates :start_time, :presence => true
+  validates :end_time, :presence => true
   validate :valid_time_range
 
   scope :past,     joins(:event_type).where(['start_time < ?', Time.now])

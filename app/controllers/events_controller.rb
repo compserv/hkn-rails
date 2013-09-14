@@ -155,66 +155,71 @@ class EventsController < ApplicationController
   def create
 
     @event = Event.new(params[:event])
-    duration = @event.end_time - @event.start_time
     @blocks = []
-
     valid = true
-    case params[:rsvp_type]
-    when 'No RSVPs'
-    when 'Whole Event RSVPs'
-      # Implies one block with the same start and end time as the event
-      block = Block.new
-      block.event = @event
-      block.start_time = @event.start_time
-      block.end_time = @event.end_time
-      block.rsvp_cap = params[:rsvp_cap]
-      @blocks << block
-    when 'Block RSVPs'
-      num_blocks = params[:num_blocks].to_i # Invalid strings are mapped to 0
-      if params[:uniform_blocks]
-        block_length = duration/num_blocks
-        num_blocks.times do |i|
-          block = Block.new
-          block.event = @event
-          start_time = @event.start_time + (block_length * i)
-          block.start_time = start_time
-          block.end_time = start_time + block_length
-          block.rsvp_cap = params[:rsvp_cap]
-          @blocks << block
+
+    if not @event.valid?
+      valid = false
+    else
+      duration = @event.end_time - @event.start_time
+
+      case params[:rsvp_type]
+      when 'No RSVPs'
+      when 'Whole Event RSVPs'
+        # Implies one block with the same start and end time as the event
+        block = Block.new
+        block.event = @event
+        block.start_time = @event.start_time
+        block.end_time = @event.end_time
+        block.rsvp_cap = params[:rsvp_cap]
+        @blocks << block
+      when 'Block RSVPs'
+        num_blocks = params[:num_blocks].to_i # Invalid strings are mapped to 0
+        if params[:uniform_blocks]
+          block_length = duration/num_blocks
+          num_blocks.times do |i|
+            block = Block.new
+            block.event = @event
+            start_time = @event.start_time + (block_length * i)
+            block.start_time = start_time
+            block.end_time = start_time + block_length
+            block.rsvp_cap = params[:rsvp_cap]
+            @blocks << block
+          end
+        else
+          # We assume that if block times are manually set, then they will appear
+          # in params hashed as block0, block1, etc...
+          params.keys().reject{|x| !(x =~ /block\d+/)}.each do |block_name|
+            #block = Block.new(params["block#{i}"])
+            block_hash = params[block_name]
+            if block_hash.has_key?('id')
+              block = Block.find(block_hash['id'])
+              block.update_attributes(block_hash)
+            else
+              block = Block.new(params[block_name])
+            end
+            block.event = @event
+            @blocks << block
+          end
         end
       else
-        # We assume that if block times are manually set, then they will appear
-        # in params hashed as block0, block1, etc...
-        params.keys().reject{|x| !(x =~ /block\d+/)}.each do |block_name|
-          #block = Block.new(params["block#{i}"])
-          block_hash = params[block_name]
-          if block_hash.has_key?('id')
-            block = Block.find(block_hash['id'])
-            block.update_attributes(block_hash)
-          else
-            block = Block.new(params[block_name])
-          end
-          block.event = @event
-          @blocks << block
-        end
-      end
-    else
-      #raise "Invalid RSVP type"
-      valid = false
-      @event.errors[:base] << "Invalid RSVP type"
-    end
-
-    if valid
-      begin
-        # Don't save event if any block is invalid
-        ActiveRecord::Base.transaction do
-          @event.save!
-          @blocks.each do |block|
-            block.save!
-          end
-        end
-      rescue
+        #raise "Invalid RSVP type"
         valid = false
+        @event.errors[:base] << "Invalid RSVP type"
+      end
+
+      if valid
+        begin
+          # Don't save event if any block is invalid
+          ActiveRecord::Base.transaction do
+            @event.save!
+            @blocks.each do |block|
+              block.save!
+            end
+          end
+        rescue
+          valid = false
+        end
       end
     end
 
