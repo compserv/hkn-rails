@@ -27,5 +27,5 @@ cp vagrant/database.yml.vagrant config/database.yml
 
 # Configure PostgreSQL
 cp vagrant/pg_hba.conf /etc/postgresql/9.1/main/pg_hba.conf 
-sudo su postgres -c "psql -c \"CREATE USER hkn_rails WITH PASSWORD 'hkn_rails' CREATEDB;\""
+su postgres -c "psql -c \"CREATE USER hkn_rails WITH PASSWORD 'hkn_rails' CREATEDB;\""
 /etc/init.d/postgresql restart
