@@ -3,6 +3,32 @@ Welcome to HKN
 
 TODO: Add useful information.
 
+Vagrant, VMs, and You
+---------------------
+1) Install <a href = "https://www.virtualbox.org/wiki/Downloads">VirtualBox</a><br>
+2) Install <a href = "http://downloads.vagrantup.com/tags/v1.3.1">Vagrant</a><br>
+3) Download a backup of the website from hkn and move it into your copy of hkn-rails<br>
+4) <tt>cd hkn-rails</tt><br>
+5) <tt>vagrant up</tt><br>
+If Vagrant gives you an error along the lines of "The guest machine entered an invalid state...", try to start the VM from VirtualBox.  If VirtualBox gives you the error "VT-x is not available...", do the following:<br>
+    5.1) <tt>vagrant halt</tt><br>
+    5.2) <tt>vagrant destroy</tt><br>
+    5.3) Change your BIOS settings to enable hardware acceleration<br>
+    5.4) <tt>vagrant up</tt> and continue to step 6.<br>
+6) <tt>vagrant ssh</tt><br>
+7) <tt>cd /vagrant</tt><br>
+8) <tt>rake db:create && rake db:backup:restore FROM=[path\_to\_backup\_from\_hkn]</tt><br>
+9) On your host machine, visit <tt>localhost:3000</tt><br>
+10) Cry tears of joy<br>
+<p>
+Your copy of hkn-rails on your host is a shared directory with \vagrant on your guest, so you can edit files in either machine.
+</p>
+<p>
+The guest is configured to port forward 3000 to 3000 on the host.  The VM is allocated 1 GB of memory and is based on Ubuntu 12.04 64-bit.
+</p>
+<p>
+To stop the VM, either <tt>vagrant halt</tt> or <tt>vagrant suspend</tt>.  To resume again, <tt>vagrant up</tt>.
+<p>
 Stuff that used to be in README.d
 ---------------------------------
 
