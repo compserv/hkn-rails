@@ -16,3 +16,4 @@ public/examfiles/
 nbproject
 coverage/
 .sass-cache/
+.vagrant/
