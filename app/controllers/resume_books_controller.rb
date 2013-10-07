@@ -1,7 +1,9 @@
 class ResumeBooksController < ApplicationController
   
   before_filter :authorize_indrel, :except => [:download_pdf]
-  
+
+  before_filter :authorize_download, :only => [:download_pdf, :download_iso]
+ 
   def new
     @resume_book = ResumeBook.new
   end
@@ -81,13 +83,7 @@ class ResumeBooksController < ApplicationController
   # Shows resumebook (PDF, not model data) after authorization
   def download_pdf
     @resume_book = ResumeBook.find(params[:id])
-    if @current_user and (@current_user.in_groups?(['superusers', 'indrel'])) or
-      (Company.find_by_single_access_token(params[:access_key]) && 
-      CompanySession.find(params[:access_key]))
-      send_file @resume_book.pdf_file, :type => 'application/pdf', :x_sendfile => true
-    else
-      redirect_to :root, :notice => "Insufficient privileges to access this page."
-    end
+    send_file @resume_book.pdf_file, :type => 'application/pdf', :x_sendfile => true
   end
   
   # Shows resumebook (ISO) after authorization
@@ -97,6 +93,16 @@ class ResumeBooksController < ApplicationController
   end
 
 private
+
+  def authorize_download
+    unless (Company.find_by_single_access_token(params[:access_key]) && 
+      CompanySession.find(params[:access_key])) ||
+      (@current_user && @current_user.in_groups?(['superusers', 'indrel']))
+      redirect_to :root, :notice => "Insufficient privileges to access this" \
+        "page."
+    end
+  end
+      
 
   def generate_pdf(resumes, cutoff_date, indrel_officers)
     # @scratch_dir is the scratch work directory
