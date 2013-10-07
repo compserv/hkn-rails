@@ -81,7 +81,9 @@ class ResumeBooksController < ApplicationController
   # Shows resumebook (PDF, not model data) after authorization
   def download_pdf
     @resume_book = ResumeBook.find(params[:id])
-    if @current_user and (@current_user.in_groups?(['superusers', 'indrel'])) or CompanySession.find(params[:access_key])
+    if @current_user and (@current_user.in_groups?(['superusers', 'indrel'])) or
+      (Company.find_by_single_access_token(params[:access_key]) && 
+      CompanySession.find(params[:access_key]))
       send_file @resume_book.pdf_file, :type => 'application/pdf', :x_sendfile => true
     else
       redirect_to :root, :notice => "Insufficient privileges to access this page."
