@@ -48,7 +48,7 @@ class Alumni < ActiveRecord::Base
 
   def self.years
     current = Time.now.year
-    return ((current - 7)..current).to_a
+    return (1915..current).to_a.reverse
   end
 
   def self.grad_semester(semester, year)
