@@ -172,9 +172,10 @@ module CourseSurveys
     def run
       orig_url = @url
       orig_u = URI(@url)
+      start_row = 1
 
       while @url
-        u = URI(@url)
+        u = URI(@url + "&p_start_row=#{start_row}")
         u.scheme ||= orig_u.scheme
         u.host ||= orig_u.host
         puts u.to_s
@@ -198,11 +199,18 @@ module CourseSurveys
               # process item
               item = item.at_xpath('./font/b')
 
-              begin
-                item = item.text[0..-3]   # WTH IS THAT CHARACTER AT THE END
-              rescue => fuckaduck         # WHY DOESNT THE OTHER RESCUE WORK FOR THIS LINE
-                puts "fuckaduck"
-                #exit
+              # last row, which contains forms for getting the next page
+              # of results or submitting a new search
+              if not item
+                item = tr.xpath('td/font/form/label/b')
+                value = item[0]
+              else
+                begin
+                  item = item.text[0..-3]   # WTH IS THAT CHARACTER AT THE END
+                rescue => fuckaduck         # WHY DOESNT THE OTHER RESCUE WORK FOR THIS LINE
+                  puts "fuckaduck"
+                  #exit
+                end
               end
 
               # process value
@@ -210,8 +218,7 @@ module CourseSurveys
               value = nil if value.empty?
 
               if value =~ /next results/
-                href = tr.at_xpath('.//a').attribute('href').value.to_s
-                @url = tidy_url(href)
+                start_row += 100
                 puts "Moving to next page" if @debug
               elsif value =~ /new search/
                 # no next results, but has new search. must be last page.
