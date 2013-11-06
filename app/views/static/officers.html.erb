@@ -12,32 +12,8 @@
 <% else %><%# there are cships for this semester %>
 
 <% [:execs, :committees].each do |position_type| %>
-<div id="<%= position_type %>">
-  <% @committeeships[position_type].each do |c_name, cships| %>
-    <%# begin partial %>
-
-
-
-    <div class="<%= position_type.to_s.singularize %>">
-      <h2><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h2>
-      <% for person in cships.collect(&:person).sort_by(&:full_name) %>
-      <div class="officer">
-        <div class="photo <%= "no-photo" if person.picture.blank? %>">
-          <%= image_tag person.picture  unless person.picture.blank? %>
-        </div>
-        <span class="name"><%= person.full_name %></span>
-        <span class="email"><%= person.username %>@hkn</span>
-      </div>
-      <% end %>
-    </div>
-
-
-
-    <%# end partial %>
-  <% end %><%# cships, @committeeships %>
-</div>
+<%= render "committee_list", :position_type => position_type %>
 <% end %><%# position_type %>
-
 
 <%# Alumni Advisor should go here. %>
 
