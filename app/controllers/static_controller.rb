@@ -23,6 +23,21 @@ class StaticController < ApplicationController
   def slideshow
   end
 
+  def cmembers
+    # Get the most recent semester
+    @semester = params[:semester] || Election.maximum(:semester)
+    # Using the semester, get the committeeships, sorted by committee
+    cships = Committeeship.semester(@semester).cmembers.sort_by do |c|    
+      c.committee
+    end.ordered_group_by(&:committee)
+    # Group cships by committee
+    @committeeships = cships.group_by do |c_ary|
+      :committees
+    end
+    # If @committeeships[:committees] is null, make it empty
+    @committeeships[:committees] ||= {}
+  end
+
 
   def officers
     @semester = params[:semester] || Election.maximum(:semester)
