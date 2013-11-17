@@ -18,8 +18,8 @@ If Vagrant gives you an error along the lines of "The guest machine entered an i
 6) <tt>vagrant ssh</tt><br>
 7) <tt>cd /vagrant</tt><br>
 8) <tt>rake db:create && rake db:backup:restore FROM=[path\_to\_backup\_from\_hkn]</tt><br>
-9) On your host machine, visit <tt>localhost:3000</tt><br>
-10) Cry tears of joy<br>
+9) <tt>rails s</tt>
+10) On your host machine, visit <tt>localhost:3000</tt><br>
 <p>
 Your copy of hkn-rails on your host is a shared directory with \vagrant on your guest, so you can edit files in either machine.
 </p>
