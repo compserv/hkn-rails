@@ -5,7 +5,7 @@ class Admin::BridgeController < Admin::AdminController
   end
 
   def photo_upload
-    @Officers = Committeeship.current.officers.map(&:person)
+    @Officers = Committeeship.current.map(&:person).uniq
   end
 
   def photo_upload_post
