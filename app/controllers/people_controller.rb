@@ -217,6 +217,55 @@ class PeopleController < ApplicationController
               :filename => "hkn-contacts.csv"
   end
 
+  def search
+    return if strip_params
+    query = @query = sanitize_query(params[:q])
+
+    order = params[:sort] || "first_name"
+    sort_direction = case params[:sort_direction]
+                     when "up" then "ASC"
+                     when "down" then "DESC"
+                     else "ASC"
+                     end
+
+    @search_opts = {'sort' => "first_name"}.merge params
+    opts = { :page     => params[:page],
+             :per_page => params[:per_page] || 20,
+             :order    => "people.#{order} #{sort_direction}"
+	   }
+
+    @results = {}
+
+    if $SUNSPOT_ENABLED
+      @results = Person.search do
+        keywords query   # this needs to be a local var, not an instance var, b/c of scoping issues
+        order_by :first_name, :desc
+      end.results
+    else
+      # Solr isn't started, hack together some results
+      logger.warn "Solr isn't started, falling back to lame search"
+      str = "%#{@query}%"
+      @results = Person.find(:all, :conditions => ['first_name LIKE ? OR last_name LIKE ? OR (first_name||\' \'||last_name)  LIKE ?', str, str, str])
+      flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
+     end
+
+    # if very likely have a single match, just go to it
+    if @results.length == 1 then
+      p = @results.first
+      redirect_to :action => "show", :login => p.username
+      return
+    end
+
+    @results = @results.paginate opts
+    # multiple results
+    respond_to do |format|
+      format.html
+      format.js {
+        render :partial => 'search_results'
+      }
+    end
+  end
+
   private
   def can_edit_profile?(person)
     # @current_user can view @person if:
@@ -224,6 +273,5 @@ class PeopleController < ApplicationController
     #   2) @current_user is a superuser
     @current_user && @current_user.id == params[:id] or @auth['superusers']
   end
-
 
 end
