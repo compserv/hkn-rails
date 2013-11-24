@@ -1,4 +1,10 @@
-Committee,People
-<%- @mapping.each do |comm, cands| %>
-<%= comm || 'None' %>,"<%= raw cands.collect(&:person).compact.collect(&:full_name).join("\n") %>"
-<%- end -%>
+<% 
+csv_string = CSV.generate do |csv|
+  csv << ["Committee", "People"]
+  @mapping.each do |comm, cands|
+    csv << [comm || 'None'] +
+           cands.collect(&:person).compact.collect(&:full_name)
+  end
+end 
+%>
+<%= csv_string %>
