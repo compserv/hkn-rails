@@ -22,6 +22,9 @@ gem install rails -v 3.1.11
 cd /vagrant
 bundle install
 
+# Install Imagemagick, necessary for Store
+sudo apt-get install imagemagick
+
 # Modify database.yml
 cp vagrant/database.yml.vagrant config/database.yml
 

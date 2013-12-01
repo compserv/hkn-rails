@@ -6,20 +6,10 @@ class Sellable < ActiveRecord::Base
   #   price       : decimal 
   #   category    : string 
   #   description : text 
-  #   image       : binary 
   #   created_at  : datetime 
   #   updated_at  : datetime 
+  #   image       : string 
   # =======================
-
-	
-  # === List of columns ======
-  #   id			: integer 
-  #   name		    : string 
-  #   category     	: string 
-  #   price     	: decimal 
-  #   description   : text 
-  #   image      	: binary 
-  # ==========================
 
 	validates :name,  :presence => true
   	validates :price,   :presence => true

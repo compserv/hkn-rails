@@ -1,6 +1,6 @@
 class Admin::AdminController < ApplicationController
   #before_filter :authorize_officers, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
-  before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
+  # before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
 
   def super_page
     @candidates = Candidate.current.find(:all, :joins => :person, :order => "people.first_name, people.last_name")

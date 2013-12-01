@@ -23,11 +23,28 @@ class ProductController < ApplicationController
 
   def update
     @product = Sellable.find(params[:pid])
-    if @product.update_attributes(params[:product])
-      redirect_to show_path(@product)
+
+    if @product.update_attributes(params[:product].except(:image))
     else
       render 'edit'
+      return
     end
+
+    img_path = "public/pictures/product_images/#{@product.id}.png"
+    unless img = params[:product][:image]
+      flash[:notice] = "Please attach picture"
+      render 'edit'
+      return
+    end
+    File.open(img_path,"wb") do |f|
+      f.write(img.read)
+    end
+    @product.image = "/pictures/product_images/#{@product.id}.png"
+    
+    @product.save
+    flash[:notice] = "Saved"
+    redirect_to show_path(@product) 
+
   end
 
   def destroy

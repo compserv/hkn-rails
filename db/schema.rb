@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131201020545) do
+ActiveRecord::Schema.define(:version => 20131201064652) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -445,9 +445,9 @@ ActiveRecord::Schema.define(:version => 20131201020545) do
     t.decimal  "price"
     t.string   "category"
     t.text     "description"
-    t.binary   "image"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "image"
   end
 
   create_table "sessions", :force => true do |t|
