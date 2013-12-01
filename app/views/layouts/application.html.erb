@@ -41,15 +41,20 @@
   	      <span id="userbar" class="userbar">
   	        Welcome, <%= link_to @current_user.full_name, @current_user %>
   	      </span>
+
   	      <span class="userbar" id="user-dropdown">
   	        <span class="list-item"><a href="/account-settings"><span class="icon" id="settings"></span>Settings</a></span>
   	        <span class="list-item"><a href="/logout"><span class="icon" id="logout"></span>Logout</a></span>
   	        <span id="username" style="display:none;"><%= @current_user.username %></span>
   	      </span>
   	    <% else %>
-  	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
+  	      <span class="userbar">
+            <%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
   	      <span id="username" style="display:none;">guest</span>
   	    <% end %>  
+        <span class="userbar">
+          <%= link_to 'Store', store_path %>
+        </span>
           <%= render 'notifications/notifications' if @auth['comms'] %>
   	  <ul>
   	    <li><a class="navigation_toplevel_item" id="services" href="#">Student Services</a></li>
@@ -66,7 +71,6 @@
   	    <% if @auth["comms"] %>
   	      <li><a class="navigation_toplevel_item" id="admin" href="#">Admin</a></li>
   	    <% end %>
-  	      
   	  </ul>
   	  <div class="clear"></div>
   	</div>
