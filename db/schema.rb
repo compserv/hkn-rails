@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130519233001) do
+ActiveRecord::Schema.define(:version => 20131201020545) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -436,6 +436,16 @@ ActiveRecord::Schema.define(:version => 20130519233001) do
     t.integer  "event_id",        :null => false
     t.text     "comment"
     t.integer  "transportation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sellables", :force => true do |t|
+    t.string   "name"
+    t.decimal  "price"
+    t.string   "category"
+    t.text     "description"
+    t.binary   "image"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,8 +1,15 @@
 HknRails::Application.routes.draw do
-  
 
   scope 'store' do
-    get '/', to: 'store#index'
+    get '/', to: 'store#index', as: 'store'
+    # resources :product
+    # get "product/index"
+    get '/product/:pid' => "product#show", as: 'show'
+    get '/new' => 'product#new', as: 'new'
+    post 'new' => 'product#create', as: 'create'
+    get '/product/:pid/edit' => "product#edit", as: 'edit'
+    put '/product/:pid/edit' => "product#update", as: 'update'
+    post '/product/:pid/delete' => "product#destroy", as: 'delete'
   end
 
   match "test_exception_notification" => "application#test_exception_notification"
