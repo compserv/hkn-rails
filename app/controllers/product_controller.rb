@@ -1,5 +1,5 @@
 class ProductController < ApplicationController
-  # before_filter :authorize_admin, except: [:index, :show]
+  # before_filter :authorize_studrel, except: [:index, :show]
 
   def index
     @products = Sellable.all

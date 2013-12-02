@@ -9,10 +9,14 @@
 			
 			<div class='product-info-box'>
 				<%= link_to product.name, show_path(product), class:'product-name' %>
-				<span class='product-price'>$<%= product.price %></span></br>
+				<span class='product-price'>$<%= product.price %></span>
+				</br>
 				<span class='product-description'><%= product.description %></span>
-				<%= link_to 'Delete', delete_path(product), method: :destroy, confirm: 'Are you sure you want to delete this product?' %> | 
-				<%= link_to 'Edit', edit_path(product) %>
+				<% if true %>
+				<!-- @auth['comms'] && @auth["studrel"] -->
+					<%= link_to 'Delete', delete_path(product), method: :destroy, confirm: 'Are you sure you want to delete this product?' %> | 
+					<%= link_to 'Edit', edit_path(product) %>
+				<% end %>
 			</div>
 		</div>
 		<% end %>

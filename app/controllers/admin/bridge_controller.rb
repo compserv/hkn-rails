@@ -1,5 +1,5 @@
 class Admin::BridgeController < Admin::AdminController
-  # before_filter :authorize_bridge
+  before_filter :authorize_bridge
 
   def index
   end
