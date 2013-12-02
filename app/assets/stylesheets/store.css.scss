@@ -1,3 +1,82 @@
 // Place all the styles related to the Store controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.store-banner-area{
+	position: relative;
+}
+
+#store-banner-welcome-msg{
+}
+
+#store-banner-subtitle{
+	font-style: italic;
+}
+
+
+
+.store-content-area{
+	position: relative;
+	margin-top: 50px;
+}
+
+.store-product-listings{
+	position: relative;
+	float: left;
+	width: 75%;
+	padding-right: 10px;
+
+}
+
+.store-sidebar{
+	position: relative;
+	float: right;
+	width: 20%;
+	padding-left: 10px;
+	background-color: RED;
+}
+
+.product-box{
+	position: relative;
+	float: left;
+	width: 250px;
+	height: 156px;
+	background-color: BLACK;
+	margin: 10px;
+	overflow: hidden;
+}
+
+.product-info-box{
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	padding: 0 10px;
+	background-color: WHITE;
+	opacity: 0.7;
+
+	.product-name{
+		font-weight: bold;
+		font: bold 20px Cuprum;
+		color: #403f3f;
+	}
+
+	.product-description{
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.product-price{
+		font-size: 20px;
+	}
+}
+
+.product-image{
+	position: relative;
+	width: 250px;
+	height: 156px;
+	z-index: 0;
+}
+
+
+
