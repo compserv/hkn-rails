@@ -1,9 +1,10 @@
 HknRails::Application.routes.draw do
 
   scope 'store' do
-    get '/', to: 'store#index', as: 'store'
+    # get '/', to: 'store#index', as: 'store'
     # resources :product
     # get "product/index"
+    get '/', to: 'product#index', as: 'store'
     get '/product/:pid' => "product#show", as: 'show'
     get '/new' => 'product#new', as: 'new'
     post 'new' => 'product#create', as: 'create'
