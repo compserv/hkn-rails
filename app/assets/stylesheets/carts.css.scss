@@ -1,0 +1,44 @@
+// Place all the styles related to the Store controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.store-banner-area{
+	position: relative;
+}
+
+#store-banner-welcome-msg{
+}
+
+#store-banner-subtitle{
+	font-style: italic;
+}
+
+.store-content-area{
+	position: relative;
+	margin-top: 50px;
+}
+
+
+@mixin default-left{
+	position: relative;
+	float: left;
+	width: 75%;
+	padding-right: 10px;
+}
+
+
+.store-cart-area{
+	@include default-left;
+
+	#checkout-button{
+		float: right;
+	}
+}
+
+
+.store-sidebar{
+	position: relative;
+	float: right;
+	width: 20%;
+	padding-left: 10px;
+}

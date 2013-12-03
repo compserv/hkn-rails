@@ -75,11 +75,15 @@ GEM
       nokogiri (~> 1.4)
       ntlm-http (~> 0.1, >= 0.1.1)
       webrobots (~> 0.0, >= 0.0.9)
+    metaclass (0.0.1)
     mime-types (1.19)
+    mocha (0.14.0)
+      metaclass (~> 0.0.1)
     multi_json (1.2.0)
     net-http-digest_auth (1.2.1)
     net-http-persistent (2.8)
     net-ldap (0.3.1)
+    nifty-generators (0.4.6)
     nokogiri (1.5.6)
     ntlm-http (0.1.1)
     pg (0.14.1)
@@ -185,7 +189,9 @@ DEPENDENCIES
   haml-rails
   jquery-rails (>= 0.2.6)
   mechanize
+  mocha
   net-ldap
+  nifty-generators
   nokogiri
   pg
   rails (~> 3.1)

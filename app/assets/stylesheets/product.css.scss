@@ -18,18 +18,21 @@
 	margin-top: 50px;
 }
 
-.store-product-listings{
+
+@mixin default-left{
 	position: relative;
 	float: left;
 	width: 75%;
 	padding-right: 10px;
 }
 
+.store-product-listings{
+	@include default-left;
+}
+
+
 .single-product-listings{
-	position: relative;
-	float: left;
-	width: 75%;
-	padding-right: 10px;
+	@include default-left;
 
 	.single-product-image{
 		position: relative;
