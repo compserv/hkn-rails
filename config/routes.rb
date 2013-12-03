@@ -376,4 +376,5 @@ HknRails::Application.routes.draw do
 
   match "factorial/:x" => "home#factorial"
 
+  get  'hoodies' => "static#hoodies", :as => :hoodies
 end
