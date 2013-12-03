@@ -54,7 +54,7 @@
 <% if @person.rsvps.count > 0 %>
   <h2><%= @person.fullname %>'s RSVPs</h2>
   <ul>
-  <% @person.rsvps.ordered_desc.limit(10).each do |rsvp| %>
+  <% @person.rsvps.ordered_desc.each do |rsvp| %>
     <% if rsvp.event.can_view? @current_user %>
       <li><%= link_to "#{rsvp.event.start_date} - #{rsvp.event.name}", rsvp.event %></li>
     <% end %>
