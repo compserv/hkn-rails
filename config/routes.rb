@@ -1,5 +1,27 @@
 HknRails::Application.routes.draw do
 
+
+
+  scope 'store' do
+    # get '/', to: 'store#index', as: 'store'
+    # resources :product
+    # get "product/index"
+
+    resources :line_items
+    resources :carts
+    resources :orders
+
+    # current_cart 'cart', controller: 'carts', action: 'show', id: 'current'
+
+    get '/', to: 'product#index', as: 'store'
+    get '/product/:pid' => "product#show", as: 'show'
+    get '/new' => 'product#new', as: 'new'
+    post 'new' => 'product#create', as: 'create'
+    get '/product/:pid/edit' => "product#edit", as: 'edit'
+    put '/product/:pid/edit' => "product#update", as: 'update'
+    post '/product/:pid/delete' => "product#destroy", as: 'delete'
+  end
+
   match "test_exception_notification" => "application#test_exception_notification"
 
   #Department tours
@@ -17,11 +39,11 @@ HknRails::Application.routes.draw do
       match "reject_challenge/:id" => "admin#reject_challenge"
       # TODO: Shouldn't this be done with resources?
       scope "candidate_announcements" do
-          match "/" => "admin#candidate_announcements"
-          post "create_announcement" => "admin#create_announcement", :as => "create_announcement"
-          match "edit_announcement/:id" => "admin#edit_announcement", :as => "edit_announcement"
-          post "update_announcement" => "admin#update_announcement", :as => "update_announcement"
-          match "delete_announcement/:id" => "admin#delete_announcement", :as => "delete_announcement"
+        match "/" => "admin#candidate_announcements"
+        post "create_announcement" => "admin#create_announcement", :as => "create_announcement"
+        match "edit_announcement/:id" => "admin#edit_announcement", :as => "edit_announcement"
+        post "update_announcement" => "admin#update_announcement", :as => "update_announcement"
+        match "delete_announcement/:id" => "admin#delete_announcement", :as => "delete_announcement"
       end
     end
 
@@ -43,12 +65,12 @@ HknRails::Application.routes.draw do
     end
 
     scope "election", :as => "election" do
-        get  "details"                => "elections#details",          :as => :details
+      get  "details"                => "elections#details",          :as => :details
 
-        put  "edit_details/:username" => "elections#update_details",   :as => :update_details, :constraints => {:username => /.+/}
-        get  "edit_details/:username" => "elections#edit_details",     :as => :edit_details,   :constraints => {:username => /.+/}
+      put  "edit_details/:username" => "elections#update_details",   :as => :update_details, :constraints => {:username => /.+/}
+      get  "edit_details/:username" => "elections#edit_details",     :as => :edit_details,   :constraints => {:username => /.+/}
 
-        get  "minutes"                => "elections#election_minutes", :as => :minutes
+      get  "minutes"                => "elections#election_minutes", :as => :minutes
     end
 
     scope "pres" do
@@ -138,13 +160,12 @@ HknRails::Application.routes.draw do
     member do
       post "respond"
       #for some reason this stopped working... :(
-      post "dismiss" => "dept_tour_requests#destroy"
+        post "dismiss" => "dept_tour_requests#destroy"
+      end
     end
-  end
 
-  get "home/index"
-
-  root :to => "home#index"
+    get "home/index"
+    root :to => "home#index"
 
   # Login
   get   "login" => "user_sessions#new", :as => :login
@@ -327,18 +348,18 @@ HknRails::Application.routes.draw do
   # Exams
   scope "exams" do
     match '/'                                     => "exams#index",
-      :as => :exams
+    :as => :exams
     match "search(/:q)"                                => "exams#search",
-      :as => :exams_search
+    :as => :exams_search
     match "course/:dept_abbr"                     => "exams#department",
-      :as => :exams_department
+    :as => :exams_department
     match "course/:dept_abbr/:full_course_number" => "exams#course",
-      :as => :exams_course
+    :as => :exams_course
     match 'course'                                => redirect('/exams')
     get 'new'                                     => "exams#new",
-      :as => :exams_new
+    :as => :exams_new
     post 'create'                                 => "exams#create",
-      :as => :exams_create
+    :as => :exams_create
   end
   #resources :exams
 

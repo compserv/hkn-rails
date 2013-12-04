@@ -1,0 +1,32 @@
+<% title "New Order" %>
+
+<%= form_for @order do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :card_id %><br />
+    <%= f.number_field :card_id %>
+  </p>
+  <p>
+    <%= f.label :ip_address %><br />
+    <%= f.text_field :ip_address %>
+  </p>
+  <p>
+    <%= f.label :first_name %><br />
+    <%= f.text_field :first_name %>
+  </p>
+  <p>
+    <%= f.label :last_name %><br />
+    <%= f.text_field :last_name %>
+  </p>
+  <p>
+    <%= f.label :card_type %><br />
+    <%= f.text_field :card_type %>
+  </p>
+  <p>
+    <%= f.label :card_expires_on %><br />
+    <%= f.date_select :card_expires_on %>
+  </p>
+  <p><%= f.submit %></p>
+<% end %>
+
+

@@ -1,0 +1,29 @@
+<%= render 'banner' %>
+
+<div class='store-content-area'>
+	<p><%= link_to '< Back to Store', store_path %></p>
+	<div class='single-product-listings'>
+
+		<div class='single-product-image'>
+			<%= image_tag @product.image, class:'image' unless @product.image.blank? %>
+		</div>
+
+		<div class='left-info'>
+			<h1 class='product-name'><%= @product.name%></h1>
+		</div>
+		<div class='right-info'>
+			<h2 class='product-price'>$<%= @product.price%></h2>
+		</div>
+
+ 		<div class='description'>
+ 			<h3>Category: <%= @product.category%></h3>
+ 			<p><%= @product.description%></p>
+ 		</div>
+
+		<div class='checkout'>
+			<%= link_to (image_tag 'store/add_to_cart.png'), line_items_path(pid: @product.id), method: :post %>
+		</div>
+	</div>
+	<%= render 'sidebar' %>
+
+</div>

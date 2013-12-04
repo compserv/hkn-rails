@@ -1,0 +1,16 @@
+	<div class='store-sidebar'>
+		<h2>Store Annoucement</h2>
+		<p>HKN Gear Store just opened! Please refrain from fighting with other fellow customers to get the newest and latest products!</p>
+
+
+		<% if true %>
+		<!--  @auth['comms'] && @auth["studrel"]  -->
+			<h2>Admin Meta</h2>
+			<p><%= link_to "Add New Product", controller: "product", action: "new" %></p>
+			<% if @product %>
+				<p><%= link_to "Edit This Product", controller: "product", action: "edit", pid: @product.id %></p>
+				<p><%= link_to 'Delete This Product', delete_path(@product), method: :destroy, confirm: 'Are you sure you want to delete this product?' %></p>
+			<% end %>
+
+		<% end %>
+	</div>

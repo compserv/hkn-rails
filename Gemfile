@@ -31,4 +31,6 @@ group :development, :test do
   # webrat is needed to make some specs pass
   gem 'webrat'
   gem 'yard'
+  gem 'nifty-generators'
 end
+gem "mocha", :group => :test

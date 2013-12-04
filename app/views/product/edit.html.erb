@@ -1,0 +1,48 @@
+<h1>Editing Product</h1>
+ 
+<%= form_for :product, url: update_path(@product), method: :put do |f| %>
+  <% if @product.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@product.errors.count, "error") %> prohibited
+      this post from being saved:</h2>
+    <ul>
+    <% @product.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <%= image_tag @product.image unless @product.image.blank? %>
+
+  <p>
+    <%= f.label :Image %><br>
+    <%= f.file_field :image_info %>
+  </p>
+  
+  <p>
+    <%= f.label :Name %><br>
+    <%= f.text_field :name %>
+  </p>
+ 
+
+   <p>
+    <%= f.label :Category %><br>
+    <%= f.text_field :category %>
+  </p>
+  
+  <p>
+    <%= f.label :Price %><br>
+    <%= f.number_field :price %>
+  </p>
+  <p>
+    <%= f.label :Description %><br>
+    <%= f.text_area :description %>
+  </p>
+ 
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
+ 
+<%= link_to 'Back', show_path(@product) %>

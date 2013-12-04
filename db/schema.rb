@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130519233001) do
+ActiveRecord::Schema.define(:version => 20131203091527) do
 
   create_table "alumnis", :force => true do |t|
     t.string   "grad_semester"
@@ -85,6 +85,12 @@ ActiveRecord::Schema.define(:version => 20130519233001) do
     t.string   "committee_preferences"
     t.string   "release"
     t.integer  "quiz_score",            :default => 0, :null => false
+  end
+
+  create_table "carts", :force => true do |t|
+    t.datetime "purchased_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "challenges", :force => true do |t|
@@ -338,6 +344,15 @@ ActiveRecord::Schema.define(:version => 20130519233001) do
     t.datetime "updated_at"
   end
 
+  create_table "line_items", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "quantity"
+    t.integer  "unit_price"
+    t.integer  "cart_id"
+    t.integer  "sellable_id"
+  end
+
   create_table "locations", :force => true do |t|
     t.string   "name"
     t.integer  "capacity"
@@ -349,6 +364,17 @@ ActiveRecord::Schema.define(:version => 20130519233001) do
   create_table "mobile_carriers", :force => true do |t|
     t.string   "name",       :null => false
     t.string   "sms_email",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "orders", :force => true do |t|
+    t.integer  "card_id"
+    t.string   "ip_address"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "card_type"
+    t.date     "card_expires_on"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -438,6 +464,16 @@ ActiveRecord::Schema.define(:version => 20130519233001) do
     t.integer  "transportation"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "sellables", :force => true do |t|
+    t.string   "name"
+    t.decimal  "price"
+    t.string   "category"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "image"
   end
 
   create_table "sessions", :force => true do |t|

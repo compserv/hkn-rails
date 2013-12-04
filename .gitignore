@@ -17,3 +17,5 @@ nbproject
 coverage/
 .sass-cache/
 .vagrant/
+
+.DS_Store

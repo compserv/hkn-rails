@@ -1,0 +1,15 @@
+one:
+  card_id: 1
+  ip_address: MyString
+  first_name: MyString
+  last_name: MyString
+  card_type: MyString
+  card_expires_on: 2013-12-03
+
+two:
+  card_id: 1
+  ip_address: MyString
+  first_name: MyString
+  last_name: MyString
+  card_type: MyString
+  card_expires_on: 2013-12-03

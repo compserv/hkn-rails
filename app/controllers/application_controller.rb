@@ -173,5 +173,10 @@ class ApplicationController < ActionController::Base
     send(:redirect_to, request.referer || path, *args)
   end
 
+  def current_cart
+    session[:cart_id] ||= Cart.create!.id
+    @current_cart ||= Cart.find(session[:cart_id])
+    return @current_cart
+  end
   
 end
