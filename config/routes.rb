@@ -324,6 +324,13 @@ HknRails::Application.routes.draw do
     match "calendar" => "tutor#calendar"
   end
 
+
+  # EDIT: route /tutor/swap.html to swap.html.erb in app/views/tutor_swap/
+  scope "tutor_swap" do
+    get "new" => "tutor_swap#new", :as => :tutor_swap_new
+    post "create" => "tutor_swap#create", :as => :tutor_swap_create
+  end
+
   # Exams
   scope "exams" do
     match '/'                                     => "exams#index",

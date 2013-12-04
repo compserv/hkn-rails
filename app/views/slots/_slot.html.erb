@@ -1,6 +1,12 @@
 <% if slot.tutors.any? %>
 <% slot.tutors.each do |tutor| %>
 
+<% swap = TutorSwap.find_by_orig_tutor_id_and_slot_id(tutor.id, slot.id) %>
+<% dates = (Date.today .. (Date.today + 6)) %>
+<% if swap && dates.include?(swap.swap_date) %>
+  <% tutor = Tutor.find_by_id(swap.new_tutor_id) %>
+<% end %>
+
 <div title="<%= tutor.person.fullname %>" id="tutor-<%= slot.id %>-<%= tutor.id %>" class="person 
 <% for pref in tutor.course_preferences %>
 <%= pref.course.course_abbr + '_' + pref.level.to_s %>
