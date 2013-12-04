@@ -1,0 +1,51 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
+<%- end # header -%>
+
+<h1>Swapping Tutoring Slot</h1>
+
+<div id="tutor_swap">
+
+  <%= form_for @newswap, url: {action: "create"} do |s| %>
+
+    <div id="autocomplete-0">
+      <%= label_tag "New tutor (e.g. Bobby Tutor):"%>
+      <br>
+      <%= text_field_tag (l="tutor"), "", :id => l%>
+      <%= hidden_field_tag (l="tutor_hidden"), params[l], :id => l %>
+    </div>
+
+    <br>
+
+    <div id="autocomplete-1">
+      <%= label_tag "Slot:"%>
+      <br>
+      <%- @myslots.each_with_index do |s, i| -%>
+        <div>
+          <%= radio_button :slot, :slot_id, s.id%>
+          <% hour = s.hour % 12 %>
+          <% if hour == 0 %>
+            <% hour = 12 %>
+          <% end %>
+          <%= label_tag "#{Date.strptime(s.wday.to_s, "%w").strftime("%A")}, #{hour}-#{(hour + 1) % 12} pm"%>
+        </div>
+      <%- end -%>
+    </div>
+
+    <br>
+
+    <div id="autocomplete-2">
+      <%= label_tag "Date (e.g. 07/04/1776):"%>
+      <br>
+      <%= text_field_tag (l="date"), "", :id => l%>
+      <%= hidden_field_tag (l="date_hidden"), params[l], :id => l %>
+    </div>
+
+    <br>
+
+    <%= s.submit 'SUBMIT SWAP'%>
+
+  <%- end -%>
+
+</div>

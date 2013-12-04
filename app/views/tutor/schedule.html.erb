@@ -29,25 +29,30 @@
 </div>
 
 <div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 70px; line-height: 1.75em;">
-	<div class="small">
-	<% courses = CoursePreference.all_courses(tutors.uniq) %>
-	<% for key in courses.keys %>
-	<span class="dept-heading"><%= key %></span>
-		<% for course in courses[key] %>
-		<% c = "'" + key + course + "'" %>
-		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
-		onclick="return locklight(<%= c %>)"><%= course %></a>
+        <div class="small">
+        <% courses = CoursePreference.all_courses(tutors.uniq) %>
+        <% for key in courses.keys %>
+        <span class="dept-heading"><%= key %></span>
+                <% for course in courses[key] %>
+                <% c = "'" + key + course + "'" %>
+                <a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
+                onclick="return locklight(<%= c %>)"><%= course %></a>
                 <%= ', ' unless course == courses[key].last %>
-		<% end %>
-	<br/>
-	<% end %>
-	<br/>
+                <% end %>
+        <br/>
+        <% end %>
+        <br/>
 
-	<div class="legend-item legend-pref"></div><span class="small">= preferred</span><br/>
-	<div class="legend-item legend-comp"></div><span class="small">= completed</span><br/>
-	<div class="legend-item legend-curr"></div><span class="small">= in progress</span><br/>
+        <div class="legend-item legend-pref"></div><span class="small">= preferred</span><br/>
+        <div class="legend-item legend-comp"></div><span class="small">= completed</span><br/>
+        <div class="legend-item legend-curr"></div><span class="small">= in progress</span><br/>
 
-	</div>
+        </div>
+        
+        <br/>
+        <div class="swap_button">
+        <%= button_to "SWAP SLOT", tutor_swap_new_path, :class => "swap", :method => :get %>
+        </div>
 </div>
 <div style="clear: both; height: 150px"></div>
 <%# End tutoring enabled %>
