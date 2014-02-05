@@ -147,7 +147,11 @@ class Person < ActiveRecord::Base
   def phone_number
     return nil unless n = read_attribute(:phone_number) and not n.blank?
     n.gsub! /[^\d]/, ''
-    "(#{n[0..2]}) #{n[3..5]}-#{n[6..9]}"
+    if n.length == 10
+      "(#{n[0..2]}) #{n[3..5]}-#{n[6..9]}"
+    else
+      n
+    end
   end
 
   def phone_number_is_valid?

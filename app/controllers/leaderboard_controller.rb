@@ -5,8 +5,8 @@ class LeaderboardController < ApplicationController
     @semester = params[:semester] || Property.current_semester
     @people = Person.find(:all, :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title IN (?)", @semester, ["officer", "cmember"] ])
     @people_array = []
-    moar_people = [ 'eunjian' ].collect{|u|Person.find_by_username(u)}   # TODO remove when we have leaderboard opt-in
-    (@people|moar_people).each do |person|
+    #moar_people = [ 'eunjian' ].collect{|u|Person.find_by_username(u)}   # TODO remove when we have leaderboard opt-in
+    @people.each do |person|
       # Makeshift data structure
       events = person.rsvps.confirmed.joins(:event).where("events.start_time > ? AND events.start_time < ?", Property.semester_start_time(@semester), Property.semester_start_time(Property.next_semester(@semester)))
       @people_array << {
@@ -20,12 +20,12 @@ class LeaderboardController < ApplicationController
       entry[:big_fun] = entry[:events].where("events.event_type_id = ? ", EventType.find_by_name("Big Fun")).count
       entry[:fun] = entry[:events].where("events.event_type_id = ? ", EventType.find_by_name("Fun")).count
       entry[:service] = entry[:events].where("events.event_type_id = ? ", EventType.find_by_name("Service")).count
-      if entry[:person].username == "eunjian"
-        rand = Random.new()
-        entry[:big_fun] = rand.rand(3..10)
-        entry[:fun] = rand.rand(30..100)
-        entry[:service] = rand.rand(5..15)
-      end
+      #if entry[:person].username == "eunjian"
+      #  rand = Random.new()
+      #  entry[:big_fun] = rand.rand(3..10)
+      #  entry[:fun] = rand.rand(30..100)
+      #  entry[:service] = rand.rand(5..15)
+      #end
       entry[:score] = 2*entry[:big_fun] + entry[:fun] + 3*entry[:service]
     end
 
