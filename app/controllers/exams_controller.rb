@@ -1,5 +1,5 @@
 class ExamsController < ApplicationController
-  before_filter :authorize_studrel, :only => [:create, :new]
+  before_filter :authorize_tutoring, :only => [:create, :new]
 
 # [:index, :department, :course].each {|a| caches_action a, :layout => false}
 
