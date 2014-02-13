@@ -1,7 +1,7 @@
 <%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <div id="ajax-wrapper">
 <%= spinner %>
-<%= will_paginate @people, :class => "ajax-controls ajax" %>
+<%= will_paginate @results, :class => "ajax-controls ajax" %>
 
 <table class="table">
   <tr class="ajax-controls">
@@ -13,7 +13,7 @@
       <th>Registered</th>
     <% end %>
   </tr>
-<% @people.each do |person| %>
+<% @results.each do |person| %>
   <tr>
     <td>
       <%= image_tag person.picture unless person.picture.blank? %>
@@ -30,7 +30,7 @@
 <% end %>
 
 </table>
-  <%= will_paginate @people, :class => "ajax-controls ajax" %>
+  <%= will_paginate @results, :class => "ajax-controls ajax" %>
 </div>
 
 <%#= ajaxify_links %>

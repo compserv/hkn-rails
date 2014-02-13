@@ -83,6 +83,16 @@ class Person < ActiveRecord::Base
   scope :alpha_last, lambda {order('last_name, first_name')}
   scope :alpha,      lambda {order('first_name, last_name')}
 
+  # Sunspot
+  searchable do
+    string :first_name
+    string :last_name
+    string :full_name do |p|
+      [p.first_name, p.lastname].join(' ')
+    end
+  end
+  # end sunspot  
+
   acts_as_authentic do |c|
     # Options go here if you have any
     c.merge_validates_length_of_password_field_options :minimum => 8

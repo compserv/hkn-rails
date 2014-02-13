@@ -165,6 +165,7 @@ HknRails::Application.routes.draw do
 
   # People
   scope "people" do
+    match "search(/:q)"      => "people#search",  :as => :people_search
     match "list(/:category)" => "people#list", :as => :people_list
     match "contact_card"     => "people#contact_card", :as => :contact_card
   end
