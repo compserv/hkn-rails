@@ -21,7 +21,7 @@ class EasterEggsController < ApplicationController
     ok = true
 
     ok &&= set_lang_prefs
-    [ :mirror, :acid, :b, :dt ].each do |flag|
+    [ :mirror, :acid, :b, :dt, :kappa ].each do |flag|
       set_easter_flag flag, params[flag]
     end
 

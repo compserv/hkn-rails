@@ -16,5 +16,8 @@
     = check_box_tag :dt, true, @easter_eggs[:dt]
     = label_tag :dt, "DT_? mode"
     %br/
+    = check_box_tag :kappa, true, @easter_eggs[:kappa]
+    = label_tag :kappa, "Kappa mode"
+    %br/ 
     = hidden_easter_egg :b, "B mode"
     = submit_tag
