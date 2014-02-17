@@ -1,0 +1,15 @@
+var KAPPA = "<img src='<%= asset_path('icons/kappa.png') %>' alt='Kappa'>"
+
+function kappa_helper(node) {
+    $(node).html($(node).html().replace('Kappa', KAPPA))
+    $(node).children().each(function () {
+        kappa_helper($(this))
+    })
+}
+
+function kappa(node) {
+    kappa_helper($('#content'))
+    kappa_helper($('#footer'))
+}
+
+$(document).ready(kappa)
