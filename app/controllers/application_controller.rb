@@ -135,6 +135,7 @@ class ApplicationController < ActionController::Base
       :acid      => session[:acid],
       :b         => session[:b],
       :dt        => session[:dt],
+      :kappa     => session[:kappa],
     }
 
     if @easter_eggs.values.any?

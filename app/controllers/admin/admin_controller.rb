@@ -3,7 +3,13 @@ class Admin::AdminController < ApplicationController
   before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
 
   def super_page
-    @candidates = Candidate.current.find(:all, :joins => :person, :order => "people.first_name, people.last_name")
+		# Candidate.current
+    @candidates = Candidate.where('candidates.updated_at > ?', 2.years.ago)
+    candidate_group = Group.find_by_name("candidates")
+    
+    @candidates = @candidates.select { |cand| cand.person_id && Person.find_by_id(cand.person_id).groups.include?(candidate_group) }
+    cand_ids = @candidates.collect { |cand| cand.id } 
+    @candidates = Candidate.includes(:challenges, :quiz_responses, person: :resumes, person: :groups, person: :events).find(cand_ids, :order => "people.first_name")
     @candidates.map! { |cand|
       calculate_status(cand)    
     }

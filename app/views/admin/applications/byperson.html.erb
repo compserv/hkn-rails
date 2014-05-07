@@ -10,6 +10,11 @@
     <th>Email</th>
     <th>Committee Preferences</th>
     <th>Suggestion</th>
+    <th>Local Address</th>
+    <th>Perm Address</th>
+    <th>Grad Semester</th>
+    <th>Phone number</th>
+    <th>Date of Birth</th>
   <%- @candidates.each do |c|
         next unless p = c.person
   -%>
@@ -29,6 +34,11 @@
     <td style="width: 40%;">
       <%= simple_format c.person.suggestion.suggestion if c.person and c.person.suggestion %>
     </td>
+    <td><%= p.local_address %></td>
+    <td><%= p.perm_address %></td>
+    <td><%= p.grad_semester %></td>
+    <td><%= p.phone_number %></td>
+    <td><%= p.date_of_birth %></td>
   </tr>
   <%- end -%>
 </table>

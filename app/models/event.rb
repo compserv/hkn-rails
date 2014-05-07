@@ -94,9 +94,9 @@ class Event < ActiveRecord::Base
 
   def can_view? user
     if user.nil?
-      view_permission_group.nil?
+      view_permission_group.nil? and Event.current.include? self
     else
-      view_permission_group.nil? or user.groups.include? view_permission_group
+      (view_permission_group.nil? or user.groups.include? view_permission_group) and Event.current.include? self
     end
   end
 

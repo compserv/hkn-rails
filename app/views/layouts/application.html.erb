@@ -76,7 +76,11 @@
     	  </div>
   	    <div id="logo">
           <%= link_to ("/") do %>
-            <%= image_tag("hkn_logo.png", :alt => "Eta Kappa Nu, Mu Chapter") %>
+            <% if @easter_eggs[:kappa] %>
+                <%= image_tag("hkn_logo_kappa.png", :alt => "Eta Kappa Nu, Mu Chapter") %>
+            <% else %>
+                <%= image_tag("hkn_logo.png", :alt => "Eta Kappa Nu, Mu Chapter") %>
+            <% end %>
           <% end %>
     	  </div>
     	  <div id="submenu">
