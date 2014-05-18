@@ -54,7 +54,7 @@ class Event < ActiveRecord::Base
     if num != 0
       events.limit(num)
     else
-      events.first
+      events
     end
     
   end
