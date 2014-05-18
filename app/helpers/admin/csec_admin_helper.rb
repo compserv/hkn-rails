@@ -137,8 +137,8 @@ module SurveyData
 
             when :data
               case
-              when row.first =~ /^[A-Z ]+$/        # e.g. CLASSROOM PRESENTATION
-              when row.first =~ /^\d\. (.+)/    # question data
+              when row.first =~ /\A[A-Z ]+\z/        # e.g. CLASSROOM PRESENTATION
+              when row.first =~ /\A\d\. (.+)/    # question data
                 # qtext = $1.gsub(/[^a-zA-Z]/,' ')
                 qtext = $1
                 q = SurveyQuestion.find_by_text(qtext) || SurveyQuestion.search {keywords qtext}.results.first
@@ -167,9 +167,9 @@ module SurveyData
                 end
 
                 current[:answers] << a
-              when row.first =~ /^1 is a low rating/
+              when row.first =~ /\A1 is a low rating/
                 # Example scoring
-              when row.first =~ /^Data processed/
+              when row.first =~ /\AData processed/
                 # end of klass
                 result << ["Survey responses:", current[:answers]]
                 state = :finish

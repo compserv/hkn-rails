@@ -35,7 +35,7 @@ class Course < ActiveRecord::Base
   attr_accessible :name, :description, :units, :prereqs, :department_id, :course_guide
 
   module Regex
-    PrefixNumSuffix = /^([A-Z]*)(\d+)([A-Z]*)$/
+    PrefixNumSuffix = /\A([A-Z]*)(\d+)([A-Z]*)\z/
   end
 
   # Sunspot

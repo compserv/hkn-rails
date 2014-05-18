@@ -46,7 +46,7 @@ class Resume < ActiveRecord::Base
   end
 
   def is_pdf?
-    !!(`file -b #{self.file}` =~ /^PDF/)
+    !!(`file -b #{self.file}` =~ /\APDF/)
   end
     
   

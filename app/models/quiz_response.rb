@@ -24,7 +24,7 @@ class QuizResponse < ActiveRecord::Base
   #   QuizResponse.new(:number => :q7_2).split_number
   #   => [7, 2]
   def split_number
-    self.number.to_s.scan( /q(\d+)(?:_(\d+))?$/ ).first.collect {|d| d.nil? ? nil : d.to_i}
+    self.number.to_s.scan( /q(\d+)(?:_(\d+))?\z/ ).first.collect {|d| d.nil? ? nil : d.to_i}
   end
 
   # Grade single-response questions, like founding year.
@@ -72,19 +72,19 @@ class QuizResponse < ActiveRecord::Base
     when :q7
       all_correct? :q7, 6 do |r|
         case r
-        when /^(bridge|news) correspondent$/i
+        when /\A(bridge|news) correspondent\z/i
           1
-        when /^corresponding secretary$/i
+        when /\Acorresponding secretary\z/i
           2
-        when /^faculty advisor$/i
+        when /\Afaculty advisor\z/i
           3
-        when /^president$/i
+        when /\Apresident\z/i
           4
-        when /^recording secretary$/i
+        when /\Arecording secretary\z/i
           5
-        when /^vice[\s-]president$/i
+        when /\Avice[\s-]president\z/i
           6
-        when /^treasurer$/i
+        when /\Atreasurer\z/i
           7
         else
           false

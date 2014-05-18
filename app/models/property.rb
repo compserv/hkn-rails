@@ -146,7 +146,7 @@ class Property < ActiveRecord::Base
         semester = prop.semester.to_s
       end
 
-      raise ArgumentError.new("Invalid semester: #{semester}") unless semester =~ /^\d{5}$/
+      raise ArgumentError.new("Invalid semester: #{semester}") unless semester =~ /\A\d{5}\z/
 
       semester_year = semester[0..3]
 
