@@ -42,9 +42,7 @@ class Rsvp < ActiveRecord::Base
 
   scope :confirmed, where("confirmed = ?", "t")
   scope :ordered, joins(:event).order('events.start_time ASC')
-  scope :ordered_desc, joins(:event).order('events.start_time DESC')
-
-  attr_accessible :comment, :transportation
+  scope :ordered_desc, -> { joins(:event).order('events.start_time DESC') }
 
   def at_least_one_block
     unless blocks.size >= 1
