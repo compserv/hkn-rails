@@ -19,8 +19,14 @@ class TutorController < ApplicationController
     # TODO: Fix this, I think we have timezone issues
     @start_date = Time.local(year, month).beginning_of_month
     @end_date = Time.local(year, month).end_of_month
-    @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
-    @events = @events.select {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}
+    @events = Event.with_permission(@current_user)
+        .where(start_time: @start_date..@end_date)
+        .order(:start_time)
+
+    @events = @events.select { |e| 
+        EventType.where("name IN (?)", ["Exam", "Review Session"])
+                 .include?(e.event_type)
+    }
     # Really convoluted way of getting the first Sunday of the calendar, 
     # which usually lies in the previous month
     @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
