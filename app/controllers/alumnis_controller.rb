@@ -144,4 +144,20 @@ class AlumnisController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+    def alumni_params
+      params.require(:alumni).permit(
+        :perm_email,
+        :mailing_list,
+        :grad_school,
+        :job_title,
+        :company,
+        :salary,
+        :location,
+        :suggestions
+      )
+    end
+
 end

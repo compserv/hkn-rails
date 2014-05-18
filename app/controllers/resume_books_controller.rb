@@ -247,5 +247,12 @@ private
     Time.new.strftime("%Y%m%d%H%M%S%L")
   end
 
-    
+  private
+
+    def resume_book_params
+      params.require(:resume_book).permit(
+        :remarks,
+        :cutoff_date
+      )
+    end  
 end

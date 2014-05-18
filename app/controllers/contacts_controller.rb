@@ -102,4 +102,18 @@ class ContactsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+    def contact_params
+      params.require(:contact).permit(
+        :name,
+        :email,
+        :phone,
+        :cellphone,
+        :company,
+        :comments
+      )
+    end
+
 end

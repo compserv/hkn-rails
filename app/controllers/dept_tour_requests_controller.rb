@@ -95,4 +95,17 @@ class DeptTourRequestsController < ApplicationController
     mail.deliver
     redirect_to :dept_tour_requests, :notice=>"Your response has been sent."
   end
+
+  private
+
+    def dept_tour_request_params
+      params.require(:dept_tour_request).permit(
+        :name,
+        :date,
+        :contact,
+        :phone,
+        :comments
+      )
+    end
+
 end

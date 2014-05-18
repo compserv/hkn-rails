@@ -225,5 +225,23 @@ class PeopleController < ApplicationController
     @current_user && @current_user.id == params[:id] or @auth['superusers']
   end
 
+  def person_params
+    params.require(:person).permit(
+      :first_name,
+      :last_name,
+      :username,
+      :email,
+      :phone_number,
+      :aim,
+      :date_of_birth,
+      :picture,
+      :private,
+      :local_address,
+      :perm_address,
+      :grad_semester,
+      :sms_alerts,
+      :mobile_carrier_id
+    )
+  end
 
 end

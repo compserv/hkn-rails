@@ -84,4 +84,13 @@ class EventTypesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+    def event_type_params
+      params.require(:event_type).permit(
+        :name
+      )
+    end
+
 end

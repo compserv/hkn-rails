@@ -437,4 +437,30 @@ class EventsController < ApplicationController
     headers['Content-Type'] = "text/calendar; charset=UTF-8"
     cal.to_s
   end
+
+  def event_params
+    params.require(:event).permit(
+      :name,
+      :slug,
+      :location,
+      :description,
+      :markdown,
+      :event_type_id,
+      :need_transportation,
+      :start_time,
+      :end_time,
+      :view_permission_group,
+      :rsvp_permission_group
+    )
+  end
+
+  def block_params
+    params.require(:block).permit(
+      :rsvp_cap,
+      :start_time,
+      :end_time,
+      :event
+    )
+  end
+
 end

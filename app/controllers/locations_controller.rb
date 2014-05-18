@@ -98,4 +98,15 @@ class LocationsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+    def location_params
+      params.require(:location).permit(
+        :name,
+        :capacity,
+        :comments
+      )
+    end
+
 end

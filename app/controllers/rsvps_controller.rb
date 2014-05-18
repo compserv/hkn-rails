@@ -194,4 +194,11 @@ private
     end
   end
 
+  def rsvp_params
+    params.require(:rsvp).permit(
+      :comment,
+      :transportation
+    )
+  end
+
 end

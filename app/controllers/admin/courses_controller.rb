@@ -47,6 +47,18 @@ class Admin::CoursesController < ApplicationController
 
 private
 
+  def course_params
+    params.require(:course).permit(
+      :department,
+      :course_number,
+      :name,
+      :description,
+      :units,
+      :prereqs,
+      :course_guide
+    )
+  end 
+
   def set_course
     unless @course = Course.find_by_short_name(params[:dept],params[:num])
       redirect_to (request.referer || admin_courses_path), :notice => "No matching course found."

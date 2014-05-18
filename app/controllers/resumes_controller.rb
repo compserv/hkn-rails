@@ -101,4 +101,15 @@ class ResumesController < ApplicationController
   
   private
 
+    def resume_params
+      params.require(:resume).permit(
+        :overall_gpa,
+        :major_gpa,
+        :resume_text,
+        :graduation_year,
+        :graduation_semester,
+        :file,
+      )
+    end
+
 end

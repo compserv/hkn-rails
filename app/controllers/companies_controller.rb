@@ -121,4 +121,16 @@ class CompaniesController < ApplicationController
     end
     redirect_to companies_path, :notice => notice.join('; ')  # <br> y u no work
   end
+
+  private
+
+    def company_params
+      params.require(:company).permit(
+        :name,
+        :address,
+        :website,
+        :comments
+      )
+    end
+
 end
