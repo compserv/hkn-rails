@@ -3,9 +3,9 @@ class ApplicationController < ActionController::Base
   before_filter :get_current_user, :merge_messages, :check_authorizations, :set_view_variables
   layout 'application'
 
-  include ::SslRequirement
-  ssl_allowed :all
-  ssl_required :all
+  #include ::SslRequirement
+  #ssl_allowed :all
+  #ssl_required :all
 
   attr_reader :current_user, :real_current_user
 
