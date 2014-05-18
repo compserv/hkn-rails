@@ -26,7 +26,7 @@ module HknRails
 
     # Activate observers that should always be running
     # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
-    config.active_record.observers = :election_observer
+    # config.active_record.observers = :election_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -50,10 +50,12 @@ module HknRails
     config.filter_parameters += [:password]
 
     #Exception Notification
-    config.middleware.use ExceptionNotifier,
-      email_prefix: '[hkn-rails Exception] ',
-      sender_address: '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
-      exception_recipients: ['website-errors@hkn.eecs.berkeley.edu']
+    config.middleware.use ExceptionNotification::Rack,
+      :email => {
+        :email_prefix => '[hkn-rails Exception] ',
+        :sender_address => '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
+        :exception_recipients => ['website-errors@hkn.eecs.berkeley.edu']
+      }
 
     # Enable the asset pipeline
     config.assets.enabled = true

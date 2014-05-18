@@ -67,4 +67,6 @@ HknRails::Application.configure do
   # config.threadsafe!
 
   config.active_support.deprecation = :notify
+
+  config.eager_load = true
 end
