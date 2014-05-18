@@ -189,6 +189,6 @@ DEPENDENCIES
   sunspot_rails
   sunspot_solr
   webrat
-  will_paginate (~> 3.0.0)
+  will_paginate (~> 3.0)
   yaml_db
   yard

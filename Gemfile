@@ -16,7 +16,7 @@ gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
 gem 'ri_cal'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
-gem 'will_paginate', '~> 3.0.0'
+gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
 
 group :development, :test do
