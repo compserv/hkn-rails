@@ -17,8 +17,12 @@ class Klass < ActiveRecord::Base
   has_one  :coursesurvey, :dependent => :destroy
   has_many :survey_answers, :through => :instructorships, :dependent => :destroy
   has_many :instructorships, :dependent => :destroy
-  has_many :instructors, :through => :instructorships, :conditions => {:instructorships => {:ta => false}}
-  has_many :tas,         :through => :instructorships, :conditions => {:instructorships => {:ta => true }}, :source => :instructor
+  has_many :instructors,  -> { where(instructorships: {ta: false}) }, 
+                          :through => :instructorships
+
+  has_many :tas,          -> { where(instructorships: {ta: true}) },
+                          :through => :instructorships
+
   has_many :exams, :dependent => :destroy
 
   validates_format_of       :semester, :with => /\d{5}/
@@ -29,8 +33,6 @@ class Klass < ActiveRecord::Base
   scope :current_semester, lambda{ joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section') }
 
   scope :ordered, lambda { order("course_number DESC, prefix ASC, suffix ASC, semester DESC") }
-
-  attr_accessible :semester, :location, :time, :section, :notes, :num_students
   
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
   ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }

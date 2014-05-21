@@ -17,8 +17,8 @@ class Course < ActiveRecord::Base
 
   belongs_to :department
   has_many :course_preferences, :dependent => :destroy
-  has_many :tutors, :through => :course_preferences, :uniq => true
-  has_many :klasses, :order => "semester DESC, section DESC", :dependent => :destroy
+  has_many :tutors, -> { uniq }, :through => :course_preferences
+  has_many :klasses, -> { order "semester DESC, section DESC" }, :dependent => :destroy
   has_many :coursesurveys, :through => :klasses
   #has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :instructorships, :through => :klasses
@@ -31,8 +31,6 @@ class Course < ActiveRecord::Base
   #scope :all, order("prefix, courses.course_number, suffix")
   scope :ordered, order("courses.course_number, prefix, suffix")
   scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
-
-  attr_accessible :name, :description, :units, :prereqs, :department_id, :course_guide
 
   module Regex
     PrefixNumSuffix = /\A([A-Z]*)(\d+)([A-Z]*)\z/
@@ -156,7 +154,7 @@ class Course < ActiveRecord::Base
     #raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?
     return nil if course_number.blank? or department.nil?
 
-    Course.find( :first, :conditions => { :department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix } )
+    Course.where(:department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix)
   end
 
   def Course.find_all_by_department_abbr(dept_abbr)

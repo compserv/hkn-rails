@@ -139,7 +139,7 @@ class ExamsController < ApplicationController
     @counts = {}
     Exam.select("klass_id, course_id, exam_type, number").
       group([:course_id, :klass_id, :number, :exam_type]).
-      count.each {|course, count| 
+      count(:all).each {|course, count| 
         @counts[course[0]] ? @counts[course[0]] += 1 : @counts[course[0]] = 1}
 
     respond_to do |format|
@@ -197,7 +197,7 @@ class ExamsController < ApplicationController
   def course
     dept_abbr = params[:dept_abbr].upcase
     full_course_num = params[:full_course_number].upcase
-    @course = Course.find_by_short_name(dept_abbr, full_course_num)
+    @course = Course.find_by_short_name(dept_abbr, full_course_num).first
     return redirect_to exams_search_path([dept_abbr,full_course_num].compact.join(' ')) unless @course
     klasses = Klass.where(:course_id => @course.id).order('semester DESC').reject {|klass| klass.exams.empty?}
     @exam_path = '/examfiles/' # TODO clean up
