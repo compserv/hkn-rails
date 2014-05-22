@@ -7,19 +7,20 @@ class CoursesurveysController < ApplicationController
   before_filter :authorize_privileged
   before_filter :authorize_csec, :only => [:merge_instructors, :merge_instructors_post, :merge, :instructor_ids]
 
-  begin # caching
-    [:index, :instructors, :tas].each {|a| caches_action a, :layout => false}
+  # TODO: Reimplement caching
+  # begin # caching
+    #[:index, :instructors, :tas].each {|a| caches_action a, :layout => false}
 #    caches_action :klass, :cache_path => Proc.new {|c| klass_cache_path(c.params)}, :layout => false
 
     # Cache full/partial department lists
-    caches_action :department, :layout => false,
-      :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"},
-      :unless     => Proc.new {|c| c.params[:semester].present? or c.params[:year].present?}
+    #caches_action :department, :layout => false,
+    #  :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"},
+    #  :unless     => Proc.new {|c| c.params[:semester].present? or c.params[:year].present?}
 
     # Separate for admins
     #caches_action_for_admins([:instructor], :groups => %w(csec superusers))
-  end
-  cache_sweeper :instructor_sweeper
+  #end
+  #cache_sweeper :instructor_sweeper
 
   def authorize_coursesurveys
     @current_user && (@auth['csec'] || @auth['superusers'])
