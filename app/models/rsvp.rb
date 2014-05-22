@@ -40,8 +40,8 @@ class Rsvp < ActiveRecord::Base
 
   before_validation :set_default_transportation
 
-  scope :confirmed, where("confirmed = ?", "t")
-  scope :ordered, joins(:event).order('events.start_time ASC')
+  scope :confirmed,    -> { where("confirmed = ?", "t") }
+  scope :ordered,      -> { joins(:event).order('events.start_time ASC') }
   scope :ordered_desc, -> { joins(:event).order('events.start_time DESC') }
 
   def at_least_one_block

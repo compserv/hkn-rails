@@ -3,7 +3,8 @@ class LeaderboardController < ApplicationController
 
   def index
     @semester = params[:semester] || Property.current_semester
-    @people = Person.find(:all, :joins => "JOIN committeeships ON committeeships.person_id = people.id", :conditions => ["committeeships.semester = ? AND committeeships.title IN (?)", @semester, ["officer", "cmember"] ]).uniq
+    @people = Person.joins(:committeeships)
+                    .where("committeeships.semester = ? AND committeeships.title IN (?)", @semester, ["officer", "cmember"]).uniq
     @people_array = []
     #moar_people = [ 'eunjian' ].collect{|u|Person.find_by_username(u)}   # TODO remove when we have leaderboard opt-in
     @people.each do |person|

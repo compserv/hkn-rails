@@ -139,7 +139,7 @@
       = number_field_tag :num_blocks, @event.blocks.size
     #blocks
       %div
-        = link_to_function 'Add Block', 'add_block();'
+        = link_to 'Add Block', '#', onclick: 'add_block(); return false;'
       - @event.blocks.size.times do |block_num|
         - block = @event.blocks[block_num]
         - block_name = "block#{block_num}"
@@ -159,7 +159,7 @@
               This block has RSVPs from the following people:
               - block.rsvps.each do |rsvp|
                 = rsvp.person.fullname
-          = link_to_function 'Delete', :onclick => "$(this).parent().remove();"
+          = link_to 'Delete', '#', onclick: "$(this).parent().remove();"
     #block_template.form-group{:style => "display:none"}
       .field
         = label_tag :rsvp_cap, 'Maximum # of RSVPs'
@@ -170,7 +170,7 @@
       .field
         = label_tag :end_time, 'End Time'
         = text_field :block, :end_time, :size => 20, :class => "datetimepicker"
-      = link_to_function 'Delete', "$(this).parent().remove()"
+      = link_to 'Delete', '#', onclick: "$(this).parent().remove()"
   .field
     = f.label :need_transportation
     = f.check_box :need_transportation
