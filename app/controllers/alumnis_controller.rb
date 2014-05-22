@@ -84,7 +84,7 @@ class AlumnisController < ApplicationController
   # POST /alumnis
   # POST /alumnis.xml
   def create
-    @alumni = Alumni.new(params[:alumni])
+    @alumni = Alumni.new(alumni_params)
     @alumni.grad_semester = Alumni.grad_semester(params[:grad_season], params[:grad_year])
     # params[:grad_season] is Spring or Fall
     # params[:grad_year] is the actual year
