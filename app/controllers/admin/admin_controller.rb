@@ -114,7 +114,7 @@ class Admin::AdminController < ApplicationController
   end
 
   def confirm_challenges
-    challenges = Challenge.find(:all, :conditions => {:officer_id => @current_user.id})
+    challenges = Challenge.where(:officer_id => @current_user.id)
     challenges = challenges.find_all{|c| c.is_current_challenge?}
     @acc_challenges = challenges.select {|c| c.status }
     @pending_challenges = challenges.select {|c| c.status == nil }
