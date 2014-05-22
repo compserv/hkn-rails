@@ -97,7 +97,8 @@ class CoursesurveysController < ApplicationController
     return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:course_number]}") unless @course
 
     # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
-    @course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}])
+    @course = Course.joins({klasses: {instructorships: :instructor}}).find(@course.id)
+    #@course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}])
 
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)

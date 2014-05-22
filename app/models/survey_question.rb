@@ -29,7 +29,7 @@ class SurveyQuestion < ActiveRecord::Base
   end
 
   def SurveyQuestion.find_by_keyword(value)
-    find(:first, :conditions => {:keyword => KEYWORDS.index(value)})
+    where(:keyword => KEYWORDS.index(value)).first
   end
 
   def SurveyQuestion.keyword_to_i(value)

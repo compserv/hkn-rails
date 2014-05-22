@@ -154,7 +154,7 @@ class Course < ActiveRecord::Base
     #raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?
     return nil if course_number.blank? or department.nil?
 
-    Course.where(:department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix)
+    Course.where(:department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix).first
   end
 
   def Course.find_all_by_department_abbr(dept_abbr)

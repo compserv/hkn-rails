@@ -21,7 +21,8 @@ class Klass < ActiveRecord::Base
                           :through => :instructorships
 
   has_many :tas,          -> { where(instructorships: {ta: true}) },
-                          :through => :instructorships
+                          :through => :instructorships,
+                          :source  => :instructor
 
   has_many :exams, :dependent => :destroy
 

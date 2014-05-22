@@ -111,7 +111,7 @@ class Instructor < ActiveRecord::Base
   end
 
   def Instructor.find_by_name(first_name, last_name)
-    Instructor.find(:first, :conditions => { :first_name => first_name, :last_name => last_name} )
+    Instructor.where({:first_name => first_name, :last_name => last_name}).first
   end
 
   private
