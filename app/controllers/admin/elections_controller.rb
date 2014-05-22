@@ -31,7 +31,7 @@ class Admin::ElectionsController < ApplicationController
 
     @details = ELECTION_DETAILS
 
-    Election.find_or_create_by_person_id_and_semester(@user.id, Property.current_semester)
+    Election.find_or_create_by(person_id: @user.id, semester: Property.current_semester)
   end
 
   def update_details
