@@ -15,6 +15,7 @@ gem 'rails', '~> 4.1'
 gem 'rdiscount'
 gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
 gem 'ri_cal'
+gem 'scrypt'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
