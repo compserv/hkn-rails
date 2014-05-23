@@ -67,9 +67,9 @@ class ResumesController < ApplicationController
   end
   
   def status_list
-    @officers = Person.find(:all).find_all {|p| p.in_group?("officers")}
-    @candidates = Person.find(:all).find_all {|p| p.in_group?("candidates")}
-    @everyone_else = Person.find(:all).find_all {|p| not (@officers.include?(p) or @candidates.include?(p))}
+    @officers = Person.all.find_all {|p| p.in_group?("officers")}
+    @candidates = Person.all.find_all {|p| p.in_group?("candidates")}
+    @everyone_else = Person.all.find_all {|p| not (@officers.include?(p) or @candidates.include?(p))}
   end
 
   def index

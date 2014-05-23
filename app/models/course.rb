@@ -29,8 +29,8 @@ class Course < ActiveRecord::Base
   validates_uniqueness_of :course_number, :scope => [:department_id,:prefix,:suffix]
 
   #scope :all, order("prefix, courses.course_number, suffix")
-  scope :ordered, order("courses.course_number, prefix, suffix")
-  scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
+  scope :ordered, -> { order("courses.course_number, prefix, suffix") }
+  scope :ordered_desc, -> { order("(prefix, courses.course_number, suffix) DESC") }
 
   module Regex
     PrefixNumSuffix = /\A([A-Z]*)(\d+)([A-Z]*)\z/

@@ -13,8 +13,8 @@ class IndrelEventTypesController < ApplicationController
                      end
 
     @search_opts = {'sort' => "name"}.merge params
-    opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
-    @event_types = IndrelEventType.paginate opts
+    opts = { :page => params[:page], :per_page => per_page }
+    @event_types = IndrelEventType.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
@@ -55,7 +55,7 @@ class IndrelEventTypesController < ApplicationController
   # POST /event_types
   # POST /event_types.xml
   def create
-    @event_type = IndrelEventType.new(params[:indrel_event_type])
+    @event_type = IndrelEventType.new(indrel_event_type_params)
 
     respond_to do |format|
       if @event_type.save
@@ -75,7 +75,7 @@ class IndrelEventTypesController < ApplicationController
     @event_type = IndrelEventType.find(params[:id])
 
     respond_to do |format|
-      if @event_type.update_attributes(params[:indrel_event_type])
+      if @event_type.update_attributes(indrel_event_type_params)
         flash[:notice] = 'IndrelEventType was successfully updated.'
         format.html { redirect_to(@event_type) }
         format.xml  { head :ok }
@@ -97,4 +97,13 @@ class IndrelEventTypesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+    def indrel_event_type_params
+      params.require(:indrel_event_type).permit(
+        :name
+      )
+    end
+
 end

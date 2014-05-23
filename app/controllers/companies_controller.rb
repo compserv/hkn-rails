@@ -13,9 +13,9 @@ class CompaniesController < ApplicationController
                      end
 
     @search_opts = {'sort' => "name"}.merge params
-    opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
+    opts = { :page => params[:page], :per_page => per_page }
 
-    @companies = Company.paginate opts
+    @companies = Company.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
@@ -57,7 +57,7 @@ class CompaniesController < ApplicationController
   # POST /companies
   # POST /companies.xml
   def create
-    @company = Company.new(params[:company])
+    @company = Company.new(company_params)
 
     respond_to do |format|
       # Save without logging in as the company
@@ -78,7 +78,7 @@ class CompaniesController < ApplicationController
     @company = Company.find(params[:id])
 
     respond_to do |format|
-      if @company.update_attributes(params[:company])
+      if @company.update_attributes(company_params)
         flash[:notice] = 'Company was successfully updated.'
         format.html { redirect_to(@company) }
         format.xml  { head :ok }

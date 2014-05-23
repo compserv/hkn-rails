@@ -13,6 +13,6 @@ class Group < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness=>true
   validates :description, :presence => true
 
-  scope :committees, where(:committee => true)
+  scope :committees, -> { where(:committee => true) }
 
 end

@@ -75,7 +75,7 @@ class EventsController < ApplicationController
     # Sorry, this is kind of a bad query
     @events = Event.current.joins({ :rsvps => {:person => :groups} } )
                            .where("(rsvps.confirmed IS NULL OR rsvps.confirmed = 'f') AND groups.id = #{Group.find_by_name(@group).id}").uniq
-    @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
+    @events.to_a.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
 
   # RSVP confirmation for an individual event

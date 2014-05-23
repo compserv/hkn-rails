@@ -115,7 +115,7 @@ class AlumnisController < ApplicationController
 
     respond_to do |format|
       # params[:grad_season] is Spring or Fall
-      if @alumni.update_attributes(params[:alumni].
+      if @alumni.update_attributes(alumni_params.
 	merge(:grad_semester => Alumni.grad_semester(params[:grad_season], params[:grad_year])))
         if !@alumni.mailing_list && params[:on_mailing_list].eql?('true')
           @alumni.unsubscribe

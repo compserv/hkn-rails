@@ -312,12 +312,12 @@ class CoursesurveysController < ApplicationController
   end
 
   def createinstructor
-    @instructor = Instructor.new(params[:instructor])
+    @instructor = Instructor.new(instructor_params)
 
     if @instructor.save
       redirect_to surveys_instructor_path(@instructor), :notice => "Successfully created new instructor."
     else
-      render :newinstructor, :notice => "Validation failed: #{@instructor.errors.join('<br/>').html_safe}"
+      render :newinstructor, :notice => "Validation failed: #{@instructor.errors.to_a.join('<br/>').html_safe}"
     end
   end
 

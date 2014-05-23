@@ -13,7 +13,7 @@ class IndrelEventsController < ApplicationController
 						end
 
 	@search_opts = {'sort' => "time", 'sort_direction' => "down" }.merge params
-	opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
+	opts = { :page => params[:page], :per_page => per_page }
 
 	if params[:sort] == "companies.name"
 		opts.merge!( { :joins => "LEFT OUTER JOIN companies ON companies.id = indrel_events.company_id" } )
@@ -22,7 +22,7 @@ class IndrelEventsController < ApplicationController
 	elsif params[:sort] == "indrel_event_types.name"
 		opts.merge!( { :joins => "LEFT OUTER JOIN indrel_event_types ON indrel_event_types.id = indrel_events.indrel_event_type_id" } )
 	end
-    @events = IndrelEvent.paginate opts
+    @events = IndrelEvent.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
@@ -63,7 +63,7 @@ class IndrelEventsController < ApplicationController
   # POST /events
   # POST /events.xml
   def create
-    @event = IndrelEvent.new(params[:indrel_event])
+    @event = IndrelEvent.new(indrel_event_params)
 
     respond_to do |format|
       if @event.save
@@ -83,7 +83,7 @@ class IndrelEventsController < ApplicationController
     @event = IndrelEvent.find(params[:id])
 
     respond_to do |format|
-      if @event.update_attributes(params[:indrel_event])
+      if @event.update_attributes(indrel_event_params)
         flash[:notice] = 'Event was successfully updated.'
         format.html { redirect_to(@event) }
         format.xml  { head :ok }
@@ -105,4 +105,23 @@ class IndrelEventsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+    def indrel_event_params
+      params.require(:indrel_event).permit(
+        :time,
+        :location,
+        :indrel_event_type,
+        :food,
+        :prizes,
+        :turnout,
+        :company,
+        :contact,
+        :officer,
+        :feedback,
+        :comments
+      )
+    end
+
 end

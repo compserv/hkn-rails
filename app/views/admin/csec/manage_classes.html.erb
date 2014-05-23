@@ -11,7 +11,7 @@
   }
 </script>
 
-<p> <%= link_to_function 'Set all max surveyors', "set_all_max_surveyors();" %> <%= text_field_tag "global_max_surveyors" %> </p>
+<p> <%= link_to 'Set all max surveyors', '#', onclick: "set_all_max_surveyors();" %> <%= text_field_tag "global_max_surveyors" %> </p>
 <%= form_tag admin_csec_manage_classes_post_path do %>
   <table id="manage_classes_table">
     <tr>

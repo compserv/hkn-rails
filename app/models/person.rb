@@ -89,7 +89,7 @@ class Person < ActiveRecord::Base
   end
 
   def current_officer?
-    titles = committeeships.find_all_by_semester(Property.semester)
+    titles = committeeships.where(semester: Property.semester)
                            .collect(&:title)
                            .uniq
     titles.include? "officer"

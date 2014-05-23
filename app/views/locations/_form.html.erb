@@ -1,5 +1,12 @@
 <%= form_for(@location) do |f| %>
-  <%= f.error_messages %>
+
+  <% if @location.errors.any? %>
+  <ul>
+    <% @location.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </ul>
+  <% end %>
 
   <p>
     <%= f.label :name %>
