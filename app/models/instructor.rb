@@ -19,8 +19,8 @@ class Instructor < ActiveRecord::Base
   has_many :instructorships
   has_many :klasses,     -> { where(instructorships: {ta: false}) },
                          :through => :instructorships
-  has_many :tad_klasses, -> { where(instructorships: {ta: false}) },
-                         :through => :instructorships
+  has_many :tad_klasses, -> { where(instructorships: {ta: true}) },
+                         :through => :instructorships, :source => :klass
   has_many :survey_answers, :through => :instructorships
 
   #validates_presence_of :first_name
