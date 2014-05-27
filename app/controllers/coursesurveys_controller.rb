@@ -184,9 +184,8 @@ class CoursesurveysController < ApplicationController
 
     # I know this is very convoluted, but it tries to pull as much data
     # as possible from a single query, to avoid hammering the database.
-    Instructor.find(:all,
-               :conditions => { :id =>
-                     Instructorship.select(:instructor_id).
+    Instructor.where(:id =>
+                      Instructorship.select(:instructor_id).
                                     where(:id =>
                                            SurveyAnswer.select(:instructorship_id).
                                                         where(:survey_question_id => @eff_q.id).
@@ -194,10 +193,10 @@ class CoursesurveysController < ApplicationController
                                            :ta => is_ta
                                           ).
                                     collect(&:instructor_id)
-                    },
-               :include => {:instructorships => {:klass => :course}},
-               :order   => 'last_name, first_name'
-               ).each do |i|
+                    )
+               .includes(:instructorships => {:klass => :course})
+               .order('last_name, first_name')
+               .each do |i|
       @results << { :instructor => i,
                     :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
                     :rating     => (i.private ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
@@ -332,7 +331,7 @@ class CoursesurveysController < ApplicationController
     @instructor = Instructor.find(params[:id].to_i)
     return redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}." unless @instructor
 
-    return redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(params[:instructor])
+    return redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(instructor_params)
 
     #(@instructor.klasses+@instructor.tad_klasses).each do |k|
     #  expire_action(:action => klass_cache_path(k))
