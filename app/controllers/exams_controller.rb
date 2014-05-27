@@ -176,7 +176,7 @@ class ExamsController < ApplicationController
 
       str = "%#{@query}%"
 
-      @results[:courses] = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
+      @results[:courses] = Course.where('description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str)
       flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
      end
 
