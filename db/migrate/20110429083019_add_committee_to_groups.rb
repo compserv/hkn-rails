@@ -5,7 +5,7 @@ class AddCommitteeToGroups < ActiveRecord::Migration
     Group.reset_column_information
 
     # Transition some groups
-    Group.find(:all, :conditions => {:name =>
+    Group.where(:name =>
     [
      "pres",    
      "vp",      
@@ -23,7 +23,7 @@ class AddCommitteeToGroups < ActiveRecord::Migration
      "alumrel", 
      "alumadv", 
      "facadv"
-    ]}).each do |g|
+    ]).each do |g|
         g.update_attribute(:committee, true)
     end
   end
