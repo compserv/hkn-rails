@@ -61,8 +61,8 @@ class Person < ActiveRecord::Base
                                    :allow_blank => true
   # Username, password, and email validation is done by AuthLogic
 
-  scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'candidates')) }
-  scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'comms')) }
+  scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'candidates').first) }
+  scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'comms').first) }
   scope :alpha_last, lambda {order('last_name, first_name')}
   scope :alpha,      lambda {order('first_name, last_name')}
 
@@ -221,7 +221,7 @@ class Person < ActiveRecord::Base
 
   def in_group?(group)
     if group.class == String
-      group = Group.where(:name => group)
+      group = Group.where(:name => group).first
     end
     groups.include?(group)
   end
@@ -236,11 +236,11 @@ class Person < ActiveRecord::Base
   end
 
   def status
-    current_committeeship = committeeships.where(semester: Property.semester)
+    current_committeeship = committeeships.where(semester: Property.semester).first
     if current_committeeship.nil?
-      if groups.include? Group.where(:name => "members")
+      if groups.include? Group.where(:name => "members").first
         "Member"
-      elsif groups.include? Group.where(:name => "candidates")
+      elsif groups.include? Group.where(:name => "candidates").first
         "Candidate"
       else
         "Person"
