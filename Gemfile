@@ -24,7 +24,7 @@ gem 'yaml_db'
 group :development, :test do
   gem 'autotest-standalone'
   gem 'rspec-rails'
-  gem 'simplecov', :require => false
+  gem 'simplecov', '~> 0.7.1', :require => false
   # webrat is needed to make some specs pass
   gem 'webrat'
   gem 'yard'
