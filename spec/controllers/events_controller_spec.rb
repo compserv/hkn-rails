@@ -301,7 +301,7 @@ describe EventsController do
             [1,@mock_block1],
             [2,@mock_block2]
           ].each do |i,b|
-            Block.stub!(:find).with(i).and_return(b)
+            Block.stub(:find).with(i) { b }
           end
 
           @mock_event.stub(:blocks) { [@mock_block0, @mock_block1, @mock_block2] }
