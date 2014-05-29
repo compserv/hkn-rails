@@ -13,7 +13,7 @@ describe Election do
     ]
 
     ppl = ppl_data.collect do |stuff|
-      person = Person.find_or_initialize_by_first_name_and_last_name stuff[:person][:first_name], stuff[:person][:last_name]
+      person = Person.where(stuff[:person]).first_or_initialize
       stuff[:person].update({
                              :password => 'asdfjkl1111',
                              :password_confirmation => 'asdfjkl1111',
@@ -81,7 +81,7 @@ describe Election do
 
       it "should add person to respective groups" do
         assert @obama_election.commit
-        Group.find_all_by_name([@obama_election.position, 'officers', 'comms', 'candplus']).each do |g|
+        Group.where(:name => [@obama_election.position, 'officers', 'comms', 'candplus']).each do |g|
           @obama.groups.should include g 
         end
       end # it

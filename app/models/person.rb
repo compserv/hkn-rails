@@ -61,8 +61,8 @@ class Person < ActiveRecord::Base
                                    :allow_blank => true
   # Username, password, and email validation is done by AuthLogic
 
-  scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('candidates')) }
-  scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.find_by_name('comms')) }
+  scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'candidates').first) }
+  scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'comms').first) }
   scope :alpha_last, lambda {order('last_name, first_name')}
   scope :alpha,      lambda {order('first_name, last_name')}
 
@@ -96,7 +96,7 @@ class Person < ActiveRecord::Base
   end
 
   def current_cmember?
-    titles = committeeships.find_all_by_semester(Property.semester)
+    titles = committeeships.where(semester: Property.semester)
                            .collect(&:title)
                            .uniq
     titles.include? "cmember"
@@ -221,7 +221,7 @@ class Person < ActiveRecord::Base
 
   def in_group?(group)
     if group.class == String
-      group = Group.find_by_name(group)
+      group = Group.where(:name => group).first
     end
     groups.include?(group)
   end
@@ -236,11 +236,11 @@ class Person < ActiveRecord::Base
   end
 
   def status
-    current_committeeship = committeeships.find_by_semester(Property.semester)
+    current_committeeship = committeeships.where(semester: Property.semester).first
     if current_committeeship.nil?
-      if groups.include? Group.find_by_name("members")
+      if groups.include? Group.where(:name => "members").first
         "Member"
-      elsif groups.include? Group.find_by_name("candidates")
+      elsif groups.include? Group.where(:name => "candidates").first
         "Candidate"
       else
         "Person"
@@ -251,7 +251,7 @@ class Person < ActiveRecord::Base
   end
 
   def join_groups(gnames)
-    self.groups |= Group.find_all_by_name([*gnames])
+    self.groups |= Group.where(:name => [*gnames])
   end
   def join_groups!(gnames)
     self.join_groups gnames
