@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "events/show.html.erb" do
+describe "events/show.html.haml" do
   before(:each) do
     start_time = Time.utc(2011, 1, 25, 11)
     event_type = stub_model(EventType, :name => "Fun Event")
