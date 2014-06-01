@@ -80,7 +80,7 @@ class Course < ActiveRecord::Base
     # BE CAREFUL, THIS IS KIND OF EXPENSIVE
     r = SurveyAnswer.where(
       :survey_question_id => SurveyQuestion.find_by_keyword(:prof_eff),
-      :id => self.instructorships.collect(&:survey_answer_ids)
+      :id => self.instructorships.collect(&:survey_answer_ids).flatten
     )
     if semester
       r = r.includes(:instructorship => :klass).where(:klasses => {:semester => semester})
