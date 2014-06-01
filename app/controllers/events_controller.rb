@@ -49,10 +49,15 @@ class EventsController < ApplicationController
     if order == "event_type"
       opts = { :page => params[:page], :per_page => per_page }
       @events = @events.sort{|e1, e2| e1.event_type.name <=> e2.event_type.name }
-      @events = @events.paginate opts
     else
-      @events = @events.order("#{order} #{sort_direction}, start_time #{sort_direction}").paginate opts
+      @events = case params[:sort_direction]
+                when "down" then @events.sort{|e1, e2| e2[order] <=> e1[order] }
+                else @events.sort{|e1, e2| e2[order] <=> e1[order] }
+                end
+      @events = @events.sort{|e1, e2| e1.start_time <=> e2.start_time }
     end
+
+    @events = @events.paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
@@ -161,7 +166,7 @@ class EventsController < ApplicationController
   # POST /events.xml
   def create
 
-    @event = Event.new(event_params)
+    @event = Event.new(params[:event])
     @blocks = []
     valid = true
 
