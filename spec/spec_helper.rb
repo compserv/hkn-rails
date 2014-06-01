@@ -2,7 +2,18 @@
 ENV["RAILS_ENV"] ||= 'test'
 
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter '/spec/'
+  add_filter '/lib/'
+  add_filter '/config/'
+  add_filter '/vendor/'
+  add_filter '/db/'
+
+  add_group 'Controllers', 'app/controllers'
+  add_group 'Models', 'app/models'
+  add_group 'Helpers', 'app/helpers'
+  add_group 'Mailers', 'app/mailers'
+end
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
