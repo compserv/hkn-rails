@@ -91,10 +91,13 @@ class CoursesurveysController < ApplicationController
   end
 
   def course
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:course_number])
+    @course = Course.lookup_by_short_name(params[:dept_abbr], params[:course_number])
 
     # Try searching if no course was found
-    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:course_number]}") unless @course
+    unless @course
+      logger.warn "Course not found: #{params[:dept_abbr]} #{params[:course_number]}"
+      return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:course_number]}")
+    end
 
     # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
     @course = Course.joins({klasses: {instructorships: :instructor}}).find(@course.id)

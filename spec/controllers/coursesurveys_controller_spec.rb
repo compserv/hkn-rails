@@ -98,7 +98,7 @@ describe CoursesurveysController do
 
       it "still renders successfully" do
         get 'course', :dept_abbr => 'CS', :course_number => '194'
-        response.should be_success
+        response.should redirect_to coursesurveys_search_path("CS 194")
       end
     end
   end

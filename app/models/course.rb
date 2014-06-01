@@ -22,7 +22,7 @@ class Course < ActiveRecord::Base
   has_many :coursesurveys, :through => :klasses
   #has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :instructorships, :through => :klasses
-                  
+
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
@@ -148,7 +148,7 @@ class Course < ActiveRecord::Base
   end
 
   # E.g. ("EE", "C149")
-  def Course.find_by_short_name(dept_abbr, full_course_number, section=nil)
+  def Course.lookup_by_short_name(dept_abbr, full_course_number, section=nil)
     (prefix, course_number, suffix) = full_course_number.scan(Regex::PrefixNumSuffix).first
     department = Department.find_by_nice_abbr(dept_abbr)
     #raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?
