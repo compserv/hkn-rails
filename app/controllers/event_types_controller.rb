@@ -44,7 +44,7 @@ class EventTypesController < ApplicationController
   # POST /event_types
   # POST /event_types.xml
   def create
-    @event_type = EventType.new(event_type_params)
+    @event_type = EventType.new(params[:event_type])
 
     respond_to do |format|
       if @event_type.save

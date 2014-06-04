@@ -8,7 +8,7 @@ class RsvpsController < ApplicationController
   # GET /rsvps.xml
   def index
     # Most recently created RSVPs will show on top of the list
-    @rsvps = @event.rsvps.order("created_at DESC")
+    @rsvps = @event.rsvps.sort{|r1, r2| r2.created_at <=> r1.created_at }
 
     respond_to do |format|
       format.html # index.html.erb
@@ -54,7 +54,7 @@ class RsvpsController < ApplicationController
   # POST /rsvps
   # POST /rsvps.xml
   def create
-    @rsvp           = Rsvp.new(rsvp_params)
+    @rsvp           = Rsvp.new(params[:rsvp])
     @rsvp.event     = @event
     @rsvp.person    = @current_user
     @rsvp.confirmed = Rsvp::Unconfirmed
@@ -95,7 +95,7 @@ class RsvpsController < ApplicationController
     validate_owner!(@rsvp)
     assign_blocks
 
-    @rsvp.update_attributes(rsvp_params)
+    @rsvp.update_attributes(params[:rsvp])
 
     respond_to do |format|
       if @rsvp.save
