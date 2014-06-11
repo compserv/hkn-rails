@@ -18,12 +18,8 @@
 <% @rsvps.each do |rsvp| %>
   <tr>
     <td><%= rsvp.person.fullname %></td>
-    <% if rsvp.comment.present? %>
-        <td><%= rsvp.comment %></td>
-    <% end %>
-    <% if rsvp.created_at.present? %>
-        <td><%= rsvp.created_at.strftime('%a %m/%d/%y %I:%M%p') %></td>
-    <% end %>
+    <td><%= rsvp.comment if rsvp.comment.present? %></td>
+    <td><%= rsvp.created_at.strftime('%a %m/%d/%y %I:%M%p') if rsvp.created_at.present? %></td>
     <% if @event.need_transportation %>    
       <td><%= rsvp.transportation %></td>
     <% end %>
