@@ -9,6 +9,7 @@ SimpleCov.start do
   add_filter '/vendor/'
   add_filter '/db/'
 
+  add_group 'Admin Controllers', 'app/controllers/admin'
   add_group 'Controllers', 'app/controllers'
   add_group 'Models', 'app/models'
   add_group 'Helpers', 'app/helpers'
