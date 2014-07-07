@@ -1,8 +1,17 @@
 require 'spec_helper'
+require 'pry-byebug'
 
 describe Admin::TutorController, "when an officer user is logged in" do
-  before :each do 
-    login_as_officer 
+  before :each do
+    @default_availability_opts = {
+      wday: Slot::Wday::Monday,
+      hour: 11,
+      preference_level: Availability::PREF[:preferred],
+      preferred_room: Slot::Room::Both,
+      room_strength: 1
+    }
+
+    login_as_officer
     tutor = mock_model(Tutor, :availabilities => [], :adjacency => 1)
     @current_user.stub(:tutor) { tutor }
   end
@@ -47,9 +56,26 @@ describe Admin::TutorController, "when an officer user is logged in" do
     end
 
     describe "Save changes" do
+      def make_availability(day = Slot::Wday::Monday, hour = 12,
+                            preference = 'preferred')
+          {
+            day => {
+              hour => {
+                preference_level: preference,
+                slider: 3
+              }
+            }
+          }
+      end
+
       def update(opts={})
-        default_opts = {commit: "Save changes", availabilities: {}}
-        put 'update_slots', default_opts.merge(opts)
+        availabilities = {}
+        (Slot::Wday::Valid).each do |day|
+          availabilities = availabilities.merge(make_availability(day))
+        end
+
+        default_opts = {commit: "Save changes", availabilities: availabilities}
+        put 'update_slots', default_opts.deep_merge(opts)
       end
 
       before :each do
@@ -70,13 +96,27 @@ describe Admin::TutorController, "when an officer user is logged in" do
         pref = 'preferred'
         slider = 3
         avs = {wday => {hour => {preference_level: pref, slider: slider}}}
-        Availability.should_receive(:where).and_return([])
-        Availability.should_receive(:create!).with(wday: wday, 
-          hour: hour, 
-          preference_level: Availability::PREF[:preferred], 
-          preferred_room: Availability::Room::Soda, 
-          room_strength: 1, 
+
+        # 6 searches for availabilities
+        expect(Availability).to receive(:where).exactly(6).times.and_return([])
+
+        # 1 create! for the params in this test
+        expect(Availability).to receive(:create!).with(wday: wday,
+          hour: hour,
+          preference_level: Availability::PREF[:preferred],
+          preferred_room: Availability::Room::Soda,
+          room_strength: 1,
           tutor: @current_user.tutor)
+
+        # 5 create! from the minimum 5 availability count
+        expect(Availability).to receive(:create!).with(
+          wday: kind_of(Numeric),
+          hour: kind_of(Numeric),
+          preference_level: Availability::PREF[:preferred],
+          preferred_room: kind_of(Numeric),
+          room_strength: kind_of(Numeric),
+          tutor: @current_user.tutor).exactly(5).times
+
         update availabilities: avs
       end
 
@@ -86,9 +126,20 @@ describe Admin::TutorController, "when an officer user is logged in" do
         pref = 'unavailable'
         slider = 3
         avs = {wday => {hour => {preference_level: pref, slider: slider}}}
-        av = mock_model(Availability)
-        Availability.should_receive(:where).and_return([av])
-        av.should_receive(:destroy)
+        av = double(Availability)
+
+        # 5 update_attributes! because we configure non empty response
+        # and we send 5 to be updated availabilities from the minimum
+        expect(av).to receive(:update_attributes!).with(any_args()).
+          exactly(5).times
+
+        # 6 searches for availabilities
+        expect(Availability).to receive(:where).exactly(6).times.
+          and_return([av])
+
+        # Destroy availability we have
+        expect(av).to receive(:destroy)
+
         update availabilities: avs
       end
 
@@ -98,12 +149,20 @@ describe Admin::TutorController, "when an officer user is logged in" do
         pref = 'preferred'
         slider = 3
         avs = {wday => {hour => {preference_level: pref, slider: slider}}}
-        av = mock_model(Availability)
-        Availability.should_receive(:where).and_return([av])
-        av.should_receive(:update_attributes!).with(
-          preference_level: Availability::PREF[:preferred], 
-          preferred_room: Availability::Room::Soda, 
-          room_strength: 1)
+
+        av = double(Availability)
+
+        # 6 searches for availabilities
+        expect(Availability).to receive(:where).exactly(6).times.
+          and_return([av])
+
+        # 6 update_attributes! because we configure non empty response
+        # and we send 6 to be updated availabilities
+        expect(av).to receive(:update_attributes!).with(
+          preference_level: Availability::PREF[:preferred],
+          preferred_room: Availability::Room::Soda,
+          room_strength: 1).exactly(6).times
+
         update availabilities: avs
       end
     end
