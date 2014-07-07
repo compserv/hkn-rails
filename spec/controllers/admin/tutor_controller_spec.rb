@@ -265,10 +265,20 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
     end
 
     it "grabs all Tutors when given :all_params" do
+      committeeship = double(Committeeship)
+      allow(committeeship).to receive(:find_by_semester).and_return([
+        double("committeeship")])
+
+      adam = mock_model(Person, :fullname => "Adam")
+      bert = mock_model(Person, :fullname => "Bert")
+      allow(adam).to receive(:committeeships).and_return(committeeship)
+      allow(bert).to receive(:committeeships).and_return(committeeship)
+
       all_tutors = [
-        mock_model(Tutor, :person => mock_model(Person, :fullname => "Adam")),
-        mock_model(Tutor, :person => mock_model(Person, :fullname => "Bert")),
+        mock_model(Tutor, :person => adam),
+        mock_model(Tutor, :person => bert),
       ]
+
       all_tutors_output = all_tutors.map{|x| [x.person.fullname, x.id]}
       Tutor.stub_chain(:current, :includes).and_return all_tutors
       get 'edit_schedule', :all_tutors => true
