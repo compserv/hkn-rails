@@ -97,8 +97,7 @@ describe Admin::TutorController, "when an officer user is logged in" do
         slider = 3
         avs = {wday => {hour => {preference_level: pref, slider: slider}}}
 
-        # 6 searches for availabilities
-        expect(Availability).to receive(:where).exactly(6).times.and_return([])
+        allow(Availability).to receive(:where).and_return([])
 
         # 1 create! for the params in this test
         expect(Availability).to receive(:create!).with(wday: wday,
@@ -108,14 +107,13 @@ describe Admin::TutorController, "when an officer user is logged in" do
           room_strength: 1,
           tutor: @current_user.tutor)
 
-        # 5 create! from the minimum 5 availability count
-        expect(Availability).to receive(:create!).with(
+        allow(Availability).to receive(:create!).with(
           wday: kind_of(Numeric),
           hour: kind_of(Numeric),
           preference_level: Availability::PREF[:preferred],
           preferred_room: kind_of(Numeric),
           room_strength: kind_of(Numeric),
-          tutor: @current_user.tutor).exactly(5).times
+          tutor: @current_user.tutor)
 
         update availabilities: avs
       end
@@ -128,14 +126,8 @@ describe Admin::TutorController, "when an officer user is logged in" do
         avs = {wday => {hour => {preference_level: pref, slider: slider}}}
         av = double(Availability)
 
-        # 5 update_attributes! because we configure non empty response
-        # and we send 5 to be updated availabilities from the minimum
-        expect(av).to receive(:update_attributes!).with(any_args()).
-          exactly(5).times
-
-        # 6 searches for availabilities
-        expect(Availability).to receive(:where).exactly(6).times.
-          and_return([av])
+        allow(av).to receive(:update_attributes!).with(any_args())
+        allow(Availability).to receive(:where).and_return([av])
 
         # Destroy availability we have
         expect(av).to receive(:destroy)
@@ -146,22 +138,23 @@ describe Admin::TutorController, "when an officer user is logged in" do
       it "updates existing availabilities" do
         wday = 1
         hour = 11
-        pref = 'preferred'
+        pref = 'available'
         slider = 3
         avs = {wday => {hour => {preference_level: pref, slider: slider}}}
 
         av = double(Availability)
 
-        # 6 searches for availabilities
-        expect(Availability).to receive(:where).exactly(6).times.
-          and_return([av])
+        allow(Availability).to receive(:where).and_return([av])
 
-        # 6 update_attributes! because we configure non empty response
-        # and we send 6 to be updated availabilities
         expect(av).to receive(:update_attributes!).with(
+          preference_level: Availability::PREF[:available],
+          preferred_room: Availability::Room::Soda,
+          room_strength: 1)
+
+        allow(av).to receive(:update_attributes!).with(
           preference_level: Availability::PREF[:preferred],
           preferred_room: Availability::Room::Soda,
-          room_strength: 1).exactly(6).times
+          room_strength: 1)
 
         update availabilities: avs
       end
