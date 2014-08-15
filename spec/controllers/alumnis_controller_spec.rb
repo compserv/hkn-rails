@@ -8,9 +8,7 @@ describe AlumnisController do
   before :each do login_as_officer('alumrel'=>true) end
   
   def mock_alumni(stubs={})
-    # mock_model may be deprecated soon, so we will have to find
-    # another way
-    @mock_alumni ||= mock_model(Alumni, stubs).as_null_object
+    @mock_alumni ||= double(Alumni, stubs).as_null_object
   end
 
   describe "GET index" do
@@ -40,22 +38,23 @@ describe AlumnisController do
   describe "POST create" do
     describe "with valid params" do
       it "assigns a newly created alumni as @alumni" do
-        Alumni.stub(:new).with({'these' => 'params'}) { mock_alumni(:save => true) }
-        post :create, :alumni => {'these' => 'params'},
-                      :grad_season => 'Fall',
+        post :create, :alumni => {:person_id => 1},
+                      :grad_season => "Fall",
                       :grad_year => 1945
-        assigns(:alumni).should be(mock_alumni)
+        expect(assigns(:alumni).person_id).to be(1)
+        expect(assigns(:alumni).grad_semester).to eq("Fall 1945")
       end
 
       it "redirects to the created alumni" do
-        Alumni.stub(:new) { mock_alumni(:save => true) }
-        Alumni.stub(:find).and_return(mock_alumni)
         @current_user.stub(:save).and_return true
-        post :create, :alumni => {},
-                      :grad_season => 'Fall',
+        post :create, :alumni => {
+                        :person_id => 9999,
+                        :perm_email => "derp@derp.com"
+                      },
+                      :grad_season => "Fall",
                       :grad_year => 1945
 
-        response.should redirect_to(alumni_url(mock_alumni))
+        response.should redirect_to(alumni_url(assigns(:alumni)))
       end
     end
 
@@ -65,17 +64,15 @@ describe AlumnisController do
       end
 
       it "assigns a newly created but unsaved alumni as @alumni" do
-        Alumni.stub(:new).with({'these' => 'params'}) { mock_alumni(:save => false) }
         post :create, :alumni => {'these' => 'params'},
-                      :grad_season => 'Fall',
+                      :grad_season => "Fall",
                       :grad_year => 1945
-        assigns(:alumni).should be(mock_alumni)
+        expect(assigns(:alumni).save).not_to be(true)
       end
 
       it "re-renders the 'new' template" do
-        Alumni.stub(:new) { mock_alumni(:save => false) }
-        post :create, :alumni => {},
-                      :grad_season => 'Fall',
+        post :create, :alumni => {"these" => "params"},
+                      :grad_season => "Fall",
                       :grad_year => 1945
         response.should render_template("new")
       end
@@ -83,49 +80,64 @@ describe AlumnisController do
   end
 
   describe "PUT update" do
+    let(:alum) do
+      Alumni.new({:id => 37, :person_id => 9999,
+                  :grad_semester => "Fall 1944",
+                  :perm_email => "derp@derp.com"})
+    end
     describe "with valid params" do
+
       it "updates the requested alumni" do
-        Alumni.stub(:find).with(:first, {:conditions=>"\"alumnis\".person_id = 1052"}) { mock_alumni }
-        Alumni.stub(:find).with("37") { mock_alumni }
-        mock_alumni.should_receive(:update_attributes).with(
-          {'these' => 'params', 'grad_semester' => 'Fall 1945'}
+        Alumni.stub(:find).with(
+          :first,
+          {:conditions=>"\"alumnis\".person_id = 9999"}
+        ) { alum }
+        Alumni.stub(:find).with("37") { alum }
+
+        alum.should_receive(:update_attributes).with(
+          { "person_id" => "9999", "grad_semester" => "Fall 1945" }
         )
 
-        put :update, :id => "37", :alumni => {'these' => 'params'},
-                                  :grad_season => 'Fall',
-                                  :grad_year => 1945
+        put :update, :id => "37",
+                     :alumni => { :person_id => 9999 },
+                     :grad_season => "Fall",
+                     :grad_year => 1945
 
       end
 
       it "assigns the requested alumni as @alumni" do
-        Alumni.stub(:find) { mock_alumni(:update_attributes => true) }
-        put :update, :id => "1",
+        Alumni.stub(:find) { alum }
+        put :update, :id => "37",
+                     :alumni => { :person_id => 9999 },
                      :grad_season => 'Fall',
                      :grad_year => 1945
-        assigns(:alumni).should be(mock_alumni)
+        assigns(:alumni).should be(alum)
       end
 
       it "redirects to the alumni" do
-        Alumni.stub(:find) { mock_alumni(:update_attributes => true) }
-        put :update, :id => "1",
+        Alumni.stub(:find) { alum }
+        put :update, :id => "37",
+                     :alumni => { :person_id => 9999 },
                      :grad_season => 'Fall',
                      :grad_year => 1945
-        response.should redirect_to(alumni_url(mock_alumni))
+        response.should redirect_to(alumni_url(alum))
       end
     end
 
     describe "with invalid params" do
       it "assigns the alumni as @alumni" do
-        Alumni.stub(:find) { mock_alumni(:update_attributes => false) }
-        put :update, :id => "1",
+        Alumni.stub(:find) { alum }
+        put :update, :id => "37",
+                     :alumni => { :salary => -100 },
                      :grad_season => 'Fall',
                      :grad_year => 1945
-        assigns(:alumni).should be(mock_alumni)
+        assigns(:alumni).should be(alum)
       end
 
       it "re-renders the 'edit' template" do
-        Alumni.stub(:find) { mock_alumni(:update_attributes => false) }
-        put :update, :id => "1",
+        Alumni.stub(:find) { alum }
+        put :update, :id => "37",
+                     :alumni => { :salary => -100 },
                      :grad_season => 'Fall',
                      :grad_year => 1945
         response.should render_template("edit")

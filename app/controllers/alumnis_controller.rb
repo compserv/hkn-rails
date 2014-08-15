@@ -84,7 +84,7 @@ class AlumnisController < ApplicationController
   # POST /alumnis
   # POST /alumnis.xml
   def create
-    @alumni = Alumni.new(params[:alumni])
+    @alumni = Alumni.new(alumni_params)
     @alumni.grad_semester = Alumni.grad_semester(params[:grad_season], params[:grad_year])
     # params[:grad_season] is Spring or Fall
     # params[:grad_year] is the actual year
@@ -115,8 +115,7 @@ class AlumnisController < ApplicationController
 
     respond_to do |format|
       # params[:grad_season] is Spring or Fall
-      alumni_param = params[:alumni] || {}
-      if @alumni.update_attributes(alumni_param.merge(
+      if @alumni.update_attributes(alumni_params.merge(
         :grad_semester => Alumni.grad_semester(params[:grad_season], params[:grad_year])
       ))
         if !@alumni.mailing_list && params[:on_mailing_list].eql?('true')
@@ -151,6 +150,7 @@ class AlumnisController < ApplicationController
 
     def alumni_params
       params.require(:alumni).permit(
+        :person_id,
         :perm_email,
         :mailing_list,
         :grad_school,
