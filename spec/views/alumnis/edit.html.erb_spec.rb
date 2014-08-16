@@ -10,6 +10,10 @@ describe "alumnis/edit.html.erb" do
       :salary => 1,
       :person => nil
     ))
+    @current_user = assign(:current_user, stub_model(Person,
+      :first_name => "Irrelevant",
+      :last_name => "Name"
+    ))
   end
 
   it "renders the edit alumni form" do
@@ -17,7 +21,6 @@ describe "alumnis/edit.html.erb" do
 
     # Run the generator again with the --webrat flag if you want to use webrat matchers
     assert_select "form", :action => alumni_path(@alumni), :method => "post" do
-      assert_select "input#alumni_grad_semester", :name => "alumni[grad_semester]"
       assert_select "input#alumni_grad_school", :name => "alumni[grad_school]"
       assert_select "input#alumni_job_title", :name => "alumni[job_title]"
       assert_select "input#alumni_company", :name => "alumni[company]"
