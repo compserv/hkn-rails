@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry-byebug'
 
 describe Admin::TutorController, "when an officer user is logged in" do
   before :each do
