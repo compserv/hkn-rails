@@ -26,11 +26,6 @@ describe Challenge do
 
   end
 
-  # TODO Make spec implementation independent
-  #
-  # The reason this spec is implementation dependent is due to the stubbed
-  # method chains. The only way I could think of around it is to actually
-  # create model instances, which would slow down the test.
   describe "is_current_challenge?" do
     before(:each) do
       person = stub_model(Person)
