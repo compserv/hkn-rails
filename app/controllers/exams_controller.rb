@@ -197,7 +197,7 @@ class ExamsController < ApplicationController
   def course
     dept_abbr = params[:dept_abbr].upcase
     full_course_num = params[:full_course_number].upcase
-    @course = Course.find_by_short_name(dept_abbr, full_course_num)
+    @course = Course.lookup_by_short_name(dept_abbr, full_course_num)
     return redirect_to exams_search_path([dept_abbr,full_course_num].compact.join(' ')) unless @course
     klasses = Klass.where(:course_id => @course.id).order('semester DESC').reject {|klass| klass.exams.empty?}
     @exam_path = '/examfiles/' # TODO clean up

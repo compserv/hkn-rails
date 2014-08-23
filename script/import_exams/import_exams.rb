@@ -55,7 +55,7 @@ def import_exam(file_path, success_dir)
   course_num.upcase!
 
   # Check if corresponding Course exists
-  course = Course.find_by_short_name(dept, course_num)
+  course = Course.lookup_by_short_name(dept, course_num)
   if course.nil?
     puts "\tcould not find course #{dept}#{course_num}"
     return false

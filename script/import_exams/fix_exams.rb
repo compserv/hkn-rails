@@ -67,7 +67,7 @@ def fix_exam(file_path)
   course_num.upcase!
 
   # Check if corresponding Course exists
-  course = Course.find_by_short_name(dept, course_num)
+  course = Course.lookup_by_short_name(dept, course_num)
   if course.nil?
     return filename, COURSE_NOT_FOUND
   end

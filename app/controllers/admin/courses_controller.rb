@@ -60,7 +60,7 @@ private
   end 
 
   def set_course
-    unless @course = Course.find_by_short_name(params[:dept],params[:num])
+    unless @course = Course.lookup_by_short_name(params[:dept],params[:num])
       redirect_to (request.referer || admin_courses_path), :notice => "No matching course found."
       return false
     end

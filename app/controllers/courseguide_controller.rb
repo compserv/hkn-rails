@@ -10,20 +10,20 @@ class CourseguideController < ApplicationController
   end
 
   def show
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:course_number])
+    @course = Course.lookup_by_short_name(params[:dept_abbr], params[:course_number])
     @can_edit = authorize_courseguides
     return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:course_number]}") unless @course
   end
 
   def edit
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:course_number])
+    @course = Course.lookup_by_short_name(params[:dept_abbr], params[:course_number])
     if @course.nil?
       redirect_back_or_default coursesurveys_path, :notice => "Error: No such course."
     end
   end
 
   def update
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:course_number])
+    @course = Course.lookup_by_short_name(params[:dept_abbr], params[:course_number])
     if @course.nil?
       return redirect_back_or_default coursesurveys_path, :notice=>"Error: That course does not exist."
     end

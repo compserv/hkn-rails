@@ -501,7 +501,7 @@ class CoursesurveysController < ApplicationController
   end
 
   def params_to_klass(parms)
-    return nil unless @course = Course.find_by_short_name(parms[:dept_abbr], parms[:short_name])
+    return nil unless @course = Course.lookup_by_short_name(parms[:dept_abbr], parms[:short_name])
     return nil unless sem = Klass.semester_code_from_s( parms[:semester] )
 
     @klass = Klass.where(:semester => sem, :course_id => @course.id)

@@ -82,7 +82,7 @@ namespace :tutoring do
 
         data[:courseprefs].each do |cp|
           args = cp[:coursename].split
-          c = Course.find_by_short_name(args[0], args[1])
+          c = Course.lookup_by_short_name(args[0], args[1])
           puts "WARNING: unknown course #{cp[:coursename]}" and next if c.nil?
 
           cp[:tutor_id]  = t.id
