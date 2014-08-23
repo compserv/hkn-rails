@@ -11,7 +11,7 @@ class Committeeship < ActiveRecord::Base
   # =======================
 
   @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring pub examfiles ejc)	#This generates a constant which is an array of possible committees.
-  Semester = /^\d{4}[0-4]$/                  # A regex which validates the semester
+  Semester = /\A\d{4}[0-4]\z/                  # A regex which validates the semester
   Positions = %w(officer cmember candidate)  # A list of possible positions
   Execs = %w(pres vp rsec csec treas deprel) # Executive positions
   NonExecs = @Committees-Execs
@@ -28,13 +28,13 @@ class Committeeship < ActiveRecord::Base
 
   # We have this argumentless lambda because we don't want to evaluate 
   # Property.semester until we call the scope, not when we define it
-  scope :current,    lambda{ { :conditions => { :semester => Property.semester } } }
+  scope :current,    -> { where(:semester => Property.semester) }
   scope :next,       lambda{ where(:semester => Property.next_semester) }
-  scope :semester,   lambda{|s| where(:semester => s)}
-  scope :committee,  lambda{|x| { :conditions => { :committee => x } } }
-  scope :officers,   :conditions => { :title => "officer" }
-  scope :cmembers,   :conditions => { :title => "cmember" }
-  scope :candidates, :conditions => { :title => "candidate" }
+  scope :semester,   lambda{ |s| where(:semester => s) }
+  scope :committee,  lambda{ |x| where(:committee => x) }
+  scope :officers,   -> { where(:title => "officer") }
+  scope :cmembers,   -> { where(:title => "cmember") }
+  scope :candidates, -> { where(:title => "candidate") }
 
   class << self
     attr_reader :Committees, :Positions

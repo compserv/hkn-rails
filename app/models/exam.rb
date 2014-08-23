@@ -51,7 +51,10 @@ class Exam < ActiveRecord::Base
   def Exam.get_dept_name_courses_tuples(dept_abbr)
     dept = Department.find_by_nice_abbr(dept_abbr)
     dept_name = dept.name
-    courses = Course.find(:all, :conditions => {:department_id=>dept.id}, :include => [:exams], :order => :course_number).reject {|course| course.exams.empty?}
+    courses = Course.where(department_id: dept.id)
+                    .includes(:exams)
+                    .order(:course_number)
+                    .reject {|course| course.exams.empty?}
     return [dept_name, courses]
   end
 

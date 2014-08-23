@@ -20,12 +20,12 @@ describe CoursesurveysController do
     @k1   = mock_model Klass, :course => @ee1, :semester => Property.get_or_create.semester, :section => 0
     @k2   = mock_model Klass, :course => @ee2, :semester => "19111", :section => 0
    
-    @ee1.stub!(:klasses).and_return(@k1)
-    @ee2.stub!(:klasses).and_return(@k2)
+    @ee1.stub(:klasses) { @k1 }
+    @ee2.stub(:klasses) { @k2 }
 
     # Stub things out
-    Department.stub!(:find)   .and_return [@ee]
-    Course    .stub!(:find)   .and_return [@ee1, @ee2]
+    Department.stub(:find) { [@ee] }
+    Course    .stub(:find) { [@ee1, @ee2] }
   end
 
   describe "GET department" do
@@ -98,7 +98,7 @@ describe CoursesurveysController do
 
       it "still renders successfully" do
         get 'course', :dept_abbr => 'CS', :course_number => '194'
-        response.should be_success
+        response.should redirect_to coursesurveys_search_path("CS 194")
       end
     end
   end

@@ -12,7 +12,7 @@ class Property < ActiveRecord::Base
   #   coursesurveys_active : boolean 
   # =======================
 
-  Semester = /^\d{4}[0-5]$/	#A regex which validates the semester
+  Semester = /\A\d{4}[0-5]\z/	#A regex which validates the semester
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validate :there_is_only_one, :on => :create
   validates_numericality_of :tutoring_start, :greater_than_or_equal_to => 11
@@ -146,7 +146,7 @@ class Property < ActiveRecord::Base
         semester = prop.semester.to_s
       end
 
-      raise ArgumentError.new("Invalid semester: #{semester}") unless semester =~ /^\d{5}$/
+      raise ArgumentError.new("Invalid semester: #{semester}") unless semester =~ /\A\d{5}\z/
 
       semester_year = semester[0..3]
 

@@ -15,7 +15,7 @@ class Admin::CoursesController < ApplicationController
   end
 
   def create
-    @course = Course.new(params[:course])
+    @course = Course.new(course_params)
 
     if process_course_params! and @course.save
       @messages << "Successfully added course."
@@ -47,6 +47,18 @@ class Admin::CoursesController < ApplicationController
 
 private
 
+  def course_params
+    params.require(:course).permit(
+      :department,
+      :course_number,
+      :name,
+      :description,
+      :units,
+      :prereqs,
+      :course_guide
+    )
+  end 
+
   def set_course
     unless @course = Course.find_by_short_name(params[:dept],params[:num])
       redirect_to (request.referer || admin_courses_path), :notice => "No matching course found."
@@ -57,7 +69,7 @@ private
   # Save parameters from params[:course] to @course
   # @return [Boolean] whether processing was successful. Flash error is set if false.
   def process_course_params!
-    @course.update_attributes params[:course]
+    @course.update_attributes course_params
 
     # Course number
     cn = Course.split_course_number params[:course][:full_course_number], :hash=>false

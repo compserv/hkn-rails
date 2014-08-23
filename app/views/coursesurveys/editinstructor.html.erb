@@ -13,6 +13,6 @@
   <div class="clear"></div>
 </div>
 
-<%= form_for @instructor, :url=>coursesurveys_update_instructor_path(@instructor) do |f| %>
+<%= form_for @instructor, :method => :post, :url=>coursesurveys_update_instructor_path(@instructor) do |f| %>
   <%= render 'instructor_form', :form => f %>
 <% end %>

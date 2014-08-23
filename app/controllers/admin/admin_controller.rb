@@ -9,7 +9,7 @@ class Admin::AdminController < ApplicationController
     
     @candidates = @candidates.select { |cand| cand.person_id && Person.find_by_id(cand.person_id).groups.include?(candidate_group) }
     cand_ids = @candidates.collect { |cand| cand.id } 
-    @candidates = Candidate.includes(:challenges, :quiz_responses, person: :resumes, person: :groups, person: :events).find(cand_ids, :order => "people.first_name")
+    @candidates = Candidate.includes(:challenges, :quiz_responses, person: :resumes, person: :groups, person: :events).order("people.first_name").find(cand_ids)
     @candidates.map! { |cand|
       calculate_status(cand)    
     }
@@ -114,7 +114,7 @@ class Admin::AdminController < ApplicationController
   end
 
   def confirm_challenges
-    challenges = Challenge.find(:all, :conditions => {:officer_id => @current_user.id})
+    challenges = Challenge.where(:officer_id => @current_user.id)
     challenges = challenges.find_all{|c| c.is_current_challenge?}
     @acc_challenges = challenges.select {|c| c.status }
     @pending_challenges = challenges.select {|c| c.status == nil }

@@ -61,7 +61,7 @@ class Admin::CsecController < Admin::AdminController
   end
 
   def manage_classes_post
-    params.keys.reject{|x| !(x =~ /^survey[0-9]*$/)}.each do |param_id|
+    params.keys.reject{|x| !(x =~ /\Asurvey[0-9]*\z/)}.each do |param_id|
       id = param_id[6..-1]
       coursesurvey = Coursesurvey.find(id)
       # This should not fail

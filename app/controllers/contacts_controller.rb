@@ -13,12 +13,12 @@ class ContactsController < ApplicationController
                      end
 
     @search_opts = {'sort' => "name"}.merge params
-    opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}" }
+    opts = { :page => params[:page], :per_page => per_page }
 
     if params[:sort] == "companies.name"
       opts.merge!( { :joins => "LEFT OUTER JOIN companies ON companies.id = contacts.company_id" } )
     end
-    @contacts = Contact.paginate opts
+    @contacts = Contact.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
@@ -59,7 +59,7 @@ class ContactsController < ApplicationController
   # POST /contacts
   # POST /contacts.xml
   def create
-    @contact = Contact.new(params[:contact])
+    @contact = Contact.new(contact_params)
 
     respond_to do |format|
       if @contact.save
@@ -77,7 +77,7 @@ class ContactsController < ApplicationController
   # PUT /contacts/1.xml
   def update
     @contact = Contact.find(params[:id])
-    @contact.update_attributes(params[:contact])
+    @contact.update_attributes(contact_params)
 
     respond_to do |format|
       if @contact.errors.size == 0
@@ -102,4 +102,18 @@ class ContactsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+    def contact_params
+      params.require(:contact).permit(
+        :name,
+        :email,
+        :phone,
+        :cellphone,
+        :company,
+        :comments
+      )
+    end
+
 end

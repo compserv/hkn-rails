@@ -1,6 +1,11 @@
 <%= form_for(@company) do |f| %>
-  <%= f.error_messages %>
-
+  <% if @company.errors.any? %>
+  <ul>
+    <% @company.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </ul>
+  <% end %>
   <div class="field">
     <%= f.label :name %>
     <%= f.text_field :name %>

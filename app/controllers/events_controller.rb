@@ -22,7 +22,7 @@ class EventsController < ApplicationController
                      end
     @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
     # Maintains start_time as secondary sort column
-    opts = { :page => params[:page], :per_page => per_page, :order => "#{order} #{sort_direction}, start_time #{sort_direction}" }
+    opts = { :page => params[:page], :per_page => per_page }
 
     category = params[:category] || 'all'
     event_finder = Event.with_permission(@current_user)
@@ -44,15 +44,20 @@ class EventsController < ApplicationController
       @events = @events.select {|e| e.event_type.name.downcase == event_filter}
     end
 
-    @events.delete_if {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}
-
     if order == "event_type"
       opts = { :page => params[:page], :per_page => per_page }
       @events = @events.sort{|e1, e2| e1.event_type.name <=> e2.event_type.name }
-      @events = @events.paginate opts
     else
-      @events = @events.paginate opts
+      @events = @events.sort{|e1, e2| e1.start_time <=> e2.start_time }
+      @events = case params[:sort_direction]
+               when "down" then @events.sort{|e1, e2| e2[order] <=> e1[order] }
+               else @events.sort{|e1, e2| e1[order] <=> e2[order] }
+               end
     end
+
+    @events.to_a.delete_if {|e| EventType.where("name IN (?)", ["Exam", "Review Session"]).include?(e.event_type)}
+
+    @events = @events.paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
@@ -69,12 +74,13 @@ class EventsController < ApplicationController
     types = ["Mandatory for Candidates", "Big Fun", "Fun", "Service"]
 
     #Filters for candidate events (enumerated in "types" variable)
-    candEventTypes = EventType.find(:all, :conditions => ["name IN (?)", types])
+    candEventTypes = EventType.where("name IN (?)", types)
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
     #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)
     # Sorry, this is kind of a bad query
-    @events = Event.current.find(:all, :joins => { :rsvps => {:person => :groups} }, :conditions => "(rsvps.confirmed IS NULL OR rsvps.confirmed = 'f') AND groups.id = #{Group.find_by_name(@group).id}").uniq
-    @events.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
+    @events = Event.current.joins({ :rsvps => {:person => :groups} } )
+                           .where("(rsvps.confirmed IS NULL OR rsvps.confirmed = 'f') AND groups.id = #{Group.find_by_name(@group).id}").uniq
+    @events.to_a.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
 
   # RSVP confirmation for an individual event
@@ -91,8 +97,14 @@ class EventsController < ApplicationController
     # TODO: Fix this, I think we have timezone issues
     @start_date = Time.local(year, month).beginning_of_month
     @end_date = Time.local(year, month).end_of_month
-    @events = Event.with_permission(@current_user).find(:all, :conditions => {:start_time => @start_date..@end_date}, :order => :start_time)
-    @events.delete_if {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)}
+    @events = Event.with_permission(@current_user)
+                   .where(:start_time => @start_date..@end_date)
+                   .order(:start_time)
+    @events.to_a.delete_if { |e| 
+      EventType.where("name IN (?)", ["Exam", "Review Session"])
+               .include?(e.event_type)
+    }
+
     # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
     @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
@@ -393,7 +405,9 @@ class EventsController < ApplicationController
     @now = Time.now
     @start_date = [@start_date,@now.beginning_of_month].min
 
-    @events = Event.with_permission(@current_user).find(:all, :conditions => { :start_time => @start_date..@end_date }, :order => :start_time)
+    @events = Event.with_permission(@current_user)
+                   .where(:start_time => @start_date..@end_date)
+                   .order(:start_time)
     # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
 
@@ -437,4 +451,30 @@ class EventsController < ApplicationController
     headers['Content-Type'] = "text/calendar; charset=UTF-8"
     cal.to_s
   end
+
+  def event_params
+    params.require(:event).permit(
+      :name,
+      :slug,
+      :location,
+      :description,
+      :markdown,
+      :event_type_id,
+      :need_transportation,
+      :start_time,
+      :end_time,
+      :view_permission_group,
+      :rsvp_permission_group
+    )
+  end
+
+  def block_params
+    params.require(:block).permit(
+      :rsvp_cap,
+      :start_time,
+      :end_time,
+      :event
+    )
+  end
+
 end

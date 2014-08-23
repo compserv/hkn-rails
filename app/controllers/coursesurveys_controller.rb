@@ -7,19 +7,20 @@ class CoursesurveysController < ApplicationController
   before_filter :authorize_privileged
   before_filter :authorize_csec, :only => [:merge_instructors, :merge_instructors_post, :merge, :instructor_ids]
 
-  begin # caching
-    [:index, :instructors, :tas].each {|a| caches_action a, :layout => false}
+  # TODO: Reimplement caching
+  # begin # caching
+    #[:index, :instructors, :tas].each {|a| caches_action a, :layout => false}
 #    caches_action :klass, :cache_path => Proc.new {|c| klass_cache_path(c.params)}, :layout => false
 
     # Cache full/partial department lists
-    caches_action :department, :layout => false,
-      :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"},
-      :unless     => Proc.new {|c| c.params[:semester].present? or c.params[:year].present?}
+    #caches_action :department, :layout => false,
+    #  :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"},
+    #  :unless     => Proc.new {|c| c.params[:semester].present? or c.params[:year].present?}
 
     # Separate for admins
     #caches_action_for_admins([:instructor], :groups => %w(csec superusers))
-  end
-  cache_sweeper :instructor_sweeper
+  #end
+  #cache_sweeper :instructor_sweeper
 
   def authorize_coursesurveys
     @current_user && (@auth['csec'] || @auth['superusers'])
@@ -90,13 +91,17 @@ class CoursesurveysController < ApplicationController
   end
 
   def course
-    @course = Course.find_by_short_name(params[:dept_abbr], params[:course_number])
+    @course = Course.lookup_by_short_name(params[:dept_abbr], params[:course_number])
 
     # Try searching if no course was found
-    return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:course_number]}") unless @course
+    unless @course
+      logger.warn "Course not found: #{params[:dept_abbr]} #{params[:course_number]}"
+      return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:course_number]}")
+    end
 
     # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
-    @course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}])
+    @course = Course.joins({klasses: {instructorships: :instructor}}).find(@course.id)
+    #@course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}])
 
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
@@ -182,9 +187,8 @@ class CoursesurveysController < ApplicationController
 
     # I know this is very convoluted, but it tries to pull as much data
     # as possible from a single query, to avoid hammering the database.
-    Instructor.find(:all,
-               :conditions => { :id =>
-                     Instructorship.select(:instructor_id).
+    Instructor.where(:id =>
+                      Instructorship.select(:instructor_id).
                                     where(:id =>
                                            SurveyAnswer.select(:instructorship_id).
                                                         where(:survey_question_id => @eff_q.id).
@@ -192,10 +196,10 @@ class CoursesurveysController < ApplicationController
                                            :ta => is_ta
                                           ).
                                     collect(&:instructor_id)
-                    },
-               :include => {:instructorships => {:klass => :course}},
-               :order   => 'last_name, first_name'
-               ).each do |i|
+                    )
+               .includes(:instructorships => {:klass => :course})
+               .order('last_name, first_name')
+               .each do |i|
       @results << { :instructor => i,
                     :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
                     :rating     => (i.private ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
@@ -310,12 +314,12 @@ class CoursesurveysController < ApplicationController
   end
 
   def createinstructor
-    @instructor = Instructor.new(params[:instructor])
+    @instructor = Instructor.new(instructor_params)
 
     if @instructor.save
       redirect_to surveys_instructor_path(@instructor), :notice => "Successfully created new instructor."
     else
-      render :newinstructor, :notice => "Validation failed: #{@instructor.errors.join('<br/>').html_safe}"
+      render :newinstructor, :notice => "Validation failed: #{@instructor.errors.to_a.join('<br/>').html_safe}"
     end
   end
 
@@ -330,7 +334,7 @@ class CoursesurveysController < ApplicationController
     @instructor = Instructor.find(params[:id].to_i)
     return redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}." unless @instructor
 
-    return redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(params[:instructor])
+    return redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(instructor_params)
 
     #(@instructor.klasses+@instructor.tad_klasses).each do |k|
     #  expire_action(:action => klass_cache_path(k))
@@ -427,8 +431,8 @@ class CoursesurveysController < ApplicationController
         @results[k] = FakeSearch.new
       end
 
-      @results[:courses].results = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
-      @results[:instructors].results = Instructor.find(:all, :select=>[:id,:first_name,:last_name,:private,:title], :conditions => ["(first_name||' '||last_name) LIKE ?", str])
+      @results[:courses].results = Course.where('description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str)
+      @results[:instructors].results = Instructor.select(:id,:first_name,:last_name,:private,:title).where("(first_name||' '||last_name) LIKE ?", str)
 
       flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
     end
@@ -523,6 +527,20 @@ class CoursesurveysController < ApplicationController
       (last_name, first_name) = param.split(',')
       Instructor.find_by_name(first_name, last_name)
     end
+  end
+
+  def instructor_params
+    params.require(:instructor).permit(
+      :first_name,
+      :last_name,
+      :title,
+      :office,
+      :phone_number,
+      :email,
+      :home_page,
+      :interests,
+      :private
+    )
   end
 
 end

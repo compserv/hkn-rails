@@ -4,8 +4,8 @@ class DeptTourRequestsController < ApplicationController
   # GET /dept_tour_requests.xml
   def index
     @dept_tour_requests = DeptTourRequest.all
-    @dept_tour_requests_pending = DeptTourRequest.find_all_by_responded(true)
-    @dept_tour_requests_unresponded = DeptTourRequest.find_all_by_responded(false)
+    @dept_tour_requests_pending = DeptTourRequest.where(responded: true)
+    @dept_tour_requests_unresponded = DeptTourRequest.where(responded: false)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -44,7 +44,7 @@ class DeptTourRequestsController < ApplicationController
   # POST /dept_tour_requests
   # POST /dept_tour_requests.xml
   def create
-    @dept_tour_request = DeptTourRequest.new(params[:dept_tour_request])
+    @dept_tour_request = DeptTourRequest.new(dept_tour_request_params)
 
     respond_to do |format|
       if @dept_tour_request.save
@@ -63,7 +63,7 @@ class DeptTourRequestsController < ApplicationController
     @dept_tour_request = DeptTourRequest.find(params[:id])
 
     respond_to do |format|
-      if @dept_tour_request.update_attributes(params[:dept_tour_request])
+      if @dept_tour_request.update_attributes(dept_tour_request_params)
         format.html { redirect_to(@dept_tour_request, :notice => 'Dept tour request was successfully updated.') }
         format.xml  { head :ok }
       else
@@ -95,4 +95,17 @@ class DeptTourRequestsController < ApplicationController
     mail.deliver
     redirect_to :dept_tour_requests, :notice=>"Your response has been sent."
   end
+
+  private
+
+    def dept_tour_request_params
+      params.require(:dept_tour_request).permit(
+        :name,
+        :date,
+        :contact,
+        :phone,
+        :comments
+      )
+    end
+
 end

@@ -30,10 +30,10 @@ class Event < ActiveRecord::Base
   validates :end_time, :presence => true
   validate :valid_time_range
 
-  scope :past,     joins(:event_type).where(['start_time < ?', Time.now])
-  scope :upcoming, joins(:event_type).where(['start_time > ?', Time.now])
-  scope :all,      joins(:event_type)
-  scope :current,  lambda { joins(:event_type).where(['start_time > ? AND start_time < ?', Property.semester_start_time, Time.now]) }
+  scope :past,     -> { joins(:event_type).where(['start_time < ?', Time.now]) }
+  scope :upcoming, -> { joins(:event_type).where(['start_time > ?', Time.now]) }
+  #scope :all,      joins(:event_type)
+  scope :current,  -> { joins(:event_type).where(['start_time > ? AND start_time < ?', Property.semester_start_time, Time.now]) }
 
   scope :with_permission, Proc.new { |user| 
     if user.nil?
@@ -48,12 +48,13 @@ class Event < ActiveRecord::Base
   # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
   
   def self.upcoming_events(num, user=nil)
+    events = self.with_permission(user)
+        .where(end_time: Time.now..(Time.now + 7.days))
+        .order(start_time: :asc)
     if num != 0
-      self.with_permission(user).find(:all, :conditions => ['end_time >= ? AND end_time <= ?',
-      Time.now, Time.now + 7.days], :order => "start_time asc", :limit => num)
+      events.limit(num)
     else
-      self.with_permission(user).find(:all, :conditions => ['end_time >= ? AND end_time <= ?',
-      Time.now, Time.now + 7.days], :order => "start_time asc")
+      events
     end
     
   end

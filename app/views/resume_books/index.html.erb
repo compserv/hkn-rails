@@ -9,7 +9,7 @@
 </ul>
 <table class="table">
 	<tr><th>Creation Date</th><th>Remarks</th><th>PDF File</th><th>ISO File</th></tr>
-<% ResumeBook.find(:all).reverse.each do |resume_book| %>
+<% ResumeBook.all.reverse.each do |resume_book| %>
 <!-- I hope everyone capitalizes the first letters of their names. But it's not really a big deal-->
   <tr>
 	  <td> <%= link_to resume_book.created_at, resume_book_path(resume_book) %> </td>

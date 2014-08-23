@@ -8,7 +8,7 @@ class RsvpsController < ApplicationController
   # GET /rsvps.xml
   def index
     # Most recently created RSVPs will show on top of the list
-    @rsvps = @event.rsvps.order("created_at DESC")
+    @rsvps = @event.rsvps.sort{|r1, r2| r2.created_at <=> r1.created_at }
 
     respond_to do |format|
       format.html # index.html.erb
@@ -192,6 +192,13 @@ private
       redirect_to :root, :notice => "You do not have permission to RSVP for this event"
       return false
     end
+  end
+
+  def rsvp_params
+    params.require(:rsvp).permit(
+      :comment,
+      :transportation
+    )
   end
 
 end

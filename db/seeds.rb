@@ -9,7 +9,7 @@ def initialize_slots
   Slot::Hour::Valid.each do |hour|
     Slot::Wday::Valid.each do |wday|
       Slot::Room::Valid.each do |room|
-        Slot.find_or_create_by_hour_and_wday_and_room(hour, wday, room)
+        Slot.where(:hour => hour, :wday => wday, :room => room).first_or_create
       end
     end
   end
@@ -17,7 +17,7 @@ end
 
 def initialize_groups
   Committeeship.Committees.each do |c|
-    Group.find_or_create_by_name_and_description(:name=>c, :description=>"The #{c} committee")
+    Group.where(:name=>c, :description=>"The #{c} committee").first_or_create
   end
 
   groups = [
@@ -60,7 +60,7 @@ def initialize_groups
   ]
 
   groups.each do |group|
-    g = Group.find_or_create_by_name_and_description(group)
+    g = Group.find_or_create_by(group)
     g.update_attribute(:committee, true) if Committeeship.Committees.include? group['name']
   end
 end
@@ -78,7 +78,7 @@ def initialize_eventtypes
   ]
 
   event_types.each do |event_type|
-    EventType.find_or_create_by_name(event_type)
+    EventType.find_or_create_by(event_type)
   end
 end
 
@@ -89,14 +89,14 @@ def initialize_departments
   ]
 
   departments.each do |dept|
-    Department.find_or_create_by_name_and_abbr(dept)
+    Department.find_or_create_by(dept)
   end
 end
 
 def initialize_people
   [ [{:first_name => 'Course', :last_name => 'Surveys', :username => 'coursesurveys', :email => 'www-coursesurvey@hkn.eecs.berkeley.edu'}, ['coursesurveys']]
   ].each do |p, groups|
-    purson = Person.find(:first, :conditions => p) || Person.new(p.update({:password => 'changeme', :password_confirmation => 'changeme', :approved => true}))
+    purson = Person.where(p).first || Person.new(p.update({:password => 'changeme', :password_confirmation => 'changeme', :approved => true}))
     purson.groups = groups.collect {|g| Group.find_by_name(g)}
     raise purson.errors.inspect unless purson.save
   end
@@ -115,7 +115,7 @@ def initialize_mobile_carriers
     {:name => "Virgin Mobile USA",  :sms_email => "@vmobl.com"},
   ]
   mobile_carriers.each do |mobile_carrier|
-    MobileCarrier.find_or_create_by_name_and_sms_email(mobile_carrier)
+    MobileCarrier.find_or_create_by(mobile_carrier)
   end
 end
 

@@ -27,7 +27,7 @@ def user_session(stubs = {}, user_stubs = {})
 end
 
 def login(session_stubs = {}, user_stubs = {})
-  UserSession.stub!(:find).and_return(user_session(session_stubs, user_stubs))
+  UserSession.stub(:find) { user_session(session_stubs, user_stubs) }
 end
 
 def logout
@@ -48,5 +48,5 @@ def login_as(user, auth={})
 end
 
 def login_as_officer(auth={})
-	login_as stub_model(Person), auth.merge({'officers' => true, 'comms' => true})
+  login_as stub_model(Person), auth.merge({'officers' => true, 'comms' => true})
 end

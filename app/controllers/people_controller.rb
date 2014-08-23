@@ -25,8 +25,7 @@ class PeopleController < ApplicationController
 
     @search_opts = {'sort' => "first_name"}.merge params
     opts = { :page     => params[:page],
-             :per_page => params[:per_page] || 20,
-             :order    => "people.#{order} #{sort_direction}"
+             :per_page => params[:per_page] || 20
            }
     
     if %w[officers].include? @category or %w[cmembers].include? @category
@@ -39,9 +38,11 @@ class PeopleController < ApplicationController
       joinstr = "JOIN groups_people ON groups_people.person_id = people.id"
       cond = ["groups_people.group_id = ?", @group.id]
     end
-    opts.merge!( { :joins => joinstr, :conditions => cond } )
-   
-    person_selector = Person
+
+    # TODO: Uh is this SQL injectable?
+    person_selector = Person.order("people.#{order} #{sort_direction}")
+                            .joins(joinstr)
+                            .where(cond)
     if @auth["vp"] and params[:not_approved]
       person_selector = person_selector.where(:approved => nil )
     end
@@ -62,7 +63,7 @@ class PeopleController < ApplicationController
   end
 
   def create
-    @person = Person.new(params[:person])
+    @person = Person.new(person_params)
 
     # defaults to making a candidate
     @person.groups << Group.find_by_name("candidates")
@@ -225,5 +226,23 @@ class PeopleController < ApplicationController
     @current_user && @current_user.id == params[:id] or @auth['superusers']
   end
 
+  def person_params
+    params.require(:person).permit(
+      :first_name,
+      :last_name,
+      :username,
+      :email,
+      :phone_number,
+      :aim,
+      :date_of_birth,
+      :picture,
+      :private,
+      :local_address,
+      :perm_address,
+      :grad_semester,
+      :sms_alerts,
+      :mobile_carrier_id
+    )
+  end
 
 end

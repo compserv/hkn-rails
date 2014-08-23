@@ -114,7 +114,7 @@ class String
   def semi_escape
     m = { '<' => '&lt;',
           '>' => '&gt;',
-          /^\"|\"$/ => '',
+          /\A\"|\"\z/ => '',
           '\\"' => '"'
         }
     s = self.dup

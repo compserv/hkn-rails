@@ -17,8 +17,10 @@ class Instructor < ActiveRecord::Base
   # =======================
 
   has_many :instructorships
-  has_many :klasses,     :through => :instructorships, :conditions => {:instructorships => {:ta => false}}
-  has_many :tad_klasses, :through => :instructorships, :conditions => {:instructorships => {:ta => true }}, :source => :klass
+  has_many :klasses,     -> { where(instructorships: {ta: false}) },
+                         :through => :instructorships
+  has_many :tad_klasses, -> { where(instructorships: {ta: true}) },
+                         :through => :instructorships, :source => :klass
   has_many :survey_answers, :through => :instructorships
 
   #validates_presence_of :first_name
@@ -109,7 +111,7 @@ class Instructor < ActiveRecord::Base
   end
 
   def Instructor.find_by_name(first_name, last_name)
-    Instructor.find(:first, :conditions => { :first_name => first_name, :last_name => last_name} )
+    Instructor.where({:first_name => first_name, :last_name => last_name}).first
   end
 
   private

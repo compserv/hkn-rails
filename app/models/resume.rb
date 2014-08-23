@@ -28,7 +28,7 @@ class Resume < ActiveRecord::Base
   before_destroy :delete_file
 
   
-  default_scope :order => 'resumes.created_at DESC'
+  default_scope -> { order('resumes.created_at DESC') }
   # so we can just pick out the 'first' of the resumes to get the most recent
 
   scope :since, lambda { |date| where(['resumes.created_at >= ?', date]) }
@@ -46,7 +46,7 @@ class Resume < ActiveRecord::Base
   end
 
   def is_pdf?
-    !!(`file -b #{self.file}` =~ /^PDF/)
+    !!(`file -b #{self.file}` =~ /\APDF/)
   end
     
   

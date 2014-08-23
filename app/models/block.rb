@@ -18,7 +18,7 @@ class Block < ActiveRecord::Base
   validate :valid_time_range
   validates :event, :presence => true
 
-  default_scope :order => 'start_time'
+  default_scope -> { order('start_time') }
 
   def valid_time_range
     if !start_time.blank? and !end_time.blank?

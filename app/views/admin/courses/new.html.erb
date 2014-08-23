@@ -2,6 +2,6 @@
 
 <h1><%= @course.new_record? ? 'New Course' : @course.to_s %></h1>
 
-<%= form_for @course, :url => admin_courses_create_path do |f| -%>
+<%= form_for @course, :url => admin_courses_create_path, method: :post do |f| -%>
   <%= render 'form', :form => f %>
 <%- end -%>

@@ -163,7 +163,7 @@ class CandidatesController < ApplicationController
   end
 
   def coursesurvey_signup_post
-    param_ids = params.keys.reject{|x| !(x =~ /^survey[0-9]*$/)}
+    param_ids = params.keys.reject{|x| !(x =~ /\Asurvey[0-9]*\z/)}
 
     # Don't allow more than 5 surveys
     return redirect_to coursesurvey_signup_path, :notice => "You can sign up for a maximum of five classes." if (@current_user.coursesurveys.count+param_ids.count) > 5

@@ -25,7 +25,7 @@ class UserSessionsController < ApplicationController
     return redirect_to login_path unless params[:user_session]
 
     user = Person.find_by_username(params[:user_session][:username])
-    @user_session = UserSession.new(params[:user_session])
+    @user_session = UserSession.new(user_session_params)
 
     # Three cases:
     # 1) Successful login
@@ -79,4 +79,15 @@ class UserSessionsController < ApplicationController
       render :js => "puts('Sorry, try again.'); reauthenticate();"
     end
   end
+
+  private
+
+    def user_session_params
+      params.require(:user_session).permit(
+        :username,
+        :password,
+        :remember_me
+      )
+    end
+
 end

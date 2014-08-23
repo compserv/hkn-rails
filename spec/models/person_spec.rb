@@ -68,7 +68,7 @@ describe Person do
   it "should require the password and password_confirmation to match" do
     person = Person.create(@good_opts.merge(:password => "12345678", :password_confirmation => "12345679"))
     person.should_not be_valid
-    person.errors[:password].should include("doesn't match confirmation")
+    person.errors[:password_confirmation].should include("doesn't match Password")
   end
 
   it "should not allow two people to have the same username" do

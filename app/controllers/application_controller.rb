@@ -3,9 +3,9 @@ class ApplicationController < ActionController::Base
   before_filter :get_current_user, :merge_messages, :check_authorizations, :set_view_variables
   layout 'application'
 
-  include ::SslRequirement
-  ssl_allowed :all
-  ssl_required :all
+  #include ::SslRequirement
+  #ssl_allowed :all
+  #ssl_required :all
 
   attr_reader :current_user, :real_current_user
 
@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   # The idea comes from rails' dynamic finders.
   def respond_to?(method_id, include_private = false)
     case method_id.to_s
-      when /^authorize_([_a-zA-Z]\w*)$/
+      when /\Aauthorize_([_a-zA-Z]\w*)\z/
         return true
       else
         super
@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
 
   def method_missing(method_id, *arguments, &block)
     case method_id.to_s
-      when /^authorize_([_a-zA-Z]\w*)$/
+      when /\Aauthorize_([_a-zA-Z]\w*)\z/
         group = $1
         self.send :authorize, group
       else

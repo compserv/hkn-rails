@@ -17,25 +17,23 @@ class Course < ActiveRecord::Base
 
   belongs_to :department
   has_many :course_preferences, :dependent => :destroy
-  has_many :tutors, :through => :course_preferences, :uniq => true
-  has_many :klasses, :order => "semester DESC, section DESC", :dependent => :destroy
+  has_many :tutors, -> { uniq }, :through => :course_preferences
+  has_many :klasses, -> { order "semester DESC, section DESC" }, :dependent => :destroy
   has_many :coursesurveys, :through => :klasses
   #has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :instructorships, :through => :klasses
-                  
+
   has_many :exams
   validates :department_id, :presence => true
   validates :course_number, :presence => true
   validates_uniqueness_of :course_number, :scope => [:department_id,:prefix,:suffix]
 
   #scope :all, order("prefix, courses.course_number, suffix")
-  scope :ordered, order("courses.course_number, prefix, suffix")
-  scope :ordered_desc, order("(prefix, courses.course_number, suffix) DESC")
-
-  attr_accessible :name, :description, :units, :prereqs, :department_id, :course_guide
+  scope :ordered, -> { order("courses.course_number, prefix, suffix") }
+  scope :ordered_desc, -> { order("(prefix, courses.course_number, suffix) DESC") }
 
   module Regex
-    PrefixNumSuffix = /^([A-Z]*)(\d+)([A-Z]*)$/
+    PrefixNumSuffix = /\A([A-Z]*)(\d+)([A-Z]*)\z/
   end
 
   # Sunspot
@@ -82,7 +80,7 @@ class Course < ActiveRecord::Base
     # BE CAREFUL, THIS IS KIND OF EXPENSIVE
     r = SurveyAnswer.where(
       :survey_question_id => SurveyQuestion.find_by_keyword(:prof_eff),
-      :id => self.instructorships.collect(&:survey_answer_ids)
+      :id => self.instructorships.collect(&:survey_answer_ids).flatten
     )
     if semester
       r = r.includes(:instructorship => :klass).where(:klasses => {:semester => semester})
@@ -150,13 +148,13 @@ class Course < ActiveRecord::Base
   end
 
   # E.g. ("EE", "C149")
-  def Course.find_by_short_name(dept_abbr, full_course_number, section=nil)
+  def Course.lookup_by_short_name(dept_abbr, full_course_number, section=nil)
     (prefix, course_number, suffix) = full_course_number.scan(Regex::PrefixNumSuffix).first
     department = Department.find_by_nice_abbr(dept_abbr)
     #raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?
     return nil if course_number.blank? or department.nil?
 
-    Course.find( :first, :conditions => { :department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix } )
+    Course.where(:department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix).first
   end
 
   def Course.find_all_by_department_abbr(dept_abbr)

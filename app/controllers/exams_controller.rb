@@ -139,7 +139,7 @@ class ExamsController < ApplicationController
     @counts = {}
     Exam.select("klass_id, course_id, exam_type, number").
       group([:course_id, :klass_id, :number, :exam_type]).
-      count.each {|course, count| 
+      count(:all).each {|course, count| 
         @counts[course[0]] ? @counts[course[0]] += 1 : @counts[course[0]] = 1}
 
     respond_to do |format|
@@ -176,7 +176,7 @@ class ExamsController < ApplicationController
 
       str = "%#{@query}%"
 
-      @results[:courses] = Course.find(:all, :conditions => ['description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str])
+      @results[:courses] = Course.where('description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str)
       flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
      end
 

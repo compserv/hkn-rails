@@ -22,13 +22,13 @@ class ResumesController < ApplicationController
 
     unless resume_file = params[:resume][:file]
       flash[:notice] = "Please attach your resume file"
-      @resume = Resume.new(params[:resume])
+      @resume = Resume.new(resume_params)
       @person = @current_user
       render :action => "new"
       return
     end
 
-    resume_constructor_args = params[:resume]
+    resume_constructor_args = resume_params
     # strftime doesn't have milliseconds in ruby 1.8.7
     # So it will just put in an "L" in resume names for now
     # and when(?) we upgrade to 1.9+ it will start writing
@@ -67,9 +67,9 @@ class ResumesController < ApplicationController
   end
   
   def status_list
-    @officers = Person.find(:all).find_all {|p| p.in_group?("officers")}
-    @candidates = Person.find(:all).find_all {|p| p.in_group?("candidates")}
-    @everyone_else = Person.find(:all).find_all {|p| not (@officers.include?(p) or @candidates.include?(p))}
+    @officers = Person.all.find_all {|p| p.in_group?("officers")}
+    @candidates = Person.all.find_all {|p| p.in_group?("candidates")}
+    @everyone_else = Person.all.find_all {|p| not (@officers.include?(p) or @candidates.include?(p))}
   end
 
   def index
@@ -100,5 +100,16 @@ class ResumesController < ApplicationController
   end
   
   private
+
+    def resume_params
+      params.require(:resume).permit(
+        :overall_gpa,
+        :major_gpa,
+        :resume_text,
+        :graduation_year,
+        :graduation_semester,
+        :file,
+      )
+    end
 
 end
