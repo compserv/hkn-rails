@@ -1,12 +1,11 @@
 class Transaction < ActiveRecord::Base
-  belongs_to :company, inverse_of :transactions  
+  belongs_to :company, inverse_of: :transactions  
 
   validates :company,
-    presence :true
+    presence: true
   validates :amount,
-    presence :true
+    presence: true
   validates :charge_id,
-    presence :true
+    presence: true
 
-    
 end
