@@ -87,21 +87,20 @@ describe RsvpsController do
 
     describe "with valid params" do
       it "assigns a newly created rsvp as @rsvp" do
-        Rsvp.stub(:new).with({'these' => 'params'}) { mock_rsvp(:save => true) }
-        do_post :create, :rsvp => {'these' => 'params'}
+        Rsvp.stub(:new).with({'comment' => ''}) { mock_rsvp(:save => true) }
+        do_post :create, :rsvp => {'comment' => ''}
         assigns(:rsvp).should be(mock_rsvp)
       end
 
       it "redirects to the created rsvp" do
-        Rsvp.stub(:new) { mock_rsvp(:save => true) }
-        do_post :create, :rsvp => {}
+        Rsvp.stub(:new).with({'comment' => ''}) { mock_rsvp(:save => true) }
+        do_post :create, :rsvp => {'comment' => ''}
         response.should redirect_to(event_url(@event))
       end
 
       describe "with transportation required" do
         it "should update rsvp transportation" do
-          Rsvp.stub(:new) { mock_rsvp(:save => true) }
-          Rsvp.should_receive(:new).with(hash_including 'transportation' => Rsvp::TRANSPORT_ENUM.first.last.to_s)
+          Rsvp.stub(:new).with({ 'transportation' => Rsvp::TRANSPORT_ENUM.first.last.to_s }) { mock_rsvp(:save => true) }
           do_post :create, :rsvp => {:transportation => Rsvp::TRANSPORT_ENUM.first.last}
           response.should redirect_to(event_path(@event))
         end
@@ -110,14 +109,14 @@ describe RsvpsController do
 
     describe "with invalid params" do
       it "assigns a newly created but unsaved rsvp as @rsvp" do
-        Rsvp.stub(:new).with({'these' => 'params'}) { mock_rsvp(:save => false) }
+        Rsvp.stub(:new).with({}) { mock_rsvp(:save => false) }
         do_post :create, :rsvp => {'these' => 'params'}
         assigns(:rsvp).should be(mock_rsvp)
       end
 
       it "re-renders the 'new' template" do
-        Rsvp.stub(:new) { mock_rsvp(:save => false) }
-        do_post :create, :rsvp => {}
+        Rsvp.stub(:new).with({}) { mock_rsvp(:save => false) }
+        do_post :create, :rsvp => {'these' => 'params'}
         response.should render_template("new")
       end
     end
@@ -134,13 +133,13 @@ describe RsvpsController do
 
       it "updates the requested rsvp" do
         Rsvp.should_receive(:find).with("37") { mock_rsvp }
-        mock_rsvp.should_receive(:update_attributes).with({'these' => 'params'})
-        do_put :update, :id => "37", :rsvp => {'these' => 'params'}
+        mock_rsvp.should_receive(:update_attributes).with({'comment' => ''})
+        do_put :update, :id => "37", :rsvp => {'comment' => ''}
       end
 
       it "assigns the requested rsvp as @rsvp" do
-        Rsvp.stub(:find) { mock_rsvp(:update_attributes => true) }
-        do_put :update, :id => "1"
+        Rsvp.stub(:find).with("1") { mock_rsvp(:update_attributes => true) }
+        do_put :update, :id => "1", :rsvp => {'comment' => ''}
         assigns(:rsvp).should be(mock_rsvp)
       end
 
