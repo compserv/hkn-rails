@@ -94,13 +94,13 @@ describe EventTypesController do
 
       describe "with invalid params" do
         it "assigns a newly created but unsaved event_type as @event_type" do
-          EventType.stub(:new) { mock_event_type(:save => false) }
+          EventType.stub(:new).with({}) { mock_event_type(:save => false) }
           post :create, :event_type => {'these' => 'params'}
           assigns(:event_type).should be(mock_event_type)
         end
 
         it "re-renders the 'new' template" do
-          EventType.stub(:new) { mock_event_type(:save => false) }
+          EventType.stub(:new).with({}) { mock_event_type(:save => false) }
           post :create, :event_type => {'these' => 'params'}
           response.should render_template("new")
         end
