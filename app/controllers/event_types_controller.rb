@@ -44,7 +44,7 @@ class EventTypesController < ApplicationController
   # POST /event_types
   # POST /event_types.xml
   def create
-    @event_type = EventType.new(params[:event_type])
+    @event_type = EventType.new(event_type_params)
 
     respond_to do |format|
       if @event_type.save
@@ -63,7 +63,7 @@ class EventTypesController < ApplicationController
     @event_type = EventType.find(params[:id])
 
     respond_to do |format|
-      if @event_type.update_attributes(params[:event_type])
+      if @event_type.update_attributes(event_type_params)
         format.html { redirect_to(@event_type, :notice => 'Event type was successfully updated.') }
         format.xml  { head :ok }
       else

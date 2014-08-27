@@ -13,7 +13,7 @@ class Admin::KlassesController < ApplicationController
   end
 
   def update
-    @klass.update_attributes params[:klass]
+    @klass.update_attributes klass_params
 
     render :edit
   end
@@ -33,5 +33,16 @@ private
       return false
     end
   end
+
+  def klass_params
+    params.require(:klass).permit(
+      :location,
+      :time,
+      :section,
+      :num_students,
+      :notes
+    )
+  end
+    
 
 end

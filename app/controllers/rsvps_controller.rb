@@ -54,7 +54,7 @@ class RsvpsController < ApplicationController
   # POST /rsvps
   # POST /rsvps.xml
   def create
-    @rsvp           = Rsvp.new(params[:rsvp])
+    @rsvp           = Rsvp.new(rsvp_params)
     @rsvp.event     = @event
     @rsvp.person    = @current_user
     @rsvp.confirmed = Rsvp::Unconfirmed
@@ -95,7 +95,7 @@ class RsvpsController < ApplicationController
     validate_owner!(@rsvp)
     assign_blocks
 
-    @rsvp.update_attributes(params[:rsvp])
+    @rsvp.update_attributes(rsvp_params)
 
     respond_to do |format|
       if @rsvp.save

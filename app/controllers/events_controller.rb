@@ -166,7 +166,7 @@ class EventsController < ApplicationController
   # POST /events.xml
   def create
 
-    @event = Event.new(params[:event])
+    @event = Event.new(event_params)
     @blocks = []
     valid = true
 
@@ -208,6 +208,7 @@ class EventsController < ApplicationController
               block = Block.find(block_hash['id'])
               block.update_attributes(block_hash)
             else
+              puts "****** here ******"
               block = Block.new(params[block_name])
             end
             block.event = @event
@@ -255,7 +256,7 @@ class EventsController < ApplicationController
     original_start = @event.start_time
     original_end = @event.end_time
 
-    valid = @event.update_attributes(params[:event])
+    valid = @event.update_attributes(event_params)
 
     # Don't save event if any block is invalid
     ActiveRecord::Base.transaction do

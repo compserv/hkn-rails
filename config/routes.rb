@@ -39,7 +39,7 @@ HknRails::Application.routes.draw do
 
     scope 'klasses', :as => 'klasses' do
       get  '/:id' => 'klasses#edit',   :as => 'edit'
-      put  '/:id' => 'klasses#update', :as => 'update'
+      patch  '/:id' => 'klasses#update', :as => 'update'
     end
 
     scope "election", :as => "election" do
