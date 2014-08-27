@@ -16,7 +16,7 @@ class Block < ActiveRecord::Base
   belongs_to :event
 
   validate :valid_time_range
-  validates :event, :presence => true
+  validates_presence_of :event, :start_time, :end_time
 
   default_scope -> { order('start_time') }
 
