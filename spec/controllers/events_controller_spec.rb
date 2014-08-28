@@ -9,6 +9,9 @@ describe EventsController do
     EventsController.skip_before_filter :authorize_comms
   end
 
+  $start_time = Time.now
+  $end_time = Time.now + 1.minute
+
   def mock_event(stubs={})
     @mock_event ||= mock_model(Event, stubs).as_null_object
   end
@@ -19,8 +22,8 @@ describe EventsController do
       'location' => 'hell',
       'description' => 'Tonight, we dine in hell!',
       'event_type_id' => "1",
-      'start_time' => 'now',
-      'end_time' => 'never'
+      'start_time' => $start_time.to_s,
+      'end_time' => $end_time.to_s
     }
   end
 
@@ -91,17 +94,15 @@ describe EventsController do
 
       describe "with Whole Event RSVPs allowed" do
         it "creates exactly one Block with the same start and end times" do
-          start_time = Time.now
-          end_time = Time.now + 1.minute
           rsvp_cap = 10.to_s  # params is always string
-          @mock_event = mock_event(:save! => true, :start_time => start_time, :end_time => end_time)
+          @mock_event = mock_event(:save! => true, :start_time => $start_time, :end_time => $end_time)
           Event.stub(:new).with(valid_event_params) { @mock_event }
           @mock_block = mock_model(Block, :save! => true)
           Block.stub(:new) { @mock_block }
           @mock_block.should_receive(:rsvp_cap=).with(rsvp_cap)
           @mock_block.should_receive(:event=).with(@mock_event)
-          @mock_block.should_receive(:start_time=).with(start_time)
-          @mock_block.should_receive(:end_time=).with(end_time)
+          @mock_block.should_receive(:start_time=).with($start_time)
+          @mock_block.should_receive(:end_time=).with($end_time)
 
           post :create, :event => valid_event_params, :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap
         end
@@ -140,7 +141,7 @@ describe EventsController do
           @mock_event = mock_event(:save! => true)
           Event.stub(:new).with(valid_event_params) { @mock_event }
           @mock_block = mock_model(Block, :save! => true).as_null_object
-          block_params = {'start_time' => 'now', 'end_time' => 'never'}
+          block_params = { 'start_time' => $start_time.to_s, 'end_time' => $end_time.to_s }
 
           Block.should_receive(:new).once.ordered.with(block_params).and_return @mock_block
           Block.should_receive(:new).once.ordered.with(block_params).and_return @mock_block
@@ -157,7 +158,7 @@ describe EventsController do
           @mock_block = mock_model(Block).as_null_object
           @mock_block.should_receive(:save!).and_raise("Block Error")
           Block.stub(:new) { @mock_block }
-          block_params = {:start_time => 'now', :end_time => 'never'}
+          block_params = { 'start_time' => $start_time.to_s, 'end_time' => $end_time.to_s }
 
           post :create, :event => valid_event_params, :rsvp_type => @rsvp_type, :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block_params, :block1 => block_params, :block2 => block_params
           response.should render_template("new")
@@ -234,11 +235,9 @@ describe EventsController do
           end
 
           it "creates one block with the same start and end times" do
-            start_time = Time.now
-            end_time = Time.now + 1.minute
             rsvp_cap = 10.to_s  # params are always strings
 
-            @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
+            @mock_event = mock_event(:update_attributes! => true, :start_time => $start_time, :end_time => $end_time)
             @mock_blocks = [1, 2]
             @mock_event.stub(:blocks) { @mock_blocks }
             Event.stub(:find).with("1") { @mock_event }
@@ -248,10 +247,10 @@ describe EventsController do
 
             @mock_block.should_receive(:rsvp_cap=).with(rsvp_cap)
             @mock_block.should_receive(:event=).with(@mock_event)
-            @mock_block.should_receive(:start_time=).with(start_time)
-            @mock_block.should_receive(:end_time=).with(end_time)
+            @mock_block.should_receive(:start_time=).with($start_time)
+            @mock_block.should_receive(:end_time=).with($end_time)
 
-            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap, :event => {:start_time => start_time, :end_time => end_time}
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap, :event => {:start_time => $start_time, :end_time => $end_time}
           end
         end
         
@@ -272,22 +271,20 @@ describe EventsController do
           end
 
           it "updates the existing block start and end times" do
-            start_time = Time.now
-            end_time = Time.now + 1.minute
             rsvp_cap = 10.to_s  # params are always strings
 
-            @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
+            @mock_event = mock_event(:update_attributes! => true, :start_time => $start_time, :end_time => $end_time)
             Event.stub(:find).with("1") { @mock_event }
             @mock_block = mock_model(Block, :save! => true)
             @mock_block.stub(:rsvp_cap=)
             @mock_block.stub(:event=)
-            @mock_block.should_receive(:start_time=).with(start_time)
-            @mock_block.should_receive(:end_time=).with(end_time)
+            @mock_block.should_receive(:start_time=).with($start_time)
+            @mock_block.should_receive(:end_time=).with($end_time)
             @mock_blocks = [@mock_block]
             @mock_event.stub(:blocks) { @mock_blocks }
             Block.should_not_receive(:new)
 
-            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :event => {:start_time => start_time, :end_time => end_time}
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :event => {:start_time => $start_time, :end_time => $end_time}
           end
         end
       end
@@ -327,11 +324,9 @@ describe EventsController do
           @mock_block0 = mock_model(Block, :save! => true).as_null_object
           @mock_block1 = mock_model(Block, :save! => true).as_null_object
           @mock_block2 = mock_model(Block, :save! => true).as_null_object
-          start_time = Time.now.to_s
-          end_time = (Time.now + 1.minute).to_s
-          block0 = {:id => 0, 'start_time' => start_time, 'end_time' => end_time}
-          block1 = {:id => 1, 'start_time' => start_time, 'end_time' => end_time}
-          block2 = {'start_time' => start_time, 'end_time' => end_time}
+          block0 = {:id => 0, 'start_time' => $start_time.to_s, 'end_time' => $end_time.to_s}
+          block1 = {:id => 1, 'start_time' => $start_time.to_s, 'end_time' => $end_time.to_s}
+          block2 = {'start_time' => $start_time.to_s, 'end_time' => $end_time.to_s}
 
           Block.should_receive(:find).once.ordered.with(0).and_return @mock_block0
           Block.should_receive(:find).once.ordered.with(1).and_return @mock_block1
