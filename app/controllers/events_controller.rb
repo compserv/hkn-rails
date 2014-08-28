@@ -166,7 +166,7 @@ class EventsController < ApplicationController
   # POST /events.xml
   def create
 
-    @event = Event.new(params[:event])
+    @event = Event.new(event_params)
     @blocks = []
     valid = true
 
@@ -206,9 +206,9 @@ class EventsController < ApplicationController
             block_hash = params[block_name]
             if block_hash.has_key?('id')
               block = Block.find(block_hash['id'])
-              block.update_attributes(block_hash)
+              block.update_attributes(block_params(block_name))
             else
-              block = Block.new(params[block_name])
+              block = Block.new(block_params(block_name))
             end
             block.event = @event
             @blocks << block
@@ -255,7 +255,7 @@ class EventsController < ApplicationController
     original_start = @event.start_time
     original_end = @event.end_time
 
-    valid = @event.update_attributes(params[:event])
+    valid = @event.update_attributes(event_params)
 
     # Don't save event if any block is invalid
     ActiveRecord::Base.transaction do
@@ -313,9 +313,9 @@ class EventsController < ApplicationController
                 unless block = Block.find(block_hash['id'] && block_hash['id'].to_i)
                   raise "Could not find block #{block_hash['id']} (#{block_hash.inspect})"
                 end
-                block.update_attributes(block_hash)
+                block.update_attributes(block_params(block_name))
               else
-                block = Block.new(params[block_name])
+                block = Block.new(block_params(block_name))
               end
               block.event = @event
               new_blocks << block
@@ -468,8 +468,8 @@ class EventsController < ApplicationController
     )
   end
 
-  def block_params
-    params.require(:block).permit(
+  def block_params(block_name)
+    params.require(block_name).permit(
       :rsvp_cap,
       :start_time,
       :end_time,

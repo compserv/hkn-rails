@@ -143,7 +143,7 @@ class PeopleController < ApplicationController
     end
 
     # DO IT
-    if @person.update_attributes(params[:person])
+    if @person.update_attributes(person_params)
       redirect_to(path, :notice => 'Settings successfully updated.')
     else
       redirect_to(path, :notice => 'Settings could not be updated.')
