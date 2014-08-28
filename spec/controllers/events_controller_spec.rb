@@ -13,6 +13,17 @@ describe EventsController do
     @mock_event ||= mock_model(Event, stubs).as_null_object
   end
 
+  def valid_event_params
+    {
+      'name' => 'Dinner',
+      'location' => 'hell',
+      'description' => 'Tonight, we dine in hell!',
+      'event_type_id' => "1",
+      'start_time' => 'now',
+      'end_time' => 'never'
+    }
+  end
+
   describe "GET index" do
     it "assigns all events as @events" do
       #Event.stub_chain(:with_permission, :paginate) { [mock_event] }
@@ -59,22 +70,22 @@ describe EventsController do
     describe "with valid params" do
 
       it "assigns a newly created event as @event" do
-        Event.stub(:new).with({'these' => 'params'}) { mock_event(:save => true) }
-        post :create, :event => {'these' => 'params'}
+        Event.stub(:new).with(valid_event_params) { mock_event(:save => true) }
+        post :create, :event => valid_event_params
         assigns(:event).should be(mock_event)
       end
 
       it "redirects to the created event" do
-        Event.stub(:new) { mock_event(:save! => true) }
-        post :create, :event => {}, :rsvp_type => "No RSVPs"
+        Event.stub(:new).with(valid_event_params) { mock_event(:save! => true) }
+        post :create, :event => valid_event_params, :rsvp_type => "No RSVPs"
         response.should redirect_to(event_url(mock_event))
       end
 
       describe "with No RSVPs allowed" do
         it "does not create Blocks" do
-          Event.stub(:new) { mock_event(:save! => true) }
+          Event.stub(:new).with(valid_event_params) { mock_event(:save! => true) }
           Block.should_not_receive(:new)
-          post :create, :event => {}, :rsvp_type => "No RSVPs"
+          post :create, :event => valid_event_params, :rsvp_type => "No RSVPs"
         end
       end
 
@@ -84,7 +95,7 @@ describe EventsController do
           end_time = Time.now + 1.minute
           rsvp_cap = 10.to_s  # params is always string
           @mock_event = mock_event(:save! => true, :start_time => start_time, :end_time => end_time)
-          Event.stub(:new) { @mock_event }
+          Event.stub(:new).with(valid_event_params) { @mock_event }
           @mock_block = mock_model(Block, :save! => true)
           Block.stub(:new) { @mock_block }
           @mock_block.should_receive(:rsvp_cap=).with(rsvp_cap)
@@ -92,7 +103,7 @@ describe EventsController do
           @mock_block.should_receive(:start_time=).with(start_time)
           @mock_block.should_receive(:end_time=).with(end_time)
 
-          post :create, :event => {}, :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap.to_s
+          post :create, :event => valid_event_params, :rsvp_type => "Whole Event RSVPs", :rsvp_cap => rsvp_cap
         end
       end
 
@@ -106,7 +117,7 @@ describe EventsController do
           start_time = DateTime.new(2010, 1, 6, 1, 0, 0)
           end_time = start_time + 3.minutes
           @mock_event = mock_event(:save! => true, :start_time => start_time, :end_time => end_time)
-          Event.stub(:new) { @mock_event }
+          Event.stub(:new).with(valid_event_params) { @mock_event }
           @mock_block = mock_model(Block, :save! => true).as_null_object
           Block.stub(:new) { @mock_block }
           @mock_block.stub(:rsvp_cap=)
@@ -121,39 +132,34 @@ describe EventsController do
           @mock_block.should_receive(:start_time=).once.ordered.with(start_time + 2.minutes)
           @mock_block.should_receive(:end_time=).once.ordered.with(start_time + 3.minutes)
 
-          post :create, :event => {}, :rsvp_type => @rsvp_type, :uniform_blocks => true, :num_blocks => num_blocks
+          post :create, :event => valid_event_params, :rsvp_type => @rsvp_type, :uniform_blocks => true, :num_blocks => num_blocks
         end
 
         it "with valid manual blocks creates manually specified Blocks" do
           num_blocks = 3
           @mock_event = mock_event(:save! => true)
-          Event.stub(:new) { @mock_event }
+          Event.stub(:new).with(valid_event_params) { @mock_event }
           @mock_block = mock_model(Block, :save! => true).as_null_object
-          #Block.stub(:new) { @mock_block }
-          block0 = {}
-          block1 = {}
-          block2 = {}
+          block_params = {'start_time' => 'now', 'end_time' => 'never'}
 
-          Block.should_receive(:new).once.ordered.with(block0).and_return @mock_block
-          Block.should_receive(:new).once.ordered.with(block1).and_return @mock_block
-          Block.should_receive(:new).once.ordered.with(block2).and_return @mock_block
+          Block.should_receive(:new).once.ordered.with(block_params).and_return @mock_block
+          Block.should_receive(:new).once.ordered.with(block_params).and_return @mock_block
+          Block.should_receive(:new).once.ordered.with(block_params).and_return @mock_block
           @mock_block.should_receive(:event=).exactly(3).times.with(@mock_event)
 
-          post :create, :event => {}, :rsvp_type => @rsvp_type, :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1, :block2 => block2
+          post :create, :event => valid_event_params, :rsvp_type => @rsvp_type, :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block_params, :block1 => block_params, :block2 => block_params
         end
 
         it "with invalid manual blocks redirects back to new event" do
           num_blocks = 3
           @mock_event = mock_event(:save! => true)
-          Event.stub(:new) { @mock_event }
+          Event.stub(:new).with(valid_event_params) { @mock_event }
           @mock_block = mock_model(Block).as_null_object
           @mock_block.should_receive(:save!).and_raise("Block Error")
           Block.stub(:new) { @mock_block }
-          block0 = {}
-          block1 = {}
-          block2 = {}
+          block_params = {:start_time => 'now', :end_time => 'never'}
 
-          post :create, :event => {}, :rsvp_type => @rsvp_type, :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1, :block2 => block2
+          post :create, :event => valid_event_params, :rsvp_type => @rsvp_type, :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block_params, :block1 => block_params, :block2 => block_params
           response.should render_template("new")
         end
       end
@@ -161,14 +167,14 @@ describe EventsController do
 
     describe "with invalid params" do
       it "assigns a newly created but unsaved event as @event" do
-        Event.stub(:new).with({'these' => 'params'}) { mock_event(:save => false) }
+        Event.stub(:new).with({}) { mock_event(:save => false) }
         post :create, :event => {'these' => 'params'}
         assigns(:event).should be(mock_event)
       end
 
       it "re-renders the 'new' template" do
-        Event.stub(:new) { mock_event(:save => false) }
-        post :create, :event => {}
+        Event.stub(:new).with({}) { mock_event(:save => false) }
+        post :create, :event => {'these' => 'params'}
         response.should render_template("new")
       end
     end
@@ -180,33 +186,33 @@ describe EventsController do
     describe "with valid params" do
       it "updates the requested event" do
         Event.should_receive(:find).with("37") { mock_event }
-        mock_event.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :event => {'these' => 'params'}
+        mock_event.should_receive(:update_attributes).with(valid_event_params)
+        put :update, :id => "37", :event => valid_event_params
       end
 
       it "assigns the requested event as @event" do
-        Event.stub(:find) { mock_event(:update_attributes! => true) }
-        put :update, :id => "1"
+        Event.stub(:find).with("1") { mock_event(:update_attributes! => true) }
+        put :update, :id => "1", :event => valid_event_params
         assigns(:event).should be(mock_event)
       end
 
       it "redirects to the event" do
-        Event.stub(:find) { mock_event(:update_attributes! => true) }
-        put :update, :id => "1", :rsvp_type => "No RSVPs"
+        Event.stub(:find).with("1") { mock_event(:update_attributes! => true) }
+        put :update, :id => "1", :rsvp_type => "No RSVPs", :event => valid_event_params
         response.should redirect_to(event_url(mock_event))
       end
 
       describe "with No RSVPs" do
         it "deletes all existing blocks and RSVPs" do
           @mock_event = mock_event(:update_attributes! => true)
-          Event.stub(:find) { @mock_event }
+          Event.stub(:find).with("1") { @mock_event }
           @mock_blocks = []
           @mock_event.stub(:blocks) { @mock_blocks }
           @mock_blocks.should_receive(:delete_all)
           @mock_rsvps = []
           @mock_event.stub(:rsvps) { @mock_rsvps }
           @mock_rsvps.should_receive(:delete_all)
-          put :update, :id => "1", :rsvp_type => "No RSVPs"
+          put :update, :id => "1", :rsvp_type => "No RSVPs", :event => valid_event_params
         end
       end
 
@@ -214,7 +220,7 @@ describe EventsController do
         describe "if event used to have Block RSVPs" do
           it "deletes all existing blocks" do
             @mock_event = mock_event(:update_attributes! => true)
-            Event.stub(:find) { @mock_event }
+            Event.stub(:find).with("1") { @mock_event }
             # New block should save correctl
             @mock_block = mock_model(Block).as_null_object
             @mock_block.should_receive(:save!).and_return(true)
@@ -224,7 +230,7 @@ describe EventsController do
             @mock_event.stub(:blocks) { @mock_blocks }
             @mock_blocks.should_receive(:delete_all)
 
-            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs"
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :event => valid_event_params
           end
 
           it "creates one block with the same start and end times" do
@@ -235,7 +241,7 @@ describe EventsController do
             @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
             @mock_blocks = [1, 2]
             @mock_event.stub(:blocks) { @mock_blocks }
-            Event.stub(:find) { @mock_event }
+            Event.stub(:find).with("1") { @mock_event }
             @mock_block = mock_model(Block, :save! => true)
             @mock_blocks.stub(:delete_all)
             Block.stub(:new) { @mock_block }
@@ -252,7 +258,7 @@ describe EventsController do
         describe "if event used to have Whole Event RSVPs" do
           it "does not create a new block" do
             @mock_event = mock_event(:update_attributes! => true)
-            Event.stub(:find) { @mock_event }
+            Event.stub(:find).with("1") { @mock_event }
             @mock_block = mock_model(Block, :save! => true)
             @mock_block.stub(:rsvp_cap=)
             @mock_block.stub(:event=)
@@ -262,7 +268,7 @@ describe EventsController do
             @mock_event.stub(:blocks) { @mock_blocks }
             Block.should_not_receive(:new)
 
-            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs"
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :event => valid_event_params
           end
 
           it "updates the existing block start and end times" do
@@ -271,7 +277,7 @@ describe EventsController do
             rsvp_cap = 10.to_s  # params are always strings
 
             @mock_event = mock_event(:update_attributes! => true, :start_time => start_time, :end_time => end_time)
-            Event.stub(:find) { @mock_event }
+            Event.stub(:find).with("1") { @mock_event }
             @mock_block = mock_model(Block, :save! => true)
             @mock_block.stub(:rsvp_cap=)
             @mock_block.stub(:event=)
@@ -281,7 +287,7 @@ describe EventsController do
             @mock_event.stub(:blocks) { @mock_blocks }
             Block.should_not_receive(:new)
 
-            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs"
+            put :update, :id => "1", :rsvp_type => "Whole Event RSVPs", :event => {:start_time => start_time, :end_time => end_time}
           end
         end
       end
@@ -311,7 +317,7 @@ describe EventsController do
           Block.should_not_receive(:find).with(2)
           @mock_block2.should_receive(:delete)
 
-          put :update, :id => "1", :event => {}, :rsvp_type => 'Block RSVPs', :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1
+          put :update, :id => "1", :event => valid_event_params, :rsvp_type => 'Block RSVPs', :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1
         end
 
         it "creates new blocks with correct parameters" do
@@ -321,16 +327,18 @@ describe EventsController do
           @mock_block0 = mock_model(Block, :save! => true).as_null_object
           @mock_block1 = mock_model(Block, :save! => true).as_null_object
           @mock_block2 = mock_model(Block, :save! => true).as_null_object
-          block0 = {:id => 0}
-          block1 = {:id => 1}
-          block2 = {}
+          start_time = Time.now.to_s
+          end_time = (Time.now + 1.minute).to_s
+          block0 = {:id => 0, 'start_time' => start_time, 'end_time' => end_time}
+          block1 = {:id => 1, 'start_time' => start_time, 'end_time' => end_time}
+          block2 = {'start_time' => start_time, 'end_time' => end_time}
 
           Block.should_receive(:find).once.ordered.with(0).and_return @mock_block0
           Block.should_receive(:find).once.ordered.with(1).and_return @mock_block1
           Block.should_not_receive(:find).with(2)
           Block.should_receive(:new).with(block2).and_return @mock_block2
 
-          put :update, :id => "1", :event => {}, :rsvp_type => 'Block RSVPs', :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1, :block2 => block2
+          put :update, :id => "1", :event => valid_event_params, :rsvp_type => 'Block RSVPs', :uniform_blocks => false, :num_blocks => num_blocks, :block0 => block0, :block1 => block1, :block2 => block2
         end
       end
     end
@@ -338,13 +346,13 @@ describe EventsController do
     describe "with invalid params" do
       it "assigns the event as @event" do
         Event.stub(:find) { mock_event(:update_attributes => false) }
-        put :update, :id => "1"
+        put :update, :id => "1", :event => { 'these' => 'params' }
         assigns(:event).should be(mock_event)
       end
 
       it "re-renders the 'edit' template" do
         Event.stub(:find) { mock_event(:update_attributes => false) }
-        put :update, :id => "1"
+        put :update, :id => "1", :event => { 'these' => 'params' }
         response.should render_template("edit")
       end
     end
