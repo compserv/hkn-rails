@@ -80,7 +80,7 @@ describe CoursesurveysController do
 
     context "when klass is missing surveys" do
       before :each do
-        Course.stub(:find_by_short_name) { mock_model(Course, :id => 0) }
+        Course.stub(:lookup_by_short_name) { mock_model(Course, :id => 0) }
         @klass = mock_model(Klass)
         @course = mock_model(Course, :klasses => [@klass])
         Course.stub(:find) { @course }
