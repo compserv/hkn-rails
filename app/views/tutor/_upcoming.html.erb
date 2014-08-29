@@ -1,5 +1,5 @@
 <ul class="upcoming-events plain">
-<% for event in @events.select {|e| EventType.find(:all, :conditions => ["name IN (?)", ["Exam", "Review Session"]]).include?(e.event_type)} %>
+<% for event in @tutoring_events %>
   <li class="event <%= " current" if event.start_time < Time.now %>">
     <span class="name">
       <%= link_to event.name, event %> (<span class="location"><%= event.location %></span>)
