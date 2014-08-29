@@ -339,6 +339,7 @@ module CourseSurveys
         end # each
 
         Coursesurvey.transaction do
+          puts "Attempting to commit..."
           commit!
         end
       #end # transaction
@@ -473,7 +474,7 @@ module CourseSurveys
         puts "*** FAILED parsing instructor name '#{name}'"
       end
 
-      guesses = Instructor.find_all_by_last_name lname
+      guesses = Instructor.where(last_name: lname)
 
       case
 
@@ -505,6 +506,7 @@ module CourseSurveys
            end
 
            m.save || intervene(ValidationFailedError.new("Validation failed for #{m.inspect}\n  #{m.errors.inspect}"))
+           puts m.inspect
          end
        end
     end
