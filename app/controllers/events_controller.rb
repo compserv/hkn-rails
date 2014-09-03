@@ -463,8 +463,8 @@ class EventsController < ApplicationController
       :need_transportation,
       :start_time,
       :end_time,
-      :view_permission_group,
-      :rsvp_permission_group
+      :view_permission_group_id,
+      :rsvp_permission_group_id
     )
   end
 
