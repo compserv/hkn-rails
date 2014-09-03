@@ -118,6 +118,8 @@ HknRails::Application.routes.draw do
       match "signup_courses" => "tutor#signup_courses", :as=>:tutor_signup_courses, :via => [:get, :post]
       post "update_preferences" => "tutor#update_preferences", :as=>:update_course_preferences
       get "edit_schedule" => "tutor#edit_schedule", :as=>:tutor_edit_schedule
+      get "upload_schedule" => "tutor#upload_schedule", :as=>:tutor_upload_schedule
+      post "json_update" => "tutor#json_update", :as=>:tutor_json_update
       put "update_schedule" => "tutor#update_schedule", :as=>:tutor_update_schedule
       match "params_for_scheduler" => "tutor#params_for_scheduler", :via => [:get, :post]
       match "/" => "tutor#settings", :via => [:get, :post]
