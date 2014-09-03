@@ -1,6 +1,7 @@
 class CandidatesController < ApplicationController
   before_filter :is_candidate?, :except => [:promote]
   before_filter :authorize_vp, :only => [:promote]
+  helper EventsHelper
 
   def is_candidate?
     if @current_user

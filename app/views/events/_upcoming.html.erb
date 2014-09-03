@@ -1,5 +1,5 @@
 <ul class="upcoming-events plain">
-<% for event in @upcoming_events %>
+<% for event in upcoming_(@events)%>
     <li class="event <%= " current" if event.start_time < Time.now %>">
         <span class="name">
             <%= link_to event.name, event %> (<span class="location"><%= event.location %></span>)

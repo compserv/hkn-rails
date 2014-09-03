@@ -1,8 +1,8 @@
 class HomeController < ApplicationController
+  helper EventsHelper
+
   def index
     @events = Event.upcoming_events(0, @current_user)
-    @upcoming_events = @events.reject { |e| ["Exam", "Review Session"].include? e.event_type.name }
-    @tutoring_events = @events.select { |e| ["Exam", "Review Session"].include? e.event_type.name }
     @show_searcharea = true
     prop = Property.get_or_create
     @tutoring_enabled = prop.tutoring_enabled
