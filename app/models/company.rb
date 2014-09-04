@@ -17,7 +17,7 @@ class Company < ActiveRecord::Base
 
   acts_as_authentic
 
-  scope :ordered, order('name ASC')
+  scope :ordered, -> { order('name ASC') }
   
   def to_s
     name
