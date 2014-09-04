@@ -1,4 +1,6 @@
 class HomeController < ApplicationController
+  helper EventsHelper
+
   def index
     @events = Event.upcoming_events(0, @current_user)
     @show_searcharea = true
