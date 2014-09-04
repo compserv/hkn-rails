@@ -111,7 +111,7 @@ class ExamsController < ApplicationController
     end
 
     begin
-      @exam = Exam.new(exam_constructor_args)
+      @exam = Exam.new(exam_params)
       if File.exists? exam_path
         flash[:notice] = "An uploaded exam already exists for that input"
         redirect_to :action => :new
@@ -214,6 +214,17 @@ class ExamsController < ApplicationController
       end
       [klass.proper_semester, klass.instructors.first, exams, solutions]
     end
+  end
+
+  def exam_params
+    params.require(:exam).permit(
+      :klass_id,
+      :course_id,
+      :filename,
+      :exam_type,
+      :number,
+      :is_solution
+    )
   end
 
 end
