@@ -466,8 +466,6 @@ class Admin::TutorController < Admin::AdminController
 
     if changed
       flash[:notice] = "Tutoring schedule updated."
-    elsif not params[:only_available]
-      flash[:notice] = "Tutors shown for all slots."
     else
       flash[:notice] = NOTHING_CHANGED
     end
