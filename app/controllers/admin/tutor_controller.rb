@@ -432,7 +432,7 @@ class Admin::TutorController < Admin::AdminController
 
   def json_update
     begin
-      json = JSON.parse params[:json_str]
+      json = JSON.parse(params[:json_str])
     rescue
       flash[:notice] = "JSON parse failed"
     end
@@ -441,9 +441,9 @@ class Admin::TutorController < Admin::AdminController
     changed = false
     json.each do |id, person_ids|
       new_assignments = person_ids.map{ |x| Person.find(x).tutor.id }
-      slot = Slot.find id
+      slot = Slot.find(id)
       unless slot
-        errors << "Invalid slot id: #{slotid.to_s}"
+        errors << "Invalid slot id: #{id.to_s}"
         next
       end
       slot.tutors.each do |tutor|
