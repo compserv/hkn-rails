@@ -45,7 +45,7 @@ class Admin::TutorController < Admin::AdminController
         return
       end
     
-      tutor.adjacency = params[:adjacency]
+      tutor.adjacency = params[:adjacent_slots]
       tutor.save!
 
       params[:availabilities].each do |wday, hours|
