@@ -430,6 +430,52 @@ class Admin::TutorController < Admin::AdminController
     redirect_to :action => "edit_schedule", :all_tutors => all_tutors
   end
 
+  def json_update
+    begin
+      json = JSON.parse(params[:json_str])
+    rescue
+      flash[:notice] = "JSON parse failed"
+    end
+
+    errors = []
+    changed = false
+    json.each do |id, person_ids|
+      new_assignments = person_ids.map{ |x| Person.find(x).tutor.id }
+      slot = Slot.find(id)
+      unless slot
+        errors << "Invalid slot id: #{id.to_s}"
+        next
+      end
+      slot.tutors.each do |tutor|
+        unless new_assignments.include? tutor.id
+          slot.tutors.delete tutor
+          changed = true
+        end
+      end
+      new_assignments.each do |tutor_id|
+        unless slot.tutor_ids.include? tutor_id
+          begin
+            slot.tutors << Tutor.find(tutor_id)
+          rescue
+            errors << "Could not add #{Tutor.find(tutor_id)} to #{slot}."
+          end
+          changed = true
+        end
+      end
+    end
+
+    if changed
+      flash[:notice] = "Tutoring schedule updated."
+    else
+      flash[:notice] = NOTHING_CHANGED
+    end
+    flash[:notice] += ' ' + errors.join(' ') unless errors.empty?
+    redirect_to :action => "edit_schedule"
+  end
+
+  def upload_schedule
+  end
+
   def settings
     prop = Property.get_or_create
 

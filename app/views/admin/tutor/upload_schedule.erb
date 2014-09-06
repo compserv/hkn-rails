@@ -1,0 +1,6 @@
+Copy/paste schedule json here. The format should be a json, mapping each slot id (this is the internal slot id in the generated json) to the person ids of the tutors that should be in that slot.
+<%= form_tag({action: :json_update}) do %>
+    <%= text_area_tag :json_str %>
+    <br>
+    <%= submit_tag "Upload Schedule File" %>
+<% end %>
