@@ -30,7 +30,7 @@
 </p>
 
 <% if @rsvp.person == @current_user || @auth['superuser'] %>
-<%= link_to 'Edit', edit_event_rsvp_path(@rsvp) %> |
+<%= link_to 'Edit', edit_event_rsvp_path(@event, @rsvp) %> |
 <% end %>
 <%= link_to 'RSVPs Index', event_rsvps_path(@event) %> |
 <%= link_to 'Event Details', event_path(@event) %>

@@ -71,7 +71,7 @@ class UserSessionsController < ApplicationController
   end
 
   def reauthenticate_post
-    @success = !!(@real_current_user && @real_current_user.valid_password?(params[:password]))
+    @success = !!(@real_current_user && @real_current_user.valid_ldap_or_password?(params[:password]))
     if @success
       current_user_session.save
       render :js => "puts('Thanks. You can run superuser things now.');"
