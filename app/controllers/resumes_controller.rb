@@ -73,7 +73,7 @@ class ResumesController < ApplicationController
   end
 
   def index
-    @resumes = Resume.find(:all)
+    @resumes = Resume.all.load
   end
 
   # Shows resume (PDF, not model data) after authorization
