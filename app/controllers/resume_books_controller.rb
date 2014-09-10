@@ -12,7 +12,7 @@ class ResumeBooksController < ApplicationController
     @resume_book_root = "private/resume_books"
     @gen_root = "#{@resume_book_root}/templates"
     res_book_params = params[:resume_book]
-    @resume_book = ResumeBook.new(res_book_params)
+    @resume_book = ResumeBook.new(resume_book_params)
     @hash = get_hash
     @scratch_dir = "#{@resume_book_root}/#{@hash}_scratch"
     raise "Failed to make scratch dir" unless system "mkdir #{@scratch_dir}"
