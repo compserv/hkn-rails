@@ -3,9 +3,9 @@
 
 %table#ratings.table
   %tr
-    %th Name
+    %th= sort_link(Name)
     %th Recent Courses
-    %th Rating
+    %th= sort_link(Rating)
   - @results.each do |result|
     - instructor, courses, rating = result[:instructor], result[:courses], result[:rating]
     %tr

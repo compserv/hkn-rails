@@ -180,14 +180,26 @@ class CoursesurveysController < ApplicationController
     return redirect_to coursesurveys_path, :notice => "Invalid category" unless @category && @eff_q
 
     @results = []
+    if %w[ Name Rating ].include?(params[:sort])
+      order = params[:sort]
+    else
+      order = "Name"
+    end
+    params[:sort_direction] ||= 'up'
 
+    sort_direction = case params[:sort_direction]
+                     when "up" then "ASC"
+                     when "down" then "DESC"
+                     else "ASC"
+                     end
+    @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
 
     klasstype = (@category == :ta ? :tad_klass : :klass)
     is_ta     = (@category == :ta)
 
     # I know this is very convoluted, but it tries to pull as much data
     # as possible from a single query, to avoid hammering the database.
-    Instructor.where(:id =>
+    instructors = Instructor.where(:id =>
                       Instructorship.select(:instructor_id).
                                     where(:id =>
                                            SurveyAnswer.select(:instructorship_id).
@@ -198,12 +210,19 @@ class CoursesurveysController < ApplicationController
                                     collect(&:instructor_id)
                     )
                .includes(:instructorships => {:klass => :course})
-               .order('last_name, first_name')
-               .each do |i|
+               .order("last_name, first_name #{order=='Name' ? sort_direction : 'ASC'}")
+
+    instructors.each do |i|
       @results << { :instructor => i,
                     :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
-                    :rating     => (i.private ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
+                    :rating     => (i.private && !@privileged ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
                   }
+    end
+    if order == "Rating"
+      @results = case params[:sort_direction]
+               when "down" then @results.sort{|e1, e2| e2.rating <=> e1.rating }
+               else @events.sort{|e1, e2| e1.rating <=> e2.rating }
+               end
     end
   end
 
