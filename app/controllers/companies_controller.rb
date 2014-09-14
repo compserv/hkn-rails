@@ -108,12 +108,6 @@ class CompaniesController < ApplicationController
 
     notice = []
 
-    if sesh = CompanySession.find(company) and sesh.destroy and CompanySession.new(company)
-      notice << "Session invalidated"
-    else
-      notice << "INFO: No session found to invalidate"
-    end
-
     notice << if company.reset_single_access_token!
       "Successfully reset access key"
     else
