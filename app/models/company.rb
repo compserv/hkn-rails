@@ -15,7 +15,9 @@ class Company < ActiveRecord::Base
   has_many  :contacts
   validates_presence_of :name
 
-  acts_as_authentic
+  acts_as_authentic do |config|
+    config.login_field = :name
+  end
 
   scope :ordered, -> { order('name ASC') }
   
