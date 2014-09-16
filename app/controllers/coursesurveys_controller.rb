@@ -180,10 +180,10 @@ class CoursesurveysController < ApplicationController
     return redirect_to coursesurveys_path, :notice => "Invalid category" unless @category && @eff_q
 
     @results = []
-    if %w[ Name Rating ].include?(params[:sort])
+    if %w[ name rating ].include?(params[:sort])
       order = params[:sort]
     else
-      order = "Name"
+      order = "name"
     end
     params[:sort_direction] ||= 'up'
 
@@ -210,7 +210,7 @@ class CoursesurveysController < ApplicationController
                                     collect(&:instructor_id)
                     )
                .includes(:instructorships => {:klass => :course})
-               .order("last_name, first_name #{order=='Name' ? sort_direction : 'ASC'}")
+               .order("last_name, first_name #{order=='name' ? sort_direction : 'ASC'}")
 
     instructors.each do |i|
       @results << { :instructor => i,
@@ -218,10 +218,10 @@ class CoursesurveysController < ApplicationController
                     :rating     => (i.private && !@privileged ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
                   }
     end
-    if order == "Rating"
+    if order == "rating"
       @results = case params[:sort_direction]
-               when "down" then @results.sort{|e1, e2| e2.rating <=> e1.rating }
-               else @events.sort{|e1, e2| e1.rating <=> e2.rating }
+               when "down" then @results.sort{|e1, e2| e2[:rating].to_f <=> e1[:rating].to_f }
+               else @results.sort{|e1, e2| e1[:rating].to_f <=> e2[:rating].to_f }
                end
     end
   end
