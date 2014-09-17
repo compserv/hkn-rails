@@ -1,10 +1,12 @@
 %h1
-  = {:ta=>"Teaching Assistants", :prof=>"Instructors"}[@category]
+  = {:ta=>"Teaching Assistants", :prof=>"Instructors"}[@category] 
+%h2
+  = @semester
 
 %table#ratings.table
   %tr
     %th= sort_link('Name', 'name')
-    %th Recent Courses
+    %th= (@semester == nil) ? "Recent Courses" : "Course"
     %th= sort_link('Rating', 'rating')
   - @results.each do |result|
     - instructor, courses, rating = result[:instructor], result[:courses], result[:rating]

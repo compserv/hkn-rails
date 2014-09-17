@@ -172,9 +172,10 @@ class CoursesurveysController < ApplicationController
     end
   end
 
-  def _instructors(cat)
+  def _instructors(cat, sem)
     # cat is in [:ta, :prof]
     @category = (cat==:ta ? :ta : :prof)
+    @semester = sem == nil ? "" : Property.pretty_semester(sem)
     @eff_q    = SurveyQuestion.find_by_keyword "#{@category.to_s}_eff".to_sym
 
     return redirect_to coursesurveys_path, :notice => "Invalid category" unless @category && @eff_q
@@ -199,7 +200,8 @@ class CoursesurveysController < ApplicationController
 
     # I know this is very convoluted, but it tries to pull as much data
     # as possible from a single query, to avoid hammering the database.
-    instructors = Instructor.where(:id =>
+    if (sem == nil)
+      instructors = Instructor.where(:id =>
                       Instructorship.select(:instructor_id).
                                     where(:id =>
                                            SurveyAnswer.select(:instructorship_id).
@@ -212,12 +214,27 @@ class CoursesurveysController < ApplicationController
                .includes(:instructorships => {:klass => :course})
                .order("last_name, first_name #{order=='name' ? sort_direction : 'ASC'}")
 
-    instructors.each do |i|
-      @results << { :instructor => i,
-                    :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
-                    :rating     => (i.private && !@privileged ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
-                  }
+      instructors.each do |i|
+        @results << { :instructor => i,
+                      :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
+                      :rating     => (i.private && !@privileged ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
+                    }
+      end
+    else
+      instructorships = Instructorship.where(klass_id: 
+                           Klass.select(:id).where(semester: sem), 
+                           ta: (cat == :ta))
+                        .includes(:instructor, :klass)
+
+      instructorships.each do |i|
+        sq = i.survey_answers.where(:survey_question_id=>@eff_q.id).take
+        @results << { :instructor => i.instructor,
+                      :courses    => [i.klass.course],
+                      :rating     => sq == nil || (i.instructor.private && !@privileged ) ? nil : sq.mean
+                    }
+      end
     end
+
     if order == "rating"
       @results = case params[:sort_direction]
                when "down" then @results.sort{|e1, e2| e2[:rating].to_f <=> e1[:rating].to_f }
@@ -227,12 +244,16 @@ class CoursesurveysController < ApplicationController
   end
 
   def instructors
-    _instructors :prof
+    _instructors(:prof, params[:semester])
   end
 
   def tas
-    _instructors :ta
+    _instructors(:ta, params[:semester])
     render 'instructors'
+  end
+
+  def semesters
+    @semesters = Klass.select(:semester).distinct.map { |x| x.semester }.sort.reverse
   end
 
   def instructor
