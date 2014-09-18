@@ -218,7 +218,7 @@ HknRails::Application.routes.draw do
     match "/"                              => "courseguide#index", :as => :courseguide, :via => [:get, :post]
     match "/:dept_abbr/:course_number"     => "courseguide#show", :as => :courseguide_show, :via => [:get, :post]
     get "/:dept_abbr/:course_number/edit"  => "courseguide#edit", :as => :courseguide_edit
-    match "/:dept_abbr/:course_number/update" => "courseguide#update", :as => :courseguide_update, :via => [:get, :post]
+    match "/:dept_abbr/:course_number/update" => "courseguide#update", :as => :courseguide_update, :via => [:get, :post, :patch]
   end
 
   # Course Surveys
