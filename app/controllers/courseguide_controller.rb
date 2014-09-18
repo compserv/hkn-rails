@@ -28,10 +28,18 @@ class CourseguideController < ApplicationController
       return redirect_back_or_default coursesurveys_path, :notice=>"Error: That course does not exist."
     end
 
-    if !@course.update_attributes(params[:course])
+    if !@course.update_attributes(courseguide_params)
       return redirect_to courseguide_show_path(@course.dept_abbr, @course.full_course_number), :notice => "Error updating the entry: #{@course.errors.inspect}"
     end
 
     return redirect_to courseguide_edit_path(@course.dept_abbr, @course.full_course_number), :notice => "Successfully updated the course guide for #{@course.course_name}."
   end
+
+  private
+  def courseguide_params
+    params.require(:course).permit(
+      :course_guide,
+    )
+  end
+  
 end
