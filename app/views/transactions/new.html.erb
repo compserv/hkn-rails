@@ -1,12 +1,12 @@
 <%= form_tag transactions_path do %>
   <article>
+    <p><%= @description %></p>
     <label class="amount">
-      <span>Amount: $5.00</span>
+      <span>Amount: <%= number_to_currency(@usd_amount) %></span>
     </label>
   </article>
 
   <input type="hidden" name="amount" value="<%=@amount%>">
-  <input type="hidden" name="company_id" value="<%=@company_id%>">
   <input type="hidden" name="description" value="<%=@description%>">
 
   <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
