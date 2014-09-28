@@ -17,6 +17,7 @@ gem 'rdiscount'
 gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
 gem 'ri_cal'
 gem 'scrypt'
+gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'

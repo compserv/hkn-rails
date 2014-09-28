@@ -1,0 +1,17 @@
+<%= form_tag transactions_path do %>
+  <article>
+    <p><%= @description %></p>
+    <label class="amount">
+      <span>Amount: <%= number_to_currency(@usd_amount) %></span>
+    </label>
+  </article>
+
+  <input type="hidden" name="amount" value="<%=@amount%>">
+  <input type="hidden" name="description" value="<%=@description%>">
+
+  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
+          data-description="<%=@description%>"
+          data-amount="<%=@amount%>">
+  </script>
+<% end %>

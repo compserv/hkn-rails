@@ -13,6 +13,7 @@ class Company < ActiveRecord::Base
   # =======================
 
   has_many  :contacts
+  has_many  :transactions
   validates_presence_of :name
 
   acts_as_authentic do |config|
