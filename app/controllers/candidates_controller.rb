@@ -108,16 +108,16 @@ class CandidatesController < ApplicationController
   def submit_quiz
     params.each do |key, value|
       if key.match(/^q/) #Starts with "q", is a quiz response
-        quiz_resp = @current_user.candidate.quiz_responses
+        quiz_resp = @current_user.candidate.quiz_responses.select {|x| x.number == key.to_s}
         q = nil
         if quiz_resp.empty? #No quiz responses for this candidate, create
           q = QuizResponse.new(:number => key.to_s)
           q.candidate = @current_user.candidate
         else #Update existing quiz responses
-          q = quiz_resp.select {|x| x.number == key.to_s}.first
+          q = quiz_resp.first
         end
-          q.response = value.to_s
-          q.save
+        q.response = value.to_s
+        q.save
       end
     end
     flash[:notice] = "Your quiz responses have been recorded."
