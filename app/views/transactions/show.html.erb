@@ -1,0 +1,11 @@
+<h1>Thank you for your purchase!</h1>
+
+<p>This page confirms your successful transaction.</p>
+
+<h2>Description</h2>
+
+<p><%= @transaction.description %></p>
+
+<h2>Cost</h2>
+
+<p><%= number_to_currency(@usd_amount) %></p>

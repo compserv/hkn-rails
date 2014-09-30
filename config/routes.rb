@@ -364,6 +364,9 @@ HknRails::Application.routes.draw do
     get  '/read(.:format)' => 'notifications#index', :as => ''
   end
 
+  # Transactions
+  resources :transactions
+
   # Easter Eggs
   get "easter-eggs" => "easter_eggs#edit", :as => "easter_eggs_edit"
   post "easter-eggs" => "easter_eggs#update", :as => "easter_eggs_update"

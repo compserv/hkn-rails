@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130519233001) do
+ActiveRecord::Schema.define(version: 20140927050503) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -504,6 +504,17 @@ ActiveRecord::Schema.define(version: 20130519233001) do
     t.integer "max",                       null: false
     t.integer "keyword",   default: 0
   end
+
+  create_table "transactions", force: true do |t|
+    t.integer  "amount",         null: false
+    t.string   "charge_id",      null: false
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "receipt_secret"
+  end
+
+  add_index "transactions", ["charge_id"], name: "index_transactions_on_charge_id", unique: true, using: :btree
 
   create_table "tutors", force: true do |t|
     t.integer  "person_id",              null: false

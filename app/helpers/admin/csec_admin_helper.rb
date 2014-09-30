@@ -74,7 +74,7 @@ module SurveyData
               k[:section] = 0 unless course.course_number % 100 == 94
               k[:section] = k[:section].to_i
               k[:course_id] = course.id || 'OMGWTFBBQ'
-              klass = Klass.find(:first, :conditions=>k) || Klass.new(k)
+              klass = Klass.find_by(k) || Klass.new(k)
               klass.course = course
 
               # Instructor
@@ -82,7 +82,7 @@ module SurveyData
               i[:private] = true #false if i[:title] =~ /prof/i
               i[:title] = {'PROF'=>'Professor', 'TA'=>'Teaching Assistant'}[i[:title]]
               i[:last_name], i[:first_name] = s.join(' ').split(',').collect(&:strip).collect(&:titleize_with_dashes)
-              instructor = Instructor.find(:first, :conditions => ['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]) || Instructor.new(i)
+              instructor = Instructor.find_by(['last_name LIKE ? AND first_name LIKE ?', i[:last_name], i[:first_name]]) || Instructor.new(i)
 
               # Instructorship
               instructorship = Instructorship.find_by_klass_id_and_instructor_id(klass.id, instructor.id) || Instructorship.new
@@ -154,7 +154,7 @@ module SurveyData
                 row.shift # question text
                 a[:frequencies] = Hash[frequency_keys.zip frequency_keys.collect{row.shift.to_i}]
                 a[:frequencies] = ActiveSupport::JSON.encode a[:frequencies]
-                a = SurveyAnswer.find(:first, :conditions=>a) || SurveyAnswer.new(a)
+                a = SurveyAnswer.find_by(a) || SurveyAnswer.new(a)
 
                 if commit
                   if a.save
