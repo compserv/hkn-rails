@@ -241,8 +241,9 @@ class PeopleController < ApplicationController
       :perm_address,
       :grad_semester,
       :sms_alerts,
-      :mobile_carrier_id
+      :mobile_carrier_id,
+      :password,
+      :password_confirmation
     )
   end
-
 end
