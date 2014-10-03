@@ -1,0 +1,18 @@
+<table>
+  <tbody>
+    <tr>
+      <th>Semester</th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <% @semesters.each do |s| %>
+      <tr>
+        <td><%= Property.pretty_semester(s) %></td>
+        <td><%= link_to "TAs", coursesurveys_tas_path(semester: s)%></td>
+        <td><%= link_to "Professors", coursesurveys_instructors_path(semester: s) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+

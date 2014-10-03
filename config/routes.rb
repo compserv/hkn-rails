@@ -237,6 +237,7 @@ HknRails::Application.routes.draw do
     #match ":category"                      => "coursesurveys#instructors",:as => :coursesurveys_instructors, :constraints => {:category => /(instructors)|(tas)/}
     get   "instructors"                    => "coursesurveys#instructors", :as => :coursesurveys_instructors
     get   "tas"                            => "coursesurveys#tas",         :as => :coursesurveys_tas
+    get   "semesters"                      => "coursesurveys#semesters",   :as => :coursesurveys_semesters
 
     match "rating/:id"                     => "coursesurveys#rating",     :as => :coursesurveys_rating, :via => [:get, :post]
     match "rating/:id/edit"                => "coursesurveys#editrating", :as => :coursesurveys_edit_rating, :via => [:get, :post]
