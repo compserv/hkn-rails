@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-ruby '2.1.2'
+ruby '2.1.3'
 
 gem 'activesupport'
 gem 'activerecord-session_store'
@@ -22,6 +22,8 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
+gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
+gem 'ucb_ldap'
 
 group :development, :test do
   gem 'autotest-standalone'
