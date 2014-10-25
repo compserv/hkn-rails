@@ -109,8 +109,6 @@
 #instructor_chart_div
 #ta_chart_div
 
-- if session[:cas_user]
-  %p You are logged in with CalNet authentication. Click #{link_to "here", coursesurveys_logout_path} to logout.
 - if @instructor.private
   %p This instructor&#39;s ratings are #{link_to "hidden", coursesurveys_ferpa_path}. If you are #{@instructor.full_name} and would like to allow HKN to display your teaching evaluation ratings on the web, please #{link_to "opt-in", coursesurveys_ferpa_path}.
   - if @privileged
