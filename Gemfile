@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-ruby '2.1.3'
+ruby '2.1.2'
 
 gem 'activesupport'
 gem 'activerecord-session_store'
