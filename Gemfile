@@ -22,6 +22,8 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
+gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
+gem 'ucb_ldap'
 
 group :development, :test do
   gem 'autotest-standalone'

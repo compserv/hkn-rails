@@ -2,6 +2,7 @@ class CoursesurveysController < ApplicationController
   # TODO: Refactor most of these into a model
   include CoursesurveysHelper
 
+  before_action CASClient::Frameworks::Rails::Filter, :only => [:auth]
   before_filter :show_searcharea
   before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor, :newinstructor, :createinstructor]
   before_filter :authorize_privileged
@@ -33,6 +34,14 @@ class CoursesurveysController < ApplicationController
   end
 
   def index
+  end
+
+  def logout
+    CASClient::Frameworks::Rails::Filter.logout(self)
+  end
+
+  def auth
+    redirect_to coursesurveys_path
   end
 
   def department
@@ -553,7 +562,10 @@ class CoursesurveysController < ApplicationController
   # Sets the value of @privileged based on the user's group membership.
   # Csec, superusers, and coursesurvey groups all override @privileged to false
     @privileged = @current_user && @current_user.groups.exists?(:name => ['csec', 'coursesurveys'])
-    #@privileged = ['csec', 'coursesurveys'].any? {|g| @auth[g]}
+    if session[:cas_user]
+      user = CalnetUser.where(uid: session[:cas_user]).first
+      @privileged ||= user && user.authorized_course_surveys
+    end
   end
 
   def _get_instructor(param)

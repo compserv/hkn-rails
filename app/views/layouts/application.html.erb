@@ -92,6 +92,12 @@
         </div>
     	  <div class="clear"></div>
   	</div>
+    <% if session[:cas_user] %>
+      <div id="calnet-notice">
+      You are currently logged in via Calnet.
+      <%= link_to "Click here to logout", coursesurveys_logout_path %>.
+      </div>
+    <% end %>
   </div>
 
   <div id="content">

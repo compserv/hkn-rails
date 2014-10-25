@@ -224,6 +224,8 @@ HknRails::Application.routes.draw do
   # Course Surveys
   scope "coursesurveys" do
     match "/"                              => "coursesurveys#index",      :as => :coursesurveys, :via => [:get, :post]
+    match "auth"                           => "coursesurveys#auth", :as => :coursesurveys_auth, :via => [:get]
+    match "logout"                         => "coursesurveys#logout", :as => :coursesurveys_logout, :via => [:get]
     match "course/:dept_abbr"              => "coursesurveys#department", :as => :coursesurveys_department, :via => [:get, :post]
     match "course/:dept_abbr/:course_number" => "coursesurveys#course", :as => :coursesurveys_course, :via => [:get, :post]
     match "course/:dept_abbr/:short_name/:semester(/:section)" => "coursesurveys#klass",      :as => :coursesurveys_klass, :via => [:get, :post]
