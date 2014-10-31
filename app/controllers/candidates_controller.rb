@@ -155,7 +155,7 @@ class CandidatesController < ApplicationController
     else
       flash[:notice] = "Your application has been saved."
     end
-    redirect_to :back
+    redirect_to candidate_portal_path
   end
 
   def coursesurvey_signup
