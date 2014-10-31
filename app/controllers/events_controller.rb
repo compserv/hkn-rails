@@ -116,6 +116,9 @@ class EventsController < ApplicationController
       format.js {
         render :partial => 'calendar'
       }
+      format.ics {
+        redirect_to events_calendar_path
+      }
     end
   end
 
