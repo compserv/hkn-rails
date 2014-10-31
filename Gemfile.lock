@@ -6,6 +6,13 @@ GIT
       activesupport
 
 GIT
+  remote: https://github.com/compserv/ucb-ldap.git
+  revision: fd41e2774763ca184d199fb3f3ee89578a8673e4
+  specs:
+    ucb_ldap (2.0.0.pre6)
+      net-ldap (>= 0.6)
+
+GIT
   remote: https://github.com/stripe/stripe-ruby
   revision: da216fd53b7a5386c136e93bdfe5efaff20682b7
   specs:
@@ -148,7 +155,6 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
-    ruby-net-ldap (0.0.4)
     scrypt (1.2.1)
       ffi-compiler (>= 0.0.2)
       rake
@@ -181,8 +187,6 @@ GEM
       polyglot (>= 0.3.1)
     tzinfo (1.1.0)
       thread_safe (~> 0.1)
-    ucb_ldap (1.4.2)
-      ruby-net-ldap (>= 0.0.4)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.6)
@@ -222,7 +226,7 @@ DEPENDENCIES
   stripe!
   sunspot_rails
   sunspot_solr
-  ucb_ldap
+  ucb_ldap!
   webrat
   will_paginate (~> 3.0)
   yaml_db
