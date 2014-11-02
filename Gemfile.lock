@@ -6,13 +6,6 @@ GIT
       activesupport
 
 GIT
-  remote: https://github.com/compserv/ucb-ldap.git
-  revision: fd41e2774763ca184d199fb3f3ee89578a8673e4
-  specs:
-    ucb_ldap (2.0.0.pre6)
-      net-ldap (>= 0.6)
-
-GIT
   remote: https://github.com/stripe/stripe-ruby
   revision: da216fd53b7a5386c136e93bdfe5efaff20682b7
   specs:
@@ -226,7 +219,6 @@ DEPENDENCIES
   stripe!
   sunspot_rails
   sunspot_solr
-  ucb_ldap!
   webrat
   will_paginate (~> 3.0)
   yaml_db
