@@ -12,7 +12,7 @@
 <% for cand in @candidates %>
     <% if cand["candidate"] != false %>
         <div class="candidate">
-            <h3><%= cand["candidate"] %></h3>
+            <h3><%= link_to cand["candidate"], cand[:person] %></h3>
             <ul>
                 <li>Events: 
                 <ul>
