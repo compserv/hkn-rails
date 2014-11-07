@@ -6,7 +6,7 @@ TODO: Add useful information.
 Vagrant, VMs, and You
 ---------------------
 1) Install <a href = "https://www.virtualbox.org/wiki/Downloads">VirtualBox</a><br>
-2) Install the latest version of <a href = "http://downloads.vagrantup.com/">Vagrant</a><br>
+2) Install the latest version of <a href = "http://www.vagrantup.com/downloads.html">Vagrant</a><br>
 3) Download a backup of the website from hkn and move it into your copy of hkn-rails<br>
 4) <tt>cd hkn-rails</tt><br>
 5) <tt>vagrant up</tt><br>
