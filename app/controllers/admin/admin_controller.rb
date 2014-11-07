@@ -48,6 +48,7 @@ class Admin::AdminController < ApplicationController
         done[:promoted] = true
     end
 
+    done[:person] = cand.person
     #puts done.to_s
     return done
   end 
