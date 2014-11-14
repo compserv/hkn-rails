@@ -67,6 +67,21 @@
         <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
     </fieldType>
+    <fieldType name="text_ngram" class="solr.TextField" omitNorms="false">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StandardFilterFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.NGramFilterFactory"
+                minGramSize="2"
+                maxGramSize="30"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StandardFilterFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+    </fieldType>
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="boolean" class="solr.BoolField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
@@ -239,6 +254,8 @@
     
     <!-- required by Solr 4 -->
     <field name="_version_" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <dynamicField name="*_text_ngram" type="text_ngram" stored="false" multiValued="true" indexed="true"/>
   </fields>
   
   <!-- Field to use to determine and enforce document uniqueness.
