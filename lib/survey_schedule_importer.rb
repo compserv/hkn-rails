@@ -179,7 +179,15 @@ module CourseSurveys
         u.scheme ||= orig_u.scheme
         u.host ||= orig_u.host
         puts u.to_s
-        doc = Nokogiri::HTML( open(u.to_s) )
+        content = open(u.to_s).read
+        doc = Nokogiri::HTML(content)
+
+        #If 100 divides the number of classes, schedule.berkeley.edu hilariously lets you browse one more
+        #page than normal (the last page being empty), so we should break on that last page.
+        if content.include? "Number of rows provided is out of the range of rows found"
+          puts "No content found."
+          break
+        end
 
         # SCHEDULE.BERKELEY IS THE MOST HORRIBLY STRUCTURED WEB PAGE EVER OMFG
 
