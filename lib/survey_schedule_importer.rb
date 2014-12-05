@@ -56,11 +56,12 @@ module CourseSurveys
     # Department model
     attr_accessor :department
 
-    def initialize(url, options={}, *args)
+    def initialize(url, permit, options={}, *args)
       require 'nokogiri'
       require 'open-uri'
 
       @url     = url
+      @permit  = permit
 
       @klasses = []
       @current_klass = nil
@@ -110,6 +111,7 @@ module CourseSurveys
           skip ||= ((@current_klass['Restrictions'] =~ /not open/i) or @current_klass['Enrollment'][:limit] == 0)
           skip ||= (@current_klass['Location'] =~ /cancelled/i)
           skip ||= (@current_klass['Status/Last Changed'] =~ /cancelled/i)
+          skip &&= !(@permit.include? @current_klass["Course"][:name])
           if skip
             puts "Skipping #{@current_klass.inspect}"
           else
