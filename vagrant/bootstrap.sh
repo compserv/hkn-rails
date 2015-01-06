@@ -6,10 +6,11 @@ source /etc/default/locale
 
 apt-get update
 apt-get install -y make g++
-apt-get install -y curl make openjdk-7-jre postgresql-9.3 screen vim
+apt-get install -y curl make openjdk-7-jre postgresql-9.3 screen vim git
 apt-get install -y build-essential libxslt-dev libxml2-dev libpq.dev
 
 # Install RVM
+gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 curl -L https://get.rvm.io | bash -s stable
 source /usr/local/rvm/scripts/rvm
 
