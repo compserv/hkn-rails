@@ -15,9 +15,6 @@ class DiscourseSsoController < ApplicationController
     sso.email = @current_user.email
 
     # HKN email users should be registered using their @hkn address
-    #
-    # Unfortunately, this will cause account fragmentation if a user uses this
-    # SSO endpoint before and after becoming a "comms" member
     if @current_user.in_group? "comms"
       sso.email = @current_user.username + "@hkn.eecs.berkeley.edu"
     end
