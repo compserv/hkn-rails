@@ -181,6 +181,9 @@ HknRails::Application.routes.draw do
     end
   end
 
+  # Discourse SSO endpoint
+  get "discourse-sso" => "discourse_sso#sso", :as => :discourse_sso
+
   get  'leaderboard(/:semester)' => "leaderboard#index", :as => :leaderboard
 
   # Alumni
