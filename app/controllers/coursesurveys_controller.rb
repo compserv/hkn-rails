@@ -173,6 +173,9 @@ class CoursesurveysController < ApplicationController
                                         :answers    => (i.instructor.private && !@privileged ?
                                                         nil : i.survey_answers) }
       end
+      if @instructor == i.instructor
+        @instructorship = i
+      end
     end
 
     if @instructor && @instructors.empty? && @tas.empty?
