@@ -24,6 +24,10 @@
     <p>
     See all of <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %>'s data.
     </p>
+
+    <p> 
+    <%= @instructorship.comment %>
+    </p>
   <% end %>
  
   <%= render :partial => 'emailhkn' %>

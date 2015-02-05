@@ -87,9 +87,24 @@ module CoursesurveysHelper
     # Keys like "N/A" and "Omit" are left alone.
     h = {}
     ActiveSupport::JSON.decode(f).each_pair do |key,value|
-        key = key.to_i if key.eql?(key.to_i.to_s)
-        h[key] = value
+      key = key.to_i if key.eql?(key.to_i.to_s)
+      h[key] = value
     end
     h
+  end
+
+  def merge_answers(answers)
+    (1..(answers.map{|ans| ans.survey_question_id}.max)).each do |ind|
+      a = answers.select { |answer| answer.survey_question_id == ind }
+      f1 = decode_frequencies(a.first.frequencies)
+      a[1..-1].each do |a2|
+        f2 = decode_frequencies(a2.frequencies)
+        f1 = f1.merge(f2) {|key,oldval,newval| oldval+newval}
+        a2.destroy
+      end
+      a.first.frequencies = ActiveSupport::JSON.encode(f1)
+      a.first.recompute_stats!
+      a.first.save!
+    end
   end
 end
