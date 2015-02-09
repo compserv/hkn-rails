@@ -94,7 +94,8 @@ module CoursesurveysHelper
   end
 
   def merge_answers(answers)
-    (1..(answers.map{|ans| ans.survey_question_id}.max)).each do |ind|
+    indices = answers.map{|ans| ans.survey_question_id}
+    ((indices.min)..(indices.max)).each do |ind|
       a = answers.select { |answer| answer.survey_question_id == ind }
       f1 = decode_frequencies(a.first.frequencies)
       a[1..-1].each do |a2|
