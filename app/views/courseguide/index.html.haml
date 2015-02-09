@@ -1,3 +1,8 @@
+- content_for :header do
+  = javascript_include_tag "http://d3js.org/d3.v3.min.js"
+  = javascript_include_tag "http://d3js.org/d3.superformula.v0.min.js"
+  = javascript_include_tag "coursechart.js"
+
 #sidebar.trans-bg
   %h1 Quicklinks
   %h2 Search For an Instructor or Course
@@ -24,7 +29,11 @@
     We offer a comprehensive course guide for all undergraduate level EECS courses here.
   
   %h2 Prerequisite Charts
-  %p (Click on a course in the images below to see the relevant course guide)
-  = render :partial => "eemap"
+  %p (Click on a course in the chart below to see the relevant course guide)
+  %noscript
+    = render :partial => "eemap"
+    %br
+    = render :partial => "csmap"
+  %div{:id => "cs"}
   %br
-  = render :partial => "csmap"
+  %div{:id => "ee"}

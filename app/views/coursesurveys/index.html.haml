@@ -1,3 +1,8 @@
+- content_for :header do
+  = javascript_include_tag "http://d3js.org/d3.v3.min.js"
+  = javascript_include_tag "http://d3js.org/d3.superformula.v0.min.js"
+  = javascript_include_tag "coursechart.js"
+
 #sidebar.trans-bg
   = render :partial => "quick_nav"
 #main
@@ -9,6 +14,10 @@
   
   %h2 Prerequisite Charts
   %p (Click on a course in the images below to see its ratings)
-  = render :partial => "eemap"
+  %noscript
+    = render :partial => "eemap"
+    %br
+    = render :partial => "csmap"
+  %div{:id => "cs"}
   %br
-  = render :partial => "csmap"
+  %div{:id => "ee"}

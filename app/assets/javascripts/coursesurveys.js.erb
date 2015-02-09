@@ -1,0 +1,443 @@
+/* cs + ee classes object
+colors: class type to color mapping
+maxDepth: maximum number of "levels" of the chart
+prefLocs: a preferred location ranging from -1 to 1 for each category where (0,0) is the center of the chart
+courses: an array of courses consisting of the following:
+ - name: name of the class
+ - type: category of the class
+ - link: the URL to open when a node is clicked
+ - depth: a preferred location for the y value, that can be used for individual classes (eg cs70 at the bottom of the cs chart) or for upper division classes that have upper division classes for prereqs (eg cs189 requires cs188) - should only range from 1 to maxDepth, a class with depth d will be at about d/maxDepth of the way down
+ - prereqs (optional): a list of strings or a string (if there's only one) of the names of the prereqs for this class
+ - bias_x (optional): fine tuning for a node's location in the x direction, this is how ee40 and 20 can be separated to right and left
+ - bias_y (optional): same for the y location
+*/
+var cs_classes = {
+    "colors" : {
+        'core': '#E57373',
+        'hardware': '#FFF176',
+        'software': '#90CAF9',
+        'theory': '#80CBC4',
+        'applications': '#CE93D8'
+    },
+    "maxDepth": 5,
+    "prefLocs":
+        {
+        "core": { "x": 0.5, "y": 0 },
+        "software": { "x": 0.5, "y": 0},
+        "applications": { "x": 0.0, "y": 0},
+        "theory": {"x": 0.8, "y": 0},
+        "hardware": {"x": 1.0, "y": -0.2}
+    },
+    "courses": [
+        {
+        "name": "61A",
+        "type": "core",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","61A" %>',
+        "depth": 1
+    },
+    {
+        "name": "61B",
+        "type": "core",
+        "prereqs": "61A",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","61B" %>',
+        "depth": 2,
+        "bias_x": -40
+    },
+    {
+        "name": "61C",
+        "type": "core",
+        "prereqs": "61A",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","61C" %>',
+        "depth": 2,
+        "bias_x": 40
+    },
+    {
+        "name": "70",
+        "type": "core",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","70" %>',
+        "depth": 5
+    },
+    {
+        "name": "C149",
+        "type": "hardware",
+        "prereqs": "61c",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","C149" %>',
+        "depth": 3
+    },
+    {
+        "name": "150",
+        "type": "hardware",
+        "prereqs": "61c",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","150" %>',
+        "depth": 3
+    },
+    {
+        "name": "152",
+        "type": "hardware",
+        "prereqs": "61c",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","152" %>',
+        "depth": 3
+    },
+    {
+        "name": "160",
+        "type": "software",
+        "prereqs": "61b",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","160" %>',
+        "depth": 3
+    },
+    {
+        "name": "161",
+        "type": "software",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","161" %>',
+        "prereqs": [
+            "61c",
+            "70"
+        ],
+        "depth": 3
+    },
+    {
+        "name": "162",
+        "type": "software",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","162" %>',
+        "prereqs": [
+            "61b",
+            "61c",
+            "70"
+        ],
+        "depth": 3
+    },
+    {
+        "name": "164",
+        "type": "software",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","164" %>',
+        "prereqs": [
+            "61b",
+            "61c"
+        ],
+        "depth": 3
+    },
+    {
+        "name": "168",
+        "type": "software",
+        "prereqs": "61b",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","168" %>',
+        "depth": 3
+    },
+    {
+        "name": "169",
+        "type": "software",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","169" %>',
+        "prereqs": [
+            "61b",
+            "61c",
+            "70"
+        ],
+        "depth": 3
+    },
+    {
+        "name": "170",
+        "type": "theory",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","170" %>',
+        "prereqs": [
+            "61b",
+            "70"
+        ],
+        "depth": 3
+    },
+    {
+        "name": "172",
+        "type": "theory",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","172" %>',
+        "prereqs": [
+            "170"
+        ],
+        "depth": 4
+    },
+    {
+        "name": "174",
+        "type": "theory",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","174" %>',
+        "prereqs": [
+            "170"
+        ],
+        "depth": 4
+    },
+    {
+        "name": "176",
+        "type": "theory",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","176" %>',
+        "prereqs": [
+            "170"
+        ],
+        "depth": 4
+    },
+    {
+        "name": "184",
+        "type": "applications",
+        "prereqs": "61b",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","184" %>',
+        "depth": 3
+    },
+    {
+        "name": "186",
+        "type": "applications",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","186" %>',
+        "prereqs": [
+            "61b",
+            "61c"
+        ],
+        "depth": 3
+    },
+    {
+        "name": "188",
+        "type": "applications",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","188" %>',
+        "prereqs": [
+            "61B",
+            "70"
+        ],
+        "depth": 3
+    },
+    {
+        "name": "189",
+        "type": "applications",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "CS","189" %>',
+        "prereqs": "188",
+        "depth": 4
+    }
+    ]
+};
+
+var ee_classes = {
+    "colors": {
+        'core': '#E57373',
+        'circuits': '#FFF176',
+        'devices': '#90CAF9',
+        'optics': '#80CBC4',
+        'bioelectronics': '#CE93D8',
+        'power': '#9FA8DA',
+        'signals': '#80DEEA',
+        'robotics': '#FFCC80',
+        'required': '#E0E0E0'
+    },
+    "maxDepth": 4,
+    "prefLocs":
+        {
+        "core": { "x": 0.5, "y": 0 },
+        "circuits": { "x": 0.5, "y": 0},
+        "devices": { "x": 1.0, "y": 0},
+        "optics": {"x": 0.6, "y": 0},
+        "bioelectronics": {"x": 0.5, "y": 0},
+        "power": {"x": 0.8, "y": 0},
+        "signals": {"x": 0, "y": 0},
+        "robotics": {"x": 0.3, "y": 0},
+        "required": {"x": 0.5, "y": 0}
+    },
+    "courses": [
+        {
+        "name": "20",
+        "type": "required",
+        "depth": 1,
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","20" %>',
+        "bias_x": -30
+    },
+    {
+        "name": "40",
+        "type": "required",
+        "depth": 1,
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","40" %>',
+        "bias_x": 30
+    },
+    {
+        "name": "126",
+        "type": "signals",
+        "depth": 2,
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","126" %>',
+        "prereqs": "20"
+    },
+    {
+        "name": "120",
+        "type": "core",
+        "depth": 1.5,
+        "prereqs": "20",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","120" %>',
+        "bias_x": -30
+    },
+    {
+        "name": "C145B",
+        "type": "bioelectronics",
+        "depth": 2,
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","145B" %>',
+        "prereqs": ["20", "120"]
+    },
+    {
+        "name": "144",
+        "type": "signals",
+        "depth": 2,
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","144" %>',
+        "prereqs": "20"
+    },
+    {
+        "name": "C149",
+        "type": "robotics",
+        "depth": 2,
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","149" %>',
+        "prereqs": "20"
+    },
+    {
+        "name": "105",
+        "type": "core",
+        "prereqs": "40",
+        "depth": 1.5,
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","105" %>',
+        "bias_x": 30
+    },
+    {
+        "name": "117",
+        "type": "power",
+        "prereqs": "40",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","117" %>',
+        "depth": 2
+    },
+    {
+        "name": "130",
+        "type": "devices",
+        "prereqs": "40",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","130" %>',
+        "depth": 2
+    },
+    {
+        "name": "134",
+        "type": "devices",
+        "prereqs": "40",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","134" %>',
+        "depth": 2
+    },
+    {
+        "name": "143",
+        "type": "devices",
+        "prereqs": "40",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","143" %>',
+        "depth": 2
+    },
+    {
+        "name": "C145L",
+        "type": "bioelectronics",
+        "prereqs": "40",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","145L" %>',
+        "depth": 2
+    },
+    {
+        "name": "C145M",
+        "type": "bioelectronics",
+        "prereqs": "40",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","145M" %>',
+        "depth": 2
+    },
+    {
+        "name": "137A",
+        "type": "power",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","137A" %>',
+        "depth": 3
+    },
+    {
+        "name": "137B",
+        "type": "power",
+        "depth": 4,
+        "prereqs": "137A",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","137B" %>',
+    },
+    {
+        "name": "140",
+        "type": "circuits",
+        "prereqs": "105",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","140" %>',
+        "depth": 3
+    },
+    {
+        "name": "141",
+        "type": "circuits",
+        "depth": 3,
+        "prereqs": "40",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","141" %>',
+    },
+    {
+        "name": "113",
+        "type": "power",
+        "depth": 3,
+        "prereqs": "105",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","113" %>',
+    },
+    {
+        "name": "142",
+        "type": "circuits",
+        "prereqs": ["20", "140"],
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","142" %>',
+        "depth": 4
+    },
+    {
+        "name": "122",
+        "type": "signals",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","122" %>',
+        "depth": 4
+    },
+    {
+        "name": "119",
+        "type": "optics",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","119" %>',
+        "depth": 4
+    },
+    {
+        "name": "147",
+        "type": "robotics",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","147" %>',
+        "depth": 4
+    },
+    {
+        "name": "127A",
+        "type": "signals",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","127A" %>',
+        "depth": 4
+    },
+    {
+        "name": "121",
+        "type": "signals",
+        "prereqs": ["120", "126"],
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","121" %>',
+        "depth": 3
+    },
+    {
+        "name": "123",
+        "type": "signals",
+        "prereqs": "120",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","123" %>',
+        "depth": 3
+    },
+    {
+        "name": "C125",
+        "type": "signals",
+        "prereqs": "120",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","125" %>',
+        "depth": 3
+    },
+    {
+        "name": "C128",
+        "type": "signals",
+        "prereqs": "120",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","128" %>',
+        "depth": 3
+    },
+    {
+        "name": "129",
+        "type": "signals",
+        "prereqs": "120",
+        "link": '<%= Rails.application.routes.url_helpers.coursesurveys_course_path "EE","129" %>',
+        "depth": 3
+    }
+    ]
+};
+
+window.onload = function() {
+    generateChart(cs_classes, $("#cs"));
+    generateChart(ee_classes, $("#ee"));
+};
