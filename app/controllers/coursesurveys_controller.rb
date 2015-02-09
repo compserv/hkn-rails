@@ -158,6 +158,7 @@ class CoursesurveysController < ApplicationController
   def klass
     @instructor = _get_instructor(params[:instructor])
     @klass = params_to_klass(params)
+    @can_edit = @current_user && authorize_coursesurveys
 
     # Error checking
     if @klass.blank?
@@ -240,10 +241,12 @@ class CoursesurveysController < ApplicationController
 
       instructorships.each do |i|
         sq = i.survey_answers.where(:survey_question_id=>@eff_q.id).take
-        @results << { :instructor => i.instructor,
-                      :courses    => [i.klass.course],
-                      :rating     => sq == nil || (i.instructor.private && !@privileged ) ? nil : sq.mean
-                    }
+        unless sq == nil
+          @results << { :instructor => i.instructor,
+                        :courses    => [i.klass.course],
+                        :rating     => ( i.instructor.private && !@privileged ) ? nil : sq.mean
+                      }
+        end
       end
     end
 
