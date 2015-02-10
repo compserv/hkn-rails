@@ -5,6 +5,12 @@ class DiscourseSsoController < ApplicationController
   before_filter :authorize, :only => [:sso]
 
   def sso
+    # Disallow candidates from registering/logging in
+    unless @current_user.in_group? "members"
+      redirect_to :root, :notice => "Only members can login to the forum."
+      return
+    end
+
     begin
       sso = SingleSignOn.parse(request.query_string, secret)
     rescue
