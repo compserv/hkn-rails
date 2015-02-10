@@ -27,14 +27,16 @@ $(document).ready(function() {
 		$("#submenu-thin .submenu").first().show();
 	}
 	$(".navigation_toplevel_item").click(function(e) {
-	  e.preventDefault();
-    $(".navigation_toplevel_item").removeClass("current");
-    $(this).addClass("current");
-    $(this).blur();
-    $(".submenu").hide();
-    id = $(this).attr("id") + "_submenu";
-    //$(id).fadeIn({ duration: 0.2 });		
-    $("." + id).show();
+    if (!$(this).hasClass("navigation_ext_link")) {
+      e.preventDefault();
+      $(".navigation_toplevel_item").removeClass("current");
+      $(this).addClass("current");
+      $(this).blur();
+      $(".submenu").hide();
+      id = $(this).attr("id") + "_submenu";
+      //$(id).fadeIn({ duration: 0.2 });		
+      $("." + id).show();
+    }
   });
   $("#userbar").click(function(){
     $("#user-dropdown").toggle(300);
