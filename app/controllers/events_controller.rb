@@ -76,7 +76,6 @@ class EventsController < ApplicationController
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.where("name IN (?)", types)
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
-    #@events = Event.past.find(:all, :conditions => ["event_type_id IN (?)", candEventTypeIDs], :order => :start_time)
     # Sorry, this is kind of a bad query
     @events = Event.current.joins({ :rsvps => {:person => :groups} } )
                            .where("(rsvps.confirmed IS NULL OR rsvps.confirmed = 'f') AND groups.id = #{Group.find_by_name(@group).id}").uniq
