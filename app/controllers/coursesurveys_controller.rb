@@ -58,7 +58,6 @@ class CoursesurveysController < ApplicationController
     # Error checking
     return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @department
 
-    #Course.find(:all, :conditions => {:department_id => @department.id}, :order => 'course_number, prefix, suffix').each do |course|
     # includes(:klasses => {:instructorships => :instructor}).
     Course.where(:department_id => @department.id).includes(:instructorships).ordered.each do |course|
       next if course.invalid?
@@ -110,7 +109,6 @@ class CoursesurveysController < ApplicationController
 
     # eager-load all necessary data. wasteful course reload, but can't get around the _short_name helper.
     @course = Course.joins({klasses: {instructorships: :instructor}}).find(@course.id)
-    #@course = Course.find(@course.id, :include => [:klasses => {:instructorships => :instructor}])
 
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
