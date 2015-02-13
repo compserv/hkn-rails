@@ -1,7 +1,6 @@
 - content_for :header do
-  = javascript_include_tag "http://d3js.org/d3.v3.min.js"
-  = javascript_include_tag "http://d3js.org/d3.superformula.v0.min.js"
   = javascript_include_tag "coursechart.js"
+  = stylesheet_link_tag "coursechart.css", media: "all"
 
 #sidebar.trans-bg
   = render :partial => "quick_nav"
@@ -18,6 +17,10 @@
     = render :partial => "eemap"
     %br
     = render :partial => "csmap"
-  %div{:id => "cs"}
+
   %br
+  %h1 EE Course Map
   %div{:id => "ee"}
+  %br
+  %h1 CS Course Map
+  %div{:id => "cs"}

@@ -40,6 +40,10 @@ class CoursesurveysController < ApplicationController
     CASClient::Frameworks::Rails::Filter.logout(self)
   end
 
+  def get_courses_json
+    return render json: view_context.get_coursechart_json("course_survey")
+  end
+
   def auth
     redirect_to coursesurveys_path
   end
@@ -543,6 +547,7 @@ class CoursesurveysController < ApplicationController
 
     redirect_to surveys_instructor_path(@instructor), :notice => "This is the new instructor."
   end
+
 
   private
   def klass_cache_path(k)

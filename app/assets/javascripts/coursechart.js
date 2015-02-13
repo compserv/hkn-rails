@@ -1,19 +1,24 @@
 var OPACITY_DURATION = 500;
-var DEFAULT_HEIGHT = 600;
+var DEFAULT_HEIGHT = 700;
 
-var generateChart = function(info, loc) {
+var generateChart = function(info, loc, department_id) {
     var nodes = [];
     var prereqs = [];
     var classHash = {};
+    var type_ids = []
+    var types = {}
+    var max_depth = 0;
     var h = DEFAULT_HEIGHT;
     var w = loc.parent().width();
-    var NODE_RADIUS = 25;
+    var NODE_RADIUS = 30;
     var LEGEND_OFFSET = 6*NODE_RADIUS;
     loc = loc[0];
 
     var addClass = function(course) {
-        name = course.name.toUpperCase();
-        type = course.type.toLowerCase();
+        if(type_ids.indexOf(course.type_id) < 0) {
+            type_ids.push(course.type_id); 
+        }
+        max_depth = course.depth > max_depth ? course.depth : max_depth;
         if(course.bias_x === undefined || course.bias_x === null) {
             course.bias_x = 0;
         }
@@ -26,34 +31,50 @@ var generateChart = function(info, loc) {
         prereq = course.prereqs;
         if(prereq === undefined || prereq === null)
             prereq = [];
-        if(typeof prereq == "string")
-            prereq = [prereq];
-        var upper = [];
-        prereq.forEach(function(i) { upper.push(i.toUpperCase());});
         newclass = {
-            "name": name,
-            "type": type,
+            "id" : course.id,
+            "name": course.name.toUpperCase(),
+            "type": course.type_id,
             radius: NODE_RADIUS,
             depth: course.depth,
-            prereqs: upper,
+            prereqs: course.prereqs,
             link: course.link,
             bias_x: course.bias_x,
-            bias_y: course.bias_y
+            bias_y: course.bias_y,
+            y: h*course.depth/max_depth
         };
         nodes.push(newclass);
-        classHash[name] = newclass;
+        classHash[course.id] = newclass;
     };
 
-    for(var i = 0; i < info.courses.length; i++) {
-        addClass(info.courses[i]);
+    var course_data;
+    if(department_id == 2) {
+        course_data = info.cs_courses;
+    } else if (department_id == 1) {
+        course_data = info.ee_courses; 
+    } else {
+        console.log("no department specified"); 
+    }
+    for(var i = 0; i < course_data.length; i++) {
+        addClass(course_data[i]);
     }
 
     // generate link array
     nodes.forEach(function(node) {
         node.prereqs.forEach(function(prereq) {
-            prereqs.push({source: classHash[prereq], target: node}); 
+            if(!(classHash[prereq.prereq_id] === undefined)) {
+            prereqs.push({source: classHash[prereq.prereq_id], target: node, recommended: prereq.is_recommended}); 
+            }
         });
     });
+
+    // generate class type information
+    type_ids.forEach(function(type_id) {
+        types[type_id] = info.types.filter(function(type) {
+            return type.id == type_id; 
+        })[0];
+    });
+
     // create svg object
     var svg = d3.select(loc)
     .append("svg")
@@ -62,25 +83,31 @@ var generateChart = function(info, loc) {
     // create force
     var force = d3.layout.force()
     .nodes(nodes)
-    .charge(-250)
+    .charge(-450)
     .linkDistance(function(link) {
         if(link.source.type == link.target.type) {
             return 50;
         } else {
-            return 400;
+            return 300;
         }
     })
     .size([w,h]);
+
+    // gets the base class for a given edge object (either edge recommended or edge required)
+    var getBaseEdge = function(prereq) {
+        var base = "edge";
+        if(prereq.recommended) {
+            base += " recommended";
+        } else {
+            base += " required" ;
+        }
+        return base;
+    };
     var legendMouseOver = function(d) {
-        circle.style("stroke", function(course) {
-            if(course.type == d.name) {
-                return "black";
-            }
-        });
-        circle.style("stroke-width", function(course) {
-            if(course.type == d.name) {
-                return 2;
-            }
+        circle.attr("class", function(course) {
+            if(course.type == d.id) { // TODO: make sure this is right
+                return "course highlight";
+            } 
         });
     };
 
@@ -88,85 +115,76 @@ var generateChart = function(info, loc) {
     var classMouseOver = function(d) {
         var prereqs = [];
         var post = []; // classes that have d as a prereq
-        var traverse = function(pre) {
-            prereqs.push(pre.name); 
-            pre.prereqs.forEach(function(p) {
-                traverse(classHash[p]);
+        var traverse = function(node) {
+            prereqs.push(node.id); 
+            node.prereqs.forEach(function(p) {
+                traverse(classHash[p.prereq_id]);
             });
         };
         traverse(d);
         nodes.forEach(function(node) {
-            if(node.prereqs.indexOf(d.name) > -1) {
-                post.push(node.name);
-            }
+            node.prereqs.forEach(function(prereq) {
+                if(prereq.prereq_id == d.id) {
+                    post.push(node.id); 
+                } 
+            });
         });
+        console.log(prereqs);
+        console.log(post);
+        edges.attr("class", function(prereq) {
+            var base = getBaseEdge(prereq);
+            if(prereqs.indexOf(prereq.target.id) > -1) {
+                base += " prereq";
+            }
+            if(prereqs.indexOf(prereq.target.id) > -1 || (post.indexOf(prereq.target.id) > -1 && prereq.source.id == d.id)) {
+                base += " highlight";
+            }
+            if(post.indexOf(prereq.target.id) > -1 && prereq.source.id == d.id) {
+                base += " post";
+            }
+            return base;
 
-        edges.style("stroke-width", function(prereq) {
-            if(prereqs.indexOf(prereq.target.name) > -1) {
-                return 2;
-            }
-            return 1;
-        });
-        edges.style("stroke", function(prereq) {
-            if(prereqs.indexOf(prereq.target.name) > -1 || (post.indexOf(prereq.target.name) > -1 && prereq.source.name == d.name)) {
-                return "#000";
-            }
-            return "#ccc";
         });
         edges.transition().attr("opacity", function(prereq) {
-            if(prereqs.indexOf(prereq.target.name) > -1 || (post.indexOf(prereq.target.name) > -1 && prereq.source.name == d.name)) {
+            if(prereqs.indexOf(prereq.target.id) > -1 || (post.indexOf(prereq.target.id) > -1 && prereq.source.id == d.id)) {
                 return 1;
             }
             return 0.2;
         }).duration(OPACITY_DURATION);
-        edges.style("stroke-dasharray", function(prereq) {
-            if(post.indexOf(prereq.target.name) > -1 && prereq.source.name == d.name) {
-                return "5,5";
-            }
-        });
 
-        circle.style("stroke", function(prereq) {
-            if(prereqs.indexOf(prereq.name) > -1 || post.indexOf(prereq.name) > -1) {
-                return "black";
+        circle.attr("class", function(prereq) {
+            var base= "course";
+            if(prereqs.indexOf(prereq.id) > -1 || post.indexOf(prereq.id) > -1) {
+                base += " highlight";    
             }
-        });
-        circle.style("stroke-width", function(prereq) {
-            if(prereqs.indexOf(prereq.name) > -1 || post.indexOf(prereq.name) > -1) {
-                return 2;
+            if(prereqs.indexOf(prereq.id) > -1 || post.indexOf(prereq.id) > -1) {
+                base += " prereq";
             }
+            return base;
         });
         circle.transition().attr("opacity", function(prereq) {
-            if(prereqs.indexOf(prereq.name) > -1 || post.indexOf(prereq.name) > -1) {
+            if(prereqs.indexOf(prereq.id) > -1 || post.indexOf(prereq.id) > -1) {
                 return 1;
             }
             return 0.2;
         }).duration(OPACITY_DURATION);
 
         texts.transition().attr("opacity", function(prereq) {
-            if(prereqs.indexOf(prereq.name) > -1 || post.indexOf(prereq.name) > -1) {
+            if(prereqs.indexOf(prereq.id) > -1 || post.indexOf(prereq.id) > -1) {
                 return 1;
             }
             return 0.2;
         }).duration(OPACITY_DURATION);
-        arrowLegend.transition().attr("opacity", function(group) {
-            return 1;
-        }).duration(OPACITY_DURATION);
     };
-
+    //
     // function called when a course is moused off
     var classMouseOff = function(d) {
-        edges.style("stroke-width", 1);
-        edges.style("stroke", "#ccc");
         edges.transition().attr("opacity", 1).duration(OPACITY_DURATION);
-        edges.style("stroke-width", null);
-        edges.style("stroke-dasharray", null);
+        //TODO: distinguish between recommended and required
+        edges.attr("class", getBaseEdge);
         texts.transition().attr("opacity", 1.0).duration(OPACITY_DURATION);
-        circle.style("stroke", null);
-        circle.style("stroke-width", null);
+        circle.attr("class", "course");
         circle.transition().attr("opacity", 1.0).duration(OPACITY_DURATION);
-        arrowLegend.transition().attr("opacity", function(group) {
-            return 0;
-        });
     };
 
     // function called when node is clicked
@@ -180,8 +198,8 @@ var generateChart = function(info, loc) {
     .data(prereqs)
     .enter()
     .append("line")
-    .style("stroke", "#ccc")
-    .style("stroke-width", 1)
+    // TODO: recommneded/required difference
+    .attr("class", getBaseEdge)
     .attr("marker-end", "url(#end)");
     // draw arrows
     svg.append("svg:defs")
@@ -192,8 +210,8 @@ var generateChart = function(info, loc) {
     .attr("viewBox", "0 -5 10 10")
     .attr("refX", 0)
     .attr("refY", 0)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
+    .attr("markerWidth", 8)
+    .attr("markerHeight", 8)
     .attr("markerUnits", "userSpaceOnUse")
     .attr("orient", "auto")
     .append("svg:path")
@@ -205,7 +223,6 @@ var generateChart = function(info, loc) {
     .enter()
     .append("g")
     .attr("class", "nodes")
-    .style("cursor", "pointer")
     .on("mouseover", classMouseOver)
     .on("mouseleave", classMouseOff)
     .on("click", classClick);
@@ -215,26 +232,20 @@ var generateChart = function(info, loc) {
     .attr("class", "course")
     .attr("opacity", 1.0)
     .attr("id", function(d) { return d.name; })
-    .style("fill", function(d) { return info.colors[d.type]; })
-    .call(force.drag);
+    .style("fill", function(d) { console.log(d);return types[d.type].color; });
 
     var texts = nodeGroups
     .append("text")
     .attr("class", "courseNames")
     .attr("id", function(d) { return d.name; })
-    .attr("fill", "black")
-    .attr("font-family", "sans-serif")
     .attr("text-anchor", "middle")
-    .attr("font-size", "12px")
     .text(function(d) { return d.name; });
 
     // draw the legend for colors
     var categories = [];
-    var index = 0;
-    for(key in info.colors) {
-        categories.push({name: key, index: index, color: info.colors[key]});
-        index++;
-    }
+    type_ids.forEach(function(key, index) {
+        categories.push({id: key, name: types[key].name, index: index, color: types[key].color});
+    });
     var colorLegend = svg.selectAll("circle.colorLegend")
     .data(categories)
     .enter()
@@ -251,20 +262,16 @@ var generateChart = function(info, loc) {
     .data(categories)
     .enter()
     .append("text")
-    .attr("x", function(d) { return (w-3*NODE_RADIUS)*d.index/(categories.length-1) +NODE_RADIUS})
+    .attr("class", "legendText")
+    .attr("x", function(d) { return (w-3*NODE_RADIUS)*d.index/(categories.length-1) +NODE_RADIUS;})
     .attr("y", 3*NODE_RADIUS)
-    .attr("fill", "black")
-    .attr("font-family", "sans-serif")
     .attr("text-anchor", "middle")
-    .attr("font-size", "14px")
     .text(function(d) { return d.name;});
 
     // draw the legend for arrows
-    var arrowLegend = svg.selectAll('g.arrowLegend').data([{ name: "Leads to", "stroke-dasharray": "5, 5"}, {name: "Prereq", "stroke-dasharray": null}])
+    var arrowLegend = svg.selectAll('g.arrowLegend').data([{ name: "Recommended", "stroke-dasharray": "5, 5"}, {name: "Required", "stroke-dasharray": null}])
     .enter()
     .append('g')
-    .attr("class", "arrowLegend")
-    .attr("opacity", 0)
     .attr("x", w-100)
     .attr("y", 25)
     .attr("height", 50)
@@ -272,16 +279,13 @@ var generateChart = function(info, loc) {
     .each(function(d, i) {
         var g = d3.select(this);
         g.append("text")
-        .attr("x", w-100) 
+        .attr("class", "legendText")
+        .attr("x", w-80) 
         .attr("y", h-i*25)
-        .attr("fill", "black")
-        .attr("font-family", "sans-serif")
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
+        .attr("text-anchor", "end")
         .text(d.name);
         g.append("line")
-        .style("stroke", "#000")
-        .style("stroke-width", 2)
+        .attr("class", "highlight")
         .style("stroke-dasharray", d["stroke-dasharray"])
         .attr("x1", w-70)
         .attr("y1", h-i*25-4)
@@ -299,8 +303,8 @@ var generateChart = function(info, loc) {
             var y2 = d.target.y;
             // make arrows end at edge rather than center
             var angle = Math.atan(Math.abs((y2-y1)/(x2-x1)));
-            x2 += (x1 < x2 ? -1 : 1) * (NODE_RADIUS+6)*Math.cos(angle);
-            y2 += (y1 < y2 ? -1 : 1) * (NODE_RADIUS+6)*Math.sin(angle);
+            x2 += (x1 < x2 ? -1 : 1) * (NODE_RADIUS+9)*Math.cos(angle);
+            y2 += (y1 < y2 ? -1 : 1) * (NODE_RADIUS+9)*Math.sin(angle);
             d3.select(this).attr({
                 'x1': x1,
                 'y1': y1,
@@ -311,15 +315,15 @@ var generateChart = function(info, loc) {
 
         var k = 0.1*e.alpha;
         nodes.forEach(function(o,i) {
-            var charth = h - LEGEND_OFFSET; // amount of space to draw on not including the legend
+            var charth = h - LEGEND_OFFSET - 2*NODE_RADIUS; // amount of space to draw on not including the legend
             var targety = 0;
             var targetx = 0;
-            targetx += w*info.prefLocs[o.type].x;
-            targety += charth*info.prefLocs[o.type].y;
-            targety += (o.depth-1)*charth/(info.maxDepth-1);
+            targetx += w*types[o.type].chart_pref_x;
+            targety += charth*types[o.type].chart_pref_y;
+            targety += (o.depth-1)*charth/(max_depth-1);
             targetx += o.bias_x;
             targety += o.bias_y;
-            targety += LEGEND_OFFSET;
+            targety += LEGEND_OFFSET + 2*NODE_RADIUS;
 
             o.y += (targety-o.y)*k;
             o.x += (targetx-o.x)*k;
@@ -337,9 +341,9 @@ var generateChart = function(info, loc) {
         //collision
         var collide = function(node) {
             var r = node.radius + 16;
-            nx1 = node.x - r,
-            nx2 = node.x + r,
-            ny1 = node.y - r,
+            nx1 = node.x - r;
+            nx2 = node.x + r;
+            ny1 = node.y - r;
             ny2 = node.y + r;
             return function(quad, x1, y1, x2, y2) {
                 if (quad.point && (quad.point !== node)) {
@@ -368,6 +372,16 @@ var generateChart = function(info, loc) {
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
 
+    });
+    var done = false;
+    force.on("end", function() {
+        done = true;
+        force.stop(); 
+    });
+    force.on("start", function() {
+        while(!done) {
+        force.tick(); 
+        }
     });
     force.start();
 };
