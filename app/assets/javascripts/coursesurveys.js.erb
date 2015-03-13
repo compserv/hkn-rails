@@ -1,5 +1,5 @@
 window.onload = function() {
-    jQuery.ajax("/coursesurveys/chartinfo", {success: function(data) {
+    jQuery.ajax("<%= Rails.application.routes.url_helpers.coursesurveys_chartinfo_path %>", {success: function(data) {
         generateChart(data, $("#cs"), 2);
         generateChart(data, $("#ee"), 1);
     }});

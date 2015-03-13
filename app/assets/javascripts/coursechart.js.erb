@@ -26,15 +26,15 @@ var generateChart = function(info, loc, department_id) {
             course.bias_y = 0;
         }
         if(course.link === undefined || course.link === null) {
-            course.link = "http://hkn.eecs.berkeley.edu";
+            course.link = "<%= Rails.application.routes.url_helpers.root_path %>";
         }
         prereq = course.prereqs;
         if(prereq === undefined || prereq === null)
             prereq = [];
         newclass = {
-            "id" : course.id,
-            "name": course.name.toUpperCase(),
-            "type": course.type_id,
+            id : course.id,
+            name: course.name.toUpperCase(),
+            type: course.type_id,
             radius: NODE_RADIUS,
             depth: course.depth,
             prereqs: course.prereqs,
@@ -52,8 +52,6 @@ var generateChart = function(info, loc, department_id) {
         course_data = info.cs_courses;
     } else if (department_id == 1) {
         course_data = info.ee_courses; 
-    } else {
-        console.log("no department specified"); 
     }
     for(var i = 0; i < course_data.length; i++) {
         addClass(course_data[i]);
@@ -129,8 +127,6 @@ var generateChart = function(info, loc, department_id) {
                 } 
             });
         });
-        console.log(prereqs);
-        console.log(post);
         edges.attr("class", function(prereq) {
             var base = getBaseEdge(prereq);
             if(prereqs.indexOf(prereq.target.id) > -1) {
@@ -232,7 +228,7 @@ var generateChart = function(info, loc, department_id) {
     .attr("class", "course")
     .attr("opacity", 1.0)
     .attr("id", function(d) { return d.name; })
-    .style("fill", function(d) { console.log(d);return types[d.type].color; });
+    .style("fill", function(d) { return types[d.type].color; });
 
     var texts = nodeGroups
     .append("text")

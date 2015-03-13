@@ -10,29 +10,31 @@ module CourseChartHelper
     when "course_survey"
       link_function = proc {|dept, num| coursesurveys_course_path(dept, num)} 
     else
-      link_function = proc { "http://hkn.eecs.berkeley.edu" }
+      link_function = proc { Rails.application.routes.url_helpers.root_path }
     end
 
     def generate_course(course_chart, link_function)
-      c = {}
       course = course_chart.course
-      c[:id] = course.id
-      c[:department_id] = course.department_id
-      c[:name] = course.full_course_number
-      c[:link] = link_function.call(course.department_id == 2 ? "CS" : "EE", c[:name])
-      c[:prereqs] = CoursePrereq.where(:course_id => course.id).select("id, course_id, prereq_id, is_recommended")
-      c[:type_id] = course.course_type_id
-      c[:bias_x] = course_chart.bias_x
-      c[:bias_y] = course_chart.bias_y
-      c[:depth] = course_chart.depth
+      c = {
+        :id => course.id,
+        :department_id => course.department_id,
+        :name => course.full_course_number,
+        :link => link_function.call(course.department_id == 2 ? "CS" : "EE", course.full_course_number),
+        :prereqs => CoursePrereq.where(:course_id => course.id).select("id, course_id, prereq_id, is_recommended"),
+        :type_id => course.course_type_id,
+        :bias_x => course_chart.bias_x,
+        :bias_y => course_chart.bias_y,
+        :depth => course_chart.depth
+      }
       return c
     end
 
     course_info = courses.all.map{|x| generate_course(x, link_function)}
-    json = {}
-    json[:types] = CourseType.all.select("id, chart_pref_x, chart_pref_y, color, name")
-    json[:cs_courses] = course_info.select{|x| x[:department_id] == cs_department.id}
-    json[:ee_courses] = course_info.select{|x| x[:department_id] == ee_department.id}
+    json = {
+      :types => CourseType.all.select("id, chart_pref_x, chart_pref_y, color, name"),
+      :cs_courses => course_info.select{|x| x[:department_id] == cs_department.id},
+      :ee_courses => course_info.select{|x| x[:department_id] == ee_department.id}
+    }
     return json
   end
 end
