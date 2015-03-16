@@ -54,6 +54,8 @@ GEM
       request_store (~> 1.0)
     autotest-standalone (4.5.11)
     builder (3.2.2)
+    d3js-rails (3.1.6)
+      railties (>= 3.0, < 5.0)
     diff-lcs (1.2.5)
     domain_name (0.5.18)
       unf (>= 0.0.5, < 1.0.0)
@@ -200,6 +202,7 @@ DEPENDENCIES
   activesupport
   authlogic
   autotest-standalone
+  d3js-rails (~> 3.1.6)
   exception_notification (~> 4)
   haml-rails
   jquery-rails (~> 2.1.4)

@@ -13,15 +13,20 @@ class Course < ActiveRecord::Base
   #   department_id : integer 
   #   course_number : integer 
   #   course_guide  : text 
+  #   course_type_id: integer
   # =======================
 
   belongs_to :department
+  belongs_to :course_type
   has_many :course_preferences, :dependent => :destroy
   has_many :tutors, -> { uniq }, :through => :course_preferences
   has_many :klasses, -> { order "semester DESC, section DESC" }, :dependent => :destroy
   has_many :coursesurveys, :through => :klasses
   #has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
   has_many :instructorships, :through => :klasses
+  has_many :course_prereqs, :foreign_key => :course
+  has_many :post_classes, :through => :course_prereqs, :source => :prereq
+  has_one :course_chart
 
   has_many :exams
   validates :department_id, :presence => true

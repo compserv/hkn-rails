@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150205213121) do
+ActiveRecord::Schema.define(version: 20150302051136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,6 +147,18 @@ ActiveRecord::Schema.define(version: 20150205213121) do
     t.string   "cellphone"
   end
 
+  create_table "course_charts", force: true do |t|
+    t.integer  "course_id"
+    t.integer  "bias_x"
+    t.integer  "bias_y"
+    t.float    "depth"
+    t.boolean  "show"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "course_charts", ["course_id"], name: "index_course_charts_on_course_id", using: :btree
+
   create_table "course_preferences", force: true do |t|
     t.integer  "course_id"
     t.integer  "tutor_id"
@@ -157,9 +169,26 @@ ActiveRecord::Schema.define(version: 20150205213121) do
 
   add_index "course_preferences", ["course_id", "tutor_id"], name: "index_course_preferences_on_course_id_and_tutor_id", unique: true, using: :btree
 
+  create_table "course_prereqs", force: true do |t|
+    t.integer  "course_id",      null: false
+    t.integer  "prereq_id",      null: false
+    t.boolean  "is_recommended"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "course_types", force: true do |t|
+    t.float    "chart_pref_x"
+    t.float    "chart_pref_y"
+    t.string   "color"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "courses", force: true do |t|
-    t.string   "suffix",        default: ""
-    t.string   "prefix",        default: ""
+    t.string   "suffix",         default: ""
+    t.string   "prefix",         default: ""
     t.string   "name"
     t.text     "description"
     t.datetime "created_at"
@@ -169,7 +198,10 @@ ActiveRecord::Schema.define(version: 20150205213121) do
     t.integer  "department_id"
     t.integer  "course_number"
     t.text     "course_guide"
+    t.integer  "course_type_id"
   end
+
+  add_index "courses", ["course_type_id"], name: "index_courses_on_course_type_id", using: :btree
 
   create_table "coursesurveys", force: true do |t|
     t.integer  "max_surveyors",  default: 3

@@ -219,6 +219,7 @@ HknRails::Application.routes.draw do
   # Course Guides
   scope "courseguides" do
     match "/"                              => "courseguide#index", :as => :courseguide, :via => [:get, :post]
+    match "/chartinfo/"                   => "courseguide#get_courses_json", :as => :courseguide_chartinfo, :via => [:get]
     match "/:dept_abbr/:course_number"     => "courseguide#show", :as => :courseguide_show, :via => [:get, :post]
     get "/:dept_abbr/:course_number/edit"  => "courseguide#edit", :as => :courseguide_edit
     match "/:dept_abbr/:course_number/update" => "courseguide#update", :as => :courseguide_update, :via => [:get, :post, :patch]
@@ -229,6 +230,7 @@ HknRails::Application.routes.draw do
     match "/"                              => "coursesurveys#index",      :as => :coursesurveys, :via => [:get, :post]
     match "auth"                           => "coursesurveys#auth", :as => :coursesurveys_auth, :via => [:get]
     match "logout"                         => "coursesurveys#logout", :as => :coursesurveys_logout, :via => [:get]
+    match "chartinfo"                      => "coursesurveys#get_courses_json", :as => :coursesurveys_chartinfo, :via => [:get]
     match "course/:dept_abbr"              => "coursesurveys#department", :as => :coursesurveys_department, :via => [:get, :post]
     match "course/:dept_abbr/:course_number" => "coursesurveys#course", :as => :coursesurveys_course, :via => [:get, :post]
     match "course/:dept_abbr/:short_name/:semester(/:section)" => "coursesurveys#klass",      :as => :coursesurveys_klass, :via => [:get, :post]

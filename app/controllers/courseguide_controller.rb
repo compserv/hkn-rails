@@ -35,6 +35,10 @@ class CourseguideController < ApplicationController
     return redirect_to courseguide_edit_path(@course.dept_abbr, @course.full_course_number), :notice => "Successfully updated the course guide for #{@course.course_name}."
   end
 
+  def get_courses_json
+    return render json: view_context.get_coursechart_json("course_guide")
+  end
+
   private
   def courseguide_params
     params.require(:course).permit(

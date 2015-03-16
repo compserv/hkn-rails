@@ -1,3 +1,7 @@
+- content_for :header do
+  = javascript_include_tag "coursechart.js"
+  = stylesheet_link_tag "coursechart.css", media: "all"
+
 #sidebar.trans-bg
   = render :partial => "quick_nav"
 #main
@@ -9,6 +13,14 @@
   
   %h2 Prerequisite Charts
   %p (Click on a course in the images below to see its ratings)
-  = render :partial => "eemap"
+  %noscript
+    = render :partial => "eemap"
+    %br
+    = render :partial => "csmap"
+
   %br
-  = render :partial => "csmap"
+  %h1 EE Course Map
+  %div{:id => "ee"}
+  %br
+  %h1 CS Course Map
+  %div{:id => "cs"}
