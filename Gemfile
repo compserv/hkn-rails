@@ -12,7 +12,7 @@ gem 'mechanize'
 gem 'net-ldap', :require => 'net/http'
 gem 'nokogiri'
 gem 'pg'
-gem 'rails', '~> 4.1'
+gem 'rails', '4.1.9'
 gem 'rails-observers'
 gem 'rdiscount'
 gem 'recaptcha', :require => ['recaptcha', File.join('recaptcha', 'rails')]
