@@ -1,25 +1,28 @@
 module SurveyData
   class Importer
     require 'csv'
+    require 'json'
 
     QMATCH = /\A\d\. (.+)/
-    FREQUENCY_KEYS = ['1', '2', '3', '4', '5', '6', '7', 'N/A', 'Omit']
+    PROF_FREQUENCY_KEYS = ['1', '2', '3', '4', '5', '6', '7', 'N/A', 'Omit']
+    TA_FREQUENCY_KEYS = ['1', '2', '3', '4', '5', 'N/A', 'Omit']
 
     # Imports all of the course surveys from the specified file. Commits
     # only if COMMIT is true.
-    def self.import(uh_FIXME, file, commit=false, is_ta=false)
+    def self.import(file, commit=false, is_ta=false)
       is_ta = is_ta.nil? ? false : true
       results = { :errors => [], :info => [] }
       rows = CSV.read(file.path)
       [:instructors, :klasses, :instructorships, :courses].each {|s| ActiveRecord::Base.connection.execute "ANALYZE #{s.to_s};"}
 
+      log = []
       begin
         ActiveRecord::Base.transaction do
           while true
-            data = self.next_survey(rows)
+            data = self.next_survey(rows, is_ta, log)
             break if data.nil?
             semester, dept_id, course_number, section, instructor, survey_answers = data
-            self.save_survey(semester, dept_id, course_number, section, instructor, survey_answers, is_ta, commit)
+            self.save_survey(semester, dept_id, course_number, section, instructor, survey_answers, is_ta) if commit
           end
         end
       rescue ParseError => e
@@ -27,13 +30,13 @@ module SurveyData
         return results
       end
 
-      results[:info] = ["Successfully imported course surveys."]
+      results[:info] = ["Successfully imported course surveys."] + log
       return results
     end
 
     # Returns all the relevant data for the next survey in ROWS, or nil
-    # if the file ends before then.
-    def self.next_survey(rows)
+    # if the file ends before then. Appends log output to LOG.
+    def self.next_survey(rows, is_ta, log)
       # ["EE 100-1 NIKNEJAD,ALI (prof)", "60 RESPONDENTS", nil, nil, nil, nil, nil, nil, nil, nil, nil, "FALL 2010", nil] 
       survey_row = self.next_row(rows)
       return nil if survey_row.nil?
@@ -50,8 +53,13 @@ module SurveyData
       instructor_name = course_info.shift #niknejad,ali
       last_name, first_name = instructor_name.split(',').collect(&:titleize_with_dashes)
       instructor = Instructor.find_by(['last_name LIKE ? AND first_name LIKE ?', last_name, first_name])
-      if instructor.nil? # We can create classes, but creating instructors leads to pain with typos
-        raise ParseError, "Instructor F:#{first_name}, L:#{last_name} does not exist in: #{survey_row}"
+      if instructor.nil? # We can create klasses/TAs, but creating professors leads to pain with typos
+        if is_ta
+          instructor = Instructor.new({title: 'ta', private: true, title: 'Teaching Assistant',
+            last_name: last_name, first_name: first_name})
+        else
+          raise ParseError, "Professor F:#{first_name}, L:#{last_name} does not exist in: #{survey_row}"
+        end
       end
 
       row = self.next_row(rows)
@@ -66,15 +74,15 @@ module SurveyData
           raise ParseError, "Invalid survey question format: '#{qtext}' (expected '1. blah blah') in #{row}"
         end
 
-        question = SurveyQuestion.find_by_text(qtext) || SurveyQuestion.search {keywords qtext}.results.first
+        question = SurveyQuestion.where({text: qtext}).first || SurveyQuestion.search {keywords qtext}.results.first
         raise ParseError, "Invalid survey question '#{qtext}' in #{row}" if question.nil?
 
         frequencies = {}
-        FREQUENCY_KEYS.each do |key|
+        keys = is_ta ? TA_FREQUENCY_KEYS : PROF_FREQUENCY_KEYS
+        keys.each do |key|
           frequencies[key] = row_data.shift.to_i
         end
-        frequencies = ActiveSupport::JSON.encode frequencies
-        survey_answers << [question.id, frequencies]
+        survey_answers << [question.id, frequencies.to_json]
         row = self.next_row(rows)
       end
 
@@ -85,42 +93,33 @@ module SurveyData
         dept_id = dept.id
       end
 
-      puts "Loaded #{instructor}"
+      log << "Added #{instructor.first_name} / #{instructor.last_name} teaching " +
+             "section #{section} of #{course_number}."
 
       return semester, dept_id, course_number, section, instructor, survey_answers
     end
 
     # Given some relevant data about a course survey, validates the survey,
     # and saves it if COMMIT is true.
-    def self.save_survey(semester, dept_id, course_number, section, instructor, survey_answers, is_ta, commit)
+    def self.save_survey(semester, dept_id, course_number, section, instructor, survey_answers, is_ta)
       prefix, course_number, suffix = Course.split_course_number(course_number, {hash: false})
-      course = Course.where({prefix: prefix, course_number: course_number, suffix: suffix, department_id: dept_id}).first || Course.new(c)
-      course_id = course.id
+      course_hash = {prefix: prefix, course_number: course_number, suffix: suffix, department_id: dept_id}
+      course = Course.where(course_hash).first || Course.new(course_hash)
+      raise ParseError, "Course save failed: #{course.inspect}" if not course.save
 
-      klass = Klass.find_by({:section => section, :course_id => course_id, :semester => semester}) || Klass.new(k)
+      klass_hash = {:section => section, :course_id => course.id, :semester => semester}
+      klass = Klass.where(klass_hash).first || Klass.new(klass_hash)
       klass.course = course
+      raise ParseError, "Klass save failed: #{klass.inspect}" if not klass.save
 
-      instructorship = Instructorship.find_by_klass_id_and_instructor_id(klass.id, instructor.id) || Instructorship.new
+      instructorship = Instructorship.where(klass_id: klass.id, instructor_id: instructor.id).first || Instructorship.new
       instructorship.ta, instructorship.instructor, instructorship.klass = is_ta, instructor, klass
-      puts "NEW INSTRUCTORSHIP #{instructorship.inspect} WITH #{is_ta}"
-
-      [course, klass, instructor, instructorship].each do |o|
-        if o.nil? or not o.valid?
-          raise ParseError, "Invalid object to save: #{o.inspect}"
-        end
-      end
-
-      return if not commit
-
-      [klass, course, instructor, instructorship].each do |o|
-        if not o.save
-          raise ParseError, "Save failed: #{o.inspect}"
-        end
-      end
+      raise ParseError, "Instructor save failed: #{instructor.inspect}" if not instructor.save
+      raise ParseError, "Instructorship save failed: #{instructorship.inspect}" if not instructorship.save
 
       survey_answers.each do |pair|
         qid, frequencies = pair
-        a = SurveyAnswer.find_by({:survey_question_id => qid, :instructorship_id => instructorship.id}) || SurveyAnswer.new(a)
+        a = SurveyAnswer.where({survey_question_id: qid, instructorship_id: instructorship.id}).first || SurveyAnswer.new(a)
         a.frequencies = frequencies
         if a.save
           a.order = current[:answers].length + 1
@@ -168,3 +167,4 @@ module Admin
     include SurveyData
   end
 end
+
