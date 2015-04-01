@@ -93,7 +93,7 @@ module SurveyData
         dept_id = dept.id
       end
 
-      log << "Added #{instructor.first_name} / #{instructor.last_name} teaching " +
+      log << "Parsed #{instructor.first_name} / #{instructor.last_name} teaching " +
              "section #{section} of #{course_number}."
 
       return semester, dept_id, course_number, section, instructor, survey_answers
@@ -112,17 +112,21 @@ module SurveyData
       klass.course = course
       raise ParseError, "Klass save failed: #{klass.inspect}" if not klass.save
 
+      raise ParseError, "Instructor save failed: #{instructor.inspect}" if not instructor.save
+
       instructorship = Instructorship.where(klass_id: klass.id, instructor_id: instructor.id).first || Instructorship.new
       instructorship.ta, instructorship.instructor, instructorship.klass = is_ta, instructor, klass
-      raise ParseError, "Instructor save failed: #{instructor.inspect}" if not instructor.save
       raise ParseError, "Instructorship save failed: #{instructorship.inspect}" if not instructorship.save
 
+      order = 1
       survey_answers.each do |pair|
         qid, frequencies = pair
-        a = SurveyAnswer.where({survey_question_id: qid, instructorship_id: instructorship.id}).first || SurveyAnswer.new(a)
+        answer_hash = {survey_question_id: qid, instructorship_id: instructorship.id}
+        a = SurveyAnswer.where(answer_hash).first || SurveyAnswer.new(answer_hash)
         a.frequencies = frequencies
         if a.save
-          a.order = current[:answers].length + 1
+          a.order = order
+          order += 1
           a.recompute_stats!  # only do for commit because new klasses will cause null constraint errors
         else
           raise ParseError, "Error with survey answer #{a.inspect}"
