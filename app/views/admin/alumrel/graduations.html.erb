@@ -1,0 +1,17 @@
+<h1> Listing Graduations</h1>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Graduation date</th>
+    <th>Officer?</th>
+  </tr>
+
+<% @graduating.each do |grad| %>
+  <tr>
+    <td><%= grad.full_name %></td>
+    <td><%= grad.graduation %></td>
+    <td><%= (grad.groups.include? Group.find_by(name: "officers")) ? "Yes" : "No" %></td>
+  </tr>
+<% end %>
+</table>
+

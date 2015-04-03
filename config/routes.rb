@@ -132,6 +132,11 @@ HknRails::Application.routes.draw do
     scope "studrel" do
       match "/" => "studrel#index", :via => [:get, :post]
     end
+
+    scope "alumrel", :as => "alumrel" do
+      get "/" => "alumrel#index"
+      get "graduations" => "alumrel#graduations"
+    end
   end # END Admin Pages
 
   resources :course_preferences, :only => [:destroy]
