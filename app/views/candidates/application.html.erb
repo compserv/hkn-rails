@@ -72,12 +72,12 @@
       <%= label_tag "Phone" %>
       <%= text_field_tag(:phone, @app_details[:phone]) %>
     </div>
-  
+
     <div class="field">
       <%= label_tag "Graduation Semester" %>
-      <%= text_field_tag(:grad_sem, @app_details[:grad_sem]) %>
+      <%= select_tag("graduation", options_for_select(@gradsemcands)) %>
     </div>
-  
+   
     <div class="field">
       <%= label_tag "Release information" %>
       <%= check_box_tag(:release, @app_details[:release]) %>
