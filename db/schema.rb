@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150302051136) do
+ActiveRecord::Schema.define(version: 20150403040610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -424,6 +424,7 @@ ActiveRecord::Schema.define(version: 20150302051136) do
     t.boolean  "sms_alerts",          default: false
     t.string   "reset_password_link"
     t.datetime "reset_password_at"
+    t.string   "graduation"
   end
 
   create_table "properties", force: true do |t|

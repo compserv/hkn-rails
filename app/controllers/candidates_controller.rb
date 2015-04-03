@@ -47,6 +47,8 @@ class CandidatesController < ApplicationController
   end
 
   def application
+    r = (Time.now.year-2..Time.now.year+6)
+    @gradsemcands = r.to_a.map{ |t| ['Spring ' + t.to_s, 'Fall ' + t.to_s]}.flatten
     if(@current_user.candidate)
       @app_details = {
         :aim => @current_user.aim,
@@ -130,7 +132,7 @@ class CandidatesController < ApplicationController
       :phone_number => params[:phone],
       :local_address => params[:local_address],
       :perm_address => params[:perm_address],
-      :grad_semester => params[:grad_sem]
+      :graduation => params[:graduation]
     })
 
     @current_user.candidate.update_attributes({

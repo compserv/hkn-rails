@@ -72,12 +72,12 @@
       <%= label_tag "Phone" %>
       <%= text_field_tag(:phone, @app_details[:phone]) %>
     </div>
-  
+
     <div class="field">
       <%= label_tag "Graduation Semester" %>
-      <%= text_field_tag(:grad_sem, @app_details[:grad_sem]) %>
+      <%= select_tag("graduation", options_for_select(@gradsemcands)) %>
     </div>
-  
+   
     <div class="field">
       <%= label_tag "Release information" %>
       <%= check_box_tag(:release, @app_details[:release]) %>
@@ -86,6 +86,7 @@
     <%= label_tag "What activities would you like to see HKN do this semester?" %><br/>
     <%= text_area_tag(:suggestion, @app_details[:suggestion]) %>
   </div>
+
   <div style="float:left; width: 45%; padding-left: 3em;">
       <%= label_tag "Committee Preferences" %><br/>
     <%= hidden_field_tag(:committee_prefs, "", :id=>"committee_prefs") %>
