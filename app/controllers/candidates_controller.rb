@@ -47,7 +47,7 @@ class CandidatesController < ApplicationController
   end
 
   def application
-    r = (Time.now.year..Time.now.year+6)
+    r = (Time.now.year-2..Time.now.year+6)
     @gradsemcands = r.to_a.map{ |t| ['Spring ' + t.to_s, 'Fall ' + t.to_s]}.flatten
     if(@current_user.candidate)
       @app_details = {
