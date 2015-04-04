@@ -27,7 +27,7 @@ module SurveyData
           end
         end
       rescue ParseError => e
-        results[:errors] = e.message + ["Example: #{INFO_EXAMPLE}"]
+        results[:errors] = [e.message, " Example: #{INFO_EXAMPLE}"]
         return results
       end
 
@@ -60,7 +60,7 @@ module SurveyData
           instructor = Instructor.new({title: 'ta', private: true, title: 'Teaching Assistant',
             last_name: last_name, first_name: first_name})
         else
-          raise ParseError, "Professor F:#{first_name}, L:#{last_name} does not exist in: #{survey_row}"
+          raise ParseError, "Professor /#{first_name}/#{last_name}/ does not exist in: #{survey_row}"
         end
       end
 
@@ -95,7 +95,7 @@ module SurveyData
         dept_id = dept.id
       end
 
-      log << "Parsed #{instructor.first_name} / #{instructor.last_name} teaching " +
+      log << "Parsed /#{instructor.first_name}/#{instructor.last_name}/ teaching " +
              "section #{section} of #{course_number}."
 
       return semester, dept_id, course_number, section, instructor, survey_answers
