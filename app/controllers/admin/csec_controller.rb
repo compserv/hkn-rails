@@ -19,7 +19,7 @@ class Admin::CsecController < Admin::AdminController
 ##      Process.wait
 ##    end
 
-    @results    = SurveyData::Importer.import(:csv, params[:file].tempfile, params[:save], params[:ta])
+    @results    = SurveyData::Importer.import(params[:file].tempfile, params[:save], params[:ta])
     @success    = @results[:errors].empty?
     @allow_save = @success && !params[:save]
     @ta         = !!params[:ta]
