@@ -6,6 +6,7 @@ module SurveyData
     QMATCH = /\A\d\. (.+)/
     PROF_FREQUENCY_KEYS = ['1', '2', '3', '4', '5', '6', '7', 'N/A', 'Omit']
     TA_FREQUENCY_KEYS = ['1', '2', '3', '4', '5', 'N/A', 'Omit']
+    INFO_EXAMPLE = "[\"EE 100-1 HILFINGER,PAUL N. (prof)\", \"60 RESPONDENTS\", nil, nil, nil, nil, nil, nil, nil, nil, nil, \"FALL 2010\", nil]"
 
     # Imports all of the course surveys from the specified file. Commits
     # only if COMMIT is true.
@@ -26,7 +27,7 @@ module SurveyData
           end
         end
       rescue ParseError => e
-        results[:errors] = e.message
+        results[:errors] = e.message + ["Example: #{INFO_EXAMPLE}"]
         return results
       end
 
@@ -37,7 +38,6 @@ module SurveyData
     # Returns all the relevant data for the next survey in ROWS, or nil
     # if the file ends before then. Appends log output to LOG.
     def self.next_survey(rows, is_ta, log)
-      # ["EE 100-1 NIKNEJAD,ALI (prof)", "60 RESPONDENTS", nil, nil, nil, nil, nil, nil, nil, nil, nil, "FALL 2010", nil] 
       survey_row = self.next_row(rows)
       return nil if survey_row.nil?
 
@@ -50,7 +50,9 @@ module SurveyData
       raise ParseError, "No section listed in: #{survey_info}" if section.blank?
       section = section.to_i
 
-      instructor_name = course_info.shift #niknejad,ali
+      #course_info now e.g. ["HILFINGER,PAUL", "N.", "(prof)"]
+      course_info.pop
+      instructor_name = course_info.join(" ")
       last_name, first_name = instructor_name.split(',').collect(&:titleize_with_dashes)
       instructor = Instructor.find_by(['last_name LIKE ? AND first_name LIKE ?', last_name, first_name])
       if instructor.nil? # We can create klasses/TAs, but creating professors leads to pain with typos
