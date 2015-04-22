@@ -6,6 +6,7 @@ gem 'activerecord-session_store'
 gem 'authlogic'
 gem 'd3js-rails', '~> 3.1.6'
 gem 'exception_notification', '~> 4'
+gem 'flickraw'
 gem 'haml-rails'
 gem 'jquery-rails', '~> 2.1.4'
 gem 'mechanize'
@@ -24,6 +25,7 @@ gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
 gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
+
 
 group :development, :test do
   gem 'autotest-standalone'
