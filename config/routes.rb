@@ -63,6 +63,7 @@ HknRails::Application.routes.draw do
 
     scope "vp" do
       match "/" => "vp#index", :as => :vp, :via => [:get, :post]
+      get "committees"    => "vp#committees",           :as => :vp_committees
       scope "eligibilities" do
         get   "/"         => "eligibilities#list",      :as => :eligibilities
         post  "update"    => "eligibilities#update",    :as => :update_eligibilities
