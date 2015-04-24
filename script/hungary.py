@@ -42,4 +42,4 @@ def solve(info):
     m = Munkres()
     indexes = m.compute(cost_matrix)
     for row, column in indexes:
-        print('{0}:{1}'.format(row, c_spots[column]))
+        print('{0} : {1}'.format(row, c_spots[column]))

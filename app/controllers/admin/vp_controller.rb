@@ -13,24 +13,16 @@ class Admin::VpController < Admin::AdminController
     @candidates = Candidate.approved.current.sort_by {|c| (c.person && c.person.last_name.downcase) || "zzz"  }
     cand_hash = {}
     @committee_out = ""
+    @err = ""
     @candidates.each{|cand| cand_hash[cand.person.id] = cand.committee_preferences}
-    Open3.popen3("python -i ") do |stdin, stdout, stderr|
+    Open3.popen3("python -i ../script/hungary") do |stdin, stdout, stderr|
       input = JSON.dump(cand_hash)
-      input = "{0:'CompServTutoringIndrelActivitiesStudRelBridgeService',
-      1:'TutoringIndrelActivitiesStudRelBridgeServiceCompServ',
-      2:'ServiceBridgeStudRelActivitiesIndrelTutoringCompServ',
-      3:'BridgeServiceCompServTutoringIndrelActivitiesStudRel',
-      4:'ActivitiesIndrelTutoringCompServServiceBridgeStudRel',
-      5:'IndrelBridgeServiceStudRelActivitiesCompServTutoring',
-      6:'CompServIndrelActivitiesStudRelTutoringBridgeService',
-      7:'CompServTutoringIndrelActivitiesStudRelBridgeService',
-      8:'ActivitiesIndrelTutoringCompServServiceBridgeStudRel'},
-      'spots':{'CompServ':1,'Tutoring':1,'Indrel':2,
-          'Activities':1,'StudRel':1,'Bridge':1,'Service':1}}"
-      stdin.puts "import os; print(os.getcwd())"
-      #stdin.puts "solve(split(parse('"+ input + "')))"
+      stdin.puts "solve(split(parse('"+ input + "')))"
       stdin.puts "exit()"
-      stdout.each_line { |line| @committee_out += "\n" + line}
+      stdout.each_line { |line|
+        line.sub(/[0-9]{1,}/) {|num| Person.find_by_id(num.to_i).full_name}
+        @committee_out += "\n" + line}
+      stderr.each_line { |line| @err += "\n" + line}
       stdin.close
     end
   end
