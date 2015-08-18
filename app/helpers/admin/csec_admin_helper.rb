@@ -54,7 +54,7 @@ module SurveyData
       course_info.pop
       instructor_name = course_info.join(" ")
       last_name, first_name = instructor_name.split(',').collect(&:titleize_with_dashes)
-      instructor = Instructor.find_by(['last_name LIKE ? AND first_name LIKE ?', last_name, first_name])
+      instructor = Instructor.find_by(['UPPER(last_name) LIKE ? AND UPPER(first_name) LIKE ?', last_name.upcase, first_name.upcase])
       if instructor.nil? # We can create klasses/TAs, but creating professors leads to pain with typos
         if is_ta
           instructor = Instructor.new({title: 'ta', private: true, title: 'Teaching Assistant',
