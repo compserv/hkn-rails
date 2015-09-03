@@ -57,6 +57,41 @@ class PeopleController < ApplicationController
     end
   end
 
+  def search
+    return if strip_params
+
+    query = sanitize_query(params[:query]) 
+
+    @results = {}
+
+    if $SUNSPOT_ENABLED
+      # Search courses
+      @results[:people] = Person.search do
+        unless query.blank?
+          keywords query
+        end
+        order_by :score, :desc
+      end
+    else
+      # Solr isn't started, hack together some results
+      logger.warn "Solr isn't started, falling back to lame search"
+
+      str = "%#{query}%"
+      @results[:people] = FakeSearch.new
+
+      opts = { :page     => params[:page],
+               :per_page => params[:per_page] || 20
+             }
+
+      @results[:people].results = Person.where('(first_name||last_name||username||email) LIKE ?', str).paginate opts
+
+      flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
+    end
+    @people = @results[:people].results
+
+
+  end # search
+
   def new
     @hide_topbar = true
     @person = Person.new

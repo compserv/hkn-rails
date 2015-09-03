@@ -76,6 +76,19 @@ class Person < ActiveRecord::Base
     c.validates_length_of_login_field_options = {:within => 2..100}
   end
 
+  # Sunspot
+  searchable do
+    text :first_name
+    text :last_name
+    text :username
+    text :email
+    text :first_name, :as => 'first_name_text_ngram'
+    text :last_name, :as => 'last_name_text_ngram'
+    text :username, :as => 'username_text_ngram'
+    text :email, :as => 'email_text_ngram'
+  end
+  # end sunspot
+
   def first_name=(first_name)
     write_attribute(:first_name, first_name.strip)
   end

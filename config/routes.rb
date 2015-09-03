@@ -172,6 +172,7 @@ HknRails::Application.routes.draw do
 
   # People
   scope "people" do
+    match "search(/:query)"  => "people#search", :as => :people_search, :via => [:get, :post]
     match "list(/:category)" => "people#list", :as => :people_list, :via => [:get, :post]
     match "contact_card"     => "people#contact_card", :as => :contact_card, :via => [:get, :post]
   end
