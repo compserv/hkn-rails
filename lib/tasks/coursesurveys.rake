@@ -4,7 +4,7 @@
 #   and take that url. (Should be osoc.berkeley.edu/...)
 # - Some instructors may not be auto-identified.  You can manually enter id
 #   Find ids in rail console.  (In terminal, "rails c production" to open console.  
-#   In console, "Instructor.find_by_last_name("<name>"))
+#   In console, "Instructor.where(last_name: "<name>"))""
 
 namespace :coursesurveys do
 
