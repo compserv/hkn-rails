@@ -16,7 +16,7 @@ If Vagrant gives you an error along the lines of "The guest machine entered an i
     5.3) Change your BIOS settings to enable hardware acceleration<br>
     5.4) <tt>vagrant up</tt> and continue to step 6.<br>
 6) <tt>vagrant ssh</tt><br>
-7) <tt>cd ../../vagrant</tt><br>
+7) <tt>cd /vagrant</tt><br>
 8) <tt>rake db:create && rake db:backup:restore FROM=[path\_to\_backup\_from\_hkn]</tt><br>
 9) <tt>rails s</tt><br>
 10) On your host machine, visit <tt>localhost:3000</tt><br>
