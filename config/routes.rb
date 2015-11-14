@@ -355,6 +355,12 @@ HknRails::Application.routes.draw do
       :as => :exams_new
     post 'create'                                 => "exams#create",
       :as => :exams_create
+    delete ':id/destroy' => "exams#destroy",
+      :as => :exams_destroy
+    get ':id/update_form' => "exams#update_form",
+      :as => :exams_update_form
+    post ':id/update' => "exams#update",
+      :as => :exams_update
   end
   #resources :exams
 

@@ -148,6 +148,39 @@ class ExamsController < ApplicationController
     end
   end
 
+  def destroy
+    exam_dir = 'public/examfiles/'
+    @exam = Exam.find(params[:id])
+    exam_path = exam_dir+ @exam.filename
+    File.delete(exam_path)
+    @exam.destroy
+    redirect_to :back
+
+  end
+
+  def update_form
+    @exam = Exam.find_by_id(params[:id])
+  end
+
+  def update
+    exam_dir = 'public/examfiles/'
+    @exam = Exam.find_by_id(params[:id])
+    exam_path = exam_dir+ @exam.filename
+    exam_file = params[:file_info]
+    
+    begin
+      f = File.open(exam_path, 'wb')
+      if @exam.valid? and not f.nil?
+        f.write(exam_file.read)
+        @exam.save
+        flash[:notice] = "Exam Reuploaded!"
+        redirect_to :back
+      end
+    ensure
+      f.close if f
+    end
+  end
+
   def department
     @dept_name, @courses = Exam.get_dept_name_courses_tuples(params[:dept_abbr])
 
