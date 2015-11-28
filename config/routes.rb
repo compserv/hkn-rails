@@ -356,7 +356,7 @@ HknRails::Application.routes.draw do
     post 'create'                                 => "exams#create",
       :as => :exams_create
   end
-  #resources :exams
+  resources :exams, only: [:destroy]
 
   #Candidates
   scope "cand" do

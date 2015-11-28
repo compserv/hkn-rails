@@ -5,7 +5,13 @@ class ExamsController < ApplicationController
 
   # GET /exams
   # GET /exams.xml
-  
+
+  def destroy
+    @exam = Exam.find(params.require(:id))
+    @exam.destroy
+    redirect_to exams_path
+  end
+
   def new
     @exam = Exam.new
     @person = @current_user
@@ -139,7 +145,7 @@ class ExamsController < ApplicationController
     @counts = {}
     Exam.select("klass_id, course_id, exam_type, number").
       group([:course_id, :klass_id, :number, :exam_type]).
-      count(:all).each {|course, count| 
+      count(:all).each {|course, count|
         @counts[course[0]] ? @counts[course[0]] += 1 : @counts[course[0]] = 1}
 
     respond_to do |format|
