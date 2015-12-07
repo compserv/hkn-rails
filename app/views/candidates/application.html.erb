@@ -54,11 +54,6 @@
 <%= form_tag "/cand/submit_app"  do %> 
   <div style="float:left; width:45%;">
     <div class="field">
-      <%= label_tag "AIM Screen name" %>
-      <%= text_field_tag(:aim, @app_details[:aim]) %>
-    </div>
-  
-    <div class="field">
       <%= label_tag "Your Local (Berkeley) Address" %>
       <%= text_field_tag(:local_address, @app_details[:local_address]) %>
     </div>
