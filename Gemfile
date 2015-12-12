@@ -25,6 +25,10 @@ gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
 gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
 
+group :development do
+  gem 'rails-erd' # Generate entity relationship diagram
+end
+
 group :development, :test do
   gem 'autotest-standalone'
   gem 'rspec-rails'
