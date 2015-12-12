@@ -51,7 +51,6 @@ class CandidatesController < ApplicationController
     @gradsemcands = r.to_a.map{ |t| ['Spring ' + t.to_s, 'Fall ' + t.to_s]}.flatten
     if(@current_user.candidate)
       @app_details = {
-        :aim => @current_user.aim,
         :phone => @current_user.phone_number,
         :local_address => @current_user.local_address,
         :perm_address => @current_user.perm_address,
@@ -128,7 +127,6 @@ class CandidatesController < ApplicationController
 
   def submit_app
     @current_user.update_attributes({
-      :aim => params[:aim],
       :phone_number => params[:phone],
       :local_address => params[:local_address],
       :perm_address => params[:perm_address],
