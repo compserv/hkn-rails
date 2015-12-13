@@ -30,8 +30,8 @@
   <div class="field">
     <%= f.label :private, "Keep my profile private" %>
     <%= f.check_box :private %>
-  </div>  
-  
+  </div>
+
   <h4>Change Password</h4>
 
   <div class="field">
@@ -42,7 +42,7 @@
     <%= label :password, :confirm, "Confirm New Password" %>
     <%= password_field :password, :confirm %>
   </div>
-  
+
   <h4>Additional Information</h4>
   <div class="field">
     <%= f.label :phone_number %>
@@ -57,10 +57,6 @@
     <%= f.check_box :sms_alerts %>
     <div>Checking this box will enable you to receive an SMS text message two hours before events you have RSVP'd for. (Requires you to enter in a valid 10-digit phone number and a mobile carrier.) (Disclaimer: HKN is not responsible for any surcharges incurred from receiving SMS messages.)
     </div>
-  </div>
-  <div class="field">
-    <%= f.label :aim, "AIM Screenname" %>
-    <%= f.text_field :aim %>
   </div>
   <div class="field">
     <%= f.label :date_of_birth %>
