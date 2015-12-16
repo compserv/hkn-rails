@@ -79,7 +79,10 @@
     </div>
     
     <%= label_tag "What activities would you like to see HKN do this semester?" %><br/>
-    <%= text_area_tag(:suggestion, @app_details[:suggestion]) %>
+    <%= text_area_tag(:suggestion, @app_details[:suggestion]) %><br/>
+
+    <%= label_tag "Optionally, is there anything you would like us to know about your committee preferences (experience, strong interest)?" %><br/>
+    <%= text_area_tag(:committee_preference_note) %>
   </div>
 
   <div style="float:left; width: 45%; padding-left: 3em;">
