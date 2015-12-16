@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20151216032914) do
     t.string   "committee_preferences"
     t.string   "release"
     t.integer  "quiz_score",                default: 0, null: false
-    t.string   "committee_preference_note"
+    t.text     "committee_preference_note"
   end
 
   create_table "challenges", force: true do |t|
