@@ -381,6 +381,11 @@ HknRails::Application.routes.draw do
   # Transactions
   resources :transactions
 
+  # Error handling
+  get '/404' => "errors#not_found"
+  get '/500' => "errors#internal_server_error"
+
+
   # Easter Eggs
   get "easter-eggs" => "easter_eggs#edit", :as => "easter_eggs_edit"
   post "easter-eggs" => "easter_eggs#update", :as => "easter_eggs_update"
