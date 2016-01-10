@@ -37,6 +37,8 @@ Making Backups
 4) <tt>rake db:backups</tt> (actual script is in <tt>hkn-rails/lib/tasks/backups.rb</tt>)<br>
 This makes a backup in <tt>hkn-rails/db/backups</tt>, name based on datetime by default.<br>
 
+To load a backup: <tt>rake db:drop && rake db:create && rake db:backup:restore FROM=[path]</tt><br>
+
 Stuff that used to be in README.d
 ---------------------------------
 
