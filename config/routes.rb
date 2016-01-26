@@ -1,7 +1,7 @@
 HknRails::Application.routes.draw do
 
   get "test_exception_notification" => "application#test_exception_notification"
-
+  resource 'pages', only: [:show]
   #Department tours
   scope "dept_tour" do
     match "/" => "dept_tour#signup", :as => :dept_tour_signup, :via => [:get, :post]
