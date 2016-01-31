@@ -1,0 +1,16 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #FFFFFF;
+}
+
+a {
+  color: #3366CC;
+  text-decoration: none;
+}
+

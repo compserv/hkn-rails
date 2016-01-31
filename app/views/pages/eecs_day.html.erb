@@ -1,1 +1,31 @@
-EECS Day Test Site
+<nav class="grey darken-3" role="navigation">
+  <div class="nav-wrapper container">
+    <%= image_tag("hkn_logo.png", class: 'logo') %>
+    <ul class="right hide-on-med-and-down">
+      <li>
+        <%= link_to 'More Information',
+        pages_path(page: 'eecs_day_details')
+        %>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="section no-pad-bot" id="index-banner">
+  <div class="container">
+    <br><br>
+    <h1 class="header center yellow-text">HKN EECS Day</h1>
+    <div class="row center">
+      <h5 class="header col s12 light">Saturday, March 12 from 10 a.m. to 4 p.m.</h5>
+    </div>
+    <div class="row center">
+    <%= link_to 'Sign Up Here',
+      'https://docs.google.com/forms/d/1jxHgb4IBCHewEfqHqM2RgLEwc20uTtcisMW4EVYJf7c/viewform?c=0&w=1',
+      target: '_blank',
+      id: 'download-button',
+      class: 'btn-large waves-effect waves-light yellow' %>
+    </div>
+    <br><br>
+  </div>
+</div>
+

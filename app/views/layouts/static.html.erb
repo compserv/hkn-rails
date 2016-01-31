@@ -5,7 +5,8 @@
   <%= favicon_link_tag %>
   <title><%= "Eta Kappa Nu (HKN), Mu Chapter"%><%= " - #{@module_title}" unless @module_title.blank? %><%= " - #{@submodule_title}" unless @submodule_title.blank? %></title>
   <%= javascript_include_tag 'application' %>
-  <%= stylesheet_link_tag 'main' %>
+  <%= stylesheet_link_tag 'static' %>
+  <%= stylesheet_link_tag 'application' %>
   <%= stylesheet_link_tag 'print', :media => 'print' %>
   <%= javascript_include_tag "jquery.history" %>
   <%= javascript_include_tag "common" %>

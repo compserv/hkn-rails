@@ -91,6 +91,8 @@ GEM
     json (1.8.2)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    materialize-sass (0.97.5)
+      sass (~> 3.3)
     mechanize (2.7.3)
       domain_name (~> 0.5, >= 0.5.1)
       http-cookie (~> 1.0)
@@ -168,6 +170,7 @@ GEM
     ruby-graphviz (1.2.2)
     ruby_parser (3.6.5)
       sexp_processor (~> 4.1)
+    sass (3.4.21)
     scrypt (2.0.0)
       ffi-compiler (>= 0.0.2)
       rake
@@ -224,6 +227,7 @@ DEPENDENCIES
   exception_notification (~> 4)
   haml-rails
   jquery-rails (~> 2.1.4)
+  materialize-sass
   mechanize
   net-ldap
   nokogiri
