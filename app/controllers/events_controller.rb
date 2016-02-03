@@ -1,6 +1,8 @@
 class EventsController < ApplicationController
   before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical, :ical_single_event]
 
+  rescue_from ActionController::UnknownFormat, with: :render_404
+
   #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
 
   # GET /events

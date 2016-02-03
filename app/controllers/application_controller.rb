@@ -65,6 +65,10 @@ class ApplicationController < ActionController::Base
       end
   end
 
+  def render_404
+    raise ActionController::RoutingError.new('Not Found')
+  end
+
   def test_exception_notification
     raise 'This is a test. This is only a test.'
   end
