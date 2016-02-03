@@ -9,6 +9,7 @@
     <th>Phone</th>
     <th>Email</th>
     <th>Committee Preferences</th>
+    <th>Committee Preference Notes</th>
     <th>Suggestion</th>
     <th>Local Address</th>
     <th>Perm Address</th>
@@ -31,7 +32,10 @@
       <%- end end -%>
     </ol></td>
     </td>
-    <td style="width: 40%;">
+    <td style="width: 20%;">
+      <%= c.committee_preference_note %>
+    </td>
+    <td style="width: 20%;">
       <%= simple_format c.person.suggestion.suggestion if c.person and c.person.suggestion %>
     </td>
     <td><%= p.local_address %></td>

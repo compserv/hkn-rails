@@ -135,6 +135,7 @@ class CandidatesController < ApplicationController
 
     @current_user.candidate.update_attributes({
       :committee_preferences => params[:committee_prefs],
+      :committee_preference_note=> params[:committee_preference_note],
       :release => params[:release] ? true : false
     })
 

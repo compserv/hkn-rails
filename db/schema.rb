@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150403040610) do
+ActiveRecord::Schema.define(version: 20151216032914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,7 +95,8 @@ ActiveRecord::Schema.define(version: 20150403040610) do
     t.datetime "updated_at"
     t.string   "committee_preferences"
     t.string   "release"
-    t.integer  "quiz_score",            default: 0, null: false
+    t.integer  "quiz_score",                default: 0, null: false
+    t.text     "committee_preference_note"
   end
 
   create_table "challenges", force: true do |t|
@@ -180,8 +181,8 @@ ActiveRecord::Schema.define(version: 20150403040610) do
   create_table "course_types", force: true do |t|
     t.float    "chart_pref_x"
     t.float    "chart_pref_y"
-    t.string   "color",        limit: nil
-    t.string   "name",         limit: nil
+    t.string   "color"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
