@@ -7,13 +7,12 @@
           %li= msg
 
   .field
-    = f.label :in_url
+    = f.label :in_url, "Shortlink url: hkn.mu/[shortlink]"
     = f.text_field :in_url
+  %br
   .field
-    = f.label :out_url
-    = f.text_area :out_url
-  .field
-    = f.label :http_status
-    = f.number_field :http_status
+    = f.label :out_url, "Destination url: "
+    = f.text_field :out_url
+  %br
   .actions
     = f.submit 'Save'

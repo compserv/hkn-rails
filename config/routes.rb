@@ -1,7 +1,5 @@
 HknRails::Application.routes.draw do
 
-  resources :shortlinks
-
   get "test_exception_notification" => "application#test_exception_notification"
 
   #Department tours
@@ -398,5 +396,8 @@ HknRails::Application.routes.draw do
   end
 
   match "factorial/:x" => "home#factorial", :via => [:get, :post]
+
+  resources :shortlinks
+  get ':in_url' => 'shortlinks#go'
 
 end
