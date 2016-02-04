@@ -78,7 +78,10 @@
             <% if cand[:promoted] %>
                 <p>Promoted!</p>
             <% else %>
-                <%= button_to "Promote", promote_candidate_path({:id=>cand[:id]}) %>
+              <p>
+              <div style="float: left; width: auto;"> <%= button_to "Promote", promote_candidate_path({:id=>cand[:id]}) %> &nbsp; </div>
+                <%= button_to "Not initiating", uninitiate_candidate_path({:id=>cand[:id]}) %>
+              </p>
             <% end %>
         </div>
     <% end %>

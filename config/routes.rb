@@ -371,6 +371,8 @@ HknRails::Application.routes.draw do
     get "coursesurvey_signup" => "candidates#coursesurvey_signup", :as => "coursesurvey_signup"
     post "coursesurvey_signup" => "candidates#coursesurvey_signup_post", :as => "coursesurvey_signup_post"
     post "promote/:id" => "candidates#promote", :as => "promote_candidate"
+    post "uninitiate/:id" => "candidates#uninitiate", :as => "uninitiate_candidate"
+    post "initiating/:id" => "candidates#initiating", :as => "initiating_candidate"
   end
   #resources :user_session
 

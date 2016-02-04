@@ -72,7 +72,11 @@
       <%= label_tag "Graduation Semester" %>
       <%= select_tag("graduation", options_for_select(@gradsemcands)) %>
     </div>
-   
+    <div class="field">
+      <%= label_tag "Initiating this semester?" %>
+      <%= check_box_tag(:currently_initiating, true, @app_details[:currently_initiating]) %>
+    </div>
+
     <div class="field">
       <%= label_tag "Release information" %>
       <%= check_box_tag(:release, @app_details[:release]) %>
