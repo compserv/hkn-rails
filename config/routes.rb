@@ -1,5 +1,7 @@
 HknRails::Application.routes.draw do
 
+  resources :shortlinks
+
   get "test_exception_notification" => "application#test_exception_notification"
 
   #Department tours
