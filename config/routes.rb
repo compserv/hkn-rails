@@ -397,4 +397,7 @@ HknRails::Application.routes.draw do
 
   match "factorial/:x" => "home#factorial", :via => [:get, :post]
 
+  resources :shortlinks
+  get ':in_url' => 'shortlinks#go'
+
 end

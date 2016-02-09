@@ -45,6 +45,7 @@ class Person < ActiveRecord::Base
   has_and_belongs_to_many :coursesurveys
   has_and_belongs_to_many :badges
   has_many :elections, :dependent => :destroy
+  has_many :shortlinks
   belongs_to :mobile_carrier
 
   validates :first_name,  :presence => true

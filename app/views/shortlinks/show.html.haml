@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b In url:
+  = @shortlink.in_url
+%p
+  %b Out url:
+  = @shortlink.out_url
+%p
+  %b Http status:
+  = @shortlink.http_status
+
+= link_to 'Edit', edit_shortlink_path(@shortlink)
+\|
+= link_to 'Back', shortlinks_path

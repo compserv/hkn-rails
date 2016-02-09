@@ -1,0 +1,18 @@
+= form_for @shortlink do |f|
+  - if @shortlink.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@shortlink.errors.count, "error")} prohibited this shortlink from being saved:"
+      %ul
+        - @shortlink.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :in_url, "Shortlink url: hkn.mu/[shortlink]"
+    = f.text_field :in_url
+  %br
+  .field
+    = f.label :out_url, "Destination url: "
+    = f.text_field :out_url
+  %br
+  .actions
+    = f.submit 'Save'
