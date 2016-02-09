@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216032914) do
+ActiveRecord::Schema.define(version: 20160204032936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(version: 20151216032914) do
     t.string   "release"
     t.integer  "quiz_score",                default: 0, null: false
     t.text     "committee_preference_note"
+    t.boolean  "currently_initiating"
   end
 
   create_table "challenges", force: true do |t|
@@ -495,6 +496,17 @@ ActiveRecord::Schema.define(version: 20151216032914) do
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
+  create_table "shortlinks", force: true do |t|
+    t.string   "in_url"
+    t.text     "out_url"
+    t.integer  "http_status", default: 301
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "shortlinks", ["in_url"], name: "index_shortlinks_on_in_url", using: :btree
 
   create_table "slot_changes", force: true do |t|
     t.integer  "tutor_id"

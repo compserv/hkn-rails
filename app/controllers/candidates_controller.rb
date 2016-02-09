@@ -55,6 +55,7 @@ class CandidatesController < ApplicationController
         :local_address => @current_user.local_address,
         :perm_address => @current_user.perm_address,
         :grad_sem => @current_user.grad_semester,
+        :currently_initiating => (@current_user.candidate.currently_initiating or @current_user.candidate.currently_initiating == nil),
         :release => @current_user.candidate.release,
         :committee_prefs => !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
         :suggestion => @current_user.suggestion ? @current_user.suggestion.suggestion : ""
@@ -136,7 +137,8 @@ class CandidatesController < ApplicationController
     @current_user.candidate.update_attributes({
       :committee_preferences => params[:committee_prefs],
       :committee_preference_note=> params[:committee_preference_note],
-      :release => params[:release] ? true : false
+      :release => params[:release] ? true : false,
+      :currently_initiating => params[:currently_initiating] ? true : false
     })
 
     suggestion = @current_user.suggestion
@@ -193,10 +195,11 @@ class CandidatesController < ApplicationController
       @cand = Person.find_by_id(params[:id])
       member_group = Group.find_by_name('members')
       candidate_group = Group.find_by_name('candidates')
+      @cand.candidate.currently_initiating = false
       if @cand.groups.include?(candidate_group)
           @cand.groups.delete(candidate_group)
           @cand.groups |= [member_group]
-          if @cand.save()
+          if @cand.save() and @cand.candidate.save
               # good to go
           else
               flash[:notice] = "Changes not saved to db"
@@ -206,4 +209,30 @@ class CandidatesController < ApplicationController
       end
       redirect_to "/admin/general/super_page"
   end
+
+  def uninitiate
+      @cand = Person.find_by_id(params[:id]).candidate
+      @cand.currently_initiating = false
+      if @cand.save()
+          # good to go
+          flash[:notice] = "Candidate removed from super page. You or the candidate will have to mark themselves as initiating again to reappear. To do this, go to their page from the list of candidates and search for their profile."
+      else
+          flash[:notice] = "Changes not saved to db"
+      end
+      redirect_to "/admin/general/super_page"
+  end
+
+  def initiating 
+      @person = Person.find_by_id(params[:id])
+      @cand = @person.candidate
+      @cand.currently_initiating = true
+      if @cand.save()
+          # good to go
+          flash[:notice] = "Candidate marked initiating."
+      else
+          flash[:notice] = "Changes not saved to db"
+      end
+      redirect_to person_path(@person.id)
+  end
+
 end

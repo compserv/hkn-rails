@@ -17,7 +17,8 @@ class Candidate < ActiveRecord::Base
   validates :person, :presence => true
   validate :committees_must_be_valid
 
-  scope :current, lambda { where(["candidates.created_at > ?", Property.semester_start_time]) }
+  scope :current, lambda { where(["candidates.created_at > ? OR currently_initiating = TRUE", Property.semester_start_time]) }
+  scope :initiating, lambda { where(["currently_initiating = TRUE"]) }
   scope :approved, lambda { includes(:person).where(:people => {:approved => true}) }
   
   def self.committee_defaults

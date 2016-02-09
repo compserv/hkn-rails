@@ -1,0 +1,27 @@
+%h1 Listing shortlinks
+
+%b
+  = link_to 'New Shortlink', new_shortlink_path
+
+%table
+  %thead
+    %tr
+      %th In url
+      %th Out url
+      %th Creator
+      %th
+      %th
+      %th
+
+  %tbody
+    - @shortlinks.each do |shortlink|
+      %tr
+        %td= shortlink.in_url
+        %td= shortlink.out_url
+        %td= shortlink.person.full_name
+        %td= link_to 'Show', shortlink
+        %td= link_to 'Edit', edit_shortlink_path(shortlink)
+        %td= link_to 'Destroy', shortlink, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
