@@ -245,6 +245,3 @@ DEPENDENCIES
   will_paginate (~> 3.0)
   yaml_db
   yard
-
-BUNDLED WITH
-   1.10.6
