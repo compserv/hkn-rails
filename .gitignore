@@ -19,3 +19,4 @@ coverage/
 .sass-cache/
 .vagrant/
 vendor/bundle
+.DS_Store

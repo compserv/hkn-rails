@@ -1,1 +1,12 @@
-Details to be added soon
+<nav class="grey darken-3 z-depth-0" role="navigation">
+  <div class="nav-wrapper container">
+    <%= link_to image_tag("logo6.png", class: 'logo', style: 'padding: 5px'), root_path%>
+    <ul class="right hide-on-med-and-down">
+      <li>
+        <%= link_to 'More Information',
+        pages_path(page: 'eecs_day_details')
+        %>
+      </li>
+    </ul>
+  </div>
+</nav>
