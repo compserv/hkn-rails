@@ -23,6 +23,7 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
+gem 'materialize-sass'
 gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
 
 group :development do

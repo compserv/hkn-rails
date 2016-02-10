@@ -1,0 +1,59 @@
+<nav class="grey darken-3 z-depth-0" role="navigation">
+  <div class="nav-wrapper container">
+    <%= link_to image_tag("logo6.png", class: 'logo', style: 'padding: 5px'), root_path%>
+  </div>
+</nav>
+
+<div class="section" id="index-banner">
+  <div class="container">
+    <br><br>
+    <h1 class="header center yellow-text">HKN EECS Day</h1>
+    <div class="row center">
+      <h5 class="header col s12 light white-text">Saturday, March 12 from 10 a.m. to 4 p.m.</h5>
+    </div>
+    <div class="row center">
+    <%= link_to 'Sign Up Here!',
+      'https://docs.google.com/forms/d/1jxHgb4IBCHewEfqHqM2RgLEwc20uTtcisMW4EVYJf7c/viewform?c=0&w=1',
+      target: '_blank',
+      id: 'download-button',
+      class: 'btn-large waves-effect waves-light yellow' %>
+    </div>
+    <br><br>
+
+    <div class="row">
+      <div class="card red lighten-1  col s4">
+        <span class="card-title white-text"><%= link_to 'Agenda', pages_path(page: 'eecs_day', anchor: 'agenda')%></span>
+      </div>
+      <div class="card green lighten-1 col s4">
+        <span class="card-title white-text"><%= link_to 'Hosts', pages_path(page: 'eecs_day', anchor: 'hosts')%></span>
+      </div>
+      <div class="card blue lighten-1 col s4">
+         <span class="card-title white-text"><%= link_to 'Sponsors', pages_path(page: 'eecs_day', anchor: 'sponsors')%></span>
+      </div>
+    </div>
+  </div>
+
+  <a id="agenda"></a>
+  <div class="section no-pad-bot red lighten-1 ">
+    <div class="container">
+      <span class="card-title white-text agenda-content" style="font-size: 200%">Agenda</span>
+      <p class="flow-text white-text agenda-content">10:00 a.m. - 10:15 a.m. Introductions</p>
+      <p class="flow-text white-text agenda-content">10:20 a.m. - 11:00 a.m. Station 1</p>
+      <p class="flow-text white-text agenda-content">11:10 a.m. - 11:50 a.m. Station 2</p>
+      <p class="flow-text white-text agenda-content">12:00 p.m. - 1:00 p.m.   Lunch</p>
+      <p class="flow-text white-text agenda-content">1:00 p.m. - 1:40 p.m.   Station 3</p>
+      <p class="flow-text white-text agenda-content">1:50 p.m. - 2:30 p.m.   Station 4</p>
+      <p class="flow-text white-text agenda-content">2:40 p.m. - 3:20 p.m.   Station 5</p>
+      <p class="flow-text white-text agenda-content">3:30 p.m. - 4:00 p.m.   Closing Panel</p>
+    </div>
+  </div>
+  <a id="hosts"></a>
+  <div class="section no-pad-bot green lighten-1 ">
+
+  </div>
+  <a id="sponsors"></a>
+  <div class="section no-pad-bot blue lighten-1 ">
+
+  </div>
+</div>
+
