@@ -5,11 +5,9 @@
   = submit_tag "Search", :name => nil 
 %h2 Browse Instructors and Courses
 %ul.plain
-  %li= link_to "Instructors", coursesurveys_instructors_path
-  %li= link_to "Teaching Assistants", coursesurveys_tas_path
   %li= link_to "Electrical Engineering Courses", coursesurveys_department_path("EE")
   %li= link_to "Computer Science Courses", coursesurveys_department_path("CS")
-  %li= link_to "Semesters", coursesurveys_semesters_path
+  %li= link_to "TAs/Instructors per Semester", coursesurveys_semesters_path
 
 %h2 More Information
 %ul.plain
