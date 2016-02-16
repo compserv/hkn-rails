@@ -184,6 +184,9 @@ HknRails::Application.routes.draw do
     member do
       get  "groups", :as => :groups, :constraints => {:id => /[^\/]+/}
       post "groups" => "people#groups_update", :as => :update_groups, :constraints => {:id => /[^\/]+/}
+      resources :committeeships, :only => [:create, :destroy, :index] do
+        get "committeeships", :as => "committeeships", :constraints => {:id => /[^\/]+/}
+      end
     end
   end
 

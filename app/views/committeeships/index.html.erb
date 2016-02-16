@@ -1,0 +1,12 @@
+<h1>Showing committeeships for <%= "#{@person.fullname}" %></h1>
+
+<% @person.committeeships.order(:semester).each do |committeeship| %>
+    <p><%=@person.first_name%> had the position of <%=committeeship.nice_position%> in <%=committeeship.nice_semester%>. <% if committeeship.title == "cmember" %><%= link_to "[Delete]", committeeship_path(committeeship), :method => :delete, :confirm => "Are you sure you want to remove this committeeship?" %><% end %></p>
+<% end %>
+
+<h2> Add as committee member for <%= "#{Property.pretty_semester}" %></h2>
+<%= form_for Committeeship.new, url: { action: "create" } do |f| %>
+    <%= f.label :committee %>:
+    <%= f.select :committee, Committeeship::NonExecs %><br />
+    <%= f.submit "Add as committee member" %>
+<% end %> 
