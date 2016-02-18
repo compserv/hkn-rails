@@ -51,7 +51,10 @@
   
 </div>
 <div style="float: left; width: 49%">
-<h2>Additional Membership Information</h2>
+  <h2>Additional Membership Information
+	<% if @auth['rsec'] %>
+	  <%= link_to "[Edit]", committeeships_path(@person) %>
+	<% end %> </h2>
 <% @person.committeeships.order(:semester).each do |committeeship| %>
   <p><%=@person.first_name%> had the position of <%=committeeship.nice_position%> in <%=committeeship.nice_semester%>.</p>
 <% end %>
