@@ -6,7 +6,6 @@
   <title><%= "Eta Kappa Nu (HKN), Mu Chapter"%><%= " - #{@module_title}" unless @module_title.blank? %><%= " - #{@submodule_title}" unless @submodule_title.blank? %></title>
   <%= javascript_include_tag 'application' %>
   <%= stylesheet_link_tag 'application' %>
-  <%= stylesheet_link_tag 'static' %>
   <%= stylesheet_link_tag 'print', :media => 'print' %>
   <%= javascript_include_tag "jquery.history" %>
   <%= javascript_include_tag "common" %>
@@ -18,6 +17,9 @@
   <%= stylesheet_link_tag "jquery-ui-timepicker-addon.css" %>
   <%= javascript_include_tag "jquery-ui-1.10.0.custom.min.js" %>
   <%= javascript_include_tag "jquery-ui-timepicker-addon.js" %>
+  <%= stylesheet_link_tag "style.css"%>
+  <%= stylesheet_link_tag "materialize.css" %>
+  <%= stylesheet_link_tag 'static' %>
   <%= javascript_include_tag "datetimepicker" %>
   <%= render :partial => 'easter_eggs/js' %>
   <%= csrf_meta_tag %>
