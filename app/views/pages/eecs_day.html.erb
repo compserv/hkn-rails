@@ -22,7 +22,7 @@
 
     <div class="row">
       <div class="card red lighten-1  col s4">
-        <span class="card-title white-text"><%= link_to 'Agenda', pages_path(page: 'eecs_day', anchor: 'agenda')%></span>
+        <span class="card-title white-text"><%= link_to 'Details', pages_path(page: 'eecs_day', anchor: 'details')%></span>
       </div>
       <div class="card green lighten-1 col s4">
         <span class="card-title white-text"><%= link_to 'Hosts', pages_path(page: 'eecs_day', anchor: 'hosts')%></span>
@@ -33,17 +33,39 @@
     </div>
   </div>
 
-  <a id="agenda"></a>
+  <a id="details"></a>
   <div class="section no-pad-bot red lighten-1 ">
-    <div class="container">
-      <span class="card-title white-text agenda-content" style="font-size: 200%">Agenda</span>
-      <p class="flow-text white-text agenda-content">10:30 a.m. - 11:00 a.m. Sign In & Group Assignment</p>
-      <p class="flow-text white-text agenda-content">11:00 a.m. - 11:40 a.m. Speaker</p>
-      <p class="flow-text white-text agenda-content">11:50 a.m. - 12:30 a.m. First Event</p>
-      <p class="flow-text white-text agenda-content">12:30 p.m. - 1:30 p.m.   Lunch</p>
-      <p class="flow-text white-text agenda-content">1:30 p.m. - 2:20 p.m.   Second Event</p>
-      <p class="flow-text white-text agenda-content">2:30 p.m. - 3:20 p.m.   Third Event</p>
-      <p class="flow-text white-text agenda-content">3:30 p.m. - 4:00 p.m.   Closing Panel</p>
+    <div class="container padding row">
+      <div class="col s6">
+        <span class="card-title white-text agenda-content" style="font-size: 200%">Agenda</span>
+        <p class="flow-text white-text agenda-content">10:30 a.m. - 11:00 a.m. Sign In</p>
+        <p class="flow-text white-text agenda-content">11:00 a.m. - 11:40 a.m. Speaker</p>
+        <p class="flow-text white-text agenda-content">11:50 a.m. - 12:30 a.m. First Event</p>
+        <p class="flow-text white-text agenda-content">12:30 p.m. - 1:30 p.m.   Lunch</p>
+        <p class="flow-text white-text agenda-content">1:30 p.m. - 2:20 p.m.   Second Event</p>
+        <p class="flow-text white-text agenda-content">2:30 p.m. - 3:20 p.m.   Third Event</p>
+        <p class="flow-text white-text agenda-content">3:30 p.m. - 4:00 p.m.   Closing Panel</p>
+      </div>
+      <div class="col s6">
+        <span class="card-title white-text agenda-content" style="font-size: 200%">More Information</span>
+        <p class="white-text flow-text" style="font-size: 120%;">
+          The event will start with a talk from a UC Berkeley EECS professor and
+          a Q&A session shortly after. Throughout the day, groups of 30 students
+          will rotate through 3 activities which include:
+        </p>
+          <ul class="white-text flow-text" style="font-size: 120%;">
+            <li>- A department tour of the facilities, labs, and halls</li>
+            <li>- A computer science lab</li>
+            <li>- An electrical engineering lab</li>
+          </ul>
+        <p class="white-text flow-text" style="font-size: 120%;">
+          The day will end with a two panels. The first will be an industry panel
+          with our sponsors from A9, providing an insight into the industry,
+          and what CS jobs look like out of college. Afterwards, we’ll close with
+          a student panel, allowing attendees to really get a feel for what being
+          in Berkeley EECS is like, and ask any unanswered questions.
+        </p>
+      </div>
     </div>
   </div>
   <a id="hosts"></a>
@@ -51,6 +73,7 @@
     <div class="padding row">
       <div class="center col s4">
         <%= image_tag("eecs_day/richard.jpg", class: "circle responsive-image", style: "max-width: 100%; max-height: 200px;")%>
+        <h4 class="white-text">Richard Qian</h4>
         <p class="white-text">
           Hi! I'm Richard Qian, a current second-year EECS major, with a
           heavy tilt toward Computer Science, and Service Officer of HKN.
@@ -63,6 +86,7 @@
       </div>
       <div class="center col s4">
         <%= image_tag("eecs_day/tavor.jpg", class: "circle responsive-image", style: "max-width: 100%; max-height: 200px;") %>
+        <h4 class="white-text">Tavor Baharav</h4>
         <p class="white-text">
           Tavor Baharav is a sophomore, focusing more on the Electrical
           Engineering side of EECS. Aside from HKN, he is also involved in
@@ -71,6 +95,7 @@
       </div>
       <div class="center col s4">
         <%= image_tag("eecs_day/brijen.jpg", class: "circle responsive-image", style: "max-width: 100%; max-height: 200px;")%>
+        <h4 class="white-text">Brijen Thananjeyan</h4>
         <p class="white-text">
           Brijen Thananjeyan is a second year Electrical Engineering & Computer
           Sciences major at UC Berkeley. He is a service committee officer for
@@ -91,6 +116,8 @@
         <%= link_to image_tag("logo6.png", class: 'logo', style: 'padding: 5px'), root_path%>
       </div>
       <div class="center col s4">
+        <%= link_to image_tag("http://library.corporate-ir.net/library/17/176/176060/mediaitems/108/A9_logo_RGB.jpg", class: 'logo', style: 'padding: 5px')%>
+
       </div>
     </div>
   </div>
