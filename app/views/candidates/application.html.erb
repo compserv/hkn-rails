@@ -51,7 +51,7 @@
 
 <h1>Candidate Application</h1>
 
-<%= form_tag "/cand/submit_app"  do %> 
+<%= form_tag "/cand/submit_app", multipart: true do %> 
   <div style="float:left; width:45%;">
     <div class="field">
       <%= label_tag "Your Local (Berkeley) Address" %>
@@ -72,6 +72,12 @@
       <%= label_tag "Graduation Semester" %>
       <%= select_tag("graduation", options_for_select(@gradsemcands)) %>
     </div>
+
+    <div class="field">
+      <%= label :picture, "Upload a photo of yourself: " %>
+      <%= file_field_tag :file_info, accept: 'image/png' %>
+    </div>
+
     <div class="field">
       <%= label_tag "Initiating this semester?" %>
       <%= check_box_tag(:currently_initiating, true, @app_details[:currently_initiating]) %>
