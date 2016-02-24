@@ -127,6 +127,15 @@ class CandidatesController < ApplicationController
   end
 
   def submit_app
+    if file = params[:file_info]
+      file_name = "public/pictures/#{@current_user.username}.png"
+      File.open(file_name,"wb") do |f|
+        f.write(file.read)
+      end
+      @current_user.picture = "/pictures/#{@current_user.username}.png"
+      @current_user.save
+    end
+
     @current_user.update_attributes({
       :phone_number => params[:phone],
       :local_address => params[:local_address],
