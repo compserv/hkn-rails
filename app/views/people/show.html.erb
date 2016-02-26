@@ -68,6 +68,15 @@
     <% end %>
   <% end %>
   </ul>
+  <% if @auth["vp"] %>
+    <h2>All RSVPs</h2>
+    <ul>
+    <% @person.rsvps.ordered_desc.each do |rsvp| %>
+      <li><%= link_to "#{rsvp.event.start_date} - #{rsvp.event.name}", rsvp.event %><% if rsvp.confirmed != 't' %> * <% end %></li>
+    <% end %>
+    </ul>
+    <% end%>
+    * This event was not confirmed; either they didn't go, or VP forgot to confirm them.
 <% end %>
 </div>
 
