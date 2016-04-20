@@ -43,9 +43,9 @@ class Candidate < ActiveRecord::Base
   def event_requirements
     req = Hash.new { |h,k| 0 }
     req["Mandatory for Candidates"] = 3
-    req["Fun"] = 3
+    req["Fun"] = 4
     req["Big Fun"] = 1
-    req["Service"] = 2
+    req["Service"] = 1
     return req
   end
 
