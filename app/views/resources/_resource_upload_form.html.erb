@@ -1,0 +1,87 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "jquery-autocomplete.min" %>
+  <%= stylesheet_link_tag "jquery-autocomplete" %>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+          url: '/admin/tutor/find_courses',
+          success: function(data) {
+            d = []
+            for(var item in data) {
+              d[item] = {text: data[item]["text"], url: data[item]["url"]}
+            }
+
+            $("#course_query").autocomplete(data, {
+              formatItem: function(item) {
+                return item.text;
+              }
+            }).result(function(event, item) {
+              $("#course_id").attr("value", item.url);
+            });
+          }
+        });
+        $('#upload').hide();
+        $('[name="resource[type]"]').click(function()  {
+            if($(this).val() == 0) {
+              $('#link').show();
+              $('#upload').hide();
+            } else {
+              $('#link').hide();
+              $('#upload').show();
+            }
+        });
+      });
+  </script>
+
+
+<% end %>
+
+<%= form_for @resource, :url => :resources_create ,:html => { :multipart => true } do |f| %>
+
+  <div>
+    <div id="course_select">
+      <%= label_tag "Search for class:" %>
+      <%= text_field_tag "course_query", "", :id => "course_query" %>
+      <%= hidden_field :resource, :course_id, :id => "course_id", :value => "" %>
+    </div>
+    <br />
+
+    <!-- Need to determine what klass -->
+    <!-- Need year, maybe just enter in year? -->
+    <!-- radio for semester -->
+
+    <div id="topic">
+      <%= label_tag "Enter the topic:" %>
+      <%= text_field_tag "topic" %>
+    </div>
+
+
+    <div id="type">
+      <%= label_tag "What type of resource is this?" %>
+      <%= radio_button :resource, :type, 0, :checked => true %> Link
+      <%= radio_button :resource, :type, 1 %> PDF
+    </div>
+
+    <div id="description">
+      <%= label_tag "Enter the description:" %>
+      <%= text_field_tag "description" %>
+    </div>
+
+
+    <div id="link">
+      <%= label_tag "Enter the Link:" %>
+      <%= text_field_tag "link" %>
+    </div>
+
+    <div id="upload">
+      <%= label_tag "Upload the resource:" %>
+      <%= file_field_tag :file_info %>
+    </div>
+
+
+
+    <%= f.submit "Upload Exam File" %>
+
+  </div>
+<% end %>

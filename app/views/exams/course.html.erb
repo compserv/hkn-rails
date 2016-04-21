@@ -1,6 +1,31 @@
 <h1><%= @course.course_name %></h1>
 
 <div id="table">
+  <table id="resources" class = "table">
+    <tr>
+      <th>Topic</th>
+      <th>Link</th>
+      <th>Description</th>
+    </tr>
+
+  <%- @results.each do |topic, type, description, linkfilename| -%>
+    <tr>
+      <td>
+        <%= topic %>
+      </td>
+      <td>
+          <%= link_to (type == 0 ? '[link]', linkfilename : '[pdf]', @exam_path + linkfilename) %>
+      </td>
+      <td>
+        <%= description %>
+      </td>
+    </tr>
+  <%- end -%>
+  </table>
+</div>
+
+<br />
+<div id="table">
   <table id="exams" class="table">
     <tr>
       <th>Semester</th>

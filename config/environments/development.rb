@@ -39,4 +39,6 @@ HknRails::Application.configure do
   config.assets.debug = true
 
   config.eager_load = false
+
+  BetterErrors::Middleware.allow_ip! "0.0.0.0/0"
 end
