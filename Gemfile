@@ -24,7 +24,7 @@ gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
 gem 'materialize-sass'
-gem 'rubycas-client', :git => 'https://github.com/rubycas/rubycas-client.git'
+gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
 
 group :development do
   gem 'rails-erd' # Generate entity relationship diagram
@@ -32,8 +32,6 @@ end
 
 group :development, :test do
   gem 'autotest-standalone'
-  gem 'better_errors'
-  gem 'binding_of_caller'
   gem 'rspec-rails'
   gem 'simplecov', '~> 0.7.1', :require => false
   # webrat is needed to make some specs pass

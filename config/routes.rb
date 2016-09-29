@@ -361,14 +361,6 @@ HknRails::Application.routes.draw do
   end
   resources :exams, only: [:destroy]
 
-  # Resources
-  scope "resources" do
-    get 'new'                                     => "resources#new",
-      :as => :resources_new
-    post 'create'                                 => "resources#create",
-      :as => :resources_create
-  end
-
   #Candidates
   scope "cand" do
     match "portal" => "candidates#portal", :as => :candidate_portal, :via => [:get, :post]

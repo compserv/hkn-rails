@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160420211714) do
+ActiveRecord::Schema.define(version: 20160204032936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -182,8 +182,8 @@ ActiveRecord::Schema.define(version: 20160420211714) do
   create_table "course_types", force: true do |t|
     t.float    "chart_pref_x"
     t.float    "chart_pref_y"
-    t.string   "color",        limit: nil
-    t.string   "name",         limit: nil
+    t.string   "color"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -447,17 +447,6 @@ ActiveRecord::Schema.define(version: 20160420211714) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "correct",      default: false, null: false
-  end
-
-  create_table "resources", force: true do |t|
-    t.integer  "klass_id",     null: false
-    t.integer  "course_id",    null: false
-    t.string   "topic",        null: false
-    t.integer  "type",         null: false
-    t.string   "description",  null: false
-    t.string   "linkfilename", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "resume_books", force: true do |t|

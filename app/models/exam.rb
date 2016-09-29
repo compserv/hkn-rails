@@ -41,7 +41,7 @@ class Exam < ActiveRecord::Base
   end
 
   def file_type
-    filename.split('.').last
+    filename.split('.')[1]
   end
 
   def Exam.typeFromAbbr(abbr)
