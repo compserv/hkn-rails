@@ -5,8 +5,8 @@ TODO: Add useful information.
 
 Vagrant, VMs, and You
 ---------------------
-1) Install <a href = "https://www.virtualbox.org/wiki/Downloads">VirtualBox</a><br>
-2) Install the latest version of <a href = "http://www.vagrantup.com/downloads.html">Vagrant</a><br>
+1) Install <a href = "https://www.virtualbox.org/wiki/Downloads">VirtualBox</a> (<tt>sudo apt-get install virtualbox</tt>)<br>
+2) Install the latest version of <a href = "http://www.vagrantup.com/downloads.html">Vagrant</a> (<tt>sudo apt-get install vagrant</tt>)<br>
 3) Download a backup of the website from hkn (<tt>/var/www/hkn-rails/db/backups/</tt>) and move it into your copy of hkn-rails.  See section below on making backups if you want a current one.<br>
 4) <tt>cd hkn-rails</tt><br>
 5) <tt>vagrant up</tt><br>
@@ -34,7 +34,7 @@ Making Backups
 1) On hkn, go into <tt>/var/www/hkn-rails</tt><br>
 2) <tt>sudo su www-data</tt><br>
 3) <tt>export RAILS_ENV=production</tt>  (if you want backup of production)<br>
-4) <tt>rake db:backups</tt> (actual script is in <tt>hkn-rails/lib/tasks/backups.rb</tt>)<br>
+4) <tt>rake db:backup:dump</tt> (actual script is in <tt>hkn-rails/lib/tasks/backups.rb</tt>)<br>
 This makes a backup in <tt>hkn-rails/db/backups</tt>, name based on datetime by default.<br>
 
 To load a backup: <tt>rake db:drop && rake db:create && rake db:backup:restore FROM=[path]</tt><br>
