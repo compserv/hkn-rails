@@ -54,10 +54,12 @@ class CandidatesController < ApplicationController
         :phone => @current_user.phone_number,
         :local_address => @current_user.local_address,
         :perm_address => @current_user.perm_address,
-        :grad_sem => @current_user.grad_semester,
+        :graduation => @current_user.graduation,
+        :picture => @current_user.picture,
         :currently_initiating => (@current_user.candidate.currently_initiating or @current_user.candidate.currently_initiating == nil),
         :release => @current_user.candidate.release,
         :committee_prefs => !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
+        :committee_preference_note => @current_user.candidate.committee_preference_note,
         :suggestion => @current_user.suggestion ? @current_user.suggestion.suggestion : ""
       }
     else

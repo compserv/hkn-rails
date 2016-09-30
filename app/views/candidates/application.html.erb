@@ -54,49 +54,53 @@
 <%= form_tag "/cand/submit_app", multipart: true do %> 
   <div style="float:left; width:45%;">
     <div class="field">
-      <%= label_tag "Your Local (Berkeley) Address" %>
+      <%= label_tag "local_address", "Local (Berkeley) Address" %>
       <%= text_field_tag(:local_address, @app_details[:local_address]) %>
     </div>
   
     <div class="field">
-      <%= label_tag "Your Permanent Address" %>
+      <%= label_tag "perm_address", "Permanent Address" %>
       <%= text_field_tag(:perm_address, @app_details[:perm_address]) %>
     </div>
   
     <div class="field">
-      <%= label_tag "Phone" %>
+      <%= label_tag "phone", "Phone" %>
       <%= text_field_tag(:phone, @app_details[:phone]) %>
     </div>
 
     <div class="field">
-      <%= label_tag "Graduation Semester" %>
-      <%= select_tag("graduation", options_for_select(@gradsemcands)) %>
+      <%= label_tag "graduation", "Graduation Semester" %>
+      <%= select_tag("graduation", options_for_select(@gradsemcands, @app_details[:graduation])) %>
     </div>
 
     <div class="field">
-      <%= label :picture, "Upload a photo of yourself: " %>
+      <% if @app_details[:picture] %>
+        <%= label_tag "file_info", "Replace photo of yourself: " %>
+      <% else %>
+        <%= label_tag "file_info", "Upload a photo of yourself: " %>
+      <% end %>
       <%= file_field_tag :file_info, accept: 'image/png' %>
     </div>
 
     <div class="field">
-      <%= label_tag "Initiating this semester?" %>
+      <%= label_tag "currently_initiating", "Initiating this semester?" %>
       <%= check_box_tag(:currently_initiating, true, @app_details[:currently_initiating]) %>
     </div>
 
     <div class="field">
-      <%= label_tag "Release information" %>
+      <%= label_tag "release", "Release information" %>
       <%= check_box_tag(:release, @app_details[:release]) %>
     </div>
     
-    <%= label_tag "What activities would you like to see HKN do this semester?" %><br/>
+    <%= label_tag "suggestion", "What activities would you like to see HKN do this semester?" %><br/>
     <%= text_area_tag(:suggestion, @app_details[:suggestion]) %><br/>
 
-    <%= label_tag "Optionally, is there anything you would like us to know about your committee preferences (experience, equipment, strong interest)?" %><br/>
-    <%= text_area_tag(:committee_preference_note) %>
+    <%= label_tag "committee_preference_note", "Optionally, is there anything you would like us to know about your committee preferences (experience, equipment, strong interest)?" %><br/>
+    <%= text_area_tag(:committee_preference_note, @app_details[:committee_preference_note]) %>
   </div>
 
   <div style="float:left; width: 45%; padding-left: 3em;">
-      <%= label_tag "Committee Preferences" %><br/>
+      <%= label_tag "committee_prefs", "Committee Preferences" %><br/>
     <%= hidden_field_tag(:committee_prefs, "", :id=>"committee_prefs") %>
     <b>Click and drag</b> the bars to sort by your committee preferences (top being the most preferable).
     <ul id="sortable" class="plain">
@@ -112,5 +116,5 @@
   
   
   
-<%= submit_tag "Save Application", :id=>"submit_app" %>
+<%= submit_tag "Save and Submit Application", :id=>"submit_app" %>
 <% end %>
