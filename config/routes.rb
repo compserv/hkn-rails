@@ -323,7 +323,9 @@ HknRails::Application.routes.draw do
 
   #remove later for coming soon pages
   scope "service" do
-    match "comingsoon" => "static#comingsoon", :via => [:get, :post]
+    get "/" => "static#service", :as => "service"
+    get "eecsday" => "static#eecsday", :as => "service_eecsday"
+    get "bearhacks" => "static#bearhacks", :as => "service_bearhacks"
   end
 
   # Static pages
