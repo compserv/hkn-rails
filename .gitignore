@@ -20,3 +20,19 @@ coverage/
 .vagrant/
 vendor/bundle
 .DS_Store
+
+# Clear stuff on production server
+tmp
+log
+*.log
+solr/default/
+solr/development/
+solr/pids/
+solr/production/
+solr/test/
+public/assets/
+public/eecsfactor/
+public/images/
+public/pictures/
+public/redmine
+public/student/

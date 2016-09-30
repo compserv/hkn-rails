@@ -39,6 +39,10 @@ This makes a backup in <tt>hkn-rails/db/backups</tt>, name based on datetime by 
 
 To load a backup: <tt>rake db:drop && rake db:create && rake db:backup:restore FROM=[path]</tt><br>
 
+Static Files
+----------------------
+To serve new static files in production, first run <tt>RAILS_ENV=production bundle exec rake assets:precompile</tt>
+
 Stuff that used to be in README.d
 ---------------------------------
 
