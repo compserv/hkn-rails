@@ -81,4 +81,4 @@ For examples of searching, see [coursesurveys#search][coursesurveys] and [course
 
 [searchables]: http://github.com/outoftime/sunspot/wiki/Setting-up-classes-for-search-and-indexing
 [coursesurveys]: app/controllers/coursesurveys_controller.rb#L448
-[course.rb]: app/models/course.rb
+[course.rb]: app/models/course.rb#L45
