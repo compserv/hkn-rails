@@ -1,21 +1,23 @@
+# == Schema Information
+#
+# Table name: courses
+#
+#  id             :integer          not null, primary key
+#  suffix         :string(255)      default("")
+#  prefix         :string(255)      default("")
+#  name           :string(255)
+#  description    :text
+#  created_at     :datetime
+#  updated_at     :datetime
+#  units          :integer
+#  prereqs        :text
+#  department_id  :integer
+#  course_number  :integer
+#  course_guide   :text
+#  course_type_id :integer
+#
+
 class Course < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id            : integer 
-  #   suffix        : string 
-  #   prefix        : string 
-  #   name          : string 
-  #   description   : text 
-  #   created_at    : datetime 
-  #   updated_at    : datetime 
-  #   units         : integer 
-  #   prereqs       : text 
-  #   department_id : integer 
-  #   course_number : integer 
-  #   course_guide  : text 
-  #   course_type_id: integer
-  # =======================
-
   belongs_to :department
   belongs_to :course_type
   has_many :course_preferences, :dependent => :destroy

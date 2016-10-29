@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: properties
+#
+#  id                   :integer          not null, primary key
+#  semester             :string(255)      default("20103")
+#  created_at           :datetime
+#  updated_at           :datetime
+#  tutoring_enabled     :boolean          default(FALSE)
+#  tutoring_message     :text             default("")
+#  tutoring_start       :integer          default(11)
+#  tutoring_end         :integer          default(16)
+#  coursesurveys_active :boolean          default(FALSE), not null
+#
+
 require 'rails_helper'
 
 describe Property do

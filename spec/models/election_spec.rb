@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: elections
+#
+#  id               :integer          not null, primary key
+#  person_id        :integer          not null
+#  position         :string(255)
+#  sid              :integer
+#  keycard          :integer
+#  midnight_meeting :boolean          default(TRUE)
+#  txt              :boolean          default(FALSE)
+#  semester         :string(255)      not null
+#  elected_time     :datetime         not null
+#  created_at       :datetime
+#  updated_at       :datetime
+#  elected          :boolean          default(FALSE), not null
+#  non_hkn_email    :string(255)
+#  desired_username :string(255)
+#
+
 require 'rails_helper'
 
 describe Election do

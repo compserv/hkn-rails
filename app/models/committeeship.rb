@@ -1,15 +1,17 @@
+# == Schema Information
+#
+# Table name: committeeships
+#
+#  id         :integer          not null, primary key
+#  committee  :string(255)
+#  semester   :string(255)
+#  title      :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  person_id  :integer
+#
+
 class Committeeship < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   committee  : string 
-  #   semester   : string 
-  #   title      : string 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  #   person_id  : integer 
-  # =======================
-
   @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv indrel serv studrel tutoring pub examfiles ejc)	#This generates a constant which is an array of possible committees.
   Semester = /\A\d{4}[0-4]\z/                  # A regex which validates the semester
   Positions = %w(officer cmember candidate)  # A list of possible positions
@@ -18,15 +20,15 @@ class Committeeship < ActiveRecord::Base
 
   validates_presence_of :person_id
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
-  validates_inclusion_of :title, :in => Positions, :message => "Not a valid title." 
+  validates_inclusion_of :title, :in => Positions, :message => "Not a valid title."
   validates_inclusion_of :committee, :in => @Committees, :message => "Committee not recognized."
   validates_uniqueness_of :committee, :scope => [:person_id, :semester]
-  
+
   belongs_to :person
 
   after_create :assign_groups
 
-  # We have this argumentless lambda because we don't want to evaluate 
+  # We have this argumentless lambda because we don't want to evaluate
   # Property.semester until we call the scope, not when we define it
   scope :current,    -> { where(:semester => Property.semester) }
   scope :next,       lambda{ where(:semester => Property.next_semester) }
@@ -60,18 +62,18 @@ class Committeeship < ActiveRecord::Base
   end
 
   def nice_title
-    nice_titles = { 
-      "officer" => "Officer", 
-      "cmember" => "Committee Member", 
-      "candidate" => "Candidate" 
+    nice_titles = {
+      "officer" => "Officer",
+      "cmember" => "Committee Member",
+      "candidate" => "Candidate"
     }
     nice_titles[title]
   end
 
   def nice_committee
-    nice_committees = { 
-      "pres"     => "President", 
-      "vp"       => "Vice President", 
+    nice_committees = {
+      "pres"     => "President",
+      "vp"       => "Vice President",
       "rsec"     => "Recording Secretary",
       "csec"     => "Corresponding Secretary",
       "treas"    => "Treasurer",

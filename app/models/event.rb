@@ -1,22 +1,24 @@
+# == Schema Information
+#
+# Table name: events
+#
+#  id                       :integer          not null, primary key
+#  name                     :string(255)      not null
+#  slug                     :string(255)
+#  location                 :string(255)
+#  description              :text
+#  start_time               :datetime         not null
+#  end_time                 :datetime         not null
+#  created_at               :datetime
+#  updated_at               :datetime
+#  event_type_id            :integer
+#  need_transportation      :boolean          default(FALSE)
+#  view_permission_group_id :integer
+#  rsvp_permission_group_id :integer
+#  markdown                 :boolean          default(FALSE)
+#
+
 class Event < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id                       : integer 
-  #   name                     : string 
-  #   slug                     : string 
-  #   location                 : string 
-  #   description              : text 
-  #   start_time               : datetime 
-  #   end_time                 : datetime 
-  #   created_at               : datetime 
-  #   updated_at               : datetime 
-  #   event_type_id            : integer 
-  #   need_transportation      : boolean 
-  #   view_permission_group_id : integer 
-  #   rsvp_permission_group_id : integer 
-  #   markdown                 : boolean 
-  # =======================
-
   has_many :blocks, :dependent => :destroy
   has_many :rsvps, :dependent => :destroy
   belongs_to :event_type
@@ -35,7 +37,7 @@ class Event < ActiveRecord::Base
   #scope :all,      joins(:event_type)
   scope :current,  -> { joins(:event_type).where(['start_time > ? AND start_time < ?', Property.semester_start_time, Time.now]) }
 
-  scope :with_permission, Proc.new { |user| 
+  scope :with_permission, Proc.new { |user|
     if user.nil?
       where(:view_permission_group_id => nil)
     else
@@ -45,8 +47,8 @@ class Event < ActiveRecord::Base
 
   VALID_SORT_FIELDS = %w[start_time name location event_type]
 
-  # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html 
-  
+  # Note on slugs: http://googlewebmastercentral.blogspot.com/2009/02/specify-your-canonical.html
+
   def self.upcoming_events(num, user=nil)
     events = self.with_permission(user)
         .where(end_time: Time.now..(Time.now + 7.days))
@@ -56,9 +58,9 @@ class Event < ActiveRecord::Base
     else
       events
     end
-    
+
   end
-  
+
   def valid_time_range
     if !start_time.blank? and !end_time.blank?
       errors[:end_time] << "must be after start time" unless start_time < end_time

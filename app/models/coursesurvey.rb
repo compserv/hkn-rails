@@ -1,17 +1,19 @@
+# == Schema Information
+#
+# Table name: coursesurveys
+#
+#  id             :integer          not null, primary key
+#  max_surveyors  :integer          default(3)
+#  status         :integer          default(0), not null
+#  scheduled_time :datetime
+#  created_at     :datetime
+#  updated_at     :datetime
+#  klass_id       :integer          not null
+#
+
 class Coursesurvey < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id             : integer 
-  #   max_surveyors  : integer 
-  #   status         : integer 
-  #   scheduled_time : datetime 
-  #   created_at     : datetime 
-  #   updated_at     : datetime 
-  #   klass_id       : integer 
-  # =======================
-
   belongs_to :klass
-  has_and_belongs_to_many :surveyors, { :class_name => "Person" , :uniq => true } 
+  has_and_belongs_to_many :surveyors, { :class_name => "Person" , :uniq => true }
 
   validates :klass_id, :presence => true, :uniqueness => true
   validates :max_surveyors, :numericality => true

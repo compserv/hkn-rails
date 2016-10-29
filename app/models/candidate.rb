@@ -1,26 +1,30 @@
+# == Schema Information
+#
+# Table name: candidates
+#
+#  id                        :integer          not null, primary key
+#  person_id                 :integer
+#  created_at                :datetime
+#  updated_at                :datetime
+#  committee_preferences     :string(255)
+#  release                   :string(255)
+#  quiz_score                :integer          default(0), not null
+#  committee_preference_note :text
+#  currently_initiating      :boolean
+#
+
 class Candidate < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id                    : integer 
-  #   person_id             : integer 
-  #   created_at            : datetime 
-  #   updated_at            : datetime 
-  #   committee_preferences : string 
-  #   release               : string 
-  #   quiz_score            : integer 
-  # =======================
-
   belongs_to :person
   has_many :quiz_responses
   has_many :challenges
-  
+
   validates :person, :presence => true
   validate :committees_must_be_valid
 
   scope :current, lambda { where(["candidates.created_at > ? OR currently_initiating = TRUE", Property.semester_start_time]) }
   scope :initiating, lambda { where(["currently_initiating = TRUE"]) }
   scope :approved, lambda { includes(:person).where(:people => {:approved => true}) }
-  
+
   def self.committee_defaults
     defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "StudRel", "Tutoring"]
     return defaults
@@ -39,7 +43,7 @@ class Candidate < ActiveRecord::Base
       end
     end
   end
-  
+
   def event_requirements
     req = Hash.new { |h,k| 0 }
     req["Mandatory for Candidates"] = 3
@@ -66,7 +70,7 @@ class Candidate < ActiveRecord::Base
       done[type] = done[type] + 1 if rsvp.confirmed == "t"
     end
     return done
-  end 
+  end
 
   def requirements_status
     rsvps = self.person.rsvps
@@ -78,15 +82,15 @@ class Candidate < ActiveRecord::Base
       sorted_rsvps[type] = [] if sorted_rsvps[type] == nil
       sorted_rsvps[type] << rsvp
     end
-    
+
     status = Hash.new #Record status
     reqs = event_requirements
     reqs.each do |key, value|
       sorted_rsvps[key] = [] if sorted_rsvps[key] == nil
       assign = done[key] ? done[key] >= value : false
-      status[key] = assign #Set the status to true if requirement finished (cand has done >= the actual requirement value) 
+      status[key] = assign #Set the status to true if requirement finished (cand has done >= the actual requirement value)
     end
-    
+
     return {:status => status, :rsvps => sorted_rsvps}
   end
 

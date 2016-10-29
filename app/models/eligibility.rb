@@ -1,29 +1,31 @@
+# == Schema Information
+#
+# Table name: eligibilities
+#
+#  id             :integer          not null, primary key
+#  first_name     :string(255)
+#  last_name      :string(255)
+#  middle_initial :string(255)
+#  major          :string(255)
+#  email          :string(255)
+#  address1       :string(255)
+#  address2       :string(255)
+#  city           :string(255)
+#  state          :string(255)
+#  zip            :string(255)
+#  semester       :string(255)
+#  group          :integer          default(0), not null
+#  class_level    :integer
+#  confidence     :integer          default(0), not null
+#  first_reg      :date
+#  candidate_id   :integer
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
 class Eligibility < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id             : integer 
-  #   first_name     : string 
-  #   last_name      : string 
-  #   middle_initial : string 
-  #   major          : string 
-  #   email          : string 
-  #   address1       : string 
-  #   address2       : string 
-  #   city           : string 
-  #   state          : string 
-  #   zip            : string 
-  #   semester       : string 
-  #   group          : integer 
-  #   class_level    : integer 
-  #   confidence     : integer 
-  #   first_reg      : date 
-  #   candidate_id   : integer 
-  #   created_at     : datetime 
-  #   updated_at     : datetime 
-  # =======================
-
-  Groups      = [:unknown,    :candidate,    :member   ]
-  GroupValues = {:unknown=>0, :candidate=>1, :member=>2}
+  Groups      = [:unknown,      :candidate,      :member]
+  GroupValues = {:unknown => 0, :candidate => 1, :member => 2}
   TableFields = [:last_name, :first_name, :email, :address, :class_level]
 
   validates_presence_of :semester
@@ -63,7 +65,7 @@ class Eligibility < ActiveRecord::Base
 
   def auto_assign_group
     # Also sets confidence level
-  
+
     self.confidence = case
       when p = Person.find(:email => email).first then 3
       when p = Person.find(:first_name => first_name, :last_name => last_name).first then 2
@@ -124,7 +126,7 @@ class Eligibility < ActiveRecord::Base
             next unless row.length == fields.length
             e = {}
             for i in 0..fields.length-1 do
-              field = fields[i].gsub(/\s+/,'_').underscore.to_sym 
+              field = fields[i].gsub(/\s+/,'_').underscore.to_sym
               field = fieldmap[field] if fieldmap[field]
               e[field] = row[i]
             end

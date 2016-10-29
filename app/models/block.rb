@@ -1,16 +1,18 @@
+# == Schema Information
+#
+# Table name: blocks
+#
+#  id         :integer          not null, primary key
+#  rsvp_cap   :integer
+#  start_time :datetime
+#  end_time   :datetime
+#  created_at :datetime
+#  updated_at :datetime
+#  event_id   :integer
+#
+
 class Block < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   rsvp_cap   : integer 
-  #   start_time : datetime 
-  #   end_time   : datetime 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  #   event_id   : integer 
-  # =======================
-
-  # Nonpositive rsvp_cap implies no limit (since there's no reason to set an 
+  # Nonpositive rsvp_cap implies no limit (since there's no reason to set an
   # rsvp_cap of 0, you might as well not have rsvps enabled)
   has_and_belongs_to_many :rsvps
   belongs_to :event
@@ -27,11 +29,11 @@ class Block < ActiveRecord::Base
   end
 
   def nice_time_range
-    if start_time.to_date == end_time.to_date 
+    if start_time.to_date == end_time.to_date
       "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%I:%M%p')}"
-    else 
+    else
       "#{start_time.strftime('%a %m/%d %I:%M%p')} - #{end_time.strftime('%a %m/%d %I:%M%p')}"
-    end 
+    end
   end
 
   def full?

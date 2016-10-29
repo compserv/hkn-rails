@@ -1,17 +1,19 @@
+# == Schema Information
+#
+# Table name: properties
+#
+#  id                   :integer          not null, primary key
+#  semester             :string(255)      default("20103")
+#  created_at           :datetime
+#  updated_at           :datetime
+#  tutoring_enabled     :boolean          default(FALSE)
+#  tutoring_message     :text             default("")
+#  tutoring_start       :integer          default(11)
+#  tutoring_end         :integer          default(16)
+#  coursesurveys_active :boolean          default(FALSE), not null
+#
+
 class Property < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id                   : integer 
-  #   semester             : string 
-  #   created_at           : datetime 
-  #   updated_at           : datetime 
-  #   tutoring_enabled     : boolean 
-  #   tutoring_message     : text 
-  #   tutoring_start       : integer 
-  #   tutoring_end         : integer 
-  #   coursesurveys_active : boolean 
-  # =======================
-
   Semester = /\A\d{4}[0-5]\z/	#A regex which validates the semester
   validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
   validate :there_is_only_one, :on => :create
@@ -68,7 +70,7 @@ class Property < ActiveRecord::Base
       year_and_semester ||= {}
       year_and_semester = {:year => year_and_semester[0..3], :semester => year_and_semester[4..4]} if year_and_semester.is_a? String
       year     = (year_and_semester.delete(:year)     || Time.now.year).to_i
-      semester = (year_and_semester.delete(:semester) || 
+      semester = (year_and_semester.delete(:semester) ||
                  ( case (year_and_semester.delete(:month) || Time.now.month)
                    when 1..5 then 1
                    when 6..7 then 2
@@ -139,7 +141,7 @@ class Property < ActiveRecord::Base
       prop.save
     end
 
-    # @param s [String] 
+    # @param s [String]
     def semester_start_time(semester=nil)
       unless semester
         prop = get_or_create
@@ -176,7 +178,7 @@ class Property < ActiveRecord::Base
       s ||= current_semester
       "#{SEMESTER_MAP[s[-1..-1].to_i]} #{s[0..3]}"
     end
-    
+
     def get_property(variable)
       prop = get_or_create
       prop.send(variable)
@@ -219,4 +221,3 @@ class Property < ActiveRecord::Base
   end
 
 end
-

@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: slots
+#
+#  id         :integer          not null, primary key
+#  room       :integer
+#  created_at :datetime
+#  updated_at :datetime
+#  hour       :integer          not null
+#  wday       :integer          not null
+#
+
 require 'rails_helper'
 
 describe Slot, "when created with blank parameters" do

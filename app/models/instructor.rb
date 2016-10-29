@@ -1,21 +1,23 @@
+# == Schema Information
+#
+# Table name: instructors
+#
+#  id           :integer          not null, primary key
+#  last_name    :string(255)      not null
+#  picture      :string(255)
+#  title        :string(255)
+#  phone_number :string(255)
+#  email        :string(255)
+#  home_page    :string(255)
+#  interests    :text
+#  created_at   :datetime
+#  updated_at   :datetime
+#  private      :boolean          default(TRUE)
+#  office       :string(255)
+#  first_name   :string(255)
+#
+
 class Instructor < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id           : integer 
-  #   last_name    : string 
-  #   picture      : string 
-  #   title        : string 
-  #   phone_number : string 
-  #   email        : string 
-  #   home_page    : string 
-  #   interests    : text 
-  #   created_at   : datetime 
-  #   updated_at   : datetime 
-  #   private      : boolean 
-  #   office       : string 
-  #   first_name   : string 
-  # =======================
-
   has_many :instructorships
   has_many :klasses,     -> { where(instructorships: {ta: false}) },
                          :through => :instructorships
@@ -93,7 +95,7 @@ class Instructor < ActiveRecord::Base
   def full_name_r_strip
     [last_name, first_name].join ','
   end
-  
+
   def ta?
     not instructor? and not student_instructor?
 #    if title.blank? then
@@ -125,6 +127,6 @@ class Instructor < ActiveRecord::Base
       true
     end .all?
   end
- 
+
 
 end

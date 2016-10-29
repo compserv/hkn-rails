@@ -1,12 +1,14 @@
+# == Schema Information
+#
+# Table name: mobile_carriers
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)      not null
+#  sms_email  :string(255)      not null
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class MobileCarrier < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   name       : string 
-  #   sms_email  : string 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  # =======================
-
   # Check out http://www.makeuseof.com/tag/email-to-sms/
 end

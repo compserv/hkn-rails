@@ -1,23 +1,25 @@
+# == Schema Information
+#
+# Table name: klasses
+#
+#  id           :integer          not null, primary key
+#  course_id    :integer          not null
+#  semester     :string(255)      not null
+#  location     :string(255)
+#  time         :string(255)
+#  section      :integer
+#  notes        :text
+#  num_students :integer
+#  created_at   :datetime
+#  updated_at   :datetime
+#
+
 class Klass < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id           : integer 
-  #   course_id    : integer 
-  #   semester     : string 
-  #   location     : string 
-  #   time         : string 
-  #   section      : integer 
-  #   notes        : text 
-  #   num_students : integer 
-  #   created_at   : datetime 
-  #   updated_at   : datetime 
-  # =======================
-
   belongs_to :course
   has_one  :coursesurvey, :dependent => :destroy
   has_many :survey_answers, :through => :instructorships, :dependent => :destroy
   has_many :instructorships, :dependent => :destroy
-  has_many :instructors,  -> { where(instructorships: {ta: false}) }, 
+  has_many :instructors,  -> { where(instructorships: {ta: false}) },
                           :through => :instructorships
 
   has_many :tas,          -> { where(instructorships: {ta: true}) },
@@ -34,7 +36,7 @@ class Klass < ActiveRecord::Base
   scope :current_semester, lambda{ joins(:course).where('klasses.semester' => Property.get_or_create.semester).order('courses.department_id, courses.prefix, courses.course_number, courses.suffix ASC, section') }
 
   scope :ordered, lambda { order("course_number DESC, prefix ASC, suffix ASC, semester DESC") }
-  
+
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
   ABBR_SEMESTERS = { 'sp' => 1, 'su' => 2, 'fa' => 3 }
 

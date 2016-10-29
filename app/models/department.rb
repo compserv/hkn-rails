@@ -1,18 +1,20 @@
+# == Schema Information
+#
+# Table name: departments
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  abbr       :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Department < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   name       : string 
-  #   abbr       : string 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  # =======================
-
   has_many :courses
 
   validates :name, :presence => true
   validates :abbr, :presence => true
-  
+
   #This is a mapping of some proper abbreviations to their commonly used
   #informal abbreviations
   #
@@ -42,7 +44,7 @@ class Department < ActiveRecord::Base
     "ENV SCI"  => ["ENV SCI", "ENVIR SCI"],
     "ENVECON"  => ["ENVECON", "ENVIR ECON & POLICY"],
     }
-    
+
 #  class << self
 #    attr_reader :nice_abbrs
 #  end

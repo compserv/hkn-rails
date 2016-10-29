@@ -1,17 +1,19 @@
+# == Schema Information
+#
+# Table name: rsvps
+#
+#  id              :integer          not null, primary key
+#  confirmed       :string(255)
+#  confirm_comment :text
+#  person_id       :integer          not null
+#  event_id        :integer          not null
+#  comment         :text
+#  transportation  :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 class Rsvp < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id              : integer 
-  #   confirmed       : string 
-  #   confirm_comment : text 
-  #   person_id       : integer 
-  #   event_id        : integer 
-  #   comment         : text 
-  #   transportation  : integer 
-  #   created_at      : datetime 
-  #   updated_at      : datetime 
-  # =======================
-
   TRANSPORT_ENUM = [
     [ 'I need a ride', -1 ],
     [ "Don't worry about me", 0 ],

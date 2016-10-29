@@ -1,37 +1,40 @@
+# == Schema Information
+#
+# Table name: people
+#
+#  id                  :integer          not null, primary key
+#  first_name          :string(255)      not null
+#  last_name           :string(255)      not null
+#  username            :string(255)      not null
+#  email               :string(255)      not null
+#  crypted_password    :string(255)      not null
+#  password_salt       :string(255)      not null
+#  persistence_token   :string(255)      not null
+#  single_access_token :string(255)      not null
+#  perishable_token    :string(255)      not null
+#  phone_number        :string(255)
+#  aim                 :string(255)
+#  date_of_birth       :date
+#  created_at          :datetime
+#  updated_at          :datetime
+#  picture             :string(255)
+#  private             :boolean          default(TRUE), not null
+#  local_address       :string(255)      default("")
+#  perm_address        :string(255)      default("")
+#  grad_semester       :string(255)      default("")
+#  approved            :boolean
+#  failed_login_count  :integer          default(0), not null
+#  current_login_at    :datetime
+#  mobile_carrier_id   :integer
+#  sms_alerts          :boolean          default(FALSE)
+#  reset_password_link :string(255)
+#  reset_password_at   :datetime
+#  graduation          :string(255)
+#
+
 require 'net/ldap'
 
 class Person < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id                  : integer 
-  #   first_name          : string 
-  #   last_name           : string 
-  #   username            : string 
-  #   email               : string 
-  #   crypted_password    : string 
-  #   password_salt       : string 
-  #   persistence_token   : string 
-  #   single_access_token : string 
-  #   perishable_token    : string 
-  #   phone_number        : string 
-  #   aim                 : string 
-  #   date_of_birth       : date 
-  #   created_at          : datetime 
-  #   updated_at          : datetime 
-  #   picture             : string 
-  #   private             : boolean 
-  #   local_address       : string 
-  #   perm_address        : string 
-  #   grad_semester       : string 
-  #   approved            : boolean 
-  #   failed_login_count  : integer 
-  #   current_login_at    : datetime 
-  #   mobile_carrier_id   : integer 
-  #   sms_alerts          : boolean 
-  #   reset_password_link : string 
-  #   reset_password_at   : datetime 
-  # =======================
-
   has_one :candidate, :dependent => :destroy
   has_one :alumni, :dependent => :destroy
   has_one :tutor, :dependent => :destroy
@@ -128,7 +131,7 @@ class Person < ActiveRecord::Base
       self.password_confirmation = pw
       return self.valid?
   end
-  
+
   def picture(guess=false)
     # HACK: dynamically guesses user's picture
     p = method_missing(:picture)
@@ -207,7 +210,7 @@ class Person < ActiveRecord::Base
     end
     return self.tutor
   end
-  
+
   #Returns the person's full name
   #
   def fullname

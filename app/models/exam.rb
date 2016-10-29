@@ -1,21 +1,23 @@
+# == Schema Information
+#
+# Table name: exams
+#
+#  id          :integer          not null, primary key
+#  klass_id    :integer          not null
+#  course_id   :integer          not null
+#  filename    :string(255)      not null
+#  exam_type   :integer          not null
+#  number      :integer
+#  is_solution :boolean          not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class Exam < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id          : integer 
-  #   klass_id    : integer 
-  #   course_id   : integer 
-  #   filename    : string 
-  #   exam_type   : integer 
-  #   number      : integer 
-  #   is_solution : boolean 
-  #   created_at  : datetime 
-  #   updated_at  : datetime 
-  # =======================
-
   #TODO add tags
   belongs_to :klass
   belongs_to :course
-  
+
   validates :klass, :presence => true
   validates :course, :presence => true
   validates :filename, :presence => true

@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: committeeships
+#
+#  id         :integer          not null, primary key
+#  committee  :string(255)
+#  semester   :string(255)
+#  title      :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  person_id  :integer
+#
+
 require 'rails_helper'
 
 describe Committeeship do

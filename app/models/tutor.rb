@@ -1,14 +1,16 @@
+# == Schema Information
+#
+# Table name: tutors
+#
+#  id         :integer          not null, primary key
+#  person_id  :integer          not null
+#  languages  :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  adjacency  :integer          default(0)
+#
+
 class Tutor < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   person_id  : integer 
-  #   languages  : string 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  #   adjacency  : integer 
-  # =======================
-
   belongs_to :person
 
   has_many :course_preferences, :dependent => :destroy
@@ -28,7 +30,7 @@ class Tutor < ActiveRecord::Base
     :committeeships => {:semester=>Property.current_semester}) }
 
   class << self
-    # This has been separated out like this in order to apply the scope when 
+    # This has been separated out like this in order to apply the scope when
     # using Tutor as an association.
     # In other words, if we want all Availabilities from Tutors who are current,
     # we write Tutor.current_scope_helper(Availabilities, :tutor).
@@ -38,7 +40,7 @@ class Tutor < ActiveRecord::Base
       query.joins(join).where(:elections => {:semester => Property.current_semester, :elected => true})
     end
   end
-  
+
   def to_s
     return person.fullname
   end

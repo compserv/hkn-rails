@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: rsvps
+#
+#  id              :integer          not null, primary key
+#  confirmed       :string(255)
+#  confirm_comment :text
+#  person_id       :integer          not null
+#  event_id        :integer          not null
+#  comment         :text
+#  transportation  :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 require 'rails_helper'
 
 describe Rsvp do

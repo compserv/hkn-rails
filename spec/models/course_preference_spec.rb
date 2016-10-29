@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: course_preferences
+#
+#  id         :integer          not null, primary key
+#  course_id  :integer
+#  tutor_id   :integer
+#  level      :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 require 'rails_helper'
 
 describe CoursePreference, "when created with blank parameters" do

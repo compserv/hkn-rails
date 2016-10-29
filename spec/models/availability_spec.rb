@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: availabilities
+#
+#  id               :integer          not null, primary key
+#  tutor_id         :integer
+#  preferred_room   :integer
+#  created_at       :datetime
+#  updated_at       :datetime
+#  preference_level :integer
+#  room_strength    :integer          default(0)
+#  semester         :string(255)      not null
+#  hour             :integer          not null
+#  wday             :integer          not null
+#
+
 require 'rails_helper'
 
 describe Availability, "when created with blank parameters" do

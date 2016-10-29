@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: tutors
+#
+#  id         :integer          not null, primary key
+#  person_id  :integer          not null
+#  languages  :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  adjacency  :integer          default(0)
+#
+
 require 'rails_helper'
 
 describe Tutor, "when created with blank parameters" do

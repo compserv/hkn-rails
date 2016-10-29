@@ -1,14 +1,16 @@
+# == Schema Information
+#
+# Table name: course_preferences
+#
+#  id         :integer          not null, primary key
+#  course_id  :integer
+#  tutor_id   :integer
+#  level      :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class CoursePreference < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   course_id  : integer 
-  #   tutor_id   : integer 
-  #   level      : integer 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  # =======================
-
   #Level 0 = current, Level 1 = completed, Level 2 = preferred
 
   belongs_to :course
@@ -18,7 +20,7 @@ class CoursePreference < ActiveRecord::Base
   validates :tutor, :presence => true
   validates :level, :presence => true
   validates_numericality_of :level, :only_integer => true, :message => "can only be whole number."
-  validates_inclusion_of :level, :in => 0..2, :message => "invalid value." 
+  validates_inclusion_of :level, :in => 0..2, :message => "invalid value."
   validates_uniqueness_of :course_id, :scope => :tutor_id
 
   #For scheduler class view

@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: blocks
+#
+#  id         :integer          not null, primary key
+#  rsvp_cap   :integer
+#  start_time :datetime
+#  end_time   :datetime
+#  created_at :datetime
+#  updated_at :datetime
+#  event_id   :integer
+#
+
 require 'rails_helper'
 
 describe Block, "when created with blank parameters" do

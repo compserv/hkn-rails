@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: candidates
+#
+#  id                        :integer          not null, primary key
+#  person_id                 :integer
+#  created_at                :datetime
+#  updated_at                :datetime
+#  committee_preferences     :string(255)
+#  release                   :string(255)
+#  quiz_score                :integer          default(0), not null
+#  committee_preference_note :text
+#  currently_initiating      :boolean
+#
+
 require 'rails_helper'
 
 describe Candidate, "when created with blank parameters" do

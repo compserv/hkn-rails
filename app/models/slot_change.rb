@@ -1,16 +1,18 @@
+# == Schema Information
+#
+# Table name: slot_changes
+#
+#  id         :integer          not null, primary key
+#  tutor_id   :integer
+#  date       :datetime
+#  add_sub    :integer
+#  slot_id    :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class SlotChange < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   tutor_id   : integer 
-  #   date       : datetime 
-  #   add_sub    : integer 
-  #   slot_id    : integer 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  # =======================
-
-  has_one :tutor
+  belongs_to :tutor
 
   validates :tutor, :presence => true
   validate :valid_add_sub

@@ -1,20 +1,23 @@
-class Alumni < ActiveRecord::Base
+# == Schema Information
+#
+# Table name: alumnis
+#
+#  id            :integer          not null, primary key
+#  grad_semester :string(255)
+#  grad_school   :string(255)
+#  job_title     :string(255)
+#  company       :string(255)
+#  salary        :integer
+#  person_id     :integer
+#  created_at    :datetime
+#  updated_at    :datetime
+#  perm_email    :string(255)
+#  location      :string(255)
+#  suggestions   :text
+#  mailing_list  :boolean
+#
 
-  # === List of columns ===
-  #   id            : integer 
-  #   grad_semester : string 
-  #   grad_school   : string 
-  #   job_title     : string 
-  #   company       : string 
-  #   salary        : integer 
-  #   person_id     : integer 
-  #   created_at    : datetime 
-  #   updated_at    : datetime 
-  #   perm_email    : string 
-  #   location      : string 
-  #   suggestions   : text 
-  #   mailing_list  : boolean 
-  # =======================
+class Alumni < ActiveRecord::Base
 
   belongs_to :person
   validates_uniqueness_of :person_id
@@ -23,7 +26,7 @@ class Alumni < ActiveRecord::Base
 
   MAILING_LIST_URL = 'https://hkn.eecs.berkeley.edu/mailman/listinfo/alumni'
   SEASONS = ['Fall', 'Spring', 'Summer']
- 
+
   def subscribe
     agent = Mechanize.new
     agent.get(MAILING_LIST_URL) do |page|

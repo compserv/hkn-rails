@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: events
+#
+#  id                       :integer          not null, primary key
+#  name                     :string(255)      not null
+#  slug                     :string(255)
+#  location                 :string(255)
+#  description              :text
+#  start_time               :datetime         not null
+#  end_time                 :datetime         not null
+#  created_at               :datetime
+#  updated_at               :datetime
+#  event_type_id            :integer
+#  need_transportation      :boolean          default(FALSE)
+#  view_permission_group_id :integer
+#  rsvp_permission_group_id :integer
+#  markdown                 :boolean          default(FALSE)
+#
+
 require 'rails_helper'
 
 describe Event, "when created with blank parameters" do

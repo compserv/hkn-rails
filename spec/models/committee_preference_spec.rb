@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: committee_preferences
+#
+#  id           :integer          not null, primary key
+#  group_id     :integer          not null
+#  candidate_id :integer          not null
+#  rank         :integer
+#  created_at   :datetime
+#  updated_at   :datetime
+#
+
 require 'rails_helper'
 
 describe CommitteePreference, "when created with blank parameters" do

@@ -1,16 +1,17 @@
+# == Schema Information
+#
+# Table name: quiz_responses
+#
+#  id           :integer          not null, primary key
+#  number       :string(255)      not null
+#  response     :string(255)
+#  candidate_id :integer          not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  correct      :boolean          default(FALSE), not null
+#
+
 class QuizResponse < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id           : integer 
-  #   number       : string 
-  #   response     : string 
-  #   candidate_id : integer 
-  #   created_at   : datetime 
-  #   updated_at   : datetime 
-  #   correct      : boolean 
-  # =======================
-
-
   class IncorrectError < StandardError; end
   class CollectivelyIncorrectError < IncorrectError; end
 

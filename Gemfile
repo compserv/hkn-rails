@@ -27,7 +27,11 @@ gem 'materialize-sass'
 gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
 
 group :development do
-  gem 'rails-erd' # Generate entity relationship diagram
+  # Generate entity relationship diagram
+  gem 'rails-erd'
+
+  # Annotate models with database information
+  gem 'annotate'
 end
 
 group :development, :test do

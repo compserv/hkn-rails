@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: shortlinks
+#
+#  id          :integer          not null, primary key
+#  in_url      :string(255)
+#  out_url     :text
+#  http_status :integer          default(301)
+#  person_id   :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class Shortlink < ActiveRecord::Base
   validates :in_url, :out_url, :http_status, :person_id, presence: true
   validates :in_url, uniqueness: true

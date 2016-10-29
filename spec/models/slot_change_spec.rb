@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: slot_changes
+#
+#  id         :integer          not null, primary key
+#  tutor_id   :integer
+#  date       :datetime
+#  add_sub    :integer
+#  slot_id    :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 require 'rails_helper'
 
 describe SlotChange, "when created with blank parameters" do

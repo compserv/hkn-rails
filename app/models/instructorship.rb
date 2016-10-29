@@ -1,15 +1,18 @@
+# == Schema Information
+#
+# Table name: instructorships
+#
+#  id            :integer          not null, primary key
+#  klass_id      :integer
+#  instructor_id :integer
+#  ta            :boolean          not null
+#  created_at    :datetime
+#  updated_at    :datetime
+#  hidden        :boolean          default(FALSE)
+#  comment       :string(255)
+#
+
 class Instructorship < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id            : integer 
-  #   klass_id      : integer 
-  #   instructor_id : integer 
-  #   ta            : boolean 
-  #   created_at    : datetime 
-  #   updated_at    : datetime 
-  #   hidden        : boolean 
-  # =======================
-
   belongs_to :klass
   belongs_to :instructor
 

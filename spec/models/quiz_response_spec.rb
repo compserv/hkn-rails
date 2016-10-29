@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: quiz_responses
+#
+#  id           :integer          not null, primary key
+#  number       :string(255)      not null
+#  response     :string(255)
+#  candidate_id :integer          not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  correct      :boolean          default(FALSE), not null
+#
+
 require 'rails_helper'
 
 describe QuizResponse, "when created with blank parameters" do

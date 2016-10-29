@@ -1,14 +1,16 @@
+# == Schema Information
+#
+# Table name: slots
+#
+#  id         :integer          not null, primary key
+#  room       :integer
+#  created_at :datetime
+#  updated_at :datetime
+#  hour       :integer          not null
+#  wday       :integer          not null
+#
+
 class Slot < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id         : integer 
-  #   room       : integer 
-  #   created_at : datetime 
-  #   updated_at : datetime 
-  #   hour       : integer 
-  #   wday       : integer 
-  # =======================
-
   # This is a tutoring office hours slot
 
   module Room

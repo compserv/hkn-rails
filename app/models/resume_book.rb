@@ -1,16 +1,18 @@
+# == Schema Information
+#
+# Table name: resume_books
+#
+#  id          :integer          not null, primary key
+#  title       :string(255)
+#  pdf_file    :string(255)
+#  iso_file    :string(255)
+#  directory   :string(255)
+#  remarks     :string(255)
+#  details     :text
+#  cutoff_date :date
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class ResumeBook < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id          : integer 
-  #   title       : string 
-  #   pdf_file    : string 
-  #   iso_file    : string 
-  #   directory   : string 
-  #   remarks     : string 
-  #   details     : text 
-  #   cutoff_date : date 
-  #   created_at  : datetime 
-  #   updated_at  : datetime 
-  # =======================
-
 end

@@ -1,17 +1,19 @@
+# == Schema Information
+#
+# Table name: survey_questions
+#
+#  id        :integer          not null, primary key
+#  text      :string(255)      not null
+#  important :boolean          default(FALSE)
+#  inverted  :boolean          default(FALSE)
+#  max       :integer          not null
+#  keyword   :integer          default(0)
+#
+
 class SurveyQuestion < ActiveRecord::Base
-
-  # === List of columns ===
-  #   id        : integer 
-  #   text      : string 
-  #   important : boolean 
-  #   inverted  : boolean 
-  #   max       : integer 
-  #   keyword   : integer 
-  # =======================
-
   KEYWORDS = [:none, :prof_eff, :worthwhile, :ta_eff]
 
-  
+
   validates :text, :presence => true
   validates :max,  :presence => true
 

@@ -1,3 +1,37 @@
+# == Schema Information
+#
+# Table name: people
+#
+#  id                  :integer          not null, primary key
+#  first_name          :string(255)      not null
+#  last_name           :string(255)      not null
+#  username            :string(255)      not null
+#  email               :string(255)      not null
+#  crypted_password    :string(255)      not null
+#  password_salt       :string(255)      not null
+#  persistence_token   :string(255)      not null
+#  single_access_token :string(255)      not null
+#  perishable_token    :string(255)      not null
+#  phone_number        :string(255)
+#  aim                 :string(255)
+#  date_of_birth       :date
+#  created_at          :datetime
+#  updated_at          :datetime
+#  picture             :string(255)
+#  private             :boolean          default(TRUE), not null
+#  local_address       :string(255)      default("")
+#  perm_address        :string(255)      default("")
+#  grad_semester       :string(255)      default("")
+#  approved            :boolean
+#  failed_login_count  :integer          default(0), not null
+#  current_login_at    :datetime
+#  mobile_carrier_id   :integer
+#  sms_alerts          :boolean          default(FALSE)
+#  reset_password_link :string(255)
+#  reset_password_at   :datetime
+#  graduation          :string(255)
+#
+
 require 'rails_helper'
 
 describe Person, "when created with blank parameters" do
