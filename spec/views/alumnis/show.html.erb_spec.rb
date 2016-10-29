@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "alumnis/show.html.erb" do
   before(:each) do

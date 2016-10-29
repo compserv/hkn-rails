@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Admin::TutorController, "when an officer user is logged in" do
   before :each do

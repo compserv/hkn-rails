@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe EventsController do
 
@@ -210,10 +210,11 @@ describe EventsController do
         it "deletes all existing blocks and RSVPs" do
           @mock_event = mock_event(:update_attributes! => true)
           allow(Event).to receive(:find).with("1") { @mock_event }
-          @mock_blocks = []
+          @mock_blocks = double().as_null_object
+          allow(@mock_blocks).to receive(:delete_all).and_return(true)
           allow(@mock_event).to receive(:blocks) { @mock_blocks }
           expect(@mock_blocks).to receive(:delete_all)
-          @mock_rsvps = []
+          @mock_rsvps = double().as_null_object
           allow(@mock_event).to receive(:rsvps) { @mock_rsvps }
           expect(@mock_rsvps).to receive(:delete_all)
           put :update, :id => "1", :rsvp_type => "No RSVPs", :event => valid_event_params
@@ -230,7 +231,8 @@ describe EventsController do
             expect(@mock_block).to receive(:save!).and_return(true)
             allow(Block).to receive(:new) { @mock_block }
             # Existing blocks
-            @mock_blocks = [1, 2]
+            @mock_blocks = double().as_null_object
+            allow(@mock_blocks).to receive(:delete_all).and_return(true)
             allow(@mock_event).to receive(:blocks) { @mock_blocks }
             expect(@mock_blocks).to receive(:delete_all)
 
@@ -241,11 +243,11 @@ describe EventsController do
             rsvp_cap = 10.to_s  # params are always strings
 
             @mock_event = mock_event(:update_attributes! => true, :start_time => $start_time, :end_time => $end_time)
-            @mock_blocks = [1, 2]
+            @mock_blocks = double().as_null_object
             allow(@mock_event).to receive(:blocks) { @mock_blocks }
             allow(Event).to receive(:find).with("1") { @mock_event }
             @mock_block = mock_model(Block, :save! => true)
-            allow(@mock_blocks).to receive(:delete_all)
+            allow(@mock_blocks).to receive(:delete_all).and_return(true)
             allow(Block).to receive(:new) { @mock_block }
 
             expect(@mock_block).to receive(:rsvp_cap=).with(rsvp_cap)

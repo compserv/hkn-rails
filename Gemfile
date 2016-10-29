@@ -31,7 +31,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'autotest-standalone'
+  gem 'autotest-rails'
   gem 'rspec-rails'
   gem 'rspec-activemodel-mocks'
   gem 'rspec-collection_matchers'

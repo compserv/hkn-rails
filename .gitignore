@@ -15,6 +15,7 @@ private/**/*
 !private/resume_books/templates/
 public/cache/
 public/examfiles/
+spec/examples.txt
 nbproject
 coverage/
 .sass-cache/

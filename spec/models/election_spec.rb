@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Election do
-  before(:each) do 
+  before(:each) do
     ppl_data = [
       {:person   => {:first_name => 'Da Rock', :last_name => 'Obama', :username => 'bigpimpin'},
        :election => {:desired_username => 'bossman08', :position => 'pres'},
@@ -62,7 +62,7 @@ describe Election do
   end
 
   context "during commit" do
-    before(:each) do 
+    before(:each) do
       @obama_election.elected = true
       assert @obama_election.save
     end
@@ -82,7 +82,7 @@ describe Election do
       it "should add person to respective groups" do
         assert @obama_election.commit
         Group.where(:name => [@obama_election.position, 'officers', 'comms', 'candplus']).each do |g|
-          @obama.groups.should include g 
+          @obama.groups.should include g
         end
       end # it
     end # elected
@@ -98,10 +98,9 @@ describe Election do
       end
 
       it "should not create a new committeeship" do
-        assert !Committeeship.exists?(:semester => @hilary_election.semester, :person_id => @hilary.id, :committee => @hilary_election.position)
+        expect(Committeeship.count).to eq(0)
       end
     end # non-elected
 
   end # during commit
 end
-

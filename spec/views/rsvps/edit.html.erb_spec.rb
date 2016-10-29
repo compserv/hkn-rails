@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "rsvps/edit.html.erb" do
   before(:each) do

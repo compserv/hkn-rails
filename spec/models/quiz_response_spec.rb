@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe QuizResponse, "when created with blank parameters" do
   before(:each) do
@@ -73,8 +73,8 @@ describe QuizResponse do
       h.each_pair do |response, correctness|
         if response.is_a? Array   # multi-reponse
 
-          # Don't waste time if we go 5! or higher
-          permutations = (response.length <= 4) ? response.permutation(response.length) : [response]
+          # Don't waste time if we go 4! or higher
+          permutations = (response.length <= 3) ? response.permutation(response.length) : [response]
 
           permutations.each do |responses|
             qr = []

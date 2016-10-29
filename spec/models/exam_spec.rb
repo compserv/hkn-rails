@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Exam, "when created with blank parameters" do
   before(:each) do

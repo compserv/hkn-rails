@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Slot, "when created with blank parameters" do
   before(:each) do
@@ -48,8 +48,8 @@ describe Slot do
   end
 
   it "should require an hour during tutoring hours" do
-    allow(Property).to receive(:tutoring_start) { 12 }
-    allow(Property).to receive(:tutoring_end) { 14 }
+    allow_any_instance_of(Property).to receive(:tutoring_start) { 12 }
+    allow_any_instance_of(Property).to receive(:tutoring_end) { 14 }
     slot = Slot.create @good_opts.merge(:hour => 15)
     slot.should_not be_valid
     slot.errors[:hour].should include(Slot::HOUR_RANGE_ERROR)

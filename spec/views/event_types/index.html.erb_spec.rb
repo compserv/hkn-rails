@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "event_types/index.html.erb" do
   before(:each) do
