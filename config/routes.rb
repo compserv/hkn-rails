@@ -395,11 +395,6 @@ HknRails::Application.routes.draw do
   get "b" => "easter_eggs#b", :as => "easter_eggs_b"
   get 'erection' => 'easter_eggs#erection', :as => 'erection'
 
-  scope "console", :as => :console do
-    get  "/"  => "console#open",    :as => :open
-    post "/"  => "console#command", :as => :command
-  end
-
   match "factorial/:x" => "home#factorial", :via => [:get, :post]
 
   resources :shortlinks
