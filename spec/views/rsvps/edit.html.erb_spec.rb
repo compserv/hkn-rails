@@ -15,7 +15,6 @@ describe "rsvps/edit.html.erb" do
   it "renders the edit rsvp form" do
     render
 
-    rendered.should have_selector("form", :action => event_rsvp_path(@event, @rsvp), :method => "post") do |form|
-    end
+    expect(rendered).to have_tag('form', with: { action: event_rsvp_path(@event, @rsvp), method: 'post' })
   end
 end

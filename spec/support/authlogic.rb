@@ -27,7 +27,7 @@ def user_session(stubs = {}, user_stubs = {})
 end
 
 def login(session_stubs = {}, user_stubs = {})
-  UserSession.stub(:find) { user_session(session_stubs, user_stubs) }
+  allow(UserSession).to receive(:find) { user_session(session_stubs, user_stubs) }
 end
 
 def logout
@@ -36,15 +36,18 @@ def logout
 end
 
 def unlogin
-  UserSession.unstub(:find)
+  allow(UserSession).to receive(:find).and_call_original
   @user_session = nil
 end
 
 def login_as(user, auth={})
   controller.current_user = user
   @current_user = user
-  user.stub(:in_group?) { |group| auth.include? group }
-  user.stub(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k.to_s)}.reject }
+  # user.stub(:in_group?) { |group| auth.include? group }
+  allow(user).to receive(:in_group?) { |group| auth.include? group }
+
+  # user.stub(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k.to_s)}.reject }
+  allow(user).to receive(:groups) { auth.map{|k,v| v && stub_model(Group, :name => k.to_s)}.reject }
 end
 
 def login_as_officer(auth={})

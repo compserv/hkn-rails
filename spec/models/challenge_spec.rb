@@ -21,7 +21,7 @@ describe Challenge do
       challenge = stub_model(Challenge)
       allow(challenge).to receive(:status).and_return(bogus_status)
 
-      expect { challenge.get_status_string }.to raise_error
+      expect { challenge.get_status_string }.to raise_error(ArgumentError)
     end
 
   end
@@ -29,10 +29,10 @@ describe Challenge do
   describe "is_current_challenge?" do
     before(:each) do
       person = stub_model(Person)
-      Person.stub_chain(:current_candidates, :find_by_id).and_return(person)
+      allow(Person).to receive_message_chain(:current_candidates, :find_by_id).and_return(person)
 
       candidate = stub_model(Candidate, person_id: 1)
-      Candidate.stub_chain(:find_by_id).and_return(candidate)
+      allow(Candidate).to receive_message_chain(:find_by_id).and_return(candidate)
 
       @challenge = stub_model(Challenge, id: 1, candidate_id: 1)
     end
@@ -42,7 +42,7 @@ describe Challenge do
     end
 
     it "identifies a noncurrent challenge" do
-      Person.stub_chain(:current_candidates, :find_by_id).and_return(nil)
+      allow(Person).to receive_message_chain(:current_candidates, :find_by_id).and_return(nil)
       expect(@challenge.is_current_challenge?).to equal(false)
     end
   end

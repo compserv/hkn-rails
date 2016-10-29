@@ -8,15 +8,16 @@ describe SlotChange, "when created with blank parameters" do
   it "should require a tutor to be valid" do
     @slotChange.should_not be_valid
     @slotChange.errors[:tutor].should include("can't be blank")
-  end 
+  end
 end
 
 describe SlotChange do
   before(:each) do
     @good_opts = {
-      :tutor => Tutor.create,
+      :tutor => Tutor.create(person_id: 1),
       :date => DateTime.parse("2010-07-23 11:00:00 UTC"),
-      :add_sub => 1
+      :add_sub => 1,
+      :slot_id => 1
     }
   end
 

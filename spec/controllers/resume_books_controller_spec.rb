@@ -16,8 +16,8 @@ describe ResumeBooksController do
   describe "GET 'create'" do
     it "should be successful" do
       pending "I don't know if we actually want the LaTeX stuff to run when we hit this"
-      #get 'create'
-      #response.should be_success
+      get 'create'
+      response.should be_success
     end
   end
 
@@ -27,5 +27,4 @@ describe ResumeBooksController do
       response.should be_success
     end
   end
-
 end

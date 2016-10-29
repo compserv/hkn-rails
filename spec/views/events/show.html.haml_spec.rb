@@ -18,10 +18,10 @@ describe "events/show.html.haml" do
   end
 
   it "renders properly with rsvps" do
-    @event.stub(:can_rsvp?) { true }
+    expect(@event).to receive(:can_rsvp?) { true }
     stub_block = stub_model(Block)
-    stub_block.stub(:rsvps) { [] }
-    @event.stub(:blocks) { [stub_block] }
+    allow(stub_block).to receive(:rsvps) { [] }
+    allow(@event).to receive(:blocks) { [stub_block] }
     @auth["candplus"] = true
     render
   end

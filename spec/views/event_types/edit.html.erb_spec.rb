@@ -10,7 +10,6 @@ describe "event_types/edit.html.erb" do
   it "renders the edit event_type form" do
     render
 
-    rendered.should have_selector("form", :action => event_type_path(@event_type), :method => "post") do |form|
-    end
+    expect(rendered).to have_tag('form', with: { action: event_type_path(@event_type), method: "post" })
   end
 end

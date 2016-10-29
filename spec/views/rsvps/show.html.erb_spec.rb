@@ -15,7 +15,7 @@ describe "rsvps/show.html.erb" do
       r.event = event
     end
     # Since blocks is a method and not a property of rsvp, you have to stub it
-    rsvp.stub(:blocks) { blocks }
+    allow(rsvp).to receive(:blocks) { blocks }
 
     assign(:rsvp, rsvp)
     assign(:event, event)

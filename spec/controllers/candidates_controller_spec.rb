@@ -3,23 +3,22 @@ require 'spec_helper'
 describe CandidatesController do
 
   before(:each) do
-    @person = mock_model(Person)   
+    @person = mock_model(Person)
     @cand = mock_model(Candidate)
-    @person.stub(:candidate) { @cand }
-    @person.stub(:admin?) { false }
-    @person.stub(:coursesurveys){ [] }
-    #controller.stub(:current_user) { @person }
+    allow(@person).to receive(:candidate) { @cand }
+    allow(@person).to receive(:admin?) { false }
+    allow(@person).to receive(:coursesurveys){ [] }
     login_as @person
-    controller.stub(:is_candidate?) { true }
+    allow(controller).to receive(:is_candidate?) { true }
   end
-  
+
   describe "GET 'portal'" do
     it "should be successful" do
-      @cand.stub(:requirements_status) { {:status => {}, :rsvps => []} }
-      @cand.stub(:challenges) { [] }
-      @person.stub(:resumes) { [] }
-      @cand.stub(:quiz_responses) { [] }
-      
+      allow(@cand).to receive(:requirements_status) { {:status => {}, :rsvps => []} }
+      allow(@cand).to receive(:challenges) { [] }
+      allow(@person).to receive(:resumes) { [] }
+      allow(@cand).to receive(:quiz_responses) { [] }
+
       get 'portal'
       response.should be_success
     end
@@ -28,17 +27,17 @@ describe CandidatesController do
   describe "GET 'application'" do
     it "should be successful" do
       @suggestion = mock_model(Suggestion)
-      @suggestion.stub(:suggestion) { "" }
-      
-      @person.stub(:aim) { "" }
-      @person.stub(:phone_number) { "" }
-      @person.stub(:local_address) { "" }
-      @person.stub(:perm_address) { "" }
-      @person.stub(:grad_semester) { "" }
-      
-      @cand.stub(:release)
-      @person.stub(:suggestion) { @suggestion }
-      @cand.stub(:committee_preferences) { [] }
+      allow(@suggestion).to receive(:suggestion) { "" }
+
+      allow(@person).to receive(:aim) { "" }
+      allow(@person).to receive(:phone_number) { "" }
+      allow(@person).to receive(:local_address) { "" }
+      allow(@person).to receive(:perm_address) { "" }
+      allow(@person).to receive(:grad_semester) { "" }
+
+      allow(@cand).to receive(:release)
+      allow(@person).to receive(:suggestion) { @suggestion }
+      allow(@cand).to receive(:committee_preferences) { [] }
       get 'application'
       response.should be_success
     end
@@ -46,7 +45,7 @@ describe CandidatesController do
 
   describe "GET 'quiz'" do
     it "should be successful" do
-      @cand.stub(:quiz_responses) { Hash.new }
+      allow(@cand).to receive(:quiz_responses) { Hash.new }
       get 'quiz'
       response.should be_success
     end

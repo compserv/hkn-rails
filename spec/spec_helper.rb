@@ -18,7 +18,6 @@ end
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
-require 'rspec/autorun'
 
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -48,4 +47,17 @@ RSpec.configure do |config|
   # rspec-rails.
   #config.infer_base_class_for_anonymous_controllers = false
   load Rails.root.join("db","seeds.rb")
+
+  # Fix file-type inference for RSpec 3
+  config.infer_spec_type_from_file_location!
+
+  # Show full errors for deprecation warnings
+  config.raise_errors_for_deprecations!
+
+  # Fix these sometime instead of having this
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+
+  config.include RSpecHtmlMatchers
 end

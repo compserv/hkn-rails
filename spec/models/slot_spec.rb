@@ -48,8 +48,8 @@ describe Slot do
   end
 
   it "should require an hour during tutoring hours" do
-    Property.stub(:tutoring_start) { 12 }
-    Property.stub(:tutoring_end) { 14 }
+    allow(Property).to receive(:tutoring_start) { 12 }
+    allow(Property).to receive(:tutoring_end) { 14 }
     slot = Slot.create @good_opts.merge(:hour => 15)
     slot.should_not be_valid
     slot.errors[:hour].should include(Slot::HOUR_RANGE_ERROR)
@@ -74,7 +74,7 @@ describe Slot do
     tutor = Tutor.new(:person_id => 0)
     tutor.save!(:validate => false)
     cory.tutors << tutor
-    expect{soda.tutors << tutor}.to raise_error
+    expect{soda.tutors << tutor}.to raise_error(RuntimeError)
     tutor.delete
   end
 end
@@ -108,12 +108,12 @@ describe Slot, 'utility methods' do
   it 'should have adjacent_to' do
     @slot.to_s
     slot_adj = Slot.new @good_opts.merge(:hour => 12)
-    @slot.adjacent_to(slot_adj).should be_true
-    slot_adj.adjacent_to(@slot).should be_true
+    expect(@slot.adjacent_to(slot_adj)).to be_truthy
+    expect(slot_adj.adjacent_to(@slot)).to be_truthy
 
     slot_not_adj = Slot.new @good_opts.merge(:hour => 1)
-    @slot.adjacent_to(slot_not_adj).should_not be_true
-    slot_not_adj.adjacent_to(@slot).should_not be_true
+    expect(@slot.adjacent_to(slot_not_adj)).to be_falsey
+    expect(slot_not_adj.adjacent_to(@slot)).to be_falsey
   end
 
   it 'should have availabilities' do
@@ -121,7 +121,7 @@ describe Slot, 'utility methods' do
     avail = Availability.new(:hour => 12, :wday => 1, :semester => 20113)
     avail.save(:validate => false)
     slot = Slot.new @good_opts.merge(:hour => 12, :wday => 1)
-    slot.availabilities.include?(avail).should be_true
+    expect(slot.availabilities.include?(avail)).to be_truthy
     avail.delete
   end
 end

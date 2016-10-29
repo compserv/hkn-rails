@@ -6,14 +6,14 @@ require 'spec_helper'
 
 describe AlumnisController do
   before :each do login_as_officer('alumrel'=>true) end
-  
+
   def mock_alumni(stubs={})
     @mock_alumni ||= double(Alumni, stubs).as_null_object
   end
 
   describe "GET index" do
     it "assigns all alumnis as @alumnis" do
-      Alumni.stub(:all) { [mock_alumni] }
+      allow(Alumni).to receive(:all) { [mock_alumni] }
       get :index
       assigns(:alumnis).should eq([mock_alumni])
     end
@@ -21,7 +21,7 @@ describe AlumnisController do
 
   describe "GET show" do
     it "assigns the requested alumni as @alumni" do
-      Alumni.stub(:find).with("37") { mock_alumni }
+      allow(Alumni).to receive(:find).with("37") { mock_alumni }
       get :show, :id => "37"
       assigns(:alumni).should be(mock_alumni)
     end
@@ -29,7 +29,7 @@ describe AlumnisController do
 
   describe "GET new" do
     it "assigns a new alumni as @alumni" do
-      Alumni.stub(:new) { mock_alumni }
+      allow(Alumni).to receive(:new) { mock_alumni }
       get :new
       assigns(:alumni).should be(mock_alumni)
     end
@@ -46,7 +46,7 @@ describe AlumnisController do
       end
 
       it "redirects to the created alumni" do
-        @current_user.stub(:save).and_return true
+        allow(@current_user).to receive(:save).and_return true
         post :create, :alumni => {
                         :person_id => 9999,
                         :perm_email => "derp@derp.com"
@@ -60,7 +60,7 @@ describe AlumnisController do
 
     describe "with invalid params" do
       before :each do
-        @current_user.stub(:alumni=)
+        allow(@current_user).to receive(:alumni=)
       end
 
       it "assigns a newly created but unsaved alumni as @alumni" do
@@ -88,13 +88,13 @@ describe AlumnisController do
     describe "with valid params" do
 
       it "updates the requested alumni" do
-        Alumni.stub(:find).with(
+        allow(Alumni).to receive(:find).with(
           :first,
           {:conditions=>"\"alumnis\".person_id = 9999"}
         ) { alum }
-        Alumni.stub(:find).with("37") { alum }
+        allow(Alumni).to receive(:find).with("37") { alum }
 
-        alum.should_receive(:update_attributes).with(
+        expect(alum).to receive(:update_attributes).with(
           { "person_id" => "9999", "grad_semester" => "Fall 1945" }
         )
 
@@ -106,7 +106,7 @@ describe AlumnisController do
       end
 
       it "assigns the requested alumni as @alumni" do
-        Alumni.stub(:find) { alum }
+        allow(Alumni).to receive(:find) { alum }
         put :update, :id => "37",
                      :alumni => { :person_id => 9999 },
                      :grad_season => 'Fall',
@@ -115,7 +115,7 @@ describe AlumnisController do
       end
 
       it "redirects to the alumni" do
-        Alumni.stub(:find) { alum }
+        allow(Alumni).to receive(:find) { alum }
         put :update, :id => "37",
                      :alumni => { :person_id => 9999 },
                      :grad_season => 'Fall',
@@ -126,7 +126,7 @@ describe AlumnisController do
 
     describe "with invalid params" do
       it "assigns the alumni as @alumni" do
-        Alumni.stub(:find) { alum }
+        allow(Alumni).to receive(:find) { alum }
         put :update, :id => "37",
                      :alumni => { :salary => -100 },
                      :grad_season => 'Fall',
@@ -135,7 +135,7 @@ describe AlumnisController do
       end
 
       it "re-renders the 'edit' template" do
-        Alumni.stub(:find) { alum }
+        allow(Alumni).to receive(:find) { alum }
         put :update, :id => "37",
                      :alumni => { :salary => -100 },
                      :grad_season => 'Fall',
@@ -147,16 +147,15 @@ describe AlumnisController do
 
   describe "DELETE destroy" do
     it "destroys the requested alumni" do
-      Alumni.stub(:find).with("37") { mock_alumni }
-      mock_alumni.should_receive(:destroy)
+      allow(Alumni).to receive(:find).with("37") { mock_alumni }
+      expect(mock_alumni).to receive(:destroy)
       delete :destroy, :id => "37"
     end
 
     it "redirects to the alumnis list" do
-      Alumni.stub(:find) { mock_alumni }
+      allow(Alumni).to receive(:find) { mock_alumni }
       delete :destroy, :id => "1"
       response.should redirect_to(alumnis_url)
     end
   end
-
 end

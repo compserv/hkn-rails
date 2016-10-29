@@ -95,17 +95,17 @@ describe Person do
     describe "#phone_number_is_valid?" do
       it "should be true for 10-digit phone numbers" do
         person = Person.new(:phone_number => "5555555555")
-        person.phone_number_is_valid?.should be_true
+        expect(person.phone_number_is_valid?).to be_truthy
       end
 
       it "should be true for 10-digit phone numbers ignoring extra characters" do
         person = Person.new(:phone_number => "(555) 555-5555")
-        person.phone_number_is_valid?.should be_true
+        expect(person.phone_number_is_valid?).to be_truthy
       end
 
       it "should be invalid for 9-digit phone numbers" do
         person = Person.new(:phone_number => "123456789")
-        person.phone_number_is_valid?.should be_false
+        expect(person.phone_number_is_valid?).to be_falsey
       end
     end
 
@@ -120,7 +120,7 @@ describe Person do
       it "should return sms email address" do
         person = Person.new(:phone_number => "(555) 555-5555")
         mc = mock_model(MobileCarrier)
-        mc.should_receive(:sms_email).and_return("@example.com")
+        expect(mc).to receive(:sms_email).and_return("@example.com")
         person.mobile_carrier = mc
         person.sms_email_address.should == "5555555555@example.com"
       end

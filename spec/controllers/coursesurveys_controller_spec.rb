@@ -19,13 +19,13 @@ describe CoursesurveysController do
     # EE Klasses
     @k1   = mock_model Klass, :course => @ee1, :semester => Property.get_or_create.semester, :section => 0
     @k2   = mock_model Klass, :course => @ee2, :semester => "19111", :section => 0
-   
-    @ee1.stub(:klasses) { @k1 }
-    @ee2.stub(:klasses) { @k2 }
+
+    allow(@ee1).to receive(:klasses) { @k1 }
+    allow(@ee2).to receive(:klasses) { @k2 }
 
     # Stub things out
-    Department.stub(:find) { [@ee] }
-    Course    .stub(:find) { [@ee1, @ee2] }
+    allow(Department).to receive(:find) { [@ee] }
+    allow(Course).to     receive(:find) { [@ee1, @ee2] }
   end
 
   describe "GET department" do
@@ -51,19 +51,15 @@ describe CoursesurveysController do
 
     it "should show only recent courses, by default" do
       pending "Too much dependence on things that need to be stubbed out"
-      @k1.should_receive(:find).
+      expect(@k1).to receive(:find).
           with(:first, an_instance_of(Hash)).
           and_return(@k1)
-      @k2.should_receive(:find)
+      expect(@k2).to receive(:find)
 
       get 'department', :dept_abbr => 'EE'
 
       assigns(:lower_div).should     include @ee1
       assigns(:lower_div).should_not include @ee2
-    end
-
-    it "should show old courses too, when requested" do
-      pending
     end
   end
 
@@ -74,31 +70,27 @@ describe CoursesurveysController do
       response.should be_success
     end
 
-    it "should redirect to search for nonexistent class" do
-      pending
-    end
-
     context "when klass is missing surveys" do
       before :each do
-        Course.stub(:lookup_by_short_name) { mock_model(Course, :id => 0) }
+        allow(Course).to receive(:lookup_by_short_name) { mock_model(Course, :id => 1) }
         @klass = mock_model(Klass)
         @course = mock_model(Course, :klasses => [@klass])
-        Course.stub(:find) { @course }
-        SurveyQuestion.stub(:find_by_keyword) { mock_model(SurveyQuestion, :max => 7) }
-        @klass.stub_chain(:survey_answers, :exists?) { true }
-        @klass.stub_chain(:survey_answers, :where) { [] }
+        allow(Course).to receive_message_chain(:joins, :find) { @course }
+        allow(SurveyQuestion).to receive(:find_by_keyword) { mock_model(SurveyQuestion, :max => 7) }
+        allow(@klass).to receive_message_chain(:survey_answers, :exists?) { true }
+        allow(@klass).to receive_message_chain(:survey_answers, :where) { [] }
         @instructor = mock_model(Instructor)
-        @klass.stub(:instructors => [@instructor])
+        allow(@klass).to receive(:instructors) { [@instructor] }
       end
 
       it "logs the error" do
-        controller.logger.should_receive(:warn)
+        expect(controller.logger).to receive(:warn)
         get 'course', :dept_abbr => 'CS', :course_number => '194'
       end
 
       it "still renders successfully" do
         get 'course', :dept_abbr => 'CS', :course_number => '194'
-        response.should redirect_to coursesurveys_search_path("CS 194")
+        response.should be_success
       end
     end
   end
@@ -108,5 +100,4 @@ describe CoursesurveysController do
       get 'search'
     end
   end
-
 end # CoursesurveysController

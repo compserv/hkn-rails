@@ -33,7 +33,11 @@ end
 group :development, :test do
   gem 'autotest-standalone'
   gem 'rspec-rails'
-  gem 'simplecov', '~> 0.7.1', :require => false
+  gem 'rspec-activemodel-mocks'
+  gem 'rspec-collection_matchers'
+  gem 'rspec-html-matchers'
+  gem 'simplecov', '~> 0.7.1', require: false
+
   # webrat is needed to make some specs pass
   gem 'webrat'
   gem 'yard'
