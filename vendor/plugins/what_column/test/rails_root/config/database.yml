@@ -1,7 +1,0 @@
-test:
-  :adapter: sqlite3
-  :dbfile: ":memory:"
-
-development:
-  :adapter: sqlite3
-  :dbfile: ":memory:"
