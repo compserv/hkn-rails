@@ -33,7 +33,7 @@ class Admin::CsecController < Admin::AdminController
 ##      return redirect_to admin_csec_upload_surveys_path, :notice => "Successful upload and parse. Please verify the information below."
 ##    end
   end
-  
+
   def select_classes
     # If a klass has a coursesurvey, then it should be surveyed
     current_semester = Property.get_or_create.semester

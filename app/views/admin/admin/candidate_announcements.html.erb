@@ -21,11 +21,11 @@
 <ul class="plain">
 <% for a in @announcements %>
   <li class="announcement">
-    <%= link_to "[Edit]", admin_general_edit_announcement_path(:id => a.id) %> 
+    <%= link_to "[Edit]", admin_general_edit_announcement_path(:id => a.id) %>
     <%= link_to "[Delete]", admin_general_delete_announcement_path(:id => a.id) %>
-    <span class="title"><%= a.title %></span> - 
+    <span class="title"><%= a.title %></span> -
     <span class="body"><%= a.body %></span>
-    
+
   </li>
 <% end %>
 </ul>

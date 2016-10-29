@@ -1,7 +1,7 @@
-# Note, this file defines a custom CryptoProvider (see Authlogic) for 
+# Note, this file defines a custom CryptoProvider (see Authlogic) for
 # encrypting passwords and salts in the same fashion as Django.
-# In Django's auth module, they simply sha1 hash the salt+raw_password. 
-# However, in the default Authlogic Sha1 CryptoProvider, they hash 
+# In Django's auth module, they simply sha1 hash the salt+raw_password.
+# However, in the default Authlogic Sha1 CryptoProvider, they hash
 # digest+'--'+salt 10 times.
 
 require 'digest/sha1'

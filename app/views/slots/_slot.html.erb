@@ -1,7 +1,7 @@
 <% if slot.tutors.any? %>
 <% slot.tutors.each do |tutor| %>
 
-<div title="<%= tutor.person.fullname %>" id="tutor-<%= slot.id %>-<%= tutor.id %>" class="person 
+<div title="<%= tutor.person.fullname %>" id="tutor-<%= slot.id %>-<%= tutor.id %>" class="person
 <% for pref in tutor.course_preferences %>
 <%= pref.course.course_abbr + '_' + pref.level.to_s %>
 <% end %>"><%= tutor.person.abbr_name %></div>

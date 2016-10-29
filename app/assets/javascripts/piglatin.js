@@ -1,6 +1,6 @@
 /* function convert() borrowed from http://gwydir.demon.co.uk/jo/javascript/numbers.htm#piglatin */
 
-// The below segment of code was borrowed from 
+// The below segment of code was borrowed from
 // http://users.snowcrest.net/donnelly/piglatin.html
 // Pig Latin -- An English to Pig Latin Translator in JavaScript
 // Copyright (c) 1997 by William H. Donnelly -- All Rights Reserved

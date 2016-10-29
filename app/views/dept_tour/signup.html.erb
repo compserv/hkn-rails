@@ -19,12 +19,12 @@ HKN provides tours of the Berkeley EECS department. Sign up here, and your reque
     <%= label_tag :name, "Name", :class => 'required-field' %>
     <%= text_field_tag :name %>
   </div>
-  
+
   <div class="field">
     <%= label_tag :date, "Desired date & time", :class => 'required-field' %>
     <%= text_field_tag :date, nil, :class => "datetimepicker" %>
   </div>
-  
+
   <div class="field">
     <%= label_tag :email, "Contact email address", :class => 'required-field' %>
     <%= text_field_tag :email %>
@@ -34,17 +34,17 @@ HKN provides tours of the Berkeley EECS department. Sign up here, and your reque
     <%= label_tag :email_confirmation, "Re-type email", :class => 'required-field' %>
     <%= text_field_tag :email_confirmation %>
   </div>
-  
+
   <div class="field">
     <%= label_tag :phone, "Contact phone number", :class => 'required-field' %>
     <%= text_field_tag :phone %>
   </div>
-  
+
   <div class="field">
     <%= label_tag :comments, "Additional comments:" %>
     <%= text_area_tag :comments %>
   </div>
-  
+
   <div class="field">
     <br />
     <%# dirty hack to get captcha to align properly %>

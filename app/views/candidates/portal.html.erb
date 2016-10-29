@@ -15,50 +15,50 @@
           });
         }
       });
-      
+
       $("#challenge_submit").click(function(){
         officer_name = $("input[name=officer_id]").val();
         challenge_name = $("input[name=challenge_name]").val();
         description = $("textarea[name=description]").val();
-        
+
         $.post("<%= request_challenge_path %>",
           { officer_id: officer_name, name: challenge_name, description: description},
-          function(data) { 
+          function(data) {
             //console.log(data);
             if(data[0] == true){ //OK submission
               $("#request_challenge_errors").empty();
               $("input[name=officer]").val(""); //clear fields
               $("input[name=challenge_name]").val("");
               $("textarea[name=description]").val("");
-              
+
               $("#challenges").load("<%= update_challenges_path %>");
               //$("#challenges").append("<%= escape_javascript(render :partial => "challenges") %>");
-              
+
             } else{
               $("#request_challenge_errors").html(data[1]);
             }
-            
+
           }
         );
       });
-      
+
     });
   </script>
 <% end %>
 <div id="sidebar" class="trans-bg">
   <h2>Upcoming Events <%= link_to "(see calendar)", events_calendar_path %></h2>
   <%= render :partial => "events/upcoming" %>
-  
+
   <h2>Important Information</h2>
   [Coming Soon]
-  
+
   <h2>Additional Forms</h2>
   [Coming Soon]
 </div>
 
 <div id="main">
   <h1>Candidate Portal</h1>
-  
+
   <div id="announcements" class="trans-bg">
     <h2>Announcements</h2>
       <ul class="plain">
@@ -70,10 +70,10 @@
       <% end %>
       </ul>
   </div>
-  
+
   <div id="checklist">
     <h2>Checklist</h2>
-    
+
     <div style="float:left; width: 45%;">
       <h3>
         <span class="<%= "req_status " + (@done["events"] ? "status_done" : "status_notdone") %>"></span>
@@ -100,9 +100,9 @@
         <span class="<%= "req_status " + (@done["challenges"] ? "status_done" : "status_notdone") %>"></span>
         Challenges</h3>
       <ul id="challenges" class="semi-plain">
-        <%= render :partial => "challenges"%>    
+        <%= render :partial => "challenges"%>
       </ul>
-    
+
       <div id="request_challenge_container">
         <h4>Request Challenge Confirmation</h4>
         <span id="request_challenge_errors"></span>
@@ -110,7 +110,7 @@
           <%= label_tag "Find Officer" %>
           <%= text_field_tag "officer", "", :id => "officer" %>
         </div>
-      
+
         <div class="field">
         <%= label_tag "Challenge Name"%>
         <%= text_field_tag "challenge_name" %>
@@ -120,14 +120,14 @@
             <%= label_tag "Description (Optional)" %>
             <%= text_area_tag "description"%>
         </div>
-        
+
         <%= hidden_field_tag "officer_id", "", :id => "officer_id" %>
 
         <p>
         <%= submit_tag "Send Request", :id => "challenge_submit" %>
         </p>
       </div>
-      
+
       <h3>
         <span class="<%= "req_status " + (@done["forms"] ? "status_done" : "status_notdone") %>"></span>
         Forms</h3>
@@ -141,7 +141,7 @@
           <%= link_to "Quiz", "../quiz" %>
         </li>
       </ul>
-      
+
     </div>
     <div class="clear light-hbar"></div>
     <h3>
@@ -153,8 +153,8 @@
 <% else %>
     [Coming Soon]
 <% end %>
-    
-    
+
+
   </div>
 </div>
 

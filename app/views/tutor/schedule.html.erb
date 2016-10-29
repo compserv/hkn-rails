@@ -35,7 +35,7 @@
 	<span class="dept-heading"><%= key %></span>
 		<% for course in courses[key] %>
 		<% c = "'" + key + course + "'" %>
-		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)" 
+		<a href="#" class=<%= c %> onmouseover="highlight(<%= c %>)" onmouseout="unhighlight(<%= c %>)"
 		onclick="return locklight(<%= c %>)"><%= course %></a>
                 <%= ', ' unless course == courses[key].last %>
 		<% end %>

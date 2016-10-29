@@ -100,7 +100,7 @@ class EventsController < ApplicationController
     @events = Event.with_permission(@current_user)
                    .where(:start_time => @start_date..@end_date)
                    .order(:start_time)
-    @events.to_a.delete_if { |e| 
+    @events.to_a.delete_if { |e|
       EventType.where("name IN (?)", ["Exam", "Review Session"])
                .include?(e.event_type)
     }

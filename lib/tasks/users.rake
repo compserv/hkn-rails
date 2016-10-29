@@ -27,7 +27,7 @@ namespace :users do
   desc "Maps names to email addies. Usage: names_to_emails[\"optional format string containing 'name' and/or 'email'\"]"
   task :names_to_emails, :fmt do |t,args|
     puts "ARGS: #{args.inspect}!"
-    fmt = args[:fmt] || "\"name\" = email" 
+    fmt = args[:fmt] || "\"name\" = email"
 
     puts "Gimme some names, one per line, with CTRL+D at the end:"
     stuff = {:success=>[], :multiple=>[], :none=>[]}
@@ -40,7 +40,7 @@ namespace :users do
       lname = fname.pop
       fname = fname.join ' '
       p = Person.where("(\"people\".\"first_name\"||\"people\".\"last_name\") LIKE '%#{fname}%#{lname}%'").select(:email)
-      
+
       # Put results in some bucket
       if p.length > 1 then
         stuff[:multiple] << "#{name}: #{p.collect(&:email).inspect}"

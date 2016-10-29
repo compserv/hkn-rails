@@ -16,7 +16,7 @@ module Admin::TutorAdminHelper
     hour -= 12 if hour > 12
     return hour.to_s + ampm
   end
-  
+
   def format_hour_slot(hour)
     return format_hour(hour) + "-" + format_hour(hour+1)
   end

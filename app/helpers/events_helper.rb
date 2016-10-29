@@ -14,7 +14,7 @@ module EventsHelper
 
   # width is the fieldname's width in characters
   # Pay attention to how Ruby handles escape characters here
-  def icalify(str, width=0) 
+  def icalify(str, width=0)
     str = str.sub("\r\n", '\n').sub("\n", '\n')
     ((74-width)..(str.length)).step(74) do |x|
       str.insert(x, "\n ")

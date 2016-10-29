@@ -44,7 +44,7 @@ end
 
 describe Availability do
   before(:each) do
-    @good_opts = { 
+    @good_opts = {
       :tutor => mock_model(Tutor),
       :preference_level => 1,
       :preferred_room => 1,

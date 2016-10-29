@@ -4,33 +4,33 @@ class AlumnisController < ApplicationController
   before_filter :alumni_modification_authorization_filtration, :only=> [:edit, :update, :destroy]
   before_filter :authorize_alumrel, :only => :index
   before_filter :input_helper, :only => [:update,:create,]
-  
+
   def alumni_login_check
     redirect_to(login_url, :notice=>"You must log in to edit alumni information.") if not @current_user
   end
-  
+
   def alumni_duplication_filtration
     if @current_user.alumni
-      redirect_to(@current_user.alumni, 
+      redirect_to(@current_user.alumni,
                   :notice => "You already have an alumni record. I've helpfully brought it up for you.")
     end
   end
-  
+
   def alumni_modification_authorization_filtration
     @alumni = Alumni.find_by_id(params[:id])
     unless @alumni and @current_user.alumni == @alumni or @auth['alumrel']
-      redirect_to(if @current_user.alumni then edit_alumni_url(@current_user.alumni) 
-                    else new_alumni_url end, 
+      redirect_to(if @current_user.alumni then edit_alumni_url(@current_user.alumni)
+                    else new_alumni_url end,
                   :notice => "You're not authorized to modify someone else's alumni information!")
     end
   end
-  
+
   def input_helper
     #Allow leading $, and seperators of , and _ (strip them)
     params[:alumni][:salary].gsub!(/(^\$)|,|_/,'') if params[:alumni] && params[:alumni][:salary]
   end
-  
-  def me 
+
+  def me
     if @current_user.alumni
       @alumni = @current_user.alumni
       render "show"
@@ -38,7 +38,7 @@ class AlumnisController < ApplicationController
       redirect_to new_alumni_url
     end
   end
-  
+
   # GET /alumnis
   # GET /alumnis.xml
   def index
@@ -98,7 +98,7 @@ class AlumnisController < ApplicationController
         if @alumni.mailing_list
           @alumni.subscribe
         end
- 
+
         format.html { redirect_to(@alumni, :notice => 'Alumni was successfully created.') }
         format.xml  { render :xml => @alumni, :status => :created, :location => @alumni }
       else
@@ -140,7 +140,7 @@ class AlumnisController < ApplicationController
     @alumni.destroy
 
     respond_to do |format|
-      format.html { redirect_to (if @auth['alumrel'] then alumnis_url else root_url end), 
+      format.html { redirect_to (if @auth['alumrel'] then alumnis_url else root_url end),
                       :notice=> "Alumni information for #{@alumni.person.full_name} destroyed."}
       format.xml  { head :ok }
     end

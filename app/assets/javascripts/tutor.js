@@ -18,7 +18,7 @@ $(document).ready(function() {
         box.hide();
     });
 });
-      
+
 function getObjectCss () {
 	var css = null;
 	try {

@@ -5,16 +5,16 @@ class Admin::ElectionsController < ApplicationController
 
     ELECTION_DETAILS = {
       :person   => [ #:username,        # this isn't working atm
-                    :phone_number, 
-                    :aim,          
-                    :email,        
+                    :phone_number,
+                    :aim,
+                    :email,
                     :local_address,
                     :date_of_birth ],
       :election => [:non_hkn_email,
                     :desired_username,
-                    :txt,            
-                    :sid,            
-                    :keycard,        
+                    :txt,
+                    :sid,
+                    :keycard,
                     :midnight_meeting ]
     }
 

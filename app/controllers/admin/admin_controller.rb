@@ -6,12 +6,12 @@ class Admin::AdminController < ApplicationController
 		@candidates = Candidate.approved.initiating
     #@candidates = Candidate.where('candidates.updated_at > ?', 2.years.ago)
     candidate_group = Group.find_by_name("candidates")
-    
+
     @candidates = @candidates.select { |cand| cand.person_id && Person.find_by_id(cand.person_id).groups.include?(candidate_group) }
-    cand_ids = @candidates.collect { |cand| cand.id } 
+    cand_ids = @candidates.collect { |cand| cand.id }
     @candidates = Candidate.includes(:challenges, :quiz_responses, person: :resumes, person: :groups, person: :events).order("people.first_name").find(cand_ids)
     @candidates.map! { |cand|
-      calculate_status(cand)    
+      calculate_status(cand)
     }
 
     #puts @candidates
@@ -26,7 +26,7 @@ class Admin::AdminController < ApplicationController
       return done
     end
     done["candidate"] = cand.person.full_name
-    done["events"] = cand.requirements_count 
+    done["events"] = cand.requirements_count
 
     #puts "REQ COUNT"
     #puts cand.requirements_count
@@ -51,7 +51,7 @@ class Admin::AdminController < ApplicationController
     done[:person] = cand.person
     #puts done.to_s
     return done
-  end 
+  end
 
   def grade_all
     Candidate.current.all.each do |c|

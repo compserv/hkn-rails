@@ -23,13 +23,13 @@ db into csv format.
 The command is:
 
   mysqldump -u [mysql user] -p --tz-utc -T [output directory] --fields-terminated-by=",\t" [db name]
-  
+
   Indicating:
     --tz-utc: convert all times to UTC, for consistency (Rails can convert back
               later, easily, if you want)
     -T: a directory that will be filled by a bunch of dump files
     --terminated-by: obviously this puts the CS in CSV.
-    
+
 
 Permissions:
 The dump file (the one specified for -r) should be writeable by the mysql
@@ -58,7 +58,7 @@ django id, which isn't necessarily the same as the rails id.
 Importing takes a long time. Please be patient.
  num klasses = courses * semesters
  num answers = klasses * 19 or 9 = a LOT
- 
+
 
 
 

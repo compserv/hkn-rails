@@ -37,5 +37,5 @@ describe Committeeship do
   it "should require a valid title" do
     @cship.title = 'hoser'
     @cship.should_not be_valid
-  end  
+  end
 end

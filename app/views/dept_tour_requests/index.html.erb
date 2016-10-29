@@ -1,6 +1,6 @@
 <h1>
-	There <%= if @dept_tour_requests.length == 1 then 'is' else 'are' end %> 
-	<%= @dept_tour_requests.length %> outstanding or pending department tour 
+	There <%= if @dept_tour_requests.length == 1 then 'is' else 'are' end %>
+	<%= @dept_tour_requests.length %> outstanding or pending department tour
 	request<%= if @dept_tour_requests.length == 1 then '' else 's' end%>.
 </h1>
 
@@ -39,8 +39,8 @@
 <hr />
 
 <h2>
-  <%= @dept_tour_requests_pending.count %> 
-  <%= if  @dept_tour_requests_pending.count == 1 then 'request is' else 'requests are' end %> 
+  <%= @dept_tour_requests_pending.count %>
+  <%= if  @dept_tour_requests_pending.count == 1 then 'request is' else 'requests are' end %>
   pending:
 </h2>
 

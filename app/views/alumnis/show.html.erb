@@ -35,5 +35,5 @@
   <%= @alumni.location %>
 </p>
 
-<%= link_to 'Edit', edit_alumni_path(@alumni) %> | 
+<%= link_to 'Edit', edit_alumni_path(@alumni) %> |
 <%= link_to (if @alumni.person == @current_user then  "I'm not alumni!" else "Destroy" end), @alumni, :confirm=> "Destroy this alumni information entry?", :method=>:delete %>

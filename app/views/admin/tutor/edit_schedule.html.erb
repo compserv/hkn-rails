@@ -24,10 +24,10 @@
           <% @wdays.each do |wday| %>
           <td  class="slot <%= room_name.to_s %>">
             <p><%= room_name.to_s.capitalize%></p>
-            <%= select_tag("assignments[#{room}][#{wday}][#{hour}]", 
+            <%= select_tag("assignments[#{room}][#{wday}][#{hour}]",
                   grouped_options_for_select(
-                    @slot_options[room][wday][hour][:opts], 
-                    @slot_options[room][wday][hour][:defaults]), 
+                    @slot_options[room][wday][hour][:opts],
+                    @slot_options[room][wday][hour][:defaults]),
                   :multiple => true) %>
           </td>
           <% end%>
@@ -57,7 +57,7 @@
   <tr>
     <% if type == :officer %>
       <th>Officers</th>
-    <% else %> 
+    <% else %>
       <th>Committee Members</th>
     <% end %>
     <th>Availabilities</th>

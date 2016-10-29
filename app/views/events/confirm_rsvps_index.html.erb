@@ -6,7 +6,7 @@
     <th>Date</th>
   </tr>
 
-<% @events.each do |event| %>  
+<% @events.each do |event| %>
   <tr>
     <td><%= link_to event.name, confirm_rsvps_path(event.id, :group => @group) %></td>
     <td><%= event.start_time.strftime('%a %m/%d/%Y') %></td>

@@ -1,9 +1,9 @@
 <% if @instructor %>
   <h1>
-    <%= link_to @course.course_name + (@klass.has_other_sections? ? "-#{@klass.section}" : ""), surveys_course_path(@course) %> 
-    - 
-    <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> 
-    - 
+    <%= link_to @course.course_name + (@klass.has_other_sections? ? "-#{@klass.section}" : ""), surveys_course_path(@course) %>
+    -
+    <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %>
+    -
     <%= @instructor.full_name %>
   </h1>
 <% else %>
@@ -25,11 +25,11 @@
     See all of <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %>'s data.
     </p>
 
-    <p> 
+    <p>
     <%= @instructorship.comment %>
     </p>
   <% end %>
- 
+
   <%= render :partial => 'emailhkn' %>
 </div>
 

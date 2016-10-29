@@ -1,8 +1,8 @@
 %h1 Quicklinks
 %h2 Search For an Instructor or Course
 = form_tag(coursesurveys_search_path, :method=>:get) do
-  = text_field_tag(:q, "") 
-  = submit_tag "Search", :name => nil 
+  = text_field_tag(:q, "")
+  = submit_tag "Search", :name => nil
 %h2 Browse Instructors and Courses
 %ul.plain
   %li= link_to "Electrical Engineering Courses", coursesurveys_department_path("EE")

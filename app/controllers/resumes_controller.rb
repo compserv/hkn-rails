@@ -1,7 +1,7 @@
 class ResumesController < ApplicationController
-  
+
   before_filter :authorize_indrel, :only => [:index, :resume_books, :upload_for, :include, :exclude, :status_list]
-  
+
   def new
     @resume = Resume.new
     @person = @current_user
@@ -11,7 +11,7 @@ class ResumesController < ApplicationController
     @resume = Resume.new
     @person = Person.find(params[:id])
   end
-  
+
   def create
     if params[:resume][:person].to_i != @current_user.id
       authorize(:indrel) or return
@@ -65,7 +65,7 @@ class ResumesController < ApplicationController
     end
 
   end
-  
+
   def status_list
     @officers = Person.all.find_all {|p| p.in_group?("officers")}
     @candidates = Person.all.find_all {|p| p.in_group?("candidates")}
@@ -98,7 +98,7 @@ class ResumesController < ApplicationController
     @resume.update_attribute :included, false
     render :js => 'location.reload();'
   end
-  
+
   private
 
     def resume_params

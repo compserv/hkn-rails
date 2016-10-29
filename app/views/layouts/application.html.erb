@@ -50,7 +50,7 @@
   	    <% else %>
   	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
   	      <span id="username" style="display:none;">guest</span>
-  	    <% end %>  
+  	    <% end %>
           <%= render 'notifications/notifications' if @auth['comms'] %>
   	  <ul>
   	    <li><a class="navigation_toplevel_item" id="services" href="#">Student Services</a></li>
@@ -67,7 +67,7 @@
   	    <% if @auth["comms"] %>
   	      <li><a class="navigation_toplevel_item" id="admin" href="#">Admin</a></li>
   	    <% end %>
-  	      
+  	
   	  </ul>
   	  <div class="clear"></div>
   	</div>
@@ -118,7 +118,7 @@
       		<% end %>
     	  </div>
   	  <% end %>
-    
+
       <%= yield %>
     </div>
   </div>

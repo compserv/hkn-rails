@@ -11,7 +11,7 @@
     != " &mdash; "
     = @course.name
     = "(#{pluralize(@course.units, "Unit")})"
-  
+
   - if !@course.course_guide.blank?
     :markdown
       #{@course.course_guide}

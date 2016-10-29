@@ -1,7 +1,7 @@
 class CommitteeshipsController < ApplicationController
   before_filter :authorize_rsec, :only => [:create, :destroy, :index]
   before_filter :get_person
-  
+
   def get_person
     @person = Person.find_by_id(params[:id])
   end

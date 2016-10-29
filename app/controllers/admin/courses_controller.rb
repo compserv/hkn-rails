@@ -57,7 +57,7 @@ private
       :prereqs,
       :course_guide
     )
-  end 
+  end
 
   def set_course
     unless @course = Course.lookup_by_short_name(params[:dept],params[:num])

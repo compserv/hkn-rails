@@ -27,6 +27,6 @@ bundle install
 cp vagrant/database.yml.vagrant config/database.yml
 
 # Configure PostgreSQL
-cp vagrant/pg_hba.conf /etc/postgresql/9.3/main/pg_hba.conf 
+cp vagrant/pg_hba.conf /etc/postgresql/9.3/main/pg_hba.conf
 su postgres -c "psql -c \"CREATE USER hkn_rails WITH PASSWORD 'hkn_rails' CREATEDB;\""
 /etc/init.d/postgresql restart

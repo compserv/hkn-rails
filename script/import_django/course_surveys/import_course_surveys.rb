@@ -60,7 +60,7 @@ class Array
     def self.from_csv(file=nil, fields=nil, options={})
         raise ArgumentError if file.nil? or fields.nil?
         options = {:remove_slashes => true}.update(options)
-        
+
         IO.readlines(file).collect do |line|
             h = {}
             # Ruby < 1.9 doesn't support negative lookbehinds.. wtf.
@@ -161,10 +161,10 @@ def import!(options)
     rescue Exception => e
         puts "*"*80,"Import process interrupted!\n  (because #{e.message})\n\n"
     end
-    
+
     dt = Time.now-start_time
     puts "Processing time: #{dt.to_i/3600}h#{(dt.to_i%3600)/60}m#{dt.to_i%60}s"
-    
+
     # Here's the plan:
     # Coursesurvey: Represents an administration of a course survey. Has nothing
     #               to do with the survey data.
@@ -201,7 +201,7 @@ def load_cache_hash(filename)
                 yield old_id.to_i, new_id.to_i
                 num_entries -= 1
             end
-            
+
             raise "Incomplete cache file #{filename}, expected #{num_entries} more. Only some data was loaded.\n" unless num_entries == 0
         end
         puts "Done.\n\n"
@@ -219,7 +219,7 @@ def write_cache_hash(filename, h)
     #   entries [#]
     #   [old_id] [new_id]
     #   ...
-    
+
     begin
         File.open(filename, "w") do |f|
             puts "Writing cache file #{filename}... "
@@ -227,7 +227,7 @@ def write_cache_hash(filename, h)
             h.each_pair do |old_id, new_i|
                 f.write("#{old_id} #{new_i.id}\n")
             end # h.each_pair
-            
+
         end # IO.open
         puts "Done.\n"
         return true
@@ -246,21 +246,21 @@ def load_instructors
     return false if @options[:skip].include?(:instructors)
     instructor_map_cache_file = "instructors.cache"
     role_map_cache_file       = "roles.cache"
-    
+
     puts "Loading instructors.\n"
-    
+
     # Cache mappings
     return if load_cache_hash(instructor_map_cache_file) do |old_id, new_id|
         @instructors[old_id] = Instructor.find(new_id)
     end
-    
+
     puts "Rebuilding.\n"
-    
+
     instructors = Array.from_csv(dumpfilename("instructor"), @@instructor_fields, {:remove_slashes=>true} )
     instructors.each do |i|
         # Convert to booleans.
         [:private, :current].each { |k| i[k]=i[k].to_i.to_bool }
-        
+
         # Convert to ints
         [:id, :departmentid, :divisionid].each {|k| i[k]=i[k].to_i}
 
@@ -284,17 +284,17 @@ def load_instructors
         @roles[i[:id].to_i] = (i[:role] =~ /Professor/i) ? :professor : :ta
 
         raise "ERROR: load_instructors: Failed to save instructor:\n\n\t#{new_i.inspect}\n\n" unless new_i.save
-        
+
         puts "load_instructors: Created/updated #{new_i.first_name} #{new_i.last_name} (new id #{new_i.id}, role #{i[:role]}, ta #{@roles[i[:id]] == :ta})\n" if @options[:verbose]
-        
+
         # Save reference to newly created object, mapped by old id
         @instructors[i[:id]] = new_i
     end # instructors.each
-    
+
     # Write to cache map
     write_cache_hash(instructor_map_cache_file, @instructors)
     #write_cache_hash(role_map_cache_file, @roles)
-    
+
     puts "Done loading instructors.\n\n"
 end # load_instructors
 
@@ -309,32 +309,32 @@ def load_questions
         keymap = {"tep" => :prof_eff, "teta" => :ta_eff, "ww" => :worthwhile}
         keymap.default = :none
         q[:keyword] = keymap[q[:keyword]]
-        
+
         # Cast to integer
         q[:ratingmax] = q[:ratingmax].to_i
-        
+
         # Cast to bool
         [:important, :inverted].each do |attrib|
             q[attrib] = q[attrib].to_i.to_bool
         end
-        
+
         # Map old attribs => new attribs
         {:text=>:text, :important=>:important, :inverted=>:inverted, :ratingmax=>:max}.each_pair do |old_attrib, new_attrib|
             new_q[new_attrib] = q[old_attrib]
         end
-        
+
         # Special case: have to use keyword= method; new_q[:keyword]= doesn't work
         new_q.keyword = q[:keyword]
-        
+
         # Integerify
         q[:id] = q[:id].to_i
-        
+
         unless new_q.save
             puts "ERROR: failed to save question\n\n\t#{new_q.inspect}\n\n"
             next
         end
         @questions[q[:id]] = new_q
-        
+
         puts "Created/updated question #{new_q.text}" if @options[:verbose]
     end # questions.each
     puts "Done loading questions.\n\n"
@@ -343,16 +343,16 @@ end # load_questions
 def load_courses
     return false if @options[:skip].include?(:courses)
     puts "Loading courses."
-    
+
     courses = Array.from_csv(dumpfilename("course"), @@course_fields)
     courses.each do |c|
         # Integerize some attribs
         [:id, :departmentid, :units].each do |key|
             c[key] = c[key].to_i
         end
-        
+
         (prefix, course_number, suffix) = c[:coursenumber].scan(/^([a-zA-Z]*)([0-9]*)([a-zA-Z]*)$/).first
-        
+
         # lol
         new_c = Course.find_or_create_by_department_id_and_prefix_and_course_number_and_suffix(@departments[c[:departmentid]].id, prefix, course_number, suffix)
 
@@ -360,75 +360,75 @@ def load_courses
 	c[:units] = nil if c[:units] <= 0
 	c[:prerequisites] = nil if c[:prerequisites].eql?('N')
 	c[:description] = nil if c[:description].eql?('N')
-        
+
         # Map attribs
         {:coursename => :name, :description => :description, :units => :units, :prerequisites => :prereqs}.each_pair do |old_attrib, new_attrib|
             new_c[new_attrib] = c[old_attrib]
         end
-        
+
         # Special cases
-        
+
         # Some imported courses don't have names b/c they're not offered anymore.
         # Courses have to have names to be saved, so we do a minor hack.
         new_c[:name] = "[ INVALID COURSE ]" if new_c[:name].blank?
-        
-        
-        
+
+
+
         # TODO: is this right?
         #       EE20N:
         #       prefix = something that's not EE.. i haven't seen these before
         #       course_number = 20
         #       suffix = N
         # TODO: what is new attrib 'level'?
-        
+
         unless new_c.save
             raise "Couldn't save course #{new_c.inspect} because #{new_c.errors}!"
         end
-        
+
         puts "Loaded course #{new_c.course_abbr}\n" if @options[:verbose]
-        
-        @courses[c[:id]] = new_c        
+
+        @courses[c[:id]] = new_c
     end # courses.each
-    
+
     puts "Done loading courses.\n\n"
 end
 
 def load_seasons
     return false if @options[:skip].include?(:seasons)
     puts "Loading seasons."
-    
+
     seasons = Array.from_csv(dumpfilename("season"), @@season_fields)
     seasons.each do |s|
         s[:id] = s[:id].to_i
         @seasons[s[:id]] = s
         puts "Loaded season #{s[:name]}." if @options[:verbose]
-        
+
         # There's no new Season/Semester model (it's stored as a string in klass).
-        
+
     end
-    
+
     puts "Done loading seasons.\n\n"
 end
 
 def load_departments
     return false if @options[:skip].include?(:departments)
     puts "Loading departments."
-    
+
     departments = Array.from_csv(dumpfilename("department"), @@department_fields)
     departments.each do |d|
         d[:id] = d[:id].to_i
-        
+
         dept = Department.find_or_create_by_name(d[:name])
         dept.abbr = d[:abbrev]
         unless dept.save
             puts "ERROR: Failed to load department #{dept.inspect}\n"
         end
-        
+
         @departments[d[:id]] = dept
-        
+
         puts "Loaded department #{d[:name]} (#{d[:abbrev]})." if @options[:verbose]
     end # departments.each
-    
+
     puts "Done loading departments.\n\n"
 end
 
@@ -442,7 +442,7 @@ def load_klasses
     return if load_cache_hash(klasses_map_cache_file) do |old_id, new_id|
         @klasses[old_id] = Klass.find(new_id)
     end
-    
+
     klasses = Array.from_csv(dumpfilename("klass"), @@klass_fields)
     klasses.each do |k|
         # Integerize
@@ -480,15 +480,15 @@ def load_klasses
         raise "ERROR: couldn't save klass #{new_k.inspect}" unless new_k.save(:validate => false)
 
         # TODO: time? location? num_students? This info isn't available for import.
-        
+
         puts "Loaded klass #{new_k.course.course_abbr} #{@seasons[k[:seasonid]][:name]} #{k[:year]}\n" if @options[:verbose]
 
         @klasses[k[:id]] = new_k
     end # klasses.each
-    
+
     # Write to cache map
     write_cache_hash(klasses_map_cache_file, @klasses)
-    
+
     puts "Done loading klasses.\n\n"
 end
 
@@ -496,23 +496,23 @@ def load_instructorships
     return false if @options[:skip].include?(:instructors_klasses)
 
     puts "Loading instructor-klass relationships."
-    
+
     instructorships = Array.from_csv(dumpfilename("instructor_klass"), @@instructorship_fields)
 
     iship_sqls = []
-    
-    instructorships.each_index do |index|      
+
+    instructorships.each_index do |index|
         i = instructorships[index]
         i[:klassid] = @klasses[i[:klassid].to_i].id
         old_iid = i[:instructorid].to_i
         i[:instructorid] = @instructors[i[:instructorid].to_i].id
-        
+
         raise "Couldn't find klass #{i[:klassid]}!" if (the_klass=Klass.find(i[:klassid])).nil?
         raise "Couldn't find instructor #{i[:instructorid]}!" if (the_instructor=Instructor.find(i[:instructorid])).nil?
-        
+
 #        group = the_instructor.ta? ? :tas : :instructors
 #        groupids = group.to_s.chop.concat('_ids').to_sym
-        
+
         ta = nil
         #if existing = Instructorship.find(:first, :conditions => {:klass_id => the_klass.id, :instructor_id => the_instructor.id})
         iship = Instructorship.find_or_initialize_by_klass_id_and_instructor_id(the_klass.id, the_instructor.id)
@@ -531,7 +531,7 @@ def load_instructorships
 #        end
 
         iship.save(:validate=>false)
-        
+
         puts "Created/updated instructorship #{index}/#{instructorships.length} of #{the_instructor.full_name} (ta #{iship.ta.to_s}) for #{the_klass.to_s}" if @options[:verbose]
     end
 
@@ -539,7 +539,7 @@ def load_instructorships
         ta = ActiveRecord::ConnectionAdapters::Column.value_to_boolean(ta)
         ActiveRecord::Base.connection.execute("INSERT INTO instructorships (klass_id, instructor_id, ta) VALUES (#{[klass_id, instructor_id, ta].join(', ')});")
     end
-    
+
     puts "Done loading instructor-klass.\n\n"
 end
 
@@ -549,7 +549,7 @@ def load_answers
     puts "Loading answers."
 
     answers_map_cache_file = "answers.cache"
-    
+
     analyze_counter = 0
 
     buffer = []
@@ -564,18 +564,18 @@ def load_answers
     answers = Array.from_csv(dumpfilename("answer"), @@answer_fields)
     answers.each_index do |index|
         a = answers[index]
-        
+
         # Integerize
         [:id, :klassid, :questionid, :orderinsurvey, :instructorid].each do |attrib|
             a[attrib] = a[attrib].to_i
         end
-        
+
         # Floatize
         [:mean, :median, :deviation].each do |attrib|
             a[attrib] = a[attrib].to_f
         end
-        
-        
+
+
         # Find existing answer, or do weird stuff to create a new one
         new_klass_id, new_instructor_id, new_question_id = @klasses[a[:klassid]].id, @instructors[a[:instructorid]].id, @questions[a[:questionid]].id
 
@@ -584,7 +584,7 @@ def load_answers
 
         sa = SurveyAnswer.find(:first, :conditions => {:instructorship_id => iship.id, :survey_question_id => new_question_id})
         next if sa
-       
+
         a[:frequencies].gsub!("'", "''")
         a_sql = [iship.id, new_question_id, a[:mean], a[:deviation], a[:median], a[:orderinsurvey], a[:frequencies]]
 
@@ -596,18 +596,18 @@ def load_answers
         buffer << "INSERT INTO survey_answers (instructorship_id, survey_question_id, mean, deviation, median, \"order\", frequencies) VALUES (#{a_sql.join(', ')});"
 
         if analyze_counter % 300 == 0 then
-            ActiveRecord::Base.connection.execute(buffer.join) 
+            ActiveRecord::Base.connection.execute(buffer.join)
             buffer = []
         end
 
         puts "Created/updated answer (#{index}/#{answers.length}) ##{a[:orderinsurvey]} for #{iship.instructor_id} klass #{iship.klass_id}" if @options[:verbose]
     end # answers.each
-    ActiveRecord::Base.connection.execute(buffer.join) 
+    ActiveRecord::Base.connection.execute(buffer.join)
 
     # Write to cache map
 #    write_cache_hash(answers_map_cache_file, @answers)
 
-    puts "Done loading answers.\n\n"    
+    puts "Done loading answers.\n\n"
 end
 
 end # class CourseSurveyImporter
@@ -625,7 +625,7 @@ parser = OptionParser.new do |opts|
     {:verbose => false, :clear => false, :skip => []}.each_pair do |option, value|
         @csi.options[option] = value
     end
-    
+
     opts.on('-v', '--verbose', 'Output more detailed information (warning: spammy)') do
         @csi.options[:verbose] = true
     end

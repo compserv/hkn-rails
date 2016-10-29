@@ -6,11 +6,11 @@
 .ratingbar .subbar { height: 100%; display: block; border-radius: 2px; -webkit-border-radius: 2px; -moz-border-radius: 2px;}
 .histogram th, .histogram td { padding: 0 4px; }
 .frequencybar { width: 200px; height: 20px; display: inline-block; }
-.frequencybar .subbar { 
-  height: 100%; 
-  display: block; 
-  border: 1px solid #222288; 
-  background-color: #FFDD44; 
+.frequencybar .subbar {
+  height: 100%;
+  display: block;
+  border: 1px solid #222288;
+  background-color: #FFDD44;
   background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #FFDD44), color-stop(1, #FFEE66));
   background-image: -moz-linear-gradient( center left, #FFDD44 0%, #EEFF33 100% );
 }

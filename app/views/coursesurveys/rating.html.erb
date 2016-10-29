@@ -14,27 +14,27 @@
 
 <div id="rating-info" class="infobox">
   <div class="info-row">
-    <span class="info-label">Number of Respondents</span>   
+    <span class="info-label">Number of Respondents</span>
     <div class="info-item"><%= @total_responses %></div>
   </div>
   <div class="info-row">
-    <span class="info-label">Mean</span>                    
+    <span class="info-label">Mean</span>
     <div class="info-item"><%= sprintf "%.1f", @answer.mean %></div>
   </div>
   <div class="info-row">
-    <span class="info-label">Standard Deviation</span>      
+    <span class="info-label">Standard Deviation</span>
     <div class="info-item"><%= sprintf "%.1f", @answer.deviation %></div>
   </div>
   <div class="info-row">
-    <span class="info-label">Median</span>                  
+    <span class="info-label">Median</span>
     <div class="info-item"><%= sprintf "%.1f", @answer.median %></div>
   </div>
   <div class="info-row">
-    <span class="info-label">95% Confidence Interval</span> 
+    <span class="info-label">95% Confidence Interval</span>
     <div class="info-item"><%= sprintf "%.1f", @answer.mean %> &plusmn; <%= sprintf "%.1f", @conf_intrvl %></div>
   </div>
   <div class="info-row">
-    <span class="info-label">Max</span> 
+    <span class="info-label">Max</span>
     <div class="info-item"><%= @answer.survey_question.max.to_f %></div>
   </div>
    <div class="info-row">

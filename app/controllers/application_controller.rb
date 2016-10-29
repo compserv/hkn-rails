@@ -3,10 +3,6 @@ class ApplicationController < ActionController::Base
   before_filter :get_current_user, :merge_messages, :check_authorizations, :set_view_variables
   layout 'application'
 
-  #include ::SslRequirement
-  #ssl_allowed :all
-  #ssl_required :all
-
   attr_reader :current_user, :real_current_user
 
   def ssl_required?
@@ -36,7 +32,7 @@ class ApplicationController < ActionController::Base
       else
         super
     end
-  end  
+  end
 
   def current_user_session
     @current_user_session ||= UserSession.find
@@ -49,19 +45,19 @@ class ApplicationController < ActionController::Base
   def auth=(auth)
     @auth = auth
   end
-  
+
   # Needs to be accessible everywhere
   # this is crap, we'll probably end up duplicating this many times for different req types
   # redo with some kind of fancy schmancy reflection automagic?
   def num_deprel_requests
     DeptTourRequest.all.count
   end
-  
+
   #Custom error pages
   def render_optional_error_file(status_code)
-    respond_to do |type| 
-        type.html { render :template => "static/error", :layout => 'application'} 
-        type.all  { render :nothing => true } 
+    respond_to do |type|
+        type.html { render :template => "static/error", :layout => 'application'}
+        type.all  { render :nothing => true }
       end
   end
 
@@ -95,7 +91,7 @@ class ApplicationController < ActionController::Base
   # Private Methods
   #-----------------------------------------------------------------------
   private
-  
+
   def get_current_user
     if UserSession.find
       @real_current_user = UserSession.find.person
@@ -178,5 +174,5 @@ class ApplicationController < ActionController::Base
     send(:redirect_to, request.referer || path, *args)
   end
 
-  
+
 end

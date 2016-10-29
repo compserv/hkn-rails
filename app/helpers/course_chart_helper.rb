@@ -3,12 +3,12 @@ module CourseChartHelper
     cs_department = Department.find_by_nice_abbr("CS")
     ee_department = Department.find_by_nice_abbr("EE")
     courses = CourseChart.where(:show => true)
-    link_function = proc {|dept, num| courseguide_show_path(dept, num)} 
+    link_function = proc {|dept, num| courseguide_show_path(dept, num)}
     case chart_type
     when "course_guide"
-      link_function = proc {|dept, num| courseguide_show_path(dept, num)} 
+      link_function = proc {|dept, num| courseguide_show_path(dept, num)}
     when "course_survey"
-      link_function = proc {|dept, num| coursesurveys_course_path(dept, num)} 
+      link_function = proc {|dept, num| coursesurveys_course_path(dept, num)}
     else
       link_function = proc { Rails.application.routes.url_helpers.root_path }
     end

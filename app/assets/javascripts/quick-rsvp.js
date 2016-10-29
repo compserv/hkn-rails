@@ -63,7 +63,7 @@ $(document).ready(function() {
             enclosing_event.find(".rsvp_message").html($(data).find("#messages"));
             enclosing_event.find(".quick-rsvp").remove();
             enclosing_event.find(".rsvp_link").html('[<a data-rsvp_id="'+ $(data).find("#edit_rsvp").data('rsvp_id') +'" href="' + $(data).find("#edit_rsvp").attr("href") + '">RSVP\'ed</a>]');
-            
+
         });
         return false;
     });

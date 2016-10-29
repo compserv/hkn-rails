@@ -5,7 +5,7 @@ class AddContactInfoToAlumni < ActiveRecord::Migration
     add_column :alumnis, :suggestions, :text
     add_column :alumnis, :mailing_list, :boolean
   end
-  
+
   def down
     remove_column :alumnis, :perm_email
     remove_column :alumnis, :location

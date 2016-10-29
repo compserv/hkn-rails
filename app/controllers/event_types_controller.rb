@@ -1,5 +1,5 @@
 class EventTypesController < ApplicationController
-  before_filter do 
+  before_filter do
     authorize ["officers", "cmembers"]
   end
 

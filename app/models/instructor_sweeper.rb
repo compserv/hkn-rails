@@ -7,6 +7,6 @@ class InstructorSweeper < ActionController::Caching::Sweeper
 
   private
   def expire_cache_for(instructor)
-    expire_fragment instructor_cache_path(instructor) 
+    expire_fragment instructor_cache_path(instructor)
   end
 end

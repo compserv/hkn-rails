@@ -1,6 +1,6 @@
 namespace :tutoring do
   namespace :availabilities do
-    AvailabilityFields = [:preferred_room, :preference_level, :time, :room_strength] 
+    AvailabilityFields = [:preferred_room, :preference_level, :time, :room_strength]
     CoursePrefFields   = [:level]
     FieldSeparator = ';'
 
@@ -17,7 +17,7 @@ namespace :tutoring do
 
       Tutor.all.each do |tooter|
         next if tooter.availabilities.empty?
-        
+
         tHash = {}
 
         tHash[:availabilities] = tooter.availabilities.collect do |avail|
@@ -27,10 +27,10 @@ namespace :tutoring do
         end
 
         tHash[:courseprefs] = tooter.course_preferences.collect do |cp|
-          {:level => cp.level, :coursename => "#{cp.course.dept_abbr} #{cp.course.full_course_number}"} 
+          {:level => cp.level, :coursename => "#{cp.course.dept_abbr} #{cp.course.full_course_number}"}
         end
 
-        data[tooter.person.username] = tHash 
+        data[tooter.person.username] = tHash
       end
 
       File.open(filename, "w") do |f|
@@ -52,7 +52,7 @@ namespace :tutoring do
       File.open(args[:filename], "r") do |f|
         y = YAML::load(f)
       end
-      
+
       puts "Found #{y.length} tutors."
 
       y.each_pair do |username, data|
@@ -61,7 +61,7 @@ namespace :tutoring do
           puts "WARNING: Couldn't find user #{username}"
           next
         end
-        
+
         t = p.get_tutor
         puts "#{username}:", " #{data[:availabilities].length} availabilities"
 
@@ -70,7 +70,7 @@ namespace :tutoring do
 
           if Availability.exists?(:tutor_id => t.id, :time => avail[:time]) then
             puts "  Skipping existing #{avail[:time].localtime.strftime('%a %I%P')}"
-            next 
+            next
           end
 
           puts "  #{avail[:time].localtime.strftime('%a %I%P')}"

@@ -2,8 +2,6 @@ class UserSessionsController < ApplicationController
   #before_filter :require_no_user, :only => [:new, :create]
   #before_filter :require_user, :only => :destroy
 
-  #ssl_required :new, :create, :destroy
-
   private
   def use_recaptcha?
     session[:login_attempts] && session[:login_attempts] > 3
@@ -31,7 +29,7 @@ class UserSessionsController < ApplicationController
     # 1) Successful login
     # 2) Successful credentials but account not approved
     # 3) Failed login
-    
+
     if user and (use_recaptcha? ? verify_recaptcha(:model=>@user_session) : true) && @user_session.save
       flash[:notice] = "Login successful!"
       session[:login_attempts] = 0

@@ -5,12 +5,12 @@
       $("#submit_app").click(function(e){
         e.preventDefault();
         prefs = $($("#sortable").toArray()[0]).children();
-        
+
         prefs_string = ""
         for(var i = 0; i < prefs.length; i++){
           prefs_string += $($(prefs[i]).children()[1]).html() + " ";
         };
-        
+
         $("#committee_prefs").attr("value", prefs_string);
         $("form").submit();
       });
@@ -24,7 +24,7 @@
       list-style: none;
       text-indent: 5px;
     }
-    
+
     li.ui-state-default{
       border-radius: 5px;
       -moz-border-radius: 5px;
@@ -38,7 +38,7 @@
       color: white;
       cursor:pointer;
     }
-    
+
     .ui-state-default .ui-icon{
       display: inline-block;
       /*background-image: url("/images/icons/move.png");*/
@@ -51,18 +51,18 @@
 
 <h1>Candidate Application</h1>
 
-<%= form_tag "/cand/submit_app", multipart: true do %> 
+<%= form_tag "/cand/submit_app", multipart: true do %>
   <div style="float:left; width:45%;">
     <div class="field">
       <%= label_tag "local_address", "Local (Berkeley) Address" %>
       <%= text_field_tag(:local_address, @app_details[:local_address]) %>
     </div>
-  
+
     <div class="field">
       <%= label_tag "perm_address", "Permanent Address" %>
       <%= text_field_tag(:perm_address, @app_details[:perm_address]) %>
     </div>
-  
+
     <div class="field">
       <%= label_tag "phone", "Phone" %>
       <%= text_field_tag(:phone, @app_details[:phone]) %>
@@ -91,7 +91,7 @@
       <%= label_tag "release", "Release information" %>
       <%= check_box_tag(:release, @app_details[:release]) %>
     </div>
-    
+
     <%= label_tag "suggestion", "What activities would you like to see HKN do this semester?" %><br/>
     <%= text_area_tag(:suggestion, @app_details[:suggestion]) %><br/>
 
@@ -113,8 +113,8 @@
     </ul>
   </div>
   <div class="clear"></div>
-  
-  
-  
+
+
+
 <%= submit_tag "Save and Submit Application", :id=>"submit_app" %>
 <% end %>

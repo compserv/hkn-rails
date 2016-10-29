@@ -5,7 +5,7 @@
 
   <%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
   <%= javascript_include_tag "jquery-autocomplete.min" %>
- 
+
   <%= stylesheet_link_tag "jquery-autocomplete" %>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -16,7 +16,7 @@
           for(var item in data){
             d[item] = {text: data[item]["text"], url: data[item]["url"]}
           }
-        
+
           $("#course_query").autocomplete(data, {
             formatItem: function(item) {
               return item.text;
@@ -24,7 +24,7 @@
           }).result(function(event, item) {
             $("#course_id").val(item.url);
           });
-          
+
         }
       });
 
@@ -37,7 +37,7 @@
           $.ajax({
             type: 'DELETE',
             url: '/course_preferences/' + course_pref_id,
-            success: function(data) { 
+            success: function(data) {
               $(".course[pref_id="+course_pref_id+"]").remove();
 
               notice = $(".message")
@@ -57,12 +57,12 @@
       $("a.delete_course").click(deleteCourse);
 
 
-            
-      
+
+
       $("#form").submit(function(){
         course_id = $("#course_id").val();
         preference_level = $("input[name=preference_level]:checked").val();
-        
+
         $.post("/admin/tutor/add_course",
           { course: course_id,
             level: preference_level,
@@ -84,22 +84,22 @@
                   course_pref_id+'" style="float: right;" >x</a>').click(deleteCourse));
 
               ch.draggable({ revert: true});
-              
+
               $(".courses#current .drop-target").append(ch);
               $("#messages").hide("slow");
               $("#add_course_errors").html("");
 
-              
+
             } else{
               $("#add_course_errors").html(data[1]);
             }
-            
+
           }
-          
+
         );
        return false;
       });
-      
+
     });
   </script>
 
@@ -108,13 +108,13 @@
           width: 30%;
           float: left;
       }
-  
+
       .courses .drop-target {
           min-height: 100px;
           width: 90%;
           display: inline-block;
       }
-  
+
       .course {
           margin: 2px;
           background: #EEE;
@@ -126,12 +126,12 @@
           position: relative;
           float: left;
           width: 7em;
-  
+
       .course * {
           display: inline;
       }
-  
-  
+
+
   </style>
 <% end %>
 
@@ -188,7 +188,7 @@
                  }
           );
       }
-  
+
       // drag and drop ui javascript
       $(function() {
           $(".drop-target").droppable({
@@ -201,7 +201,7 @@
                           'style');
               }
           });
-  
+
           $(".course").draggable({
               revert: true
           });

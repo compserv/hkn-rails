@@ -16,7 +16,7 @@ var generateChart = function(info, loc, department_id) {
 
     var addClass = function(course) {
         if(type_ids.indexOf(course.type_id) < 0) {
-            type_ids.push(course.type_id); 
+            type_ids.push(course.type_id);
         }
         max_depth = course.depth > max_depth ? course.depth : max_depth;
         if(course.bias_x === undefined || course.bias_x === null) {
@@ -51,7 +51,7 @@ var generateChart = function(info, loc, department_id) {
     if(department_id == 2) {
         course_data = info.cs_courses;
     } else if (department_id == 1) {
-        course_data = info.ee_courses; 
+        course_data = info.ee_courses;
     }
     for(var i = 0; i < course_data.length; i++) {
         addClass(course_data[i]);
@@ -61,7 +61,7 @@ var generateChart = function(info, loc, department_id) {
     nodes.forEach(function(node) {
         node.prereqs.forEach(function(prereq) {
             if(!(classHash[prereq.prereq_id] === undefined)) {
-            prereqs.push({source: classHash[prereq.prereq_id], target: node, recommended: prereq.is_recommended}); 
+            prereqs.push({source: classHash[prereq.prereq_id], target: node, recommended: prereq.is_recommended});
             }
         });
     });
@@ -69,7 +69,7 @@ var generateChart = function(info, loc, department_id) {
     // generate class type information
     type_ids.forEach(function(type_id) {
         types[type_id] = info.types.filter(function(type) {
-            return type.id == type_id; 
+            return type.id == type_id;
         })[0];
     });
 
@@ -105,7 +105,7 @@ var generateChart = function(info, loc, department_id) {
         circle.attr("class", function(course) {
             if(course.type == d.id) { // TODO: make sure this is right
                 return "course highlight";
-            } 
+            }
         });
     };
 
@@ -114,7 +114,7 @@ var generateChart = function(info, loc, department_id) {
         var prereqs = [];
         var post = []; // classes that have d as a prereq
         var traverse = function(node) {
-            prereqs.push(node.id); 
+            prereqs.push(node.id);
             node.prereqs.forEach(function(p) {
                 traverse(classHash[p.prereq_id]);
             });
@@ -123,8 +123,8 @@ var generateChart = function(info, loc, department_id) {
         nodes.forEach(function(node) {
             node.prereqs.forEach(function(prereq) {
                 if(prereq.prereq_id == d.id) {
-                    post.push(node.id); 
-                } 
+                    post.push(node.id);
+                }
             });
         });
         edges.attr("class", function(prereq) {
@@ -151,7 +151,7 @@ var generateChart = function(info, loc, department_id) {
         circle.attr("class", function(prereq) {
             var base= "course";
             if(prereqs.indexOf(prereq.id) > -1 || post.indexOf(prereq.id) > -1) {
-                base += " highlight";    
+                base += " highlight";
             }
             if(prereqs.indexOf(prereq.id) > -1 || post.indexOf(prereq.id) > -1) {
                 base += " prereq";
@@ -276,7 +276,7 @@ var generateChart = function(info, loc, department_id) {
         var g = d3.select(this);
         g.append("text")
         .attr("class", "legendText")
-        .attr("x", w-80) 
+        .attr("x", w-80)
         .attr("y", h-i*25)
         .attr("text-anchor", "end")
         .text(d.name);
@@ -324,7 +324,7 @@ var generateChart = function(info, loc, department_id) {
             o.y += (targety-o.y)*k;
             o.x += (targetx-o.x)*k;
             circle.attr("cx", function(d) {
-                return d.x; 
+                return d.x;
             })
             .attr("cy", function(d) {
                 return d.y;
@@ -372,11 +372,11 @@ var generateChart = function(info, loc, department_id) {
     var done = false;
     force.on("end", function() {
         done = true;
-        force.stop(); 
+        force.stop();
     });
     force.on("start", function() {
         while(!done) {
-        force.tick(); 
+        force.tick();
         }
     });
     force.start();

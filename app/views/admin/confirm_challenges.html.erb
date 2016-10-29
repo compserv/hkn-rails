@@ -5,7 +5,7 @@
   <ul class="plain">
   <% for challenge in @pending_challenges %>
     <li>
-      <%= link_to "[Confirm]", "../confirm_challenge/" + challenge.id.to_s %> 
+      <%= link_to "[Confirm]", "../confirm_challenge/" + challenge.id.to_s %>
       <%= link_to "[Reject]", "../reject_challenge/" + challenge.id.to_s %>
       <span class="challenge_name"><%= challenge.name %></span> (requested by <%= challenge.candidate.person.full_name %>)
       <% if challenge.description != nil and challenge.description != "" %>
@@ -15,11 +15,11 @@
   <% end %>
   </ul>
 <% else %>
-  No challenges requested from you right now. 
+  No challenges requested from you right now.
 <% end %>
 
 <h2>Accepted Challenges</h2>
-<% if @acc_challenges.length > 0 %>  
+<% if @acc_challenges.length > 0 %>
   <ul class="plain">
   <% for challenge in @acc_challenges %>
     <li>

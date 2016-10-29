@@ -3,7 +3,7 @@
     $(document).ready(function(){
       $("#main .section").hide();
       $(".current-section").show();
-      
+
       $(".section-header").click(function(){
         $(".current-header").removeClass("current-header");
         $(this).addClass("current-header");
@@ -33,11 +33,11 @@
   	<%= render "tutor/tutoring_sidebar" %>
     </div>
   </div>
-  
+
   <% cache do %>
   <div id="main">
 
-    
+
       <div id="what" class="section-header current-header">
         <div class="text"><h1>What is HKN?</h1></div>
       </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
       </div>
-    
+
       <div id="student-services" class="section-header">
         <div class="text"><h1>Student Services</h1></div>
       </div>
@@ -59,7 +59,7 @@
           <div>
             <h2>Tutoring</h2>
             Students who need advice or tutoring in EE and CS courses are encouraged to drop by for free assistance. Officers hold <a href="/tutor/">office hours</a> from 11am to 5pm every weekday.
-    
+
             <h2>Exam Preparation</h2>
             HKN provides a database of <%= link_to "past exams", exams_path %> and review problems to prepare students for midterms and finals. In addition, look out for exam <a href="/tutor/calendar">review sessions</a> for lower-division courses.
 
@@ -79,7 +79,7 @@
           </div>
         </div>
       </div>
-    
+
       <div id="membership" class="section-header">
         <div class="text"><h1>Membership</h1></div>
       </div>

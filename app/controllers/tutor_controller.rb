@@ -1,7 +1,7 @@
 class TutorController < ApplicationController
 
   #caches_action :schedule, :layout => false
-    
+
   def schedule
     prop = Property.get_or_create
     @tutoring_enabled = prop.tutoring_enabled
@@ -23,11 +23,11 @@ class TutorController < ApplicationController
         .where(start_time: @start_date..@end_date)
         .order(:start_time)
 
-    @events = @events.select { |e| 
+    @events = @events.select { |e|
         EventType.where("name IN (?)", ["Exam", "Review Session"])
                  .include?(e.event_type)
     }
-    # Really convoluted way of getting the first Sunday of the calendar, 
+    # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
     @calendar_start_date = (@start_date.wday == 0) ? @start_date : @start_date.next_week.ago(8.days)
     # Ditto for last Saturday

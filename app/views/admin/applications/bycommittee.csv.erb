@@ -1,10 +1,10 @@
-<% 
+<%
 csv_string = CSV.generate do |csv|
   csv << ["Committee", "People"]
   @mapping.each do |comm, cands|
     csv << [comm || 'None'] +
            cands.collect(&:person).compact.collect(&:full_name)
   end
-end 
+end
 %>
 <%= csv_string %>

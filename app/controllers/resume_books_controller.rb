@@ -1,9 +1,9 @@
 class ResumeBooksController < ApplicationController
-  
+
   before_filter :authorize_indrel, :except => [:download_pdf]
 
   before_filter :authorize_download, :only => [:download_pdf, :download_iso]
- 
+
   def new
     @resume_book = ResumeBook.new
   end
@@ -27,7 +27,7 @@ class ResumeBooksController < ApplicationController
     indrel_officers = indrel_officer_names
     description = generate_description(resumes, cutoff_date, indrel_officers)
     temp_pdf_file = generate_pdf(resumes, cutoff_date, indrel_officers)
-    temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers, 
+    temp_iso_file = generate_iso(resumes, cutoff_date, indrel_officers,
                                  temp_pdf_file)
     res_book_directory = "#{@resume_book_root}/#{@hash}_resume_book"
     raise "Failed to make book dir" unless system "mkdir #{res_book_directory}"
@@ -46,14 +46,14 @@ class ResumeBooksController < ApplicationController
 
   def index
   end
-  
+
   def show
     @resume_book = ResumeBook.find(params[:id])
     @companies = Company.ordered
 
     @company = Company.find(params[:company_id]) if params[:company_id]
   end
-  
+
   # Missing gives the emails of officers and current candidates who are missing
   # a resume book so indrel can bug them.
   def missing
@@ -79,13 +79,13 @@ class ResumeBooksController < ApplicationController
 
   # Copied from richardxia's code in the resume file
   # I'm not sure if this is secure
-  
+
   # Shows resumebook (PDF, not model data) after authorization
   def download_pdf
     @resume_book = ResumeBook.find(params[:id])
     send_file @resume_book.pdf_file, :type => 'application/pdf', :x_sendfile => true
   end
-  
+
   # Shows resumebook (ISO) after authorization
   def download_iso
     @resume_book = ResumeBook.find(params[:id])
@@ -95,14 +95,14 @@ class ResumeBooksController < ApplicationController
 private
 
   def authorize_download
-    unless (Company.find_by_single_access_token(params[:access_key]) && 
+    unless (Company.find_by_single_access_token(params[:access_key]) &&
       CompanySession.find(params[:access_key])) ||
       (@current_user && @current_user.in_groups?(['superusers', 'indrel']))
       redirect_to :root, :notice => "Insufficient privileges to access this" \
         "page."
     end
   end
-      
+
 
   def generate_pdf(resumes, cutoff_date, indrel_officers)
     # @scratch_dir is the scratch work directory
@@ -122,7 +122,7 @@ private
     end
     concatenate_pdfs(res_book_pdfs, "#{@scratch_dir}/HKNResumeBook.pdf")
   end
-  
+
   # gets the file erb's it using do_erb and returns the location
   # of the result (which is put in the @scratch_dir directory)
   def process_tex_template(input_file_name, bindings)
@@ -133,7 +133,7 @@ private
     do_tex("#{@scratch_dir}",file_base_name_tex)
     "#{@scratch_dir}/#{file_base_name_pdf}"
   end
-  
+
   def nice_class_name(year)
     if year == :grads
       "Graduates"
@@ -141,7 +141,7 @@ private
       "Class of #{year}"
     end
   end
-  
+
   def do_erb(input_file_name, output_file_name, bindings)
     template_string = File.new(input_file_name).readlines.join("")
     template = ERB.new(template_string)
@@ -149,13 +149,13 @@ private
     f.write(template.result(bindings))
     f.close
   end
-  
+
   def do_tex(directory, file_name)
     Dir.chdir(directory) do |dir_name|
       raise "Failed to pdflatex #{file_name}" unless system "pdflatex #{file_name}"
     end
   end
-  
+
   # year will be a year i.e. 2011 or :grads
   def section_cover_page(year)
     do_erb("#{@gen_root}/section_title.tex.erb",
@@ -164,13 +164,13 @@ private
     do_tex("#{@scratch_dir}","#{year.to_s}title.tex")
     "#{@scratch_dir}/#{year.to_s}title.pdf"
   end
-  
+
   def concatenate_pdfs(pdf_file_list, output_file_name)
     concat_cmd = "pdftk #{pdf_file_list.join(' ')} cat output #{output_file_name}"
     logger.error "Failed to concat pdfs (#{concat_cmd})" unless system concat_cmd
     output_file_name
   end
-  
+
   def generate_iso(resumes, cutoff_date, indrel_officers, res_book_pdf)
     # TODO there's some really shady stuff going on here..
     #      use Ruby libs to improve security
@@ -192,21 +192,21 @@ private
     raise "Filed to genisoimage" unless system "genisoimage -V 'HKN Resume Book' -o #{@scratch_dir}/HKNResumeBook.iso -R -J #{iso_dir}"
     "#{@scratch_dir}/HKNResumeBook.iso"
   end
-  
+
   # Stolen from committeeship. Why isn't this procedure in the property class?
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
   def nice_semester
     "#{SEMESTER_MAP[Property.semester[-1..-1].to_i]} #{Property.semester[0..3]}"
   end
-  
+
   def setup
-    
+
   end
-  
+
   def cleanup
     raise "Failed to cleanup scratch dir" unless system "rm -rf #{@scratch_dir}"
   end
-  
+
   # get the keys of resumes hash in correct order so we have increasing years
   # in resume book
   def sorted_years(resumes)
@@ -216,11 +216,11 @@ private
     sorted_yrs << :grads if grad_flag
     sorted_yrs
   end
-  
+
   def generate_description(resumes, cutoff_date, indrel_names)
     output_string = String.new
   end
-        
+
   def group_resumes(cutoff_date, graduating_class)
     resumes = Hash.new
 
@@ -237,12 +237,12 @@ private
     resumes.values.each { |a| a.sort_by! {|r| r.person.last_name} }
     return resumes
   end
-  
+
   def indrel_officer_names
     Committeeship.current.committee("indrel").officers.map {
        |officer| "#{officer.person.first_name} #{officer.person.last_name}" }.sort
   end
-  
+
   def get_hash
     Time.new.strftime("%Y%m%d%H%M%S%L")
   end
@@ -254,5 +254,5 @@ private
         :remarks,
         :cutoff_date
       )
-    end  
+    end
 end

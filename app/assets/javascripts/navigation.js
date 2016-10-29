@@ -4,10 +4,10 @@
 /**
  * Finds what path we're at currently and extracts the lowest subdirectory.
  * It will then look to see if there is a toplevel menu that has that name. If so,
- * it will make it selected. If not it will pick the first one it finds and make that 
- * selected. Might be deprecated soon.  
- */ 
-/** 
+ * it will make it selected. If not it will pick the first one it finds and make that
+ * selected. Might be deprecated soon.
+ */
+/**
   amber: ported this to jQuery
   richardxia: ported this to Prototype
  */
@@ -42,6 +42,6 @@ $(document).ready(function() {
     $("#user-dropdown").toggle(300);
     return false;
   });
-  
+
 });
 

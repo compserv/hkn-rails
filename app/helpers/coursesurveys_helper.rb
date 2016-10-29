@@ -36,7 +36,7 @@ module CoursesurveysHelper
     else
       contents = ''
     end
- 
+
     content_tag(:span, contents.html_safe)
   end
 
@@ -78,7 +78,7 @@ module CoursesurveysHelper
   def surveys_rating_path(rating)
     coursesurveys_rating_path(rating.id)
   end
-  
+
   def decode_frequencies(f)
     # If key is a String(Integer), make it just an integer.
     # "5"=>17 becomes 5=>17

@@ -11,7 +11,7 @@
 common: &common
   adapter: postgresql
   username: hkn_rails
-  password: 
+  password:
   pool: 5
   encoding: unicode
 

@@ -14,10 +14,10 @@
         <div class="candidate">
             <h3><%= link_to cand["candidate"], cand[:person] %></h3>
             <ul>
-                <li>Events: 
+                <li>Events:
                 <ul>
                     <% cand["events"].each_pair do |k,v| %>
-                        <% my_color = (event_requirements[k] <= v ) ? "green" : "red" %> 
+                        <% my_color = (event_requirements[k] <= v ) ? "green" : "red" %>
                         <li class="<%=my_color%>"><%= k.to_s %> - <%= v.to_s %></li>
                     <% end %>
                 </ul>
@@ -30,7 +30,7 @@
                     <ul>
                         <% cand["confirmed_challenges"].each do |challenge|  %>
                             <li>
-                            <%= challenge.name %> - <%= challenge.officer.full_name %> 
+                            <%= challenge.name %> - <%= challenge.officer.full_name %>
                             </li>
                         <% end %>
                     </ul>
@@ -41,7 +41,7 @@
                     <ul>
                         <% cand["unconfirmed_challenges"].each do |challenge|  %>
                             <li>
-                            <%= challenge.name %> - <%= challenge.officer.full_name %> 
+                            <%= challenge.name %> - <%= challenge.officer.full_name %>
                             </li>
                         <% end %>
                     </ul>

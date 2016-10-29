@@ -7,21 +7,21 @@ class AddCommitteeToGroups < ActiveRecord::Migration
     # Transition some groups
     Group.where(:name =>
     [
-     "pres",    
-     "vp",      
-     "rsec",    
-     "csec",    
-     "treas",   
-     "deprel",  
-     "serv",    
-     "indrel",  
-     "bridge",  
-     "act",     
+     "pres",
+     "vp",
+     "rsec",
+     "csec",
+     "treas",
+     "deprel",
+     "serv",
+     "indrel",
+     "bridge",
+     "act",
      "compserv",
-     "studrel", 
+     "studrel",
      "tutoring",
-     "alumrel", 
-     "alumadv", 
+     "alumrel",
+     "alumadv",
      "facadv"
     ]).each do |g|
         g.update_attribute(:committee, true)

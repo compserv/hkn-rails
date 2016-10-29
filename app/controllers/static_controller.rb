@@ -1,7 +1,7 @@
 class StaticController < ApplicationController
   # tocache = [:coursesurveys_how_to, :coursesurveys_info_profs, :coursesurveys_ferpa, :contact, :comingsoon, :yearbook, :slideshow]
   # tocache.each {|a| caches_action a, :layout => false}
-  
+
   def coursesurveys_how_to
   end
 	
@@ -10,16 +10,16 @@ class StaticController < ApplicationController
 	
   def coursesurveys_ferpa
   end
-  
+
   def contact
   end
-  
+
   def comingsoon
   end
-  
+
   def yearbook
   end
-  
+
   def slideshow
   end
 
@@ -27,7 +27,7 @@ class StaticController < ApplicationController
     # Get the most recent semester
     @semester = params[:semester] || Election.maximum(:semester)
     # Using the semester, get the committeeships, sorted by committee
-    cships = Committeeship.semester(@semester).cmembers.sort_by do |c|    
+    cships = Committeeship.semester(@semester).cmembers.sort_by do |c|
       c.committee
     end.ordered_group_by(&:committee)
     # Group cships by committee
@@ -41,7 +41,7 @@ class StaticController < ApplicationController
 
   def officers
     @semester = params[:semester] || Election.maximum(:semester)
-    
+
     cships = Committeeship.semester(@semester).officers.sort_by do |c|
       if c.exec?  # exec position
         [0, Committeeship::Execs.find_index(c.committee)].join

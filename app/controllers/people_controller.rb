@@ -27,7 +27,7 @@ class PeopleController < ApplicationController
     opts = { :page     => params[:page],
              :per_page => params[:per_page] || 20
            }
-    
+
     if %w[officers].include? @category or %w[cmembers].include? @category
       joinstr = "JOIN committeeships ON committeeships.person_id = people.id"
       cond = ["committeeships.semester = ? AND committeeships.title = ?",
@@ -60,7 +60,7 @@ class PeopleController < ApplicationController
   def search
     return if strip_params
 
-    query = sanitize_query(params[:query]) 
+    query = sanitize_query(params[:query])
 
     @results = {}
 

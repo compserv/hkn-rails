@@ -46,7 +46,7 @@ describe CoursePreference do
       :level => 3
     }
   end
-  
+
   it "should accept valid parameters" do
     cp = CoursePreference.create(@good_opts)
     cp.should be_valid

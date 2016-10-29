@@ -9,7 +9,7 @@
       = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor-photo'
     - else
       -# no picture
-  
+
   %div{:style => "float:left;"}
     - if @can_edit
       = link_to '[Edit]', coursesurveys_edit_instructor_path(@instructor)
@@ -19,7 +19,7 @@
       %tr
         %th Title
         %td= @instructor.title
-      - unless @instructor.office.blank?      
+      - unless @instructor.office.blank?
         %tr
           %th Office
           %td= @instructor.office
@@ -32,7 +32,7 @@
           %th Email
           %td= @instructor.email
       - unless @instructor.home_page.blank?
-        %tr 
+        %tr
           %th Home Page
           %td= link_to @instructor.home_page, @instructor.home_page
       - unless @instructor.interests.blank?
@@ -49,10 +49,10 @@
   %script{:type => "text/javascript", :src => "https://www.google.com/jsapi"}
   :javascript
     google.load("visualization", "1", {packages:["corechart"]});
-    
+
     google.setOnLoadCallback(function(){drawChart('instructor');});
     google.setOnLoadCallback(function(){drawChart('ta');});
-    
+
     function drawChart(type) {
       if (typeof(type) == 'undefined')
       {
@@ -67,22 +67,22 @@
       data[type].addColumn('number', 'Teaching Effectiveness');
       data[type].addColumn('number', 'Worthwhile Course?');
       data[type].addRows($("#" + type + "_table .semester").length);
-      
+
       count = 0;
       $("#" + type + "_table #ratings tbody tr").each(function(){
         dat = $($(this)).children("td")
         year = $(dat[0]).find(".semester a").html();
         eff = parseFloat($(dat[1]).find(".rating").html(), 10);
         worth = parseFloat($(dat[2]).find(".rating").html(), 10);
-        
+
         if(year != null){
           data[type].setValue(count, 0, year);
           data[type].setValue(count, 1, eff);
           data[type].setValue(count, 2, worth);
           count++;
         }
-        
-      }); 
+
+      });
 
       console.log (data[type].getNumberOfRows());
       if (data[type].getNumberOfRows() > 0)
@@ -90,13 +90,13 @@
         if (type == "instructor")
         {
           var chart = new google.visualization.ColumnChart($("#instructor_chart_div")[0]);
-          chart.draw(data['instructor'], 
+          chart.draw(data['instructor'],
             {width: $(window).width() * 0.9, height: 300, title: 'Instructor Ratings', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}, direction: -1}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 7}}
           );
         } else if (type == "ta")
         {
           var ta_chart = new google.visualization.ColumnChart($("#ta_chart_div")[0]);
-          ta_chart.draw(data['ta'], 
+          ta_chart.draw(data['ta'],
             {width: $(window).width() * 0.9, height: 300, title: 'TA Ratings', colors:['#235185','#f9df49'], hAxis: {title: 'Year', titleTextStyle: {color: 'gray'}, direction: -1}, isStacked: false, backgroundColor: 'none', vAxis: {minValue: 0, maxValue: 5}}
           );
         }

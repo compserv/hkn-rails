@@ -10,8 +10,8 @@
       </ul>
     </div>
   <% end %>
-  
-  <%= hidden_field :alumni, :person_id, :value => @current_user.id %> 
+
+  <%= hidden_field :alumni, :person_id, :value => @current_user.id %>
   <div class="field">
     <%= f.label :perm_email, 'Permanent email' %>
     <%= f.text_field :perm_email %>
@@ -25,7 +25,7 @@
   <div class="field">
     <%= label_tag :grad_semester, 'Semester graduated (from Ugrad)' %>
     <%= select_tag :grad_season, options_for_select(Alumni::SEASONS, @grad_season) %>
-    <%= select_tag :grad_year, options_for_select(Alumni.years, @grad_year) %> 
+    <%= select_tag :grad_year, options_for_select(Alumni.years, @grad_year) %>
   </div>
   <div class="field">
     <%= f.label :grad_school %>
@@ -50,7 +50,7 @@
   <div class="field">
     <%= f.label :suggestions, 'Have any suggestions for Alumrel?' %>
     <div>(more/different types of alumni activities, etc.)</div>
-    <%= f.text_area :suggestions %>  
+    <%= f.text_area :suggestions %>
   </div>
   <div class="field-submit">
     <%= f.submit "Submit"%>

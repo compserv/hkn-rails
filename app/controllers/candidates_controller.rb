@@ -233,7 +233,7 @@ class CandidatesController < ApplicationController
       redirect_to "/admin/general/super_page"
   end
 
-  def initiating 
+  def initiating
       @person = Person.find_by_id(params[:id])
       @cand = @person.candidate
       @cand.currently_initiating = true

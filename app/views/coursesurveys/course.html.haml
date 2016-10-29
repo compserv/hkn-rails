@@ -1,35 +1,35 @@
 -#%script{:src => "https://www.google.com/jsapi", :type => "text/javascript"}
   :javascript
     google.load("visualization", "1", {packages:["corechart"]});
-    
+
     google.setOnLoadCallback(drawChart);
-    
+
     function drawChart() {
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'Semester');
       data.addColumn('number', 'Teaching Effectiveness');
       data.addColumn('number', 'Worthwhile Course?');
       data.addRows($(".semester").length);
-      
+
       count = 0;
       $("#ratings tbody tr").each(function(){
         dat = $($(this)).children("td")
         year = $(dat[0]).find(".semester a").html();
         eff = parseFloat($(dat[2]).find(".rating").html(), 10);
         worth = parseFloat($(dat[3]).find(".rating").html(), 10);
-        
+
         console.log(year + ": " + eff + " " + worth);
-        
+
         if(year != null){
           data.setValue(count, 0, year);
           data.setValue(count, 1, eff);
           data.setValue(count, 2, worth);
           count++;
         }
-        
-      }); 
+
+      });
       var chart = new google.visualization.ColumnChart($("#chart_div")[0]);
-      chart.draw(data, 
+      chart.draw(data,
         { width: $(window).width() * 0.9, height: 400,
           title: 'Course Survey', colors:['#235185','#f9df49'],
           backgroundColor: 'none',

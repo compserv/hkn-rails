@@ -1,7 +1,7 @@
 class CourseguideController < ApplicationController
 
   before_filter :authorize_tutoring, :only=>[:edit, :update]
-  
+
   def authorize_courseguides
     @current_user && (@auth['tutoring'] || @auth['superusers'])
   end
@@ -45,5 +45,5 @@ class CourseguideController < ApplicationController
       :course_guide,
     )
   end
-  
+
 end

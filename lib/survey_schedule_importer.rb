@@ -265,7 +265,7 @@ module CourseSurveys
 
       return u
     end
-    
+
     # Commits internal data to the database.
     def save!
       #Coursesurvey.transaction do

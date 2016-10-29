@@ -10,7 +10,7 @@ class Admin::BridgeController < Admin::AdminController
 
   def photo_upload_post
     @Officers = Committeeship.current.officers.map(&:person)
-    p = Person.find_by_id(params[:person][:id])    
+    p = Person.find_by_id(params[:person][:id])
     file_name = "public/pictures/#{p.username}.png"
 
     unless file = params[:file_info]
@@ -24,6 +24,6 @@ class Admin::BridgeController < Admin::AdminController
     p.picture = "/pictures/#{p.username}.png"
     p.save
     flash[:notice] = "Picture Uploaded"
-    render ("photo_upload") 
+    render ("photo_upload")
   end
 end

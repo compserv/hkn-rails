@@ -9,11 +9,11 @@ class ResetPasswordController < ApplicationController
       @person.reset_password_link = SecureRandom.hex
       @person.reset_password_at = DateTime.current
       @person.save!
-      ResetPasswordMailer.reset_password(@person).deliver 
+      ResetPasswordMailer.reset_password(@person).deliver
       redirect_to(login_path, :notice => "Instructions for resetting your password have been sent to your email address.") and return
     else
       redirect_to(reset_password_path, :notice => "Sorry, no such user exists.")
-    end 
+    end
   end
 
   def reset_password_confirm

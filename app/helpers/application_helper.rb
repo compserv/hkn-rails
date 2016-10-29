@@ -7,12 +7,12 @@ module ApplicationHelper
     lower = %w(a b c d e f g h i j k l m n o p q r s t u v w x y z)
     upper = %w(A B C D E F G H I J K L M N O P Q R S T U V W X Y Z)
     char_array = string.split('')
-    char_array.each do |char|  
+    char_array.each do |char|
       output = lower.index(char) + 97 if lower.include?(char)
       output = upper.index(char) + 65 if upper.include?(char)
       if output
         output_array << "&##{output};"
-      else 
+      else
         output_array << char
       end
     end
@@ -104,13 +104,13 @@ end # ApplicationHelper
 # Other general helpers
 class String
   def pluralize_for(n=1)
-    n==1 ? self : self.pluralize 
+    n==1 ? self : self.pluralize
   end
 
   def is_int?
     !self.blank? && self.to_i.to_s.eql?(self)
   end
-  
+
   def semi_escape
     m = { '<' => '&lt;',
           '>' => '&gt;',
@@ -151,13 +151,13 @@ class Array
   def to_ul(tag='ul')
     # Converts a nested array to <ul>
     ["<#{tag}>",
-     self.collect do |e| 
+     self.collect do |e|
         case
         when e.is_a?(Array)
           e.to_ul tag
         else
           "<li>#{e.inspect.semi_escape}</li>"
-        end 
+        end
      end.join,
      "</#{tag}>"
     ].join
@@ -262,7 +262,7 @@ module ActionController
     end
 
     end # ClassMethods
-    
+
   end #Helpers
 end #ApplicationController
 
@@ -286,7 +286,7 @@ end
 #        $__SECURE_DEFAULT_ = true    # C++ style ftw
 #        def url_for_with_secure_default(options = {})
 #          options[:secure] ||= true
-#          url_for_without_secure_default(options) 
+#          url_for_without_secure_default(options)
 #        end
 #
 #        alias_method_chain :url_for, :secure_default unless $__SECURE_DEFAULT_ #defined? url_for_without_secure_default

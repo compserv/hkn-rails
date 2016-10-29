@@ -1,6 +1,6 @@
 <div class="admin">
   <% if @auth["vp"] %>
-    Admin Bar: 
+    Admin Bar:
     <% if !@person.approved %>
       <%= link_to "[Approve Account]", approve_path(@person) %>
     <% end %>
@@ -41,14 +41,14 @@
     </span>
   </div>
   <div class="clear"></div>
-  
+
   <h2>Badges Earned</h2>
   <div id="badges">
     <% for badge in @badges %>
     <%= image_tag badge.picture_url, :title=> badge.name, :class=>"badge" %>
     <% end %>
   </div>
-  
+
 </div>
 <div style="float: left; width: 49%">
   <h2>Additional Membership Information

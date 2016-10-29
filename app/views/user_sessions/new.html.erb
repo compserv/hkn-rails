@@ -1,12 +1,12 @@
 <% content_for :header do %>
   <style type="text/css">
-    #contain{     
+    #contain{
       width: 50%;
       margin: auto;
     }
-    
+
     @media screen and (max-width: 600px){
-      #contain{     
+      #contain{
         width: 100%;
         margin: auto;
       }
@@ -26,21 +26,21 @@
   <h1>Login</h1>
 
   <%= form_for @user_session, :url => login_path do |f| %>
-    
+
     <div class="field">
       <%= f.label :username %>
       <%= f.text_field :username, :autofocus => "true"%>
     </div>
-    
+
     <div class="field">
       <%= f.label :password %>
       <%= f.password_field :password %>
     </div>
-    
+
     <div class="field">
       <%= f.label :remember_me %><%= f.check_box :remember_me %>
     </div>
-    
+
     <%= hidden_field_tag(:referer, @referer) %>
 
     <%- if @use_captcha -%>
@@ -48,12 +48,12 @@
       <%= captcha %>
     </div>
     <%- end -%>
-    
+
     <div class="field-submit">
     <%= f.submit "Login" %>
     <%= submit_tag "Register", :id => "register-button" %>
     </div>
-     
+
     <%= link_to "Forgot your password?", reset_password_path %>
 
   <% end %>

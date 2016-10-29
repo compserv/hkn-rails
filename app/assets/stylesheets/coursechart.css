@@ -13,7 +13,7 @@
 }
 
 .recommended {
-  stroke-dasharray: 5; 
+  stroke-dasharray: 5;
 }
 
 .required {
@@ -33,7 +33,7 @@
 }
 
 /* group holding course and text */
-.nodes { 
+.nodes {
   cursor: pointer;
 
 }

@@ -26,7 +26,7 @@ class CoursesurveysController < ApplicationController
   def authorize_coursesurveys
     @current_user && (@auth['csec'] || @auth['superusers'])
   end
-  
+
   def require_admin
     return if authorize_coursesurveys
     flash[:error] = "You must be an admin to do that."
@@ -236,8 +236,8 @@ class CoursesurveysController < ApplicationController
                     }
       end
     else
-      instructorships = Instructorship.where(klass_id: 
-                           Klass.select(:id).where(semester: sem), 
+      instructorships = Instructorship.where(klass_id:
+                           Klass.select(:id).where(semester: sem),
                            ta: (cat == :ta))
                         .includes(:instructor, :klass)
 
@@ -290,7 +290,7 @@ class CoursesurveysController < ApplicationController
     @instructor = _get_instructor(params[:name])
 
     return redirect_to coursesurveys_search_path(params[:name].split(',').reverse.join(' ')) unless @instructor
- 
+
     # Don't do any heavy computation if cache exists
     #return if fragment_exist? instructor_cache_path(@instructor)
 
@@ -307,7 +307,7 @@ class CoursesurveysController < ApplicationController
 
 
     @can_edit = @current_user && authorize_coursesurveys
- 
+
     prof_eff_q   = SurveyQuestion.find_by_keyword(:prof_eff)
     ta_eff_q     = SurveyQuestion.find_by_keyword(:ta_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
@@ -417,12 +417,12 @@ class CoursesurveysController < ApplicationController
     @conf_intrvl = @total_responses > 0 ? 1.96*@answer.deviation/Math.sqrt(@total_responses) : 0
     @can_edit = @current_user && authorize_coursesurveys
   end
-  
+
   def editrating
     @answer = SurveyAnswer.find(params[:id])
     @frequencies = decode_frequencies(@answer.frequencies)
   end
-  
+
   def updaterating
     a = SurveyAnswer.find(params[:id])
     if a.nil? then
@@ -430,13 +430,13 @@ class CoursesurveysController < ApplicationController
     else
         # Hashify
         new_frequencies = decode_frequencies(a.frequencies)
-        
-        # Remove any rogue values: allow only score values, N/A, and Omit       
+
+        # Remove any rogue values: allow only score values, N/A, and Omit
         params[:frequencies].each_pair do |key,value|
             key = key.to_i if key.eql?(key.to_i.to_s)
             new_frequencies[key] = value.to_i if ( ["N/A", "Omit"].include?(key) or (1..a.survey_question.max).include?(key) )
         end
-        
+
         # Update fields
         a.frequencies = ActiveSupport::JSON.encode(new_frequencies)
         a.recompute_stats!
@@ -452,7 +452,7 @@ class CoursesurveysController < ApplicationController
     @ta_eff_q   = SurveyQuestion.find_by_keyword(:ta_eff)
 
     # Query
-    params[:q] = sanitize_query(params[:q]) 
+    params[:q] = sanitize_query(params[:q])
 
     # Department
     unless params[:dept].blank?

@@ -11,7 +11,7 @@ module ApplicationModel
     # foreign model's scope method be defined with the function prototype:
     # (ActiveRecord::Relation, association_name)
     #
-    # Example: 
+    # Example:
     # If we have the query to find all Users with posts that have approved
     # comments:
     #   User.joins(:posts => :comments).where(:comments => {:approved => true})

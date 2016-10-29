@@ -26,7 +26,7 @@
 <%-
     bool_map = {true => 'Yes', false => 'No'}
 
-    fields = 
+    fields =
     [:name,
      :username,
      :phone_number,
@@ -41,7 +41,7 @@
 
 
     commitWarningMessage = 'Clicking OK will commit all of the above election data. ONLY CLICK IF YOU HAVE READ YOUR DUTIES to the right and have PROOFREAD DATA ABOVE. In particular, usernames should be well-formed (preferably letters only / no numbers/spaces).'
-     
+
      fields.each do |f|
 -%>
   <th><%= f.to_s.titleize %></th>

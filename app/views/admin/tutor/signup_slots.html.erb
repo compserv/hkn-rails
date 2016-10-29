@@ -17,7 +17,7 @@
         $(this).slider("value",ui.value)
       });
     }
-    
+
     $(function() {
       $( "#big-slider" ).slider({
         value: 2,
@@ -44,10 +44,10 @@
 <% end %>
 
 <h1>Sign up for tutoring slots</h1>
-<p>For each time slot below, indicate your preference level for office hours. 
+<p>For each time slot below, indicate your preference level for office hours.
 <span style="color:green">Green</span> = "preferred," <span style="color:#E7D701">yellow</span> = "less preferred but can make it," and <span style="color:red">red</span> = "cannot make it."</p>
 <p>You can also indicate your office preference for individual time slots, or simply use the universal bar below to indicate for all slots.</p>
-Note that there are five levels of preference, which roughly translate to "strongly prefer," "slightly prefer," and "no preference." 
+Note that there are five levels of preference, which roughly translate to "strongly prefer," "slightly prefer," and "no preference."
 <span style="color:orange">Orange</span> = Cory, <span style="color:blue">blue</span> = Soda.</p>
 <p>Finally, you can also indicate your preference of adjacent time slots below.</p><br />
 
@@ -70,8 +70,8 @@ Note that there are five levels of preference, which roughly translate to "stron
       <td  rowspan="4" class="slot"><%= format_hour_slot hour %></td>
       <% @wdays.each do |wday| %>
         <td class="slot slot-preferred">
-          <%= radio_button_tag availability_form_name(wday, hour, :preference_level), 
-            "preferred", 
+          <%= radio_button_tag availability_form_name(wday, hour, :preference_level),
+            "preferred",
             @prefs[wday][hour] == Availability::PREF[:preferred] %>
         </td>
       <% end %>
@@ -79,8 +79,8 @@ Note that there are five levels of preference, which roughly translate to "stron
     <tr>
       <% @wdays.each do |wday| %>
         <td class="slot slot-available">
-          <%= radio_button_tag availability_form_name(wday, hour, :preference_level), 
-            "available", 
+          <%= radio_button_tag availability_form_name(wday, hour, :preference_level),
+            "available",
             @prefs[wday][hour] == Availability::PREF[:available] %>
         </td>
       <% end %>
@@ -88,8 +88,8 @@ Note that there are five levels of preference, which roughly translate to "stron
     <tr>
       <% @wdays.each do |wday| %>
         <td class = "slot slot-unavailable">
-          <%= radio_button_tag availability_form_name(wday, hour, :preference_level), 
-            "unavailable", 
+          <%= radio_button_tag availability_form_name(wday, hour, :preference_level),
+            "unavailable",
             @prefs[wday][hour] == Availability::PREF[:unavailable] %>
         </td>
       <% end %>

@@ -3,7 +3,7 @@ require 'json'
 class Admin::TutorController < Admin::AdminController
   before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule, :update_preferences]
   before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule, :update_preferences]
-  
+
   def signup_slots
     prop = Property.get_or_create
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
@@ -28,7 +28,7 @@ class Admin::TutorController < Admin::AdminController
     tutor = @current_user.get_tutor
 
     if params[:commit] == "Save changes"
-      
+
       availability_count = 0
       params[:availabilities].each do |wday, hours|
         hours.each do |hour, av|
@@ -38,13 +38,13 @@ class Admin::TutorController < Admin::AdminController
           end
         end
       end
-      
+
       if availability_count < 5 # Force at least 5 time slot availabilities per tutor
-        redirect_to :admin_tutor_signup_slots, 
+        redirect_to :admin_tutor_signup_slots,
           :notice=>"Please provide at least 5 time slot availabilities."
         return
       end
-    
+
       tutor.adjacency = params[:adjacent_slots]
       tutor.save!
 
@@ -107,28 +107,28 @@ class Admin::TutorController < Admin::AdminController
   @@OFFICES = [:Cory, :Soda]
   @@DAYS = [:Monday, :Tuesday, :Wednesday, :Thursday, :Friday]
   @@HOURS = (11..16).to_a
-  
-  def gen_course_list 
-    # Create ["cs61a", "cs61b", ... ] 
+
+  def gen_course_list
+    # Create ["cs61a", "cs61b", ... ]
     Course.joins(:course_preferences).
       where(:course_preferences => {:tutor_id=>Tutor.current}).
       ordered.uniq.collect(&:course_abbr)
-  end 
-   
-  def gen_tutor_course_prefs 
-    course_array = gen_course_list 
-     
-    # Create {"cs61a" : 0, "cs61b" : 1, ...} 
-    course_indices = {} 
+  end
+
+  def gen_tutor_course_prefs
+    course_array = gen_course_list
+
+    # Create {"cs61a" : 0, "cs61b" : 1, ...}
+    course_indices = {}
     course_array.each_with_index do |course, index|
       course_indices[course] = index
-    end 
-         
-    # Create list of "prefs": [1, 0, 1] for each tutor 
-    # -1: Not taken, 0: Currently taking, 1: Has taken, 2: Preferred 
-    tutor_prefs = {} 
+    end
+
+    # Create list of "prefs": [1, 0, 1] for each tutor
+    # -1: Not taken, 0: Currently taking, 1: Has taken, 2: Preferred
+    tutor_prefs = {}
     Tutor.current.each do |tutor|
-      course_prefs = Array.new(course_array.length, -1) 
+      course_prefs = Array.new(course_array.length, -1)
       tutor.course_preferences.each do |course_pref|
         course_prefs[course_indices[course_pref.course.course_abbr]] = course_pref.level
       end
@@ -141,45 +141,45 @@ class Admin::TutorController < Admin::AdminController
   def slot_id(day, hour, office)
     num_hours = @@HOURS.length
     num_days = @@DAYS.length
-    (num_hours*(day - 1)) + (hour - @@HOURS[0]) + (office * num_hours * num_days) 
+    (num_hours*(day - 1)) + (hour - @@HOURS[0]) + (office * num_hours * num_days)
   end
-   
-  def adj_slots(slot) 
+
+  def adj_slots(slot)
     this_slot_id = slot_id(slot.wday, slot.hour, slot.room)
     hour = slot.hour
-    
+
     if hour == @@HOURS[0]
       [this_slot_id + 1]
     elsif hour == @@HOURS[-1]
       [this_slot_id - 1]
     else
-      [this_slot_id - 1, this_slot_id + 1] 
-    end 
+      [this_slot_id - 1, this_slot_id + 1]
+    end
   end
-   
+
   def get_tutor_slot_prefs(tutor)
     num_times = @@HOURS.length * @@DAYS.length
     num_slots = @@HOURS.length * @@DAYS.length * @@OFFICES.length
-    
-    time_prefs = Array.new(num_slots, 0) 
-    office_prefs = Array.new(num_slots, 0) #Cory >> -2, -1, 0, 1, 2 >> Soda 
+
+    time_prefs = Array.new(num_slots, 0)
+    office_prefs = Array.new(num_slots, 0) #Cory >> -2, -1, 0, 1, 2 >> Soda
     tutor.availabilities.each do |slot|
-      this_slot_id = slot_id(slot.wday, slot.hour, 'Cory' == slot.preferred_room ? 0 : 1) 
-         
-      office_prefs[this_slot_id] = 1 * slot.room_strength 
+      this_slot_id = slot_id(slot.wday, slot.hour, 'Cory' == slot.preferred_room ? 0 : 1)
+
+      office_prefs[this_slot_id] = 1 * slot.room_strength
       # If cory or no pref, set pref to negative
       # (Because EE is currently less popular than CS)
       if slot.preferred_room == 0
         office_prefs[this_slot_id] *= -1
-      end 
-      
+      end
+
       office_prefs[(this_slot_id + num_times) % num_slots] = -1 * office_prefs[this_slot_id]
       time_prefs[this_slot_id] = slot.preference_level # Either 1 or 2... I think...
       time_prefs[(this_slot_id + num_times) % num_slots] = time_prefs[this_slot_id]
     end
     return time_prefs, office_prefs
-  end 
-  
+  end
+
   def num_slot_assignments(tutor)
     if tutor.person.current_officer?
       2
@@ -190,25 +190,25 @@ class Admin::TutorController < Admin::AdminController
     end
   end
 
-  def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False') 
-    # Room 0 = Cory; Room 1 = Soda 
-    # Adjacency -1 = Does not want adjacent, 0 = Don't care, 1 = Wants adjacent 
-     
-    # Course names 
+  def params_for_scheduler(randomSeed = 'False', maximumCost = '0', machineNum = 'False', patience = 'False')
+    # Room 0 = Cory; Room 1 = Soda
+    # Adjacency -1 = Does not want adjacent, 0 = Don't care, 1 = Wants adjacent
+
+    # Course names
     course_list = gen_course_list
-    
+
     # Course prefs
-    cory_course_pref = course_list.map{|course| (course[0..1] == 'EE' or course[0..3] == 'PHYS') ? 1 : 0} 
+    cory_course_pref = course_list.map{|course| (course[0..1] == 'EE' or course[0..3] == 'PHYS') ? 1 : 0}
     soda_course_pref = course_list.map{|course| (course[0..1] == 'CS' or course[0..3] == 'MATH') ? 1 : 0}
 
-    # Tutors 
+    # Tutors
     all_tutors = []
     tutor_course_prefs = gen_tutor_course_prefs
     Tutor.current.uniq.each do |tutor|
-      tutor_slot_prefs = get_tutor_slot_prefs(tutor) 
-      
+      tutor_slot_prefs = get_tutor_slot_prefs(tutor)
+
       tutor_obj = {
-        'tid' => tutor.person.id, 
+        'tid' => tutor.person.id,
         'name' => tutor.person.fullname,
         'timeSlots' => tutor_slot_prefs[0],
         'officePrefs' => tutor_slot_prefs[1],
@@ -216,16 +216,16 @@ class Admin::TutorController < Admin::AdminController
         'adjacentPref' => tutor.adjacency,
         'numAssignments' => num_slot_assignments(tutor)
       }
-      
+
       all_tutors.push(tutor_obj)
     end
-     
-    # Timeslots 
+
+    # Timeslots
     all_slots = []
     Slot.all.each do |slot|
-      office_course_prefs = (slot.room == 0 ? cory_course_pref : soda_course_pref) 
+      office_course_prefs = (slot.room == 0 ? cory_course_pref : soda_course_pref)
       this_slot_id = slot_id(slot.wday, slot.hour, slot.room)
-      
+
       slot_obj = {
         'sid' => this_slot_id,
         'name' => 'InternalSlot' + slot.id.to_s,
@@ -235,7 +235,7 @@ class Admin::TutorController < Admin::AdminController
         'hour' => slot.hour,
         'office' => @@OFFICES[slot.room]
       }
-      
+
       all_slots.push(slot_obj)
     end
 
@@ -245,10 +245,10 @@ class Admin::TutorController < Admin::AdminController
       'tutors' => all_tutors,
       'slots' => all_slots
     }
-    
+
     render :text => JSON.pretty_generate(ret)
   end
-      
+
 
   def edit_schedule
     def room_preference(room_strength, preferred_room, slot_room)
@@ -555,7 +555,7 @@ class Admin::TutorController < Admin::AdminController
     # stats[tutor] = [availabilities, 1st choice, 2nd choice, wrong assignment, adjacencies, correct office, happiness]
     stats = {officer: {}, cmember: {}}
     happiness_total = {officer: 0, cmember: 0}
-    
+
     Tutor.current.includes(:slots, :availabilities).each do |tutor|
       happiness = 0; first_choice = 0; second_choice = 0; adjacencies = 0; correct_office = 0; wrong_assign = 0
 

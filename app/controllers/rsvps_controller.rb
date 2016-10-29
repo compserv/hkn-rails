@@ -154,7 +154,7 @@ class RsvpsController < ApplicationController
   def reject
     @rsvp = Rsvp.find(params[:id])
     @rsvp.update_attribute :confirmed, Rsvp::Rejected # TODO (jonko)
-    
+
     group = params[:group] || "candidates"
 
     respond_to do |format|
