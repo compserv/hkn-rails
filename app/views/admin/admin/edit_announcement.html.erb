@@ -1,6 +1,6 @@
 <h1>Edit Announcement</h1>
 
-<% form_tag(admin_general_update_announcement_path, :method => "post") do %>
+<% form_tag(admin_general_update_announcement_path, method: "post") do %>
   <%= hidden_field_tag :id, @announcement.id %>
 
   <div class="field">

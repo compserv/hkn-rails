@@ -25,11 +25,16 @@ end
 
 describe Block, "when created with date parameters" do
   before(:each) do
-    @good_opts = { :start_time => DateTime.parse("2010-07-05 16:00:00 UTC"),
-      :end_time => DateTime.parse("2010-07-05 18:00:00 UTC"),
-	    :event => Event.create }
-    @bad_opts = { :start_time => DateTime.parse("2010-07-05 18:00:00 UTC"),
-      :end_time => DateTime.parse("2010-07-05 16:00:00 UTC") }
+    @good_opts = {
+      start_time: DateTime.parse("2010-07-05 16:00:00 UTC"),
+      end_time: DateTime.parse("2010-07-05 18:00:00 UTC"),
+	    event: Event.create
+    }
+
+    @bad_opts = {
+      start_time: DateTime.parse("2010-07-05 18:00:00 UTC"),
+      end_time: DateTime.parse("2010-07-05 16:00:00 UTC")
+    }
   end
 
   it "should accept valid parameters" do

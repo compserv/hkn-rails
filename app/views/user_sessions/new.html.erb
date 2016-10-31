@@ -25,11 +25,11 @@
 <div class="white-bg" id="contain">
   <h1>Login</h1>
 
-  <%= form_for @user_session, :url => login_path do |f| %>
+  <%= form_for @user_session, url: login_path do |f| %>
 
     <div class="field">
       <%= f.label :username %>
-      <%= f.text_field :username, :autofocus => "true"%>
+      <%= f.text_field :username, autofocus: "true"%>
     </div>
 
     <div class="field">
@@ -51,7 +51,7 @@
 
     <div class="field-submit">
     <%= f.submit "Login" %>
-    <%= submit_tag "Register", :id => "register-button" %>
+    <%= submit_tag "Register", id: "register-button" %>
     </div>
 
     <%= link_to "Forgot your password?", reset_password_path %>

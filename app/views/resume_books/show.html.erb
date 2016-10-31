@@ -1,5 +1,5 @@
 <% if @company %>
-  <p>Resume book link for <%= @company.name %>: <%= link_to resume_book_download_pdf_url(:access_key => @company.single_access_token), resume_book_download_pdf_path(:access_key => @company.single_access_token) %> </p>
+  <p>Resume book link for <%= @company.name %>: <%= link_to resume_book_download_pdf_url(access_key: @company.single_access_token), resume_book_download_pdf_path(access_key: @company.single_access_token) %> </p>
 <% end %>
 
 <p><%= link_to "Download PDF", resume_book_download_pdf_path(@resume_book.id) %></p>
@@ -7,9 +7,8 @@
 <p>Resume book cutoff date: <%= @resume_book.cutoff_date %></p>
 <p>Resume book generated on <%= @resume_book.created_at %></p>
 
-<%= form_tag resume_book_path(@resume_book), :method => :get do %>
+<%= form_tag resume_book_path(@resume_book), method: :get do %>
   <p>Get resume book URL for: </p>
   <%= select_tag :company_id, options_from_collection_for_select(@companies, :id, :name) %>
   <%= submit_tag "Select" %>
 <% end %>
-

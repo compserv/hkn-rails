@@ -21,7 +21,7 @@ class Alumni < ActiveRecord::Base
 
   belongs_to :person
   validates_uniqueness_of :person_id
-  validates_inclusion_of :salary, :in => 0...5000000000000000000, :message=>"must be within 0 and 5 quintillion", :allow_nil=>true
+  validates_inclusion_of :salary, in: 0...5000000000000000000, message: "must be within 0 and 5 quintillion", allow_nil: true
   validates_presence_of :perm_email, :grad_semester
 
   MAILING_LIST_URL = 'https://hkn.eecs.berkeley.edu/mailman/listinfo/alumni'
@@ -30,7 +30,7 @@ class Alumni < ActiveRecord::Base
   def subscribe
     agent = Mechanize.new
     agent.get(MAILING_LIST_URL) do |page|
-      page.form_with(:action => '../subscribe/alumni') do |form|
+      page.form_with(action: '../subscribe/alumni') do |form|
         form['email'] = self.perm_email
         form['fullname'] = self.person.fullname
       end.submit
@@ -40,11 +40,12 @@ class Alumni < ActiveRecord::Base
   def unsubscribe
     agent = Mechanize.new
     agent.get(MAILING_LIST_URL) do |page|
-      options_page = page.form_with(:action => '../options/alumni') do |form|
+      options_page = page.form_with(action: '../options/alumni') do |form|
         form['email'] = self.perm_email
       end.submit
-      options_page.form_with(:action => '../options/alumni') do |form|
-        form.click_button(form.button_with(:value => 'Unsubscribe'))
+
+      options_page.form_with(action: '../options/alumni') do |form|
+        form.click_button(form.button_with(value: 'Unsubscribe'))
       end
     end
   end

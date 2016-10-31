@@ -3,10 +3,11 @@ Sunspot.config.pagination.default_per_page = 50
 # Fake out sunspot if the server isn't running.
 # Otherwise, model save/destroy will throw an error.
 $SUNSPOT_ENABLED = false
+
 begin
-  File.file?(pidfile=Sunspot::Rails::Server.new.pid_path)
-  pid=IO.read(pidfile).to_i
-  Process.kill(0,pid) # check if running (doesn't actually kill)
+  File.file?(pidfile = Sunspot::Rails::Server.new.pid_path)
+  pid = IO.read(pidfile).to_i
+  Process.kill(0, pid) # check if running (doesn't actually kill)
   # must be running...
   $SUNSPOT_ENABLED = true
 rescue Exception # not running

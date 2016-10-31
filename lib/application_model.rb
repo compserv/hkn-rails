@@ -14,14 +14,14 @@ module ApplicationModel
     # Example:
     # If we have the query to find all Users with posts that have approved
     # comments:
-    #   User.joins(:posts => :comments).where(:comments => {:approved => true})
+    #   User.joins(posts: :comments).where(comments: {approved: true})
     # We could define the :approved_scope_helper scope in Post:
     #   class Post
     #     scope :approved, approved_scope_helper
     #     def self.approved_scope_helper(query=self, join_name=nil)
-    #       join = {:post => :comments}
+    #       join = {post: :comments}
     #       join = {join_name => join} unless query == self
-    #       query.joins(join).where(:comments => {:approved => true})
+    #       query.joins(join).where(comments: {approved: true})
     #     end
     #   end
     # And use it in a foreign model like this:

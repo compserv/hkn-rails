@@ -1,9 +1,9 @@
 class EventsController < ApplicationController
-  before_filter :authorize_comms, :except => [:index, :calendar, :show, :hkn, :ical, :ical_single_event]
+  before_filter :authorize_comms, except: [:index, :calendar, :show, :hkn, :ical, :ical_single_event]
 
   rescue_from ActionController::UnknownFormat, with: :render_404
 
-  #[:index, :calendar, :show].each {|a| caches_action a, :layout => false}
+  #[:index, :calendar, :show].each {|a| caches_action a, layout: false}
 
   # GET /events
   # GET /events.xml
@@ -24,7 +24,7 @@ class EventsController < ApplicationController
                      end
     @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
     # Maintains start_time as secondary sort column
-    opts = { :page => params[:page], :per_page => per_page }
+    opts = { page: params[:page], per_page: per_page }
 
     category = params[:category] || 'all'
     event_finder = Event.with_permission(@current_user)
@@ -47,7 +47,7 @@ class EventsController < ApplicationController
     end
 
     if order == "event_type"
-      opts = { :page => params[:page], :per_page => per_page }
+      opts = { page: params[:page], per_page: per_page }
       @events = @events.sort{|e1, e2| e1.event_type.name <=> e2.event_type.name }
     else
       @events = @events.sort{|e1, e2| e1.start_time <=> e2.start_time }
@@ -63,8 +63,8 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @events }
-      format.js { render :partial => 'list' }
+      format.xml  { render xml: @events }
+      format.js { render partial: 'list' }
     end
   end
 
@@ -78,7 +78,7 @@ class EventsController < ApplicationController
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.where("name IN (?)", types)
     candEventTypeIDs = candEventTypes.map{|event_type| event_type.id}
-    @events = Event.current.joins({ :rsvps => {:person => :groups} } )
+    @events = Event.current.joins({ rsvps: {person: :groups} } )
                            .where("groups.id = #{Group.find_by_name(@group).id}").uniq
     @events.to_a.sort!{|x, y| x.start_time <=> y.end_time }.reverse!
   end
@@ -98,7 +98,7 @@ class EventsController < ApplicationController
     @start_date = Time.local(year, month).beginning_of_month
     @end_date = Time.local(year, month).end_of_month
     @events = Event.with_permission(@current_user)
-                   .where(:start_time => @start_date..@end_date)
+                   .where(start_time: @start_date..@end_date)
                    .order(:start_time)
     @events.to_a.delete_if { |e|
       EventType.where("name IN (?)", ["Exam", "Review Session"])
@@ -114,7 +114,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html
       format.js {
-        render :partial => 'calendar'
+        render partial: 'calendar'
       }
       format.ics {
         redirect_to events_calendar_path
@@ -129,7 +129,7 @@ class EventsController < ApplicationController
       # Only show event if user has permission to
       @event = Event.with_permission(@current_user).find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      redirect_to :root, :notice => "Event not found"
+      redirect_to :root, notice: "Event not found"
       return
     end
     @blocks = @event.blocks
@@ -141,7 +141,7 @@ class EventsController < ApplicationController
     @auth_event_owner = (@event.event_type.name == "Service" ? @auth['serv'] : @auth['act'])
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @event }
+      format.xml  { render xml: @event }
     end
   end
 
@@ -153,7 +153,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @event }
+      format.xml  { render xml: @event }
     end
   end
 
@@ -240,11 +240,11 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if valid
-        format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
-        format.xml  { render :xml => @event, :status => :created, :location => @event }
+        format.html { redirect_to(@event, notice: 'Event was successfully created.') }
+        format.xml  { render xml: @event, status: :created, location: @event }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @event.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -348,11 +348,11 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if valid
-        format.html { redirect_to(@event, :notice => 'Event was successfully updated.') }
+        format.html { redirect_to(@event, notice: 'Event was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @event.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -409,15 +409,15 @@ class EventsController < ApplicationController
     @start_date = [@start_date,@now.beginning_of_month].min
 
     @events = Event.with_permission(@current_user)
-                   .where(:start_time => @start_date..@end_date)
+                   .where(start_time: @start_date..@end_date)
                    .order(:start_time)
     # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
 
     respond_to do |format|
-      format.html { render :hkn, :layout => false }
+      format.html { render :hkn, layout: false }
       format.ics {
-        render :text => generate_ical_text(@events)
+        render text: generate_ical_text(@events)
       }
     end
   end
@@ -429,8 +429,8 @@ class EventsController < ApplicationController
   def ical_single_event
     @event = [Event.with_permission(@current_user).find(params[:id])]
     respond_to do |format|
-        format.html { render :hkn, :layout => false }
-        format.ics { render :text => generate_ical_text(@event) }
+        format.html { render :hkn, layout: false }
+        format.ics { render text: generate_ical_text(@event) }
     end
   end
 

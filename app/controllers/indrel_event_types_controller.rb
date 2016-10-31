@@ -13,14 +13,14 @@ class IndrelEventTypesController < ApplicationController
                      end
 
     @search_opts = {'sort' => "name"}.merge params
-    opts = { :page => params[:page], :per_page => per_page }
+    opts = { page: params[:page], per_page: per_page }
     @event_types = IndrelEventType.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @event_types }
+      format.xml  { render xml: @event_types }
       format.js {
-        render :partial => 'list'
+        render partial: 'list'
       }
     end
   end
@@ -32,7 +32,7 @@ class IndrelEventTypesController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @event_type }
+      format.xml  { render xml: @event_type }
     end
   end
 
@@ -43,7 +43,7 @@ class IndrelEventTypesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @event_type }
+      format.xml  { render xml: @event_type }
     end
   end
 
@@ -61,10 +61,10 @@ class IndrelEventTypesController < ApplicationController
       if @event_type.save
         flash[:notice] = 'IndrelEventType was successfully created.'
         format.html { redirect_to(@event_type) }
-        format.xml  { render :xml => @event_type, :status => :created, :location => @event_type }
+        format.xml  { render xml: @event_type, status: :created, location: @event_type }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @event_type.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @event_type.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -80,8 +80,8 @@ class IndrelEventTypesController < ApplicationController
         format.html { redirect_to(@event_type) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @event_type.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @event_type.errors, status: :unprocessable_entity }
       end
     end
   end

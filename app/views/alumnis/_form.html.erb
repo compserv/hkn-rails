@@ -11,7 +11,7 @@
     </div>
   <% end %>
 
-  <%= hidden_field :alumni, :person_id, :value => @current_user.id %>
+  <%= hidden_field :alumni, :person_id, value: @current_user.id %>
   <div class="field">
     <%= f.label :perm_email, 'Permanent email' %>
     <%= f.text_field :perm_email %>
@@ -41,7 +41,7 @@
   </div>
   <div class="field">
     <%= f.label :salary %>
-    <%= f.text_field :salary, :value=> (if @alumni.salary then pretty_salary(@alumni.salary) else "" end)%>
+    <%= f.text_field :salary, value: (if @alumni.salary then pretty_salary(@alumni.salary) else "" end)%>
   </div>
   <div class="field">
     <%= f.label :location %>

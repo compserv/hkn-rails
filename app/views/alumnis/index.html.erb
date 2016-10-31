@@ -27,7 +27,7 @@
     <td><%= alumni.person %></td>
     <td><%= link_to 'Show', alumni %></td>
     <td><%= link_to 'Edit', edit_alumni_path(alumni) %></td>
-    <td><%= link_to 'Destroy', alumni, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Destroy', alumni, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>
 </table>

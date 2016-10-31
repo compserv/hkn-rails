@@ -20,15 +20,15 @@
     <div class="section">
       <h2>Upcoming Events</h2>
       <div class="small infobar_links"><%= link_to "view all upcoming events", "/events/future" %> | <%= link_to "view events calendar", "/events/calendar" %></div>
-      <%= render :partial => "events/upcoming" %>
+      <%= render partial: "events/upcoming" %>
     </div>
 
     <div class="section">
       <h2>Tutoring and Classes</h2>
       <div class="small infobar_links"><%= link_to "view academic calendar", "/tutor/calendar" %></div>
-      <%= render :partial => "tutor/upcoming" %>
+      <%= render partial: "tutor/upcoming" %>
     </div>
-	
+
     <div class="section">
   	<%= render "tutor/tutoring_sidebar" %>
     </div>
@@ -96,4 +96,3 @@
 
   <div class="clear"></div>
 </div>
-

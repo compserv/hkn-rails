@@ -6,10 +6,12 @@ describe "dept_tour_requests/index.html.erb" do
       stub_model(DeptTourRequest),
       stub_model(DeptTourRequest)
     ])
+
     assign(:dept_tour_requests_unresponded, [
       stub_model(DeptTourRequest),
       stub_model(DeptTourRequest)
     ])
+
     assign(:dept_tour_requests_pending, [
       stub_model(DeptTourRequest),
       stub_model(DeptTourRequest)

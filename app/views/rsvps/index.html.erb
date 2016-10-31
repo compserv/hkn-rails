@@ -26,7 +26,7 @@
     <td><%= link_to 'Show', event_rsvp_path(@event, rsvp) %></td>
     <% if @auth['superusers'] %>
     <td class='admin'><%= link_to 'Edit', edit_event_rsvp_path(@event, rsvp) %></td>
-    <td class='admin'><%= link_to 'Destroy', event_rsvp_path(@event, rsvp), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td class='admin'><%= link_to 'Destroy', event_rsvp_path(@event, rsvp), confirm: 'Are you sure?', method: :delete %></td>
     <% end %>
   </tr>
 <% end %>

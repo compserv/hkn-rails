@@ -12,9 +12,8 @@
 
 class Group < ActiveRecord::Base
   has_and_belongs_to_many :people
-  validates :name, :presence => true, :uniqueness=>true
-  validates :description, :presence => true
+  validates :name,        presence: true, uniqueness: true
+  validates :description, presence: true
 
-  scope :committees, -> { where(:committee => true) }
-
+  scope :committees, -> { where(committee: true) }
 end

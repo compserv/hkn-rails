@@ -75,8 +75,6 @@ Sunspot:Solr presents an admin page on ports 8981:8983 (per environment; see
     iptables -I INPUT -j ACCEPT --dport 8981:8983 -i lo       # Allow local connections
     iptables -I INPUT -j DROP --dport 8981:8983               # Else, drop
 
-    (^ can somebody please verify that this is correct?)
-
 For examples of searching, see [coursesurveys#search][coursesurveys] and [course.rb][course.rb].
 
 [searchables]: http://github.com/outoftime/sunspot/wiki/Setting-up-classes-for-search-and-indexing

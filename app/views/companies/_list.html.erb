@@ -1,6 +1,6 @@
 <div id="ajax-wrapper">
   <%= spinner %>
-  <%= will_paginate @companies, :class => "ajax-controls ajax" %>
+  <%= will_paginate @companies, class: "ajax-controls ajax" %>
 
   <table class="table">
     <tr class="ajax-controls">
@@ -22,10 +22,10 @@
       <td><%= link_to 'Show', company %></td>
       <td><%= link_to 'Edit', edit_company_path(company) %></td>
       <td><%= link_to 'Reset Access', reset_access_company_path(company),
-                :confirm => "Are you sure you want to reset #{company.name}'s access?",
-                :method => :post
+                confirm: "Are you sure you want to reset #{company.name}'s access?",
+                method: :post
            %></td>
-      <td><%= link_to 'Destroy', company, :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%= link_to 'Destroy', company, confirm: 'Are you sure?', method: :delete %></td>
     </tr>
   <% end %>
   </table>

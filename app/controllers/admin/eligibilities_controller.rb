@@ -14,7 +14,7 @@ class Admin::EligibilitiesController < Admin::AdminController
   def csv
     @eligibilities = Eligibility.current.candidates.order(:last_name)
     @fields = [:last_name, :first_name, :middle_initial, :email]
-    render :csv => 'candidates', :layout => false
+    render csv: 'candidates', layout: false
   end
 
   def reprocess
@@ -29,7 +29,7 @@ class Admin::EligibilitiesController < Admin::AdminController
       Eligibility.current.destroy_all
     when params[:reset_all].present?
       Eligibility.current.each do |e|
-        e.update_attributes :group=>Eligibility::GroupValues[:unknown], :confidence=>0
+        e.update_attributes group: Eligibility::GroupValues[:unknown], confidence: 0
       end
     when params[:unk_to_cand].present?
       Eligibility.current.unknowns.each do |e|
@@ -40,33 +40,33 @@ class Admin::EligibilitiesController < Admin::AdminController
   end
 
   def update
-    return redirect_to admin_eligibilities_path, :notice => "No eligibilities found." if params[:eligibilities].blank?
+    return redirect_to admin_eligibilities_path, notice: "No eligibilities found." if params[:eligibilities].blank?
 
     params[:eligibilities].each_pair do |eid,g|
       eid, g = eid.to_i, g.to_i
-      return redirect_to admin_eligibilities_path, :notice => "Missing eligibility ##{eid}" unless e = Eligibility.find_by_id(eid)
+      return redirect_to admin_eligibilities_path, notice: "Missing eligibility ##{eid}" unless e = Eligibility.find_by_id(eid)
 
       next if e.group == g
       c = g==Eligibility::GroupValues[:unknown] ? 0 : 3
-      e.update_attributes :group=>g, :confidence=>c
+      e.update_attributes group: g, confidence: c
     end
 
-    redirect_to admin_eligibilities_path, :notice => "Updated."
+    redirect_to admin_eligibilities_path, notice: "Updated."
   end #update_eligibilities
 
   def upload
     if params[:file].nil?
-      return redirect_to admin_eligibilities_path, :notice => "Please select a file to upload."
+      return redirect_to admin_eligibilities_path, notice: "Please select a file to upload."
     end
 
     results = Eligibility::Importer.import(params[:file].tempfile)
 
     unless results[:errors].empty?
-      return redirect_to admin_eligibilities_path, :notice => "There was #{results[:errors].length} #{'error'.pluralize_for results[:errors].length} parsing that file:\n#{results[:errors].join('
+      return redirect_to admin_eligibilities_path, notice: "There was #{results[:errors].length} #{'error'.pluralize_for results[:errors].length} parsing that file:\n#{results[:errors].join('
 ')}"   # wtf. it won't take '\n'.
     end
 
-    redirect_to admin_eligibilities_path, :notice => "Successfully parsed #{results[:count]} eligibilities."
+    redirect_to admin_eligibilities_path, notice: "Successfully parsed #{results[:count]} eligibilities."
   end #upload_eligibilities
 
 end # controller

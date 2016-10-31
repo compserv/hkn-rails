@@ -58,7 +58,7 @@ class ShortlinksController < ApplicationController
   # Follow created shortlink, without validation.
   def go
     @link = Shortlink.find_by_in_url!(params[:in_url])
-    redirect_to @link.out_url, :status => @link.http_status
+    redirect_to @link.out_url, status: @link.http_status
   end
 
   private

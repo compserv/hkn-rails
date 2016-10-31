@@ -43,7 +43,7 @@
         <div class="elected-person">
           <% if position.person != nil %>
             <%= link_to position.person.full_name, admin_election_edit_details_path(position.person.username) %>
-            <%= link_to '[X]', admin_rsec_unelect_path(position.id), :onClick => "return confirm('Really un-elect #{position.person.full_name} from #{group[:name]}?');" %>
+            <%= link_to '[X]', admin_rsec_unelect_path(position.id), onClick: "return confirm('Really un-elect #{position.person.full_name} from #{group[:name]}?');" %>
           <% else %>
             There is an error here...
           <% end %>
@@ -51,16 +51,15 @@
         </div>
     <%- end -%>
     <div class="add-new" id="new-<%=group[:name]%>">
-        <%= form_for :election, :url => admin_rsec_add_elected_path do |f| %>
+        <%= form_for :election, url: admin_rsec_add_elected_path do |f| %>
             <p>
             <%= label_tag :name, "Add #{group[:name]} candidate:" %>
-            <%= text_field_tag :name, nil, :class => 'find_user' %>
-            <%= hidden_field_tag :person_id, nil, :class => 'user-id' %>
+            <%= text_field_tag :name, nil, class: 'find_user' %>
+            <%= hidden_field_tag :person_id, nil, class: 'user-id' %>
             <%= hidden_field_tag :position, group[:name] %>
             </p>
-            <%= f.submit 'Nominate!', :name => nil %>
+            <%= f.submit 'Nominate!', name: nil %>
         <%- end -%>
     </div>
     </div><%# div .group %>
 <% end %>
-

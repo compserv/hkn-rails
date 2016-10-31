@@ -1,7 +1,7 @@
 class RsvpsController < ApplicationController
   before_filter :get_event
-  before_filter :rsvp_permission, :except => [:my_rsvps, :confirm, :unconfirm, :reject]
-  before_filter(:only => [:confirm, :unconfirm, :reject]) { |c| c.authorize(['pres', 'vp']) }
+  before_filter :rsvp_permission, except: [:my_rsvps, :confirm, :unconfirm, :reject]
+  before_filter(only: [:confirm, :unconfirm, :reject]) { |c| c.authorize(['pres', 'vp']) }
   before_filter :authorize
 
   # GET /rsvps
@@ -12,7 +12,7 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @rsvps }
+      format.xml  { render xml: @rsvps }
     end
   end
 
@@ -23,7 +23,7 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @rsvp }
+      format.xml  { render xml: @rsvp }
     end
   end
 
@@ -33,7 +33,7 @@ class RsvpsController < ApplicationController
     if @event.blocks.size == 1
       block = @event.blocks.first
       if block.full?
-        redirect_to @event, :notice => 'Event is full.'
+        redirect_to @event, notice: 'Event is full.'
         return
       end
     end
@@ -41,7 +41,7 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @rsvp }
+      format.xml  { render xml: @rsvp }
     end
   end
 
@@ -64,14 +64,14 @@ class RsvpsController < ApplicationController
     if @event.blocks.size == 1
       block = @event.blocks.first
       if block.full?
-        redirect_to @event, :notice => 'Event is full.'
+        redirect_to @event, notice: 'Event is full.'
         return
       end
     elsif @event.blocks.size > 1
       @event.blocks.each do |block|
         if block.full? and @rsvp.blocks.include? block
           @rsvp.errors[:base] << "One or more RSVP blocks you selected is full."
-          render :action => "new"
+          render action: "new"
           return
         end
       end
@@ -79,11 +79,11 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       if @rsvp.save
-        format.html { redirect_to(@event, :notice => 'Thanks for RSVPing! See you there!') }
-        format.xml  { render :xml => @rsvp, :status => :created, :location => @rsvp }
+        format.html { redirect_to(@event, notice: 'Thanks for RSVPing! See you there!') }
+        format.xml  { render xml: @rsvp, status: :created, location: @rsvp }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @rsvp.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @rsvp.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -99,11 +99,11 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       if @rsvp.save
-        format.html { redirect_to(@event, :notice => 'Rsvp was successfully updated.') }
+        format.html { redirect_to(@event, notice: 'Rsvp was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @rsvp.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @rsvp.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -130,11 +130,11 @@ class RsvpsController < ApplicationController
 
     respond_to do |format|
       if @rsvp.update_attribute :confirmed, Rsvp::Confirmed   # TODO (jonko) this bypasses validation
-        format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Rsvp was confirmed.') }
-        format.xml  { render :xml => @rsvp }
+        format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, group: group), notice: 'Rsvp was confirmed.') }
+        format.xml  { render xml: @rsvp }
       else
-        format.html { redirect_to confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Something went wrong.' }
-        format.xml  { render :xml => @rsvp.errors, :status => :unprocessable_entity }
+        format.html { redirect_to confirm_rsvps_path(@rsvp.event_id, group: group), notice: 'Something went wrong.' }
+        format.xml  { render xml: @rsvp.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -146,8 +146,8 @@ class RsvpsController < ApplicationController
     group = params[:group] || "candidates"
 
     respond_to do |format|
-      format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Confirmation was removed.') }
-      format.xml { render :xml => @rsvp }
+      format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, group: group), notice: 'Confirmation was removed.') }
+      format.xml { render xml: @rsvp }
     end
   end
 
@@ -158,8 +158,8 @@ class RsvpsController < ApplicationController
     group = params[:group] || "candidates"
 
     respond_to do |format|
-      format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, :group => group), :notice => 'Confirmation was rejected.') }
-      format.xml { render :xml => @rsvp }
+      format.html { redirect_to(confirm_rsvps_path(@rsvp.event_id, group: group), notice: 'Confirmation was rejected.') }
+      format.xml { render xml: @rsvp }
     end
   end
 
@@ -189,7 +189,7 @@ private
 
   def rsvp_permission
     if !@event.allows_rsvps? or !@event.can_rsvp? @current_user
-      redirect_to :root, :notice => "You do not have permission to RSVP for this event"
+      redirect_to :root, notice: "You do not have permission to RSVP for this event"
       return false
     end
   end

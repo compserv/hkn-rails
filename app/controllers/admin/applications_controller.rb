@@ -10,7 +10,7 @@ class Admin::ApplicationsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv  {render :layout => false}
+      format.csv  {render layout: false}
     end
   end
 
@@ -19,7 +19,7 @@ class Admin::ApplicationsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv   {render :layout => false}
+      format.csv   {render layout: false}
     end
   end
 
@@ -28,7 +28,7 @@ class Admin::ApplicationsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv  {render :layout => false}
+      format.csv  {render layout: false}
     end
   end
 

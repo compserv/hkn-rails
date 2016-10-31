@@ -5,11 +5,11 @@ describe "rsvps/new.html.erb" do
     @event = stub_model(Event)
     @rsvp = stub_model(Rsvp,
       :new_record? => true,
-      :event => @event
+      event: @event
     )
     assign(:event, @event)
     assign(:rsvp, @rsvp)
-    assign(:current_user, stub_model(Person, :fullname => "John Doe"))
+    assign(:current_user, stub_model(Person, fullname: "John Doe"))
   end
 
   it "renders new rsvp form" do

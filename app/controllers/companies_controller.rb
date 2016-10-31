@@ -13,15 +13,15 @@ class CompaniesController < ApplicationController
                      end
 
     @search_opts = {'sort' => "name"}.merge params
-    opts = { :page => params[:page], :per_page => per_page }
+    opts = { page: params[:page], per_page: per_page }
 
     @companies = Company.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @companies }
+      format.xml  { render xml: @companies }
       format.js {
-        render :partial => 'list'
+        render partial: 'list'
       }
     end
   end
@@ -34,7 +34,7 @@ class CompaniesController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @company }
+      format.xml  { render xml: @company }
     end
   end
 
@@ -45,7 +45,7 @@ class CompaniesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @company }
+      format.xml  { render xml: @company }
     end
   end
 
@@ -64,10 +64,10 @@ class CompaniesController < ApplicationController
       if @company.save_without_session_maintenance
         flash[:notice] = 'Company was successfully created.'
         format.html { redirect_to(@company) }
-        format.xml  { render :xml => @company, :status => :created, :location => @company }
+        format.xml  { render xml: @company, status: :created, location: @company }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @company.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @company.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -83,8 +83,8 @@ class CompaniesController < ApplicationController
         format.html { redirect_to(@company) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @company.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @company.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -103,7 +103,7 @@ class CompaniesController < ApplicationController
 
   def reset_access
     unless company = Company.find(params[:id])
-      return redirect_to companies_path, :notice => "Invalid company id #{params[:id]}"
+      return redirect_to companies_path, notice: "Invalid company id #{params[:id]}"
     end
 
     notice = []
@@ -113,7 +113,7 @@ class CompaniesController < ApplicationController
     else
       "ERROR: Failed to reset access key"
     end
-    redirect_to companies_path, :notice => notice.join('; ')  # <br> y u no work
+    redirect_to companies_path, notice: notice.join('; ')  # <br> y u no work
   end
 
   private

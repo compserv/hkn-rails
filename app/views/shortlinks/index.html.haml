@@ -21,7 +21,6 @@
         %td= shortlink.person.full_name
         %td= link_to 'Show', shortlink
         %td= link_to 'Edit', edit_shortlink_path(shortlink)
-        %td= link_to 'Destroy', shortlink, :method => :delete, :data => { :confirm => 'Are you sure?' }
+        %td= link_to 'Destroy', shortlink, method: :delete, data: { confirm: 'Are you sure?' }
 
 %br
-

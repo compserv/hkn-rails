@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Admin::TutorController, "when an officer user is logged in" do
   before :each do
     login_as_officer
-    tutor = mock_model(Tutor, :availabilities => [], :adjacency => 1)
+    tutor = mock_model(Tutor, availabilities: [], adjacency: 1)
     allow(@current_user).to receive(:tutor) { tutor }
   end
 
@@ -153,7 +153,7 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
   describe "GET 'edit_schedule'" do
     before :each do
       @slots = [
-        mock_model(Slot, :wday => 1, :hour => 11, :room => 0, :tutors => [])
+        mock_model(Slot, wday: 1, hour: 11, room: 0, tutors: [])
       ]
       allow(Slot).to receive(:includes).and_return(@slots)
       allow(controller).to receive(:compute_stats).and_return(Hash.new({}), Hash.new({}))
@@ -166,9 +166,9 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
 
     it "grabs all Tutors who are available for a slot" do
       @defaults = {wday: 1, hour: 11, preference_level: 0, room_strength: 0, preferred_room: 0}
-      tutor0 = mock_model(Tutor, :adjacency => 1)
+      tutor0 = mock_model(Tutor, adjacency: 1)
       allow(tutor0).to receive_message_chain(:person, :fullname) { "loller"}
-      tutor1 = mock_model(Tutor, :adjacency => 1)
+      tutor1 = mock_model(Tutor, adjacency: 1)
       allow(tutor1).to receive_message_chain(:person, :fullname) { "skates"}
       avs = [
         mock_model(Availability, @defaults.merge(preference_level: 2, tutor: tutor0)),
@@ -182,8 +182,8 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
 
     it "grabs all Tutors assigned to a slot even if they are 'unavailable'" do
       all_tutors = [
-        mock_model(Tutor, :person => mock_model(Person, fullname: "Adam")),
-        mock_model(Tutor, :person => mock_model(Person, fullname: "Bert")),
+        mock_model(Tutor, person: mock_model(Person, fullname: "Adam")),
+        mock_model(Tutor, person: mock_model(Person, fullname: "Bert")),
       ]
       all_tutors_output = all_tutors.map { |x| [x.person.fullname, x.id] }
       allow(@slots.first).to receive(:tutors).and_return all_tutors
@@ -196,12 +196,12 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
       allow(committeeships).to receive(:find_by_semester).and_return true
 
       all_tutors = [
-        mock_model(Tutor, :person => mock_model(Person, fullname: "Adam", committeeships: committeeships)),
-        mock_model(Tutor, :person => mock_model(Person, fullname: "Bert", committeeships: committeeships)),
+        mock_model(Tutor, person: mock_model(Person, fullname: "Adam", committeeships: committeeships)),
+        mock_model(Tutor, person: mock_model(Person, fullname: "Bert", committeeships: committeeships)),
       ]
       all_tutors_output = all_tutors.map { |x| [x.person.fullname, x.id] }
       allow(Tutor).to receive_message_chain(:current, :includes).and_return all_tutors
-      get 'edit_schedule', :all_tutors => true
+      get 'edit_schedule', all_tutors: true
       assigns(:slot_options)[0][1][11][:opts].last[1].should eq(all_tutors_output)
     end
   end
@@ -224,7 +224,7 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
 
     describe "Save changes" do
       before :each do
-        s = mock_model(Slot, :wday => 1, :hour => 11, :room => 0, :tutors => mock_model("Fake", :current => []), :tutor_ids => [])
+        s = mock_model(Slot, wday: 1, hour: 11, room: 0, tutors: mock_model("Fake", current: []), tutor_ids: [])
         @slots = [s]
         @new_assignments = []
         assignments = {s.room.to_s => {s.wday.to_s => {s.hour.to_s => @new_assignments}}}
@@ -243,7 +243,7 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
 
       it "removes tutors which are no longer in a slot" do
         tutor = mock_model(Tutor)
-        tutors = mock_model("Fake", :current => [tutor])
+        tutors = mock_model("Fake", current: [tutor])
         expect(tutors).to receive(:delete).with(tutor)
         allow(@slots.first).to receive(:tutors) { tutors }
         update_schedule
@@ -252,7 +252,7 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
       it "adds tutors which are not already in a slot" do
         tutor0 = mock_model(Tutor)
         tutor1 = mock_model(Tutor)
-        tutors = mock_model("Fake", :current => [tutor0, tutor1])
+        tutors = mock_model("Fake", current: [tutor0, tutor1])
         slot = @slots.first
         allow(slot).to receive(:tutor_ids) { [tutor1.id] }
         @new_assignments << tutor0.id << tutor1.id
@@ -266,7 +266,7 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
       it "does not add tutors which are not already in a slot" do
         tutor0 = mock_model(Tutor)
         tutor1 = mock_model(Tutor)
-        tutors = mock_model("Fake", :current => [tutor0, tutor1])
+        tutors = mock_model("Fake", current: [tutor0, tutor1])
         slot = @slots.first
         allow(slot).to receive(:tutor_ids) { [tutor1.id] }
         @new_assignments << tutor0.id << tutor1.id
@@ -288,9 +288,9 @@ describe Admin::TutorController, "when a tutoring officer user is logged in" do
       it "clears tutoring assignments" do
         tutors = mock_model("Fake")
         slots = [
-          mock_model(Slot, :tutors => tutors),
-          mock_model(Slot, :tutors => tutors),
-          mock_model(Slot, :tutors => tutors),
+          mock_model(Slot, tutors: tutors),
+          mock_model(Slot, tutors: tutors),
+          mock_model(Slot, tutors: tutors),
         ]
         expect(tutors).to receive(:clear).exactly(3).times
         allow(Slot).to receive(:all) { slots }

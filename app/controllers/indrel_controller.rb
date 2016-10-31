@@ -1,7 +1,7 @@
 class IndrelController < ApplicationController
-  before_filter :authorize_indrel, :only => :indrel_db
+  before_filter :authorize_indrel, only: :indrel_db
 
-  #[:index, :contact_us].each {|a| caches_action a, :layout => false}
+  #[:index, :contact_us].each {|a| caches_action a, layout: false}
 
   def index
     @indrel_officers = Committeeship.current.committee("indrel").officers.map{|x|x.person}
@@ -41,7 +41,7 @@ class IndrelController < ApplicationController
     @errors << "Captcha validation failed." unless verify_recaptcha
 
     unless @errors.empty?
-      render :action => :infosessions_registration and return
+      render action: :infosessions_registration and return
     end
 
     IndrelMailer.infosession_registration(@fields, request.host).deliver
@@ -61,7 +61,7 @@ class IndrelController < ApplicationController
       .where("updated_at > :cutoff
               AND updated_at < :creation
               AND graduation_year >= :year",
-              { :cutoff => cutoff, :year => year, :creation => creation })
+              { cutoff: cutoff, year: year, creation: creation })
       .reorder("graduation_year desc")
       .group("graduation_year")
       .count
@@ -70,7 +70,7 @@ class IndrelController < ApplicationController
       .where("updated_at > :cutoff
               AND updated_at < :creation
               AND graduation_year < :year",
-              { :cutoff => cutoff, :year => year, :creation => creation })
+              { cutoff: cutoff, year: year, creation: creation })
       .count
 
     @sum = 0
@@ -111,7 +111,7 @@ class IndrelController < ApplicationController
     @errors << "Captcha validation failed." unless verify_recaptcha
 
     unless @errors.empty?
-      render :action => :resume_books_order and return
+      render action: :resume_books_order and return
     end
 
     IndrelMailer.resume_book_order(@fields, request.host).deliver

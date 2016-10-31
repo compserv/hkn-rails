@@ -1,4 +1,4 @@
--#%script{:src => "https://www.google.com/jsapi", :type => "text/javascript"}
+-#%script{src: "https://www.google.com/jsapi", type: "text/javascript"}
   :javascript
     google.load("visualization", "1", {packages:["corechart"]});
 
@@ -86,7 +86,7 @@
         - klass, ratings = result[:klass], result[:ratings]
         - ratings.each do |rating|
           - instructor, effectiveness, worthwhileness = rating[:instructor], rating[:effectiveness], rating[:worthwhile]
-          %tr{:class => @results.index(result) % 2 == 0 ? "even" : "odd"}
+          %tr{class: @results.index(result) % 2 == 0 ? "even" : "odd"}
             - if rating == ratings.first
               %td{rowspan: ratings.size}
                 %span.semester= link_to klass.proper_semester, surveys_klass_path(klass)
@@ -96,15 +96,15 @@
               %td
                 = rating_and_bar rating[qname], @overall[qname][:max]
       %tr
-        %th{:colspan => "2"} Overall Rating
+        %th{colspan: "2"} Overall Rating
         %th Teaching Effectiveness
         %th How worthwhile was this course?
       %tr
-        %td{:colspan => "2"}
+        %td{colspan: "2"}
         - [:effectiveness, :worthwhile].each do |qname|
           %td
             = rating_and_bar @overall[qname][:score], @overall[qname][:max]
 .clear
-%div{:style => "text-align: center; padding-top: 1em;"}
-  = render :partial => 'emailhkn'
+%div{style: "text-align: center; padding-top: 1em;"}
+  = render partial: 'emailhkn'
   = link_to "[Info about this page]", coursesurveys_how_to_path

@@ -18,13 +18,13 @@
 class Resume < ActiveRecord::Base
   belongs_to :person
 
-  validates :overall_gpa, :numericality => true
+  validates :overall_gpa, numericality: true
 #  validates :major_gpa,
-  validates :resume_text, :presence => true
-  validates :graduation_year, :numericality => true
-  validates :graduation_semester, :presence => true
-  validates :file, :presence => true
-  validates :included, :inclusion => [true,false]
+  validates :resume_text, presence: true
+  validates :graduation_year, numericality: true
+  validates :graduation_semester, presence: true
+  validates :file, presence: true
+  validates :included, inclusion: [true,false]
 
   after_create :validate_pdf
   before_destroy :delete_file
@@ -35,8 +35,8 @@ class Resume < ActiveRecord::Base
 
   scope :since, lambda { |date| where(['resumes.created_at >= ?', date]) }
 
-  scope :approved, lambda { where(:included => true) }  # 'included' is reserved
-  scope :excluded, lambda { where(:included => false) }
+  scope :approved, lambda { where(included: true) }  # 'included' is reserved
+  scope :excluded, lambda { where(included: false) }
 
   def delete_file
 

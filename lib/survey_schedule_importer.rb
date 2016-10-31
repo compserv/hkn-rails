@@ -45,8 +45,8 @@ module CourseSurveys
     end
 
     DefaultOptions = {
-      :ignore      => [:lab, :dis, :rec, :ind],
-      :interactive => true
+      ignore:      [:lab, :dis, :rec, :ind],
+      interactive: true
     }
 
     PendingCommitOrder = [
@@ -67,11 +67,11 @@ module CourseSurveys
       @current_klass = nil
       @semester = nil
       @pending_commits = {
-        :courses => [],
-        :klasses => [],
-        :instructors => [],
-        :instructorships => [],
-        :coursesurveys => []
+        courses: [],
+        klasses: [],
+        instructors: [],
+        instructorships: [],
+        coursesurveys: []
       }
 
       @debug   = true
@@ -137,9 +137,9 @@ module CourseSurveys
 
             raise "section wtf #{section}" if section.to_i == 0
             value = {
-                      :name => name,
-                      :section => section.to_i,
-                      :type => type.downcase.to_sym
+                      name: name,
+                      section: section.to_i,
+                      type: type.downcase.to_sym
             }
 
           when 'Location'
@@ -275,7 +275,7 @@ module CourseSurveys
 
             # Find department, course
             dept, prefix, num, suffix = klass['Course'][:name].scan( /(.*) ([A-Z]*)(\d+)([A-Z]*)/ ).first
-            num = {:prefix => prefix, :course_number => num.to_i, :suffix => suffix}
+            num = {prefix: prefix, course_number: num.to_i, suffix: suffix}
             dept   = Department.find_by_name(dept.titleize)
             klass[:num] = num
             klass[:dept] = dept

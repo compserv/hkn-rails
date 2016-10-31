@@ -1,4 +1,4 @@
-<%= form_for @resume, :html => { :multipart => true } do |f| %>
+<%= form_for @resume, html: { multipart: true } do |f| %>
 	<% if @resume.errors.any? %>
   <div id="errorExplanation">
     <h2><%= pluralize(@resume.errors.count, "error") %> prohibited this résumé from being uploaded:</h2>
@@ -10,7 +10,7 @@
   </div>
   <% end %>
 	<% @f = f %>
-	<%= render :partial => "current_resume", :locals => { :f  => @f }%>
+	<%= render partial: "current_resume", locals: { f:  @f }%>
 	<% @current_resume = @person.resumes.first %>
 	<div class="field">
 		<%= f.label :overall_gpa, "Overall GPA" %>
@@ -31,11 +31,11 @@
 		<!-- Spring should be selected by default unless most recent resume has a fall grad date -->
     <%= f.label :graduation_semester %>
 		<% if @current_resume && !@resume.graduation_semester && @current_resume.graduation_semester == "fall"
-			   fall_options = {:checked => true}
+			   fall_options = {checked: true}
 			   spring_options = {}
 		   else
 				 fall_options = {}
-				 spring_options = {:checked => true}
+				 spring_options = {checked: true}
 		   end
 		 %>
 	  <div class="glue">
@@ -50,7 +50,7 @@
 		if @resume.graduation_year
 			grad_year_options = {}
 		elsif @current_resume # A valid current resume should have a non-nil grad year!
-			grad_year_options = {:value => @current_resume.graduation_year}
+			grad_year_options = {value: @current_resume.graduation_year}
 		else
 			grad_year_options = {}
 		end
@@ -64,11 +64,11 @@
 	<div class="field">
 		<%= f.label :file, "Resume" %>
 		<div class="glue">
-			<%= f.file_field(:file, :accept => 'application/pdf') %><br />
+			<%= f.file_field(:file, accept: 'application/pdf') %><br />
 			Please provide a PDF of your résumé. You should contact <a href="mailto:indrel@hkn.eecs.berkeley.edu">indrel@hkn.eecs.berkeley.edu</a> if you can't generate a PDF file.
 		</div>
 	</div>
-	<%= f.hidden_field :person, :value=>@person.id%>
+	<%= f.hidden_field :person, value: @person.id%>
   <div class="submitglue field-submit">
     <%= f.submit "Upload Résumé" %>
   </div>

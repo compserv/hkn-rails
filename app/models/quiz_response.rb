@@ -17,15 +17,15 @@ class QuizResponse < ActiveRecord::Base
 
   belongs_to :candidate
 
-  validates :number, :presence => true
-  validates :candidate, :presence => true
+  validates :number,    presence: true
+  validates :candidate, presence: true
 
   # @return [Array<Number>] +[major, minor]+
   # @example
-  #   QuizResponse.new(:number => :q7_2).split_number
+  #   QuizResponse.new(number: :q7_2).split_number
   #   => [7, 2]
   def split_number
-    self.number.to_s.scan( /q(\d+)(?:_(\d+))?\z/ ).first.collect {|d| d.nil? ? nil : d.to_i}
+    self.number.to_s.scan(/q(\d+)(?:_(\d+))?\z/).first.collect { |d| d.nil? ? nil : d.to_i }
   end
 
   # Grade single-response questions, like founding year.
@@ -34,7 +34,7 @@ class QuizResponse < ActiveRecord::Base
   def grade
     raise ArgumentError unless number.present?
     r = response.strip
-    self.correct = !! case self.number.to_s.scan( /(q\d+)(_\d+)?/ ).first.first.to_sym
+    self.correct = !! case self.number.to_s.scan(/(q\d+)(_\d+)?/).first.first.to_sym
 
     # HKN founding university (full name)
     when :q1
@@ -164,11 +164,11 @@ class QuizResponse < ActiveRecord::Base
   def all_correct?(q_num, num_responses, &block)
     raise ArgumentError.new("No candidate") unless self.candidate
 
-    numbers = (1..num_responses).collect {|n| [q_num.to_s, n].join('_')}
-    responses = self.candidate.quiz_responses.select {|r| numbers.include? r.number} # do it this way for testing
+    numbers = (1..num_responses).collect { |n| [q_num.to_s, n].join('_') }
+    responses = self.candidate.quiz_responses.select { |r| numbers.include? r.number } # do it this way for testing
     return false unless responses.count == num_responses
 
-    corrects = responses.collect {|r| yield r.response}
+    corrects = responses.collect { |r| yield r.response }
     responses.each do |r|
       r.correct = !!(yield r.response)
       r.update_attribute :correct, r.correct unless r.new_record?

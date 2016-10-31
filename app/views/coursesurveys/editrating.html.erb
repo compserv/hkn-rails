@@ -1,5 +1,5 @@
 <h2>Editing answer <%= @answer.id %> for <%= @answer.survey_question.text %></h2>
-<% form_tag(coursesurveys_update_rating_path, :method => 'post') do |f| %>
+<% form_tag(coursesurveys_update_rating_path, method: 'post') do |f| %>
 
 <table>
     <tr>
@@ -9,7 +9,7 @@
     <% @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key| %>
         <tr>
             <td><%= label_tag key.to_s.first, key %></td>
-            <td><%= number_field_tag "frequencies[#{key.to_s}]", @frequencies[key], {:min => 0, :step => 1} %></td>
+            <td><%= number_field_tag "frequencies[#{key.to_s}]", @frequencies[key], {min: 0, step: 1} %></td>
         </tr>
     <% end #frequencies %>
 </table>

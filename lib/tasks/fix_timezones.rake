@@ -25,7 +25,7 @@ namespace :zones do
 
     ActiveRecord::Base.transaction do
       models.each_pair do |c, cols|
-        c.find(:all, :readonly=>false).each do |m|   # why readonly? no idea. that's just the way it is. Event has issues.
+        c.find(:all, readonly: false).each do |m|   # why readonly? no idea. that's just the way it is. Event has issues.
           puts "Updating #{c.to_s} #{m.id}"
           m.update_attributes cols.zip((cols+[:created_at,:updated_at]).collect {|col| m.send(col)+offset})
         end

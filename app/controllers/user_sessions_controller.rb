@@ -1,6 +1,6 @@
 class UserSessionsController < ApplicationController
-  #before_filter :require_no_user, :only => [:new, :create]
-  #before_filter :require_user, :only => :destroy
+  #before_filter :require_no_user, only: [:new, :create]
+  #before_filter :require_user, only: :destroy
 
   private
   def use_recaptcha?
@@ -30,7 +30,7 @@ class UserSessionsController < ApplicationController
     # 2) Successful credentials but account not approved
     # 3) Failed login
 
-    if user and (use_recaptcha? ? verify_recaptcha(:model=>@user_session) : true) && @user_session.save
+    if user and (use_recaptcha? ? verify_recaptcha(model: @user_session) : true) && @user_session.save
       flash[:notice] = "Login successful!"
       session[:login_attempts] = 0
       if params[:referer]
@@ -40,14 +40,14 @@ class UserSessionsController < ApplicationController
       end
     elsif @user_session.errors[:base].size == 1 and @user_session.errors[:base].include? "Your account is not approved"
       @messages << "Your user account has not been approved yet. Please wait at least 24 hours for your account to be approved."
-      render :action => :new
+      render action: :new
     else
       session[:login_attempts] ||= 0
       session[:login_attempts] += 1
       @use_captcha = true if use_recaptcha?
 
       @messages << "Login was unsuccessful."
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -64,7 +64,7 @@ class UserSessionsController < ApplicationController
 
   def reauthenticate
     respond_to do |format|
-      format.html { render :layout => false }
+      format.html { render layout: false }
     end
   end
 
@@ -72,9 +72,9 @@ class UserSessionsController < ApplicationController
     @success = !!(@real_current_user && @real_current_user.valid_ldap_or_password?(params[:password]))
     if @success
       current_user_session.save
-      render :js => "puts('Thanks. You can run superuser things now.');"
+      render js: "puts('Thanks. You can run superuser things now.');"
     else
-      render :js => "puts('Sorry, try again.'); reauthenticate();"
+      render js: "puts('Sorry, try again.'); reauthenticate();"
     end
   end
 

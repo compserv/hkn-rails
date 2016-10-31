@@ -4,6 +4,6 @@
   </div>
 <%- else -%>
   <%- @notifications.each do |n| -%>
-    <%= render 'notifications/notification', :object => n %>
+    <%= render 'notifications/notification', object: n %>
   <%- end -%>
 <%- end -%>

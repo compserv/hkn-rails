@@ -32,7 +32,7 @@
               $("textarea[name=description]").val("");
 
               $("#challenges").load("<%= update_challenges_path %>");
-              //$("#challenges").append("<%= escape_javascript(render :partial => "challenges") %>");
+              //$("#challenges").append("<%= escape_javascript(render partial: "challenges") %>");
 
             } else{
               $("#request_challenge_errors").html(data[1]);
@@ -47,7 +47,7 @@
 <% end %>
 <div id="sidebar" class="trans-bg">
   <h2>Upcoming Events <%= link_to "(see calendar)", events_calendar_path %></h2>
-  <%= render :partial => "events/upcoming" %>
+  <%= render partial: "events/upcoming" %>
 
   <h2>Important Information</h2>
   [Coming Soon]
@@ -100,7 +100,7 @@
         <span class="<%= "req_status " + (@done["challenges"] ? "status_done" : "status_notdone") %>"></span>
         Challenges</h3>
       <ul id="challenges" class="semi-plain">
-        <%= render :partial => "challenges"%>
+        <%= render partial: "challenges"%>
       </ul>
 
       <div id="request_challenge_container">
@@ -108,7 +108,7 @@
         <span id="request_challenge_errors"></span>
         <div class="field">
           <%= label_tag "Find Officer" %>
-          <%= text_field_tag "officer", "", :id => "officer" %>
+          <%= text_field_tag "officer", "", id: "officer" %>
         </div>
 
         <div class="field">
@@ -121,10 +121,10 @@
             <%= text_area_tag "description"%>
         </div>
 
-        <%= hidden_field_tag "officer_id", "", :id => "officer_id" %>
+        <%= hidden_field_tag "officer_id", "", id: "officer_id" %>
 
         <p>
-        <%= submit_tag "Send Request", :id => "challenge_submit" %>
+        <%= submit_tag "Send Request", id: "challenge_submit" %>
         </p>
       </div>
 
@@ -149,7 +149,7 @@
       Course Surveys</h3>
 <% if Property.get_or_create.coursesurveys_active %>
     <%= link_to 'View Course Surveys', :coursesurvey_signup %>
-    <%= render :partial => "coursesurveys" %>
+    <%= render partial: "coursesurveys" %>
 <% else %>
     [Coming Soon]
 <% end %>
@@ -157,4 +157,3 @@
 
   </div>
 </div>
-

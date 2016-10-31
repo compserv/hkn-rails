@@ -20,20 +20,20 @@
 class Course < ActiveRecord::Base
   belongs_to :department
   belongs_to :course_type
-  has_many :course_preferences, :dependent => :destroy
-  has_many :tutors, -> { uniq }, :through => :course_preferences
-  has_many :klasses, -> { order "semester DESC, section DESC" }, :dependent => :destroy
-  has_many :coursesurveys, :through => :klasses
-  #has_many :instructors, :source => :klasses, :conditions => ['klasses.course_id = id'], :class_name => 'Klass'
-  has_many :instructorships, :through => :klasses
-  has_many :course_prereqs, :foreign_key => :course
-  has_many :post_classes, :through => :course_prereqs, :source => :prereq
+  has_many :course_preferences, dependent: :destroy
+  has_many :tutors, -> { uniq }, through: :course_preferences
+  has_many :klasses, -> { order "semester DESC, section DESC" }, dependent: :destroy
+  has_many :coursesurveys, through: :klasses
+  #has_many :instructors, source: :klasses, conditions: ['klasses.course_id = id'], class_name: 'Klass'
+  has_many :instructorships, through: :klasses
+  has_many :course_prereqs, foreign_key: :course
+  has_many :post_classes, through: :course_prereqs, source: :prereq
   has_one :course_chart
 
   has_many :exams
-  validates :department_id, :presence => true
-  validates :course_number, :presence => true
-  validates_uniqueness_of :course_number, :scope => [:department_id,:prefix,:suffix]
+  validates :department_id, presence: true
+  validates :course_number, presence: true
+  validates_uniqueness_of :course_number, scope: [:department_id,:prefix,:suffix]
 
   #scope :all, order("prefix, courses.course_number, suffix")
   scope :ordered, -> { order("courses.course_number, prefix, suffix") }
@@ -45,10 +45,10 @@ class Course < ActiveRecord::Base
 
   # Sunspot
   searchable do
-    text :name, :stored => true, :boost => 2.0
-    text :description, :stored => true
-    integer :course_number, :stored => true
-    text :course_string, :boost => 2.0 do |c|
+    text :name, stored: true, boost: 2.0
+    text :description, stored: true
+    integer :course_number, stored: true
+    text :course_string, boost: 2.0 do |c|
       [c.prefix, c.course_number.to_s, c.suffix].join
     end
     string :course_abbr
@@ -56,8 +56,8 @@ class Course < ActiveRecord::Base
     text :dept_abbrs do |c|
       [c.department.name, c.department.abbr, c.department.nice_abbrs].join(' ')
     end
-    integer :department_id, :references => Department
-    boolean :invalid, :using => :invalid?
+    integer :department_id, references: Department
+    boolean :invalid, using: :invalid?
   end
   # end sunspot
 
@@ -67,12 +67,12 @@ class Course < ActiveRecord::Base
   # suffix refers to all letters that appear after the numbers, e.g. the A in 61A, the M in 145M, the AC in E130AC
   # This is DIFFERENT from the old Django site's definitions
 
-  def instructors(conds={:ta=>false})
+  def instructors(conds={ta: false})
     Instructor.find self.klasses.collect(&:instructor_ids).flatten.uniq
   end
 
   def tas
-    instructors(:ta=>true)
+    instructors(ta: true)
   end
 
   def classification
@@ -86,11 +86,11 @@ class Course < ActiveRecord::Base
   def average_rating(semester=nil)
     # BE CAREFUL, THIS IS KIND OF EXPENSIVE
     r = SurveyAnswer.where(
-      :survey_question_id => SurveyQuestion.find_by_keyword(:prof_eff),
-      :id => self.instructorships.collect(&:survey_answer_ids).flatten
+      survey_question_id: SurveyQuestion.find_by_keyword(:prof_eff),
+      id: self.instructorships.collect(&:survey_answer_ids).flatten
     )
     if semester
-      r = r.includes(:instructorship => :klass).where(:klasses => {:semester => semester})
+      r = r.includes(instructorship: :klass).where(klasses: {semester: semester})
     end
     r = r.average(:mean)
     return r
@@ -161,7 +161,7 @@ class Course < ActiveRecord::Base
     #raise "Course abbreviation not well formatted: #{dept_abbr} #{full_course_number}" if course_number.blank? or department.nil?
     return nil if course_number.blank? or department.nil?
 
-    Course.where(:department_id => department.id, :course_number => course_number, :suffix => suffix, :prefix => prefix).first
+    Course.where(department_id: department.id, course_number: course_number, suffix: suffix, prefix: prefix).first
   end
 
   def Course.find_all_by_department_abbr(dept_abbr)
@@ -173,7 +173,7 @@ class Course < ActiveRecord::Base
     @department = Department.find_by_nice_abbr(dept_abbr)
     if !@department.nil?
       # TODO fix query to be more efficient
-      Course.where(:department_id => @department.id).ordered.reject {|course| course.exams.empty?}
+      Course.where(department_id: @department.id).ordered.reject {|course| course.exams.empty?}
     end
   end
 end

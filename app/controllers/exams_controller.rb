@@ -1,7 +1,7 @@
 class ExamsController < ApplicationController
-  before_filter :authorize_tutoring, :only => [:create, :new]
+  before_filter :authorize_tutoring, only: [:create, :new]
 
-# [:index, :department, :course].each {|a| caches_action a, :layout => false}
+# [:index, :department, :course].each {|a| caches_action a, layout: false}
 
   # GET /exams
   # GET /exams.xml
@@ -28,21 +28,21 @@ class ExamsController < ApplicationController
     course = Course.find_by_id(params[:exam][:course_id])
     unless course
       flash[:notice] = "Not a valid course."
-      redirect_to :action => :new
+      redirect_to action: :new
       return
     end
 
     klass = Klass.find_by_course_id_and_semester(course_id, semester)
     unless klass
       flash[:notice] = "Could not find that class.  Maybe the year or semester is wrong."
-      redirect_to :action => :new
+      redirect_to action: :new
       return
     end
 
     exam_file = params[:file_info]
     unless exam_file
       flash[:notice] = "Please attach an exam file"
-      redirect_to :action => :new
+      redirect_to action: :new
       return
     end
 
@@ -66,7 +66,7 @@ class ExamsController < ApplicationController
       # is for finals
       if params[:exam][:number].empty? or params[:exam][:number].to_i <= 0
         flash[:notice] = "Must supply number representing which exam this                          is."
-        redirect_to :action => :new
+        redirect_to action: :new
         return
       else
         exam_num = exam_type_mapping[params[:exam][:exam_type]]+params[:exam][:number]
@@ -100,19 +100,19 @@ class ExamsController < ApplicationController
       flash[:notice] = "An error occurred.  Currently supported file
                         types are #{allowed_file_extensions.join(', ')}.
                         Make sure the exam file is one of these"
-      redirect_to :action => :new
+      redirect_to action: :new
       return
     end
 
     # check to see if we have that exam already
-    existing = Exam.where({ :klass_id => exam_constructor_args[:klass_id],
-                            :course_id => exam_constructor_args[:course_id],
-                            :exam_type => exam_constructor_args[:exam_type],
-                            :number => exam_constructor_args[:number],
-                            :is_solution => exam_constructor_args[:is_solution]})
+    existing = Exam.where({ klass_id: exam_constructor_args[:klass_id],
+                            course_id: exam_constructor_args[:course_id],
+                            exam_type: exam_constructor_args[:exam_type],
+                            number: exam_constructor_args[:number],
+                            is_solution: exam_constructor_args[:is_solution]})
     unless existing.empty?
       flash[:notice] = "An uploaded exam already exists for that input"
-      redirect_to :action => :new
+      redirect_to action: :new
       return
     end
 
@@ -120,7 +120,7 @@ class ExamsController < ApplicationController
       @exam = Exam.new(exam_params)
       if File.exists? exam_path
         flash[:notice] = "An uploaded exam already exists for that input"
-        redirect_to :action => :new
+        redirect_to action: :new
         return
       end
 
@@ -130,7 +130,7 @@ class ExamsController < ApplicationController
         f.write(exam_file.read)
         @exam.save
         flash[:notice] = "Exam Uploaded!"
-        redirect_to :action => :new
+        redirect_to action: :new
       end
     ensure
       f.close if f
@@ -150,7 +150,7 @@ class ExamsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @exams }
+      format.xml  { render xml: @exams }
     end
   end
 
@@ -159,7 +159,7 @@ class ExamsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @exams }
+      format.xml  { render xml: @exams }
     end
   end
 
@@ -195,8 +195,8 @@ class ExamsController < ApplicationController
 
     # multiple results
     respond_to do |format|
-      format.html { render :action => :search }
-      format.xml { render :xml => @results }
+      format.html { render action: :search }
+      format.xml { render xml: @results }
     end
   end
 
@@ -205,7 +205,7 @@ class ExamsController < ApplicationController
     full_course_num = params[:full_course_number].upcase
     @course = Course.lookup_by_short_name(dept_abbr, full_course_num)
     return redirect_to exams_search_path([dept_abbr,full_course_num].compact.join(' ')) unless @course
-    klasses = Klass.where(:course_id => @course.id).order('semester DESC').reject {|klass| klass.exams.empty?}
+    klasses = Klass.where(course_id: @course.id).order('semester DESC').reject {|klass| klass.exams.empty?}
     @exam_path = '/examfiles/' # TODO clean up
 
     @results = klasses.collect do |klass|

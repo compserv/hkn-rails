@@ -13,15 +13,15 @@ class LocationsController < ApplicationController
                      end
 
     @search_opts = {'sort' => "name"}.merge params
-    opts = { :page => params[:page], :per_page => per_page }
+    opts = { page: params[:page], per_page: per_page }
 
     @locations = Location.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @locations }
+      format.xml  { render xml: @locations }
       format.js {
-        render :partial => 'list'
+        render partial: 'list'
       }
     end
   end
@@ -33,7 +33,7 @@ class LocationsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @location }
+      format.xml  { render xml: @location }
     end
   end
 
@@ -44,7 +44,7 @@ class LocationsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @location }
+      format.xml  { render xml: @location }
     end
   end
 
@@ -62,10 +62,10 @@ class LocationsController < ApplicationController
       if @location.save
         flash[:notice] = 'Location was successfully created.'
         format.html { redirect_to(@location) }
-        format.xml  { render :xml => @location, :status => :created, :location => @location }
+        format.xml  { render xml: @location, status: :created, location: @location }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @location.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -81,8 +81,8 @@ class LocationsController < ApplicationController
         format.html { redirect_to(@location) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @location.errors, status: :unprocessable_entity }
       end
     end
   end

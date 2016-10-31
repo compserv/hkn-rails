@@ -32,7 +32,7 @@ describe CommitteePreference do
   before(:each) do
     @candidate = mock_model(Candidate)
     @group = mock_model(Group)
-    @cp = CommitteePreference.create(:candidate => @candidate, :group => @group)
+    @cp = CommitteePreference.create(candidate: @candidate, group: @group)
   end
 
   it "should be valid when supplying both a candidate and a group" do

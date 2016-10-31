@@ -13,11 +13,11 @@ describe DeptTourController do
     before :each do
       d = (DateTime.now.utc + 1.week).beginning_of_day
       @good_params = {
-        :email              => 'babakuemasta@berkeley.edu',
-        :email_confirmation => 'babakuemasta@berkeley.edu',
-        :name               => 'Babakue Masta',
-        :phone              => '666-6666',
-        :date               => (d + 11.hours).to_s
+        email:              'babakuemasta@berkeley.edu',
+        email_confirmation: 'babakuemasta@berkeley.edu',
+        name:               'Babakue Masta',
+        phone:              '666-6666',
+        date:               (d + 11.hours).to_s
       }
     end
 
@@ -29,11 +29,11 @@ describe DeptTourController do
 
     it "should not accept invalid input" do
       bad_params = {
-        :email              => "not an!!!!~~`email@WTFFFFFMAN",
-        :email_confirmation => "LOLOOL",
-        :name               => "",
-        :phone              => "",
-        :date               => Date.today.to_s
+        email:              "not an!!!!~~`email@WTFFFFFMAN",
+        email_confirmation: "LOLOOL",
+        name:               "",
+        phone:              "",
+        date:               Date.today.to_s
       }
       post 'signup', @good_params.update(bad_params)
       response.should_not redirect_to dept_tour_success_path

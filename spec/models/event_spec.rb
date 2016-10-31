@@ -33,16 +33,19 @@ end
 
 describe Event do
   before(:each) do
-    @good_opts = {:name => "Fun Event",
-      :start_time => DateTime.parse("2010-05-26 18:00:00 UTC"),
-      :end_time => DateTime.parse("2010-05-26 20:00:00 UTC"),
-      :location => "The Woz",
-      :description => "Very fun event",
-      :event_type => mock_model(EventType)
+    @good_opts = {
+      name: "Fun Event",
+      start_time: DateTime.parse("2010-05-26 18:00:00 UTC"),
+      end_time: DateTime.parse("2010-05-26 20:00:00 UTC"),
+      location: "The Woz",
+      description: "Very fun event",
+      event_type: mock_model(EventType)
     }
-    @bad_opts = {:name => "Fun Event",
-      :start_time => DateTime.parse("2010-05-26 18:00:00 UTC"),
-      :end_time => DateTime.parse("2010-05-26 16:00:00 UTC")
+
+    @bad_opts = {
+      name: "Fun Event",
+      start_time: DateTime.parse("2010-05-26 18:00:00 UTC"),
+      end_time: DateTime.parse("2010-05-26 16:00:00 UTC")
     }
   end
 

@@ -1,7 +1,7 @@
 <%# http://wiki.github.com/mislav/will_paginate/ajax-pagination %>
 <div id="ajax-wrapper">
 <%= spinner %>
-<%= will_paginate @people, :class => "ajax-controls ajax" %>
+<%= will_paginate @people, class: "ajax-controls ajax" %>
 
 <table class="table">
   <tr class="ajax-controls">
@@ -19,7 +19,7 @@
       <%= image_tag person.picture unless person.picture.blank? %>
     </td>
     <td>
-      <%= link_to person.fullname, profile_path(:login => person.username) %>
+      <%= link_to person.fullname, profile_path(login: person.username) %>
       <div class="small"><%= person.status %></div>
     </td>
     <td><%= raw html_obfuscate person.email if !person.private || @auth['csec'] || @auth['vp'] %></td>
@@ -30,5 +30,5 @@
 <% end %>
 
 </table>
-  <%= will_paginate @people, :class => "ajax-controls ajax" %>
+  <%= will_paginate @people, class: "ajax-controls ajax" %>
 </div>

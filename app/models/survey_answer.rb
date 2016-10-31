@@ -18,9 +18,9 @@ class SurveyAnswer < ActiveRecord::Base
   belongs_to :instructorship
   belongs_to :survey_question
 
-  has_one :instructor, :through => :instructorship
-  has_one :klass,      :through => :instructorship
-  has_one :course,     :through => :klass
+  has_one :instructor, through: :instructorship
+  has_one :klass,      through: :instructorship
+  has_one :course,     through: :klass
 
   validates_presence_of :instructorship
   validates_presence_of :survey_question
@@ -41,7 +41,7 @@ class SurveyAnswer < ActiveRecord::Base
       num_scores -= f['Omit']
     end
     if num_scores == 0
-      self.update_attributes(:mean => 0, :median => 0, :deviation => 0)
+      self.update_attributes(mean: 0, median: 0, deviation: 0)
       return
     end
     median_counter = num_scores/2
@@ -65,7 +65,7 @@ class SurveyAnswer < ActiveRecord::Base
     end
     self.deviation = Math.sqrt(self.deviation/num_scores.to_f)
 
-#    self.update_attributes(:mean => self.mean, :median => self.median, :deviation => self.deviation)
+#    self.update_attributes(mean: self.mean, median: self.median, deviation: self.deviation)
     self.save!
 
   end #recompute_stats!

@@ -5,7 +5,7 @@ namespace :bugfix do
     studinsts = []
     puts "Looking..."
     Instructor.all.each do |i|
-      studinsts << i if i.instructorships.exists?(:ta => true) && i.instructorships.exists?(:ta => false)
+      studinsts << i if i.instructorships.exists?(ta: true) && i.instructorships.exists?(ta: false)
     end
 
     studinsts = studinsts.collect {|i| [true, i]}

@@ -3,8 +3,8 @@ class CreateRsvps < ActiveRecord::Migration
     create_table :rsvps do |t|
       t.string :confirmed
       t.text :confirm_comment
-      t.references :person, :null => false
-      t.references :event, :null => false
+      t.references :person, null: false
+      t.references :event, null: false
       t.text :comment
       t.integer :transportation
 

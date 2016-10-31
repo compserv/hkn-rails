@@ -48,10 +48,10 @@ end
 
 describe Exam do
   before(:each) do
-    @exam = Exam.create( :klass => mock_model(Klass),
-      :course => mock_model(Course),
-      :filename => 'CS3_sp10_mt3.pdf',
-      :is_solution => true )
+    @exam = Exam.create( klass: mock_model(Klass),
+      course: mock_model(Course),
+      filename: 'CS3_sp10_mt3.pdf',
+      is_solution: true )
     @exam.exam_type = 1
   end
 

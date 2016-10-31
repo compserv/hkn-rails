@@ -1,6 +1,6 @@
 class ChangeRsvps < ActiveRecord::Migration
   def self.up
-    create_table :blocks_rsvps, :id => false do |t|
+    create_table :blocks_rsvps, id: false do |t|
       t.integer :block_id
       t.integer :rsvp_id
     end

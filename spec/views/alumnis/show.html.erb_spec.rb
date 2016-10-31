@@ -3,12 +3,12 @@ require 'rails_helper'
 describe "alumnis/show.html.erb" do
   before(:each) do
     @alumni = assign(:alumni, stub_model(Alumni,
-      :grad_semester => "Grad Semester",
-      :grad_school => "Grad School",
-      :job_title => "Job Title",
-      :company => "Company",
-      :salary => 1,
-      :person => stub_model(Person, :first_name => "FARTY", :last_name=>"MCFARTERSON")
+      grad_semester: "Grad Semester",
+      grad_school: "Grad School",
+      job_title: "Job Title",
+      company: "Company",
+      salary: 1,
+      person: stub_model(Person, first_name: "FARTY", last_name: "MCFARTERSON")
     ))
   end
 

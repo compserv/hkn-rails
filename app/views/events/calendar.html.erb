@@ -1,14 +1,14 @@
 <h1>HKN Events Calendar</h1>
 
-<%= render :partial => 'calendar' %>
+<%= render partial: 'calendar' %>
 
 <%= ajaxify_links %>
 
 <div style="float:right;text-align:right">
-  <%= link_to "public event feed", events_ical_url({:format => :ics, :protocol => "webcal"}) %>
+  <%= link_to "public event feed", events_ical_url({ format: :ics, protocol: "webcal" }) %>
   <% if @current_user %>
     <!-- figure out auth for feeds later -->
-    <br /><%= link_to "download my visible events", ical_events_url({:format => :ics})%>
+    <br /><%= link_to "download my visible events", ical_events_url({ format: :ics })%>
   <% end %>
   <br /><a href="http://www.google.com/calendar/render?cid=http%3A%2F%2Fwebcal%3A%2F%2Fhkn.eecs.berkeley.edu%2Fevents%2Fhkn.ics" target="_blank"><img src="//www.google.com/calendar/images/ext/gc_button1.gif" border=0></a>
 </div>

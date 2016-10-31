@@ -1,7 +1,7 @@
 class AddBookkeepingToPeople < ActiveRecord::Migration
   def self.up
     change_table :people do |t|
-      t.integer   :failed_login_count,  :null => false, :default => 0
+      t.integer   :failed_login_count,  null: false, default: 0
       t.datetime  :current_login_at
     end
   end

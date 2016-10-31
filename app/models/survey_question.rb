@@ -14,8 +14,8 @@ class SurveyQuestion < ActiveRecord::Base
   KEYWORDS = [:none, :prof_eff, :worthwhile, :ta_eff]
 
 
-  validates :text, :presence => true
-  validates :max,  :presence => true
+  validates :text, presence: true
+  validates :max,  presence: true
 
   searchable do
     text :text
@@ -31,7 +31,7 @@ class SurveyQuestion < ActiveRecord::Base
   end
 
   def SurveyQuestion.find_by_keyword(value)
-    where(:keyword => KEYWORDS.index(value)).first
+    where(keyword: KEYWORDS.index(value)).first
   end
 
   def SurveyQuestion.keyword_to_i(value)

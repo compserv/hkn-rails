@@ -19,17 +19,17 @@
 #
 
 class Event < ActiveRecord::Base
-  has_many :blocks, :dependent => :destroy
-  has_many :rsvps, :dependent => :destroy
+  has_many :blocks, dependent: :destroy
+  has_many :rsvps,  dependent: :destroy
   belongs_to :event_type
-  belongs_to :view_permission_group, { :class_name => "Group" }
-  belongs_to :rsvp_permission_group, { :class_name => "Group" }
-  validates :name, :presence => true
-  validates :location, :presence => true
-  validates :description, :presence => true
-  validates :event_type, :presence => true
-  validates :start_time, :presence => true
-  validates :end_time, :presence => true
+  belongs_to :view_permission_group, { class_name: "Group" }
+  belongs_to :rsvp_permission_group, { class_name: "Group" }
+  validates :name,        presence: true
+  validates :location,    presence: true
+  validates :description, presence: true
+  validates :event_type,  presence: true
+  validates :start_time,  presence: true
+  validates :end_time,    presence: true
   validate :valid_time_range
 
   scope :past,     -> { joins(:event_type).where(['start_time < ?', Time.now]) }
@@ -39,7 +39,7 @@ class Event < ActiveRecord::Base
 
   scope :with_permission, Proc.new { |user|
     if user.nil?
-      where(:view_permission_group_id => nil)
+      where(view_permission_group_id: nil)
     else
       where('view_permission_group_id IN (?) OR view_permission_group_id IS NULL', user.groups.map{|group| group.id})
     end
@@ -58,7 +58,6 @@ class Event < ActiveRecord::Base
     else
       events
     end
-
   end
 
   def valid_time_range
@@ -123,5 +122,4 @@ class Event < ActiveRecord::Base
       rsvp.person.send_sms! message
     end
   end
-
 end

@@ -26,7 +26,7 @@
     <p>Sincerely,</p>
     <ul class="plain">
       <% Committeeship.current.committee("indrel").officers.map{|x|x.person}.each do |person| %>
-        <li><%= mail_to "#{person.username}@hkn.eecs.berkeley.edu", person.fullname, :encode => :hex %></li>
+        <li><%= mail_to "#{person.username}@hkn.eecs.berkeley.edu", person.fullname, encode: :hex %></li>
       <% end %>
     </ul>
   </div>

@@ -24,8 +24,8 @@
 #
 
 class Eligibility < ActiveRecord::Base
-  Groups      = [:unknown,      :candidate,      :member]
-  GroupValues = {:unknown => 0, :candidate => 1, :member => 2}
+  Groups      = [:unknown,   :candidate,   :member]
+  GroupValues = {unknown: 0, candidate: 1, member: 2}
   TableFields = [:last_name, :first_name, :email, :address, :class_level]
 
   validates_presence_of :semester
@@ -35,9 +35,9 @@ class Eligibility < ActiveRecord::Base
     validates_numericality_of f
   end
 
-  scope :current, lambda{ where(:semester=>Property.get_or_create.semester) }
+  scope :current, lambda { where(semester: Property.get_or_create.semester) }
   GroupValues.each_pair do |g,v|  # auto-generate group scopes
-    scope g.to_s.pluralize.to_sym, lambda{ where(:group=>v) }
+    scope g.to_s.pluralize.to_sym, lambda { where(group: v) }
   end
 
   def full_name
@@ -67,8 +67,8 @@ class Eligibility < ActiveRecord::Base
     # Also sets confidence level
 
     self.confidence = case
-      when p = Person.find(:email => email).first then 3
-      when p = Person.find(:first_name => first_name, :last_name => last_name).first then 2
+      when p = Person.find(email: email).first then 3
+      when p = Person.find(first_name: first_name, last_name: last_name).first then 2
       when p = Person.find_by_username([first_name.first,last_name].join.downcase) then 1
       else self.confidence
     end
@@ -86,7 +86,7 @@ class Eligibility < ActiveRecord::Base
   ####################
   def class_level=(c)
     unless c.is_a? Integer then
-      c = {'junior'=>3, 'senior'=>4}[c.to_s.downcase] || c
+      c = { 'junior'=>3, 'senior'=>4 }[c.to_s.downcase] || c
     end
     super(c)
   end
@@ -108,12 +108,12 @@ class Eligibility < ActiveRecord::Base
     require 'csv'
 
     def self.import(file)
-      ret = {:errors => [], :count=>0}
+      ret = {errors: [], count: 0}
       last_row = 0
       begin
         Eligibility.transaction do
           fields = []
-          fieldmap = {:email_address=>:email, :local_street1=>:address1, :local_street2=>:address2, :local_city=>:city, :local_state=>:state, :local_zip=>:zip, :ucb_1st_reg=>:first_reg}
+          fieldmap = { email_address: :email, local_street1: :address1, local_street2: :address2, local_city: :city, local_state: :state, local_zip: :zip, ucb_1st_reg: :first_reg }
           saw_header = false
           current_semester = Property.current_semester
           CSV.open(file.path, 'r').each do |row|
@@ -158,5 +158,4 @@ class Eligibility < ActiveRecord::Base
       return ret
     end
   end
-
 end

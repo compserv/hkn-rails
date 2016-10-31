@@ -250,12 +250,12 @@ module ActionController
       custom_key   = options.delete(:key)
 
       actions.each do |a|
-        caches_action a, {:layout => false, :cache_path => Proc.new do |c|
+        caches_action a, {layout: false, cache_path: Proc.new do |c|
             can_admin = c.current_user_can_admin?(groups)
             case when custom_key.present?
               can_admin ? custom_key.to_s+cache_suffix : custom_key
             else
-              can_admin ? {:admin_tag => cache_suffix} : nil
+              can_admin ? {admin_tag: cache_suffix} : nil
             end #case
           end }.merge(options)
       end
@@ -269,7 +269,7 @@ end #ApplicationController
 module ActionView
   module Helpers
     def captcha
-      recaptcha_tags :ssl=>true, :display=>{:theme=>'clean'}
+      recaptcha_tags display: { theme: 'clean' }
     end
   end # Helpers
 end # ActionView

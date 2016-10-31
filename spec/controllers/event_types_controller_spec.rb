@@ -59,7 +59,7 @@ describe EventTypesController do
     describe "GET show" do
       it "assigns the requested event_type as @event_type" do
         allow(EventType).to receive(:find).with("37") { [mock_event_type] }
-        get :show, :id => "37"
+        get :show, id: "37"
         assigns(:event_type).should eq([mock_event_type])
       end
     end
@@ -75,7 +75,7 @@ describe EventTypesController do
     describe "GET edit" do
       it "assigns the requested event_type as @event_type" do
         allow(EventType).to receive(:find).with("37") { [mock_event_type] }
-        get :edit, :id => "37"
+        get :edit, id: "37"
         assigns(:event_type).should eq([mock_event_type])
       end
     end
@@ -84,13 +84,13 @@ describe EventTypesController do
       describe "with valid params" do
         it "assigns a newly created event_type as @event_type" do
           allow(EventType).to receive(:new).with({'name' => 'fun'}) { mock_event_type(:save, true) }
-          post :create, :event_type => {'name' => 'fun'}
+          post :create, event_type: {'name' => 'fun'}
           assigns(:event_type).should be(mock_event_type)
         end
 
         it "redirects to the created event_type" do
           allow(EventType).to receive(:new).with({'name' => 'fun'}) { mock_event_type(:save, true) }
-          post :create, :event_type => {'name' => 'fun'}
+          post :create, event_type: {'name' => 'fun'}
           response.should redirect_to(event_type_url(mock_event_type))
         end
       end
@@ -98,13 +98,13 @@ describe EventTypesController do
       describe "with invalid params" do
         it "assigns a newly created but unsaved event_type as @event_type" do
           allow(EventType).to receive(:new).with({}) { mock_event_type(:save, false) }
-          post :create, :event_type => {'these' => 'params'}
+          post :create, event_type: {'these' => 'params'}
           assigns(:event_type).should be(mock_event_type)
         end
 
         it "re-renders the 'new' template" do
           allow(EventType).to receive(:new).with({}) { mock_event_type(:save, false) }
-          post :create, :event_type => {'these' => 'params'}
+          post :create, event_type: {'these' => 'params'}
           response.should render_template("new")
         end
       end
@@ -115,18 +115,18 @@ describe EventTypesController do
         it "updates the requested event_type" do
           expect(EventType).to receive(:find).with("37") { mock_event_type }
           expect(mock_event_type).to receive(:update_attributes).with({'name' => 'fun'})
-          put :update, :id => "37", :event_type => {'name' => 'fun'}
+          put :update, id: "37", event_type: {'name' => 'fun'}
         end
 
         it "assigns the requested event_type as @event_type" do
           allow(EventType).to receive(:find).with("1") { mock_event_type(:update_attributes, true) }
-          put :update, :id => "1", :event_type => {'name' => 'fun'}
+          put :update, id: "1", event_type: {'name' => 'fun'}
           assigns(:event_type).should be(mock_event_type)
         end
 
         it "redirects to the event_type" do
           allow(EventType).to receive(:find).with("1") { mock_event_type(:update_attributes, true) }
-          put :update, :id => "1", :event_type => {'name' => 'fun'}
+          put :update, id: "1", event_type: {'name' => 'fun'}
           response.should redirect_to(event_type_url(mock_event_type))
         end
       end
@@ -134,13 +134,13 @@ describe EventTypesController do
       describe "with invalid params" do
         it "assigns the event_type as @event_type" do
           allow(EventType).to receive(:find).with("1") { mock_event_type(:update_attributes, false) }
-          put :update, :id => "1", :event_type => {'these' => 'params'}
+          put :update, id: "1", event_type: {'these' => 'params'}
           assigns(:event_type).should be(mock_event_type)
         end
 
         it "re-renders the 'edit' template" do
           allow(EventType).to receive(:find).with("1") { mock_event_type(:update_attributes, false) }
-          put :update, :id => "1", :event_type => {'these' => 'params'}
+          put :update, id: "1", event_type: {'these' => 'params'}
           response.should render_template("edit")
         end
       end
@@ -150,12 +150,12 @@ describe EventTypesController do
       it "destroys the requested event_type" do
         expect(EventType).to receive(:find).with("37") { mock_event_type }
         expect(mock_event_type).to receive(:destroy)
-        delete :destroy, :id => "37"
+        delete :destroy, id: "37"
       end
 
       it "redirects to the event_types list" do
         allow(EventType).to receive(:find) { mock_event_type }
-        delete :destroy, :id => "1"
+        delete :destroy, id: "1"
         response.should redirect_to(event_types_url)
       end
     end

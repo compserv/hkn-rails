@@ -1,6 +1,6 @@
 class Admin::AdminController < ApplicationController
-  #before_filter :authorize_officers, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
-  before_filter :authorize_comms, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
+  #before_filter :authorize_officers, except: [:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
+  before_filter :authorize_comms, except: [:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses]
 
   def super_page
 		@candidates = Candidate.approved.initiating
@@ -25,18 +25,19 @@ class Admin::AdminController < ApplicationController
       done["events"] = []
       return done
     end
+
     done["candidate"] = cand.person.full_name
     done["events"] = cand.requirements_count
 
     #puts "REQ COUNT"
     #puts cand.requirements_count
     #puts "=="
-    done["challenges"] = cand.challenges.select {|c| c.status }.length
-    done["unconfirmed_challenges"] = cand.challenges.where :status => nil
-    done["confirmed_challenges"] = cand.challenges.where :status => true
+    done["challenges"] = cand.challenges.select { |c| c.status }.length
+    done["unconfirmed_challenges"] = cand.challenges.where status: nil
+    done["confirmed_challenges"] = cand.challenges.where status: true
     done["resume"] = cand.person.resumes.length
     done["quiz"] = cand.quiz_score
-    done["quiz_responses"] = Hash[cand.quiz_responses.map{|x| [x.number.to_sym, {:response => x.response, :correct => x.correct}]}]
+    done["quiz_responses"] = Hash[cand.quiz_responses.map { |x| [x.number.to_sym, { response: x.response, correct: x.correct }] }]
     done["course_surveys"] = false
 
     done[:id] = cand.person_id
@@ -75,10 +76,10 @@ class Admin::AdminController < ApplicationController
 
     if saved
       flash[:notice] = "Announcement created."
-      #render :json => [true]
+      #render json: [true]
     else
       flash[:notice] = "Your announcement couldn't be created."
-      #render :json => [false, "Error."]
+      #render json: [false, "Error."]
     end
     redirect_to :back
   end
@@ -97,13 +98,12 @@ class Admin::AdminController < ApplicationController
     if saved
       flash[:notice] = "Announcement updated."
       redirect_to "/admin/general/candidate_announcements"
-      #render :json => [true]
+      #render json: [true]
     else
       flash[:notice] = "Your announcement couldn't be updated."
       redirect_to :back
-      #render :json => [false, "Error."]
+      #render json: [false, "Error."]
     end
-
   end
 
   def delete_announcement
@@ -115,11 +115,11 @@ class Admin::AdminController < ApplicationController
   end
 
   def confirm_challenges
-    challenges = Challenge.where(:officer_id => @current_user.id)
-    challenges = challenges.find_all{|c| c.is_current_challenge?}
-    @acc_challenges = challenges.select {|c| c.status }
-    @pending_challenges = challenges.select {|c| c.status == nil }
-    @rejected_challenges = challenges.select {|c| c.status == false}
+    challenges = Challenge.where(officer_id: @current_user.id)
+    challenges = challenges.find_all { |c| c.is_current_challenge? }
+    @acc_challenges = challenges.select { |c| c.status }
+    @pending_challenges = challenges.select { |c| c.status == nil }
+    @rejected_challenges = challenges.select { |c| c.status == false }
     render "admin/confirm_challenges"
   end
 
@@ -131,6 +131,7 @@ class Admin::AdminController < ApplicationController
     flash[:notice] = "Challenge confirmed."
     redirect_to :back
   end
+
   def reject_challenge
     challenge = Challenge.find(params[:id])
     challenge.status = false
@@ -139,5 +140,4 @@ class Admin::AdminController < ApplicationController
     flash[:notice] = "Challenge rejected."
     redirect_to :back
   end
-
 end

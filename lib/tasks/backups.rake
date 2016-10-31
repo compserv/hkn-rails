@@ -43,7 +43,7 @@ namespace :backup do
   # Backup
   # rake db:backup:dump[filename]
   # rake db:backup:dump TO=filename
-  # rake db:backup:dump             => db/backups/db__date__time.gz
+  # rake db:backupdump:             db/backups/db__date__time.gz
   desc "Backs up the database into $DBBAK, default db/backups/`date`.gz"
   task :dump, :filename do |t,args|
     pg_wrapper do |config|

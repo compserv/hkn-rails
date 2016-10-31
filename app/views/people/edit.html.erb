@@ -13,7 +13,7 @@
   </div>
   <%- end -%>
 	<% @f = f%>
-	<%= render :partial => "current_resume", :locals => { :f  => @f }%>
+	<%= render partial: "current_resume", locals: { f:  @f }%>
 
   <div class="field">
     <%= f.label :username %>
@@ -60,7 +60,7 @@
   </div>
   <div class="field">
     <%= f.label :date_of_birth %>
-    <%= f.date_select :date_of_birth, :start_year=>1950, :end_year => Time.now.year %>
+    <%= f.date_select :date_of_birth, start_year: 1950, end_year: Time.now.year %>
   </div>
 
   <h4>Password</h4>

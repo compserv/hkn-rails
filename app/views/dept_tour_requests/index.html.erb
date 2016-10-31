@@ -28,7 +28,7 @@
     <td><%= dept_tour_request.comments %></td>
     <td><%= link_to 'Show and Respond', dept_tour_request %></td>
     <td><%= link_to 'Edit', edit_dept_tour_request_path(dept_tour_request) %></td>
-    <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request),:method=>:post) do %>
+    <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request), method: :post) do %>
       <%= submit_tag "Dismiss" %>
     <% end %></td>
   </tr>
@@ -65,7 +65,7 @@
     <td><%= dept_tour_request.comments %></td>
     <td><%= link_to 'Show', dept_tour_request %></td>
     <td><%= link_to 'Edit', edit_dept_tour_request_path(dept_tour_request) %></td>
-    <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request),:method=>:post) do %>
+    <td><%= form_tag(dismiss_dept_tour_request_path(dept_tour_request),method: :post) do %>
       <%= submit_tag "Dismiss" %>
     <% end %></td>
   </tr>

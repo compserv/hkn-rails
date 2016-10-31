@@ -32,11 +32,11 @@ spec_prereq = Rails.root.join('config', 'database.yml').exist? ? "db:test:prepar
 task :noop do
 end
 
-task :default => :spec
-task :stats => "spec:statsetup"
+task default: :spec
+task stats: "spec:statsetup"
 
 desc "Run all specs in spec directory (excluding plugin specs)"
-RSpec::Core::RakeTask.new(:spec => spec_prereq)
+RSpec::Core::RakeTask.new(spec: spec_prereq)
 
 namespace :spec do
   [:requests, :models, :controllers, :views, :helpers, :mailers, :lib, :routing].each do |sub|
@@ -66,4 +66,3 @@ namespace :spec do
     ::CodeStatistics::TEST_TYPES << "Request specs" if File.exist?('spec/requests')
   end
 end
-

@@ -9,7 +9,7 @@ namespace :tutoring do
     ##########
     desc "Exports availabilities linked to username, for portability to other machines."
     task :export, :filename do |t, args|
-      args.with_defaults :filename => Time.now.strftime('Availabilities__%Y_%m_%d__%k_%M_%S.txt')
+      args.with_defaults filename: Time.now.strftime('Availabilities__%Y_%m_%d__%k_%M_%S.txt')
       filename = args[:filename]
       puts "Exporting availabilities to #{filename}..."
 
@@ -27,7 +27,7 @@ namespace :tutoring do
         end
 
         tHash[:courseprefs] = tooter.course_preferences.collect do |cp|
-          {:level => cp.level, :coursename => "#{cp.course.dept_abbr} #{cp.course.full_course_number}"}
+          {level: cp.level, coursename: "#{cp.course.dept_abbr} #{cp.course.full_course_number}"}
         end
 
         data[tooter.person.username] = tHash
@@ -68,7 +68,7 @@ namespace :tutoring do
         data[:availabilities].each do |avail|
           avail[:tutor_id] = t.id
 
-          if Availability.exists?(:tutor_id => t.id, :time => avail[:time]) then
+          if Availability.exists?(tutor_id: t.id, time: avail[:time]) then
             puts "  Skipping existing #{avail[:time].localtime.strftime('%a %I%P')}"
             next
           end
@@ -88,7 +88,7 @@ namespace :tutoring do
           cp[:tutor_id]  = t.id
           cp[:course_id] = c.id
 
-          if CoursePreference.exists?(:tutor_id => t.id, :course_id => c.id) then
+          if CoursePreference.exists?(tutor_id: t.id, course_id: c.id) then
             puts "  Skipping existing #{c.course_abbr}"
             next
           end

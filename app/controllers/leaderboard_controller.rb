@@ -11,9 +11,9 @@ class LeaderboardController < ApplicationController
       # Makeshift data structure
       events = person.rsvps.confirmed.joins(:event).where("events.start_time > ? AND events.start_time < ?", Property.semester_start_time(@semester), Property.semester_start_time(Property.next_semester(@semester)))
       @people_array << {
-        :person => person,
-        :total => events.count,
-        :events => events
+        person: person,
+        total: events.count,
+        events: events
       }
     end
 

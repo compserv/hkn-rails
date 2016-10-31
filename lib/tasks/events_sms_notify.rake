@@ -1,5 +1,5 @@
 namespace :events do
-  task :sms_notify => :environment do
+  task sms_notify: :environment do
     describe "Sends an SMS text message reminding people of events happening in 2 hours"
     now = Time.now
     now = Time.local(now.year, now.month, now.day, now.hour)

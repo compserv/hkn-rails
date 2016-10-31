@@ -9,7 +9,7 @@ class DeptTourRequestsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @dept_tour_requests }
+      format.xml  { render xml: @dept_tour_requests }
     end
   end
 
@@ -20,7 +20,7 @@ class DeptTourRequestsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @dept_tour_request }
+      format.xml  { render xml: @dept_tour_request }
     end
   end
 
@@ -31,7 +31,7 @@ class DeptTourRequestsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @dept_tour_request }
+      format.xml  { render xml: @dept_tour_request }
     end
   end
 
@@ -48,11 +48,11 @@ class DeptTourRequestsController < ApplicationController
 
     respond_to do |format|
       if @dept_tour_request.save
-        format.html { redirect_to(@dept_tour_request, :notice => 'Dept tour request was successfully created.') }
-        format.xml  { render :xml => @dept_tour_request, :status => :created, :location => @dept_tour_request }
+        format.html { redirect_to(@dept_tour_request, notice: 'Dept tour request was successfully created.') }
+        format.xml  { render xml: @dept_tour_request, status: :created, location: @dept_tour_request }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @dept_tour_request.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @dept_tour_request.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -64,11 +64,11 @@ class DeptTourRequestsController < ApplicationController
 
     respond_to do |format|
       if @dept_tour_request.update_attributes(dept_tour_request_params)
-        format.html { redirect_to(@dept_tour_request, :notice => 'Dept tour request was successfully updated.') }
+        format.html { redirect_to(@dept_tour_request, notice: 'Dept tour request was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @dept_tour_request.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @dept_tour_request.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -80,7 +80,7 @@ class DeptTourRequestsController < ApplicationController
     @dept_tour_request.destroy
 
     respond_to do |format|
-      format.html { redirect_to(dept_tour_requests_url, :notice=>"The request has been dismissed. I hope you're happy.") }
+      format.html { redirect_to(dept_tour_requests_url, notice: "The request has been dismissed. I hope you're happy.") }
       format.xml  { head :ok }
     end
   end
@@ -93,7 +93,7 @@ class DeptTourRequestsController < ApplicationController
 
     mail = DeptTourMailer.dept_tour_response_email(@dept_tour_request, params[:response], params[:from], params[:ccs])
     mail.deliver
-    redirect_to :dept_tour_requests, :notice=>"Your response has been sent."
+    redirect_to :dept_tour_requests, notice: "Your response has been sent."
   end
 
   private

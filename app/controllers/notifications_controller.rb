@@ -10,8 +10,8 @@ class NotificationsController < ApplicationController
     @notifications.collect!(&:to_notification)
 
     respond_to do |format|
-      format.html { render :index, :layout => false }
-      format.json { render :json => @notifications.collect(&:to_json) }
+      format.html { render :index, layout: false }
+      format.json { render json: @notifications.collect(&:to_json) }
     end
   end
 

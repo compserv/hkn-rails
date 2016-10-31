@@ -1,6 +1,6 @@
 <%= stylesheet_link_tag "tutor.css" %>
 <h1>Edit Tutoring Schedule</h1>
-<%= form_tag(admin_tutor_update_schedule_path, :method => :put) do %>
+<%= form_tag(admin_tutor_update_schedule_path, method: :put) do %>
   <%= check_box_tag :only_available, true, @only_available %>
   <%= label_tag :only_available, "Restrict to officers who are available at each time." %>
   <p>'P' = strongly prefer this office, 'p' = okay with this office, absence of such = do not prefer this office</p>
@@ -28,7 +28,7 @@
                   grouped_options_for_select(
                     @slot_options[room][wday][hour][:opts],
                     @slot_options[room][wday][hour][:defaults]),
-                  :multiple => true) %>
+                  multiple: true) %>
           </td>
           <% end%>
         </tr>
@@ -37,7 +37,7 @@
   </table>
   </div>
   <%= submit_tag "Save changes" %>
-  <%= submit_tag "Reset all", :confirm => 'Are you sure you want to reset the tutoring schedule?' %>
+  <%= submit_tag "Reset all", confirm: 'Are you sure you want to reset the tutoring schedule?' %>
 <% end %><br/>
 
 <p>Each of the following categories are simple counts, except for (Non)Adjacencies and Correct Office.</p>

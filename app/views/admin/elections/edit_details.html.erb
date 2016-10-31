@@ -40,30 +40,30 @@
 
 
 <%- field_label_map = {
-        :username         => "Desired HKN login",
-        :non_hkn_email    => "Non-HKN email",
-        :txt              => "Accept Texting?",
-        :aim              => "AIM",
-        :local_address    => "Current Address",
-        :sid              => "SID",
-        :keycard          => "Keycard Number",
-        :date_of_birth    => "Birthday",
-        :midnight_meeting => "Attending Midnight Meeting?"
+        username:         "Desired HKN login",
+        non_hkn_email:    "Non-HKN email",
+        txt:              "Accept Texting?",
+        aim:              "AIM",
+        local_address:    "Current Address",
+        sid:              "SID",
+        keycard:          "Keycard Number",
+        date_of_birth:    "Birthday",
+        midnight_meeting: "Attending Midnight Meeting?"
     }
 
 
     details_map = {
       #                field            form_tag     required?     [explanation]     [options]
-   :person   => [ [:username,         :text_field,  true ,
+   person:   [ [:username,         :text_field,  true ,
                    "You\'re allowed to change your username. This will take effect immediately on the website."],
                   [:phone_number,     :text_field,  true ],
                   [:aim,              :text_field,  false],
                   [:email,            :text_field,  false,
                    "We'll give you an @hkn.eecs email at Midnight Meeting. Until then, please provide an email that you'll check frequently!"],
                   [:local_address,    :text_field,  false],
-                  [:date_of_birth,    :date_select, false, nil, {:end_year => Time.now.year-17, :start_year => Time.now.year-30} ] # arbitrary age limits...
+                  [:date_of_birth,    :date_select, false, nil, {end_year: Time.now.year-17, start_year: Time.now.year-30} ] # arbitrary age limits...
                 ],
-   :election => [ [:non_hkn_email,    :text_field,  true,
+   election: [ [:non_hkn_email,    :text_field,  true,
                    'Your email address not @hkn.eecs'],
                   [:desired_username,    :text_field,  true,
                    "You're allowed to change your username. Leave this blank if you want to use your existing one"],
@@ -84,9 +84,9 @@
 <div class="form-container">
 <%- [ [:person, @user], [:election, @election] ].each do |model, obj| -%>
 <div class="election-form">
-  <h3><%= {:person=>"User Account Preferences", :election=>"Post-Election Info"}[model] %></h3>
+  <h3><%= {person: "User Account Preferences", election: "Post-Election Info"}[model] %></h3>
 
-<%= form_for obj, :url => admin_election_update_details_path(@user.username) do |f| %>
+<%= form_for obj, url: admin_election_update_details_path(@user.username) do |f| %>
 
   <%- @details[model].each do |fname|
         ftag, required, explanation, options = details_map[model].assoc(fname)[1..-1]
@@ -104,8 +104,8 @@
           <%- if fname == :username -%>
           <div>
             <div>
-            <%= f.label :password, :class => 'field' %>
-            <%= f.password_field :password, :class => 'val' %>
+            <%= f.label :password, class: 'field' %>
+            <%= f.password_field :password, class: 'val' %>
             </div>
           </div>
           <%- end -%>
@@ -115,7 +115,7 @@
   </p>
   <%- end # details[...].each -%>
 
-  <div class="field"><%= f.submit nil, :disable_with => "Saving..." %></div>
+  <div class="field"><%= f.submit nil, disable_with: "Saving..." %></div>
 
 <%- end # model -%>
 </div>

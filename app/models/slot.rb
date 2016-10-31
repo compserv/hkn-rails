@@ -30,16 +30,16 @@ class Slot < ActiveRecord::Base
     Valid = (11 .. 16)
   end
 
-  ROOMS = {:cory => Room::Cory, :soda => Room::Soda}
+  ROOMS = { cory: Room::Cory, soda: Room::Soda }
 
-  has_and_belongs_to_many :tutors, :before_add => :check_tutor
+  has_and_belongs_to_many :tutors, before_add: :check_tutor
   has_many :slot_changes
 
   validate :valid_room
   validate :valid_hour
-  validates :room, :presence => true, :inclusion => {:in => Room::Valid}
-  validates :wday, :presence => true, :inclusion => {:in => Wday::Valid}
-  validates :hour, :presence => true, :inclusion => {:in => Hour::Valid}, :uniqueness => {:scope => [:wday, :room]}
+  validates :room, presence: true, inclusion: { in: Room::Valid }
+  validates :wday, presence: true, inclusion: { in: Wday::Valid }
+  validates :hour, presence: true, inclusion: { in: Hour::Valid }, uniqueness: { scope: [:wday, :room] }
 
   HOUR_RANGE_ERROR = "hour must be within tutoring hours"
   ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
@@ -61,7 +61,7 @@ class Slot < ActiveRecord::Base
   end
 
   def day_name
-    day_to_wday = {"Monday"=>1, "Tuesday"=>2, "Wednesday"=>3, "Thursday"=>4, "Friday"=>5}
+    day_to_wday = { "Monday" => 1, "Tuesday" => 2, "Wednesday" => 3, "Thursday" => 4, "Friday" => 5 }
     day_to_wday.key(wday)
   end
 
@@ -91,7 +91,7 @@ class Slot < ActiveRecord::Base
   end
 
   def availabilities
-    return Availability.where(:hour => hour, :wday => wday)
+    return Availability.where(hour: hour, wday: wday)
   end
 
   def adjacent_to(other_slot)

@@ -14,8 +14,8 @@
 class CourseType < ActiveRecord::Base
   has_many :courses
 
-  validates :chart_pref_x, :presence => true
-  validates :chart_pref_y, :presence => true
-  validates :color, :presence => true
-  validates :name, :presence => true
+  validates :chart_pref_x, presence: true
+  validates :chart_pref_y, presence: true
+  validates :color,        presence: true
+  validates :name,         presence: true
 end

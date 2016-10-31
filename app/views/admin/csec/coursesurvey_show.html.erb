@@ -4,7 +4,7 @@
   <%- @coursesurvey.surveyors.each do |p| -%>
   <div>
     <%= p.full_name %>
-    <%= link_to '[delete]', admin_csec_coursesurvey_remove_path(@coursesurvey.id, p.id), :confirm => 'Are you sure?', :method => :delete %>
+    <%= link_to '[delete]', admin_csec_coursesurvey_remove_path(@coursesurvey.id, p.id), confirm: 'Are you sure?', method: :delete %>
   </div>
   <%- end -%>
 </div>

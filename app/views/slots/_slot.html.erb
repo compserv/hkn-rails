@@ -23,7 +23,7 @@
 <hr/>
 <div style="clear: both"></div>
 
-<% courses = {:preferred=>[], :completed=>[], :current=>[]}
+<% courses = {preferred: [], completed: [], current: []}
    tutor.courses.ordered.each do |c|
      label = [:current, :completed, :preferred][CoursePreference.find_by_tutor_id_and_course_id(tutor.id, c.id).level]
      courses[label] << c

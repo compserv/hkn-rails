@@ -12,7 +12,7 @@
 <% else %><%# there are cships for this semester %>
 
 <% [:execs, :committees].each do |position_type| %>
-<%= render "committee_list", :position_type => position_type %>
+<%= render "committee_list", position_type: position_type %>
 <% end %><%# position_type %>
 
 <%# Alumni Advisor should go here. %>

@@ -30,7 +30,7 @@ namespace :users do
     fmt = args[:fmt] || "\"name\" = email"
 
     puts "Gimme some names, one per line, with CTRL+D at the end:"
-    stuff = {:success=>[], :multiple=>[], :none=>[]}
+    stuff = {success: [], multiple: [], none: []}
 
     $stdin.readlines.collect(&:strip).each do |name|
       next if name.blank?

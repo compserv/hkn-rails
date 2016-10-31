@@ -1,12 +1,11 @@
 class AddCommitteeToGroups < ActiveRecord::Migration
   def self.up
 
-    add_column :groups, :committee, :boolean, :null => false, :default => false
+    add_column :groups, :committee, :boolean, null: false, default: false
     Group.reset_column_information
 
     # Transition some groups
-    Group.where(:name =>
-    [
+    Group.where(name:     [
      "pres",
      "vp",
      "rsec",

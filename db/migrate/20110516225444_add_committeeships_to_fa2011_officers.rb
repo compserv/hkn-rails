@@ -7,10 +7,10 @@ class AddCommitteeshipsToFa2011Officers < ActiveRecord::Migration
       say "  #{e.person.username}"
 
       c = Committeeship.new({
-        :committee => e.position,
-        :semester  => e.semester,
-        :title     => 'officer',
-        :person_id => e.person_id
+        committee: e.position,
+        semester:  e.semester,
+        title:     'officer',
+        person_id: e.person_id
       })
       c.save || raise("Failed to save #{c.inspect} #{e.inspect}")
     end

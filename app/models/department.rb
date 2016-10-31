@@ -12,8 +12,8 @@
 class Department < ActiveRecord::Base
   has_many :courses
 
-  validates :name, :presence => true
-  validates :abbr, :presence => true
+  validates :name, presence: true
+  validates :abbr, presence: true
 
   #This is a mapping of some proper abbreviations to their commonly used
   #informal abbreviations

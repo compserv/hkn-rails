@@ -3,8 +3,8 @@ class AddApprovedToPerson < ActiveRecord::Migration
   end
 
   def self.up
-    add_column :people, :approved, :boolean, :default=>nil
-    Person.update_all :approved => true
+    add_column :people, :approved, :boolean, default: nil
+    Person.update_all approved: true
   end
 
   def self.down

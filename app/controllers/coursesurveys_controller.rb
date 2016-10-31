@@ -2,24 +2,24 @@ class CoursesurveysController < ApplicationController
   # TODO: Refactor most of these into a model
   include CoursesurveysHelper
 
-  before_action CASClient::Frameworks::Rails::Filter, :only => [:auth]
+  before_action CASClient::Frameworks::Rails::Filter, only: [:auth]
   before_filter :show_searcharea
-  before_filter :require_admin, :only => [:editrating, :updaterating, :editinstructor, :updateinstructor, :newinstructor, :createinstructor]
+  before_filter :require_admin, only: [:editrating, :updaterating, :editinstructor, :updateinstructor, :newinstructor, :createinstructor]
   before_filter :authorize_privileged
-  before_filter :authorize_csec, :only => [:merge_instructors, :merge_instructors_post, :merge, :instructor_ids]
+  before_filter :authorize_csec, only: [:merge_instructors, :merge_instructors_post, :merge, :instructor_ids]
 
   # TODO: Reimplement caching
   # begin # caching
-    #[:index, :instructors, :tas].each {|a| caches_action a, :layout => false}
-#    caches_action :klass, :cache_path => Proc.new {|c| klass_cache_path(c.params)}, :layout => false
+    #[:index, :instructors, :tas].each {|a| caches_action a, layout: false}
+#    caches_action :klass, cache_path: Proc.new {|c| klass_cache_path(c.params)}, layout: false
 
     # Cache full/partial department lists
-    #caches_action :department, :layout => false,
-    #  :cache_path => Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"},
-    #  :unless     => Proc.new {|c| c.params[:semester].present? or c.params[:year].present?}
+    #caches_action :department, layout: false,
+    #  cache_path: Proc.new {|c| "coursesurveys/department_#{c.params[:dept_abbr]}_#{c.params[:full_list].blank? ? 'recent' : 'full'}"},
+    #  unless:     Proc.new {|c| c.params[:semester].present? or c.params[:year].present?}
 
     # Separate for admins
-    #caches_action_for_admins([:instructor], :groups => %w(csec superusers))
+    #caches_action_for_admins([:instructor], groups: %w(csec superusers))
   #end
   #cache_sweeper :instructor_sweeper
 
@@ -57,23 +57,23 @@ class CoursesurveysController < ApplicationController
     @upper_div   = []
     @grad        = []
     @full_list   = params[:full_list].present?
-    @semester    = Property.make_semester(:year => params[:year], :semester => params[:semester]) if params[:year].present? and params[:semester].present?
+    @semester    = Property.make_semester(year: params[:year], semester: params[:semester]) if params[:year].present? and params[:semester].present?
 
     # Error checking
     return redirect_to coursesurveys_search_path("#{params[:dept_abbr]} #{params[:short_name]}") unless @department
 
-    # includes(:klasses => {:instructorships => :instructor}).
-    Course.where(:department_id => @department.id).includes(:instructorships).ordered.each do |course|
+    # includes(klasses: {instructorships: :instructor}).
+    Course.where(department_id: @department.id).includes(:instructorships).ordered.each do |course|
       next if course.invalid?
 
       ratings = []
 
       # Find only the most recent course, optionally with a lower bound on semester
       first_klass = course.klasses
-      first_klass = first_klass.where(:semester => Property.make_semester(:year=>4.years.ago.year)..Property.make_semester) unless @full_list
-      first_klass = first_klass.where(:semester => @semester) if @semester
+      first_klass = first_klass.where(semester: Property.make_semester(year: 4.years.ago.year)..Property.make_semester) unless @full_list
+      first_klass = first_klass.where(semester: @semester) if @semester
       first_klass = first_klass.drop_while { |k| !k.survey_answers.exists? } .first
-      #first_klass = first_klass.find(:first, :include => {:instructorships => :instructor} )
+      #first_klass = first_klass.find(:first, include: {instructorships: :instructor} )
 
       # Sometimes the latest klass is really old, and not included in these results
       next unless first_klass.present?
@@ -87,10 +87,10 @@ class CoursesurveysController < ApplicationController
       # Sort by descending instructorship count
       #                            [    only instrctrs  ]         [ histogram  ]        [  ascending    ] [up to last 4][one of each]
       instructors = course.klasses.collect(&:instructors).flatten.group_by{|i|i}.values.sort_by(&:length).reverse[0..3].collect(&:first)
-      result = { :course      => course,
-                 :instructors => instructors,
-                 :mean        => avg_rating,
-                 :klass       => first_klass  }
+      result = { course:      course,
+                 instructors: instructors,
+                 mean:        avg_rating,
+                 klass:       first_klass  }
 
       # Append course to correct list
       case course.course_number.to_i
@@ -118,8 +118,8 @@ class CoursesurveysController < ApplicationController
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
 
     @results = []
-    @overall = { :effectiveness  => {:max=>effective_q.max },
-                 :worthwhile     => {:max=>worthwhile_q.max}
+    @overall = { effectiveness:  {max: effective_q.max },
+                 worthwhile:     {max: worthwhile_q.max}
                }
 
     @course.klasses.each do |klass|
@@ -134,7 +134,7 @@ class CoursesurveysController < ApplicationController
           [ [:effectiveness, effective_q ],
             [:worthwhile,    worthwhile_q]
           ].each do |qname, q|
-            answer = klass.survey_answers.where(:survey_question_id => q.id, :instructorships => { :instructor_id => instructor.id}).first
+            answer = klass.survey_answers.where(survey_question_id: q.id, instructorships: { instructor_id: instructor.id}).first
             if answer.nil?
               logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
               throw :nil_answer
@@ -172,8 +172,8 @@ class CoursesurveysController < ApplicationController
 
     @klass.instructorships.each do |i|
       if @instructor.nil? or @instructor == i.instructor
-        (i.ta ? @tas : @instructors) << { :instructor => i.instructor,
-                                        :answers    => (i.instructor.private && !@privileged ?
+        (i.ta ? @tas : @instructors) << { instructor: i.instructor,
+                                        answers:    (i.instructor.private && !@privileged ?
                                                         nil : i.survey_answers) }
       end
       if @instructor == i.instructor
@@ -193,7 +193,7 @@ class CoursesurveysController < ApplicationController
     @semester = sem == nil ? "" : Property.pretty_semester(sem)
     @eff_q    = SurveyQuestion.find_by_keyword "#{@category.to_s}_eff".to_sym
 
-    return redirect_to coursesurveys_path, :notice => "Invalid category" unless @category && @eff_q
+    return redirect_to coursesurveys_path, notice: "Invalid category" unless @category && @eff_q
 
     @results = []
     if %w[ name rating ].include?(params[:sort])
@@ -216,23 +216,21 @@ class CoursesurveysController < ApplicationController
     # I know this is very convoluted, but it tries to pull as much data
     # as possible from a single query, to avoid hammering the database.
     if (sem == nil)
-      instructors = Instructor.where(:id =>
-                      Instructorship.select(:instructor_id).
-                                    where(:id =>
-                                           SurveyAnswer.select(:instructorship_id).
-                                                        where(:survey_question_id => @eff_q.id).
+      instructors = Instructor.where(id:                       Instructorship.select(:instructor_id).
+                                    where(id:                                            SurveyAnswer.select(:instructorship_id).
+                                                        where(survey_question_id: @eff_q.id).
                                                         collect(&:instructorship_id),
-                                           :ta => is_ta
+                                           ta: is_ta
                                           ).
                                     collect(&:instructor_id)
                     )
-               .includes(:instructorships => {:klass => :course})
+               .includes(instructorships: {klass: :course})
                .order("last_name, first_name #{order=='name' ? sort_direction : 'ASC'}")
 
       instructors.each do |i|
-        @results << { :instructor => i,
-                      :courses    => (is_ta ? i.tad_courses : i.instructed_courses),
-                      :rating     => (i.private && !@privileged ? nil : i.survey_answers.where(:survey_question_id=>@eff_q.id).average(:mean))
+        @results << { instructor: i,
+                      courses:    (is_ta ? i.tad_courses : i.instructed_courses),
+                      rating:     (i.private && !@privileged ? nil : i.survey_answers.where(survey_question_id: @eff_q.id).average(:mean))
                     }
       end
     else
@@ -242,11 +240,11 @@ class CoursesurveysController < ApplicationController
                         .includes(:instructor, :klass)
 
       instructorships.each do |i|
-        sq = i.survey_answers.where(:survey_question_id=>@eff_q.id).take
+        sq = i.survey_answers.where(survey_question_id: @eff_q.id).take
         unless sq == nil
-          @results << { :instructor => i.instructor,
-                        :courses    => [i.klass.course],
-                        :rating     => ( i.instructor.private && !@privileged ) ? nil : sq.mean
+          @results << { instructor: i.instructor,
+                        courses:    [i.klass.course],
+                        rating:     ( i.instructor.private && !@privileged ) ? nil : sq.mean
                       }
         end
       end
@@ -297,12 +295,12 @@ class CoursesurveysController < ApplicationController
 
     #-- Individual klasses --#
 
-    @results = { :klasses     => [],
-                 :tad_klasses => []  }
-    @totals  = { :klasses => { :undergrad   => {},
-                               :grad        => {}  },
-                 :tad_klasses => { :undergrad   => {},
-                                   :grad        => {}  }
+    @results = { klasses:     [],
+                 tad_klasses: []  }
+    @totals  = { klasses: { undergrad:   {},
+                               grad:        {}  },
+                 tad_klasses: { undergrad:   {},
+                                   grad:        {}  }
                }
 
 
@@ -329,7 +327,7 @@ class CoursesurveysController < ApplicationController
       next unless result[1]
       results << result
 
-      t = (@totals[klasstype][i.course.classification][i.course] ||= {:eff=>[], :ww=>[]})
+      t = (@totals[klasstype][i.course.classification][i.course] ||= {eff: [], ww: []})
       t[:eff]     <<  result[1].mean
       t[:ww]      <<  (result[2] ? result[2].mean : nil)
       t[:eff_max] ||= result[1].survey_question.max
@@ -374,38 +372,38 @@ class CoursesurveysController < ApplicationController
     @instructor = Instructor.new(instructor_params)
 
     if @instructor.save
-      redirect_to surveys_instructor_path(@instructor), :notice => "Successfully created new instructor."
+      redirect_to surveys_instructor_path(@instructor), notice: "Successfully created new instructor."
     else
-      render :newinstructor, :notice => "Validation failed: #{@instructor.errors.to_a.join('<br/>').html_safe}"
+      render :newinstructor, notice: "Validation failed: #{@instructor.errors.to_a.join('<br/>').html_safe}"
     end
   end
 
   def editinstructor
     @instructor = Instructor.find_by_id(params[:id].to_i)
     if @instructor.nil?
-      redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}."
+      redirect_back_or_default coursesurveys_path, notice: "Error: Couldn't find instructor with id #{params[:id]}."
     end
   end
 
   def updateinstructor
     @instructor = Instructor.find(params[:id].to_i)
-    return redirect_back_or_default coursesurveys_path, :notice => "Error: Couldn't find instructor with id #{params[:id]}." unless @instructor
+    return redirect_back_or_default coursesurveys_path, notice: "Error: Couldn't find instructor with id #{params[:id]}." unless @instructor
 
-    return redirect_to coursesurveys_edit_instructor_path(@instructor), :notice => "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(instructor_params)
+    return redirect_to coursesurveys_edit_instructor_path(@instructor), notice: "There was a problem updating the entry for #{@instructor.full_name}: #{@instructor.errors.inspect}" unless @instructor.update_attributes(instructor_params)
 
     #(@instructor.klasses+@instructor.tad_klasses).each do |k|
-    #  expire_action(:action => klass_cache_path(k))
+    #  expire_action(action: klass_cache_path(k))
     #end
 
-    return redirect_to surveys_instructor_path(@instructor), :notice => "Successfully updated #{@instructor.full_name}."
+    return redirect_to surveys_instructor_path(@instructor), notice: "Successfully updated #{@instructor.full_name}."
   end
 
   def rating
     @answer = SurveyAnswer.find(params[:id])
-    return redirect_to coursesurveys_path, :notice => "Error: Couldn't find that rating." unless @answer
+    return redirect_to coursesurveys_path, notice: "Error: Couldn't find that rating." unless @answer
     @instructor = @answer.instructor
     if @instructor.private && !@privileged
-      return redirect_to(coursesurveys_path, :notice => "You are not authorized to view that page.")
+      return redirect_to(coursesurveys_path, notice: "You are not authorized to view that page.")
     end
 
     @klass  = @answer.klass
@@ -510,7 +508,7 @@ class CoursesurveysController < ApplicationController
 
   # GET /instructor_ids
   def instructor_ids
-     render :json => Instructor.order('last_name, first_name').collect {|i| {:id => i.id, :name => i.full_name_r} }
+     render json: Instructor.order('last_name, first_name').collect {|i| {id: i.id, name: i.full_name_r} }
   end
 
   # GET /merge
@@ -527,7 +525,7 @@ class CoursesurveysController < ApplicationController
     p = {}
     @instructors = [:id_0, :id_1].collect {|s| Instructor.find(params[s]) if params[s]}
 
-    return redirect_to coursesurveys_merge_instructors_path(params[:id_0], params[:id_1]), :notice => "Invalid IDs" unless @instructors.all?
+    return redirect_to coursesurveys_merge_instructors_path(params[:id_0], params[:id_1]), notice: "Invalid IDs" unless @instructors.all?
 
     Instructor.column_names.collect(&:downcase).collect(&:to_sym).each do |col|
       # params[col] is 0 or 1, indicating from which instructor to take the new attribute
@@ -542,10 +540,10 @@ class CoursesurveysController < ApplicationController
           raise unless @instructor.eat(@instructors)
         end
     rescue => e
-      return redirect_to coursesurveys_merge_instructors_path(@instructors[0].id, @instructors[1].id), :notice => [e,@instructor.errors.inspect, @instructor].inspect
+      return redirect_to coursesurveys_merge_instructors_path(@instructors[0].id, @instructors[1].id), notice: [e,@instructor.errors.inspect, @instructor].inspect
     end
 
-    redirect_to surveys_instructor_path(@instructor), :notice => "This is the new instructor."
+    redirect_to surveys_instructor_path(@instructor), notice: "This is the new instructor."
   end
 
 
@@ -562,15 +560,15 @@ class CoursesurveysController < ApplicationController
     return nil unless @course = Course.lookup_by_short_name(parms[:dept_abbr], parms[:short_name])
     return nil unless sem = Klass.semester_code_from_s( parms[:semester] )
 
-    @klass = Klass.where(:semester => sem, :course_id => @course.id)
-    @klass = @klass.where(:section => params[:section].to_i) if params[:section].present? && params[:section].is_int?
+    @klass = Klass.where(semester: sem, course_id: @course.id)
+    @klass = @klass.where(section: params[:section].to_i) if params[:section].present? && params[:section].is_int?
     return @klass = @klass.order('section ASC').limit(1).first
   end
 
   def authorize_privileged
   # Sets the value of @privileged based on the user's group membership.
   # Csec, superusers, and coursesurvey groups all override @privileged to false
-    @privileged = @current_user && @current_user.groups.exists?(:name => ['csec', 'coursesurveys'])
+    @privileged = @current_user && @current_user.groups.exists?(name: ['csec', 'coursesurveys'])
     if session[:cas_user]
       user = CalnetUser.where(uid: session[:cas_user]).first
       @privileged ||= user && user.authorized_course_surveys

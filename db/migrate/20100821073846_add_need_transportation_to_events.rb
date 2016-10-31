@@ -1,6 +1,6 @@
 class AddNeedTransportationToEvents < ActiveRecord::Migration
   def self.up
-    add_column :events, :need_transportation, :boolean, :default => false
+    add_column :events, :need_transportation, :boolean, default: false
   end
 
   def self.down

@@ -1,6 +1,6 @@
 class AddBlockToRsvp < ActiveRecord::Migration
   def self.up
-    add_column :rsvps, :block_id, :integer, {:null => false}
+    add_column :rsvps, :block_id, :integer, { null: false }
   end
 
   def self.down

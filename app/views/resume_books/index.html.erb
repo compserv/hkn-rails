@@ -2,7 +2,7 @@
 
 <ul>
 <li><%= link_to "Generate a new resume book", new_resume_book_path  %></li>
-<li><%= render :partial => 'missing_form' %></li>
+<li><%= render partial: 'missing_form' %></li>
 <li><%= link_to "list of all HKN Members and their resume upload statuses.", resumes_status_list_path %>
  (You can also use this page to upload a resume for a certain person)
 </li>

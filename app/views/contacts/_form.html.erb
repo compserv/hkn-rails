@@ -24,7 +24,7 @@
   </div>
   <div class="field">
     <%= f.label 'contact[company_id]', 'Company' %>
-    <%= collection_select :contact, :company_id, Company.all, :id, :name, {:include_blank => "None"} %>
+    <%= collection_select :contact, :company_id, Company.all, :id, :name, {include_blank: "None"} %>
   </div>
   <div class="field">
     <%= f.label :comments %>

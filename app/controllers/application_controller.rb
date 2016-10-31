@@ -56,8 +56,8 @@ class ApplicationController < ActionController::Base
   #Custom error pages
   def render_optional_error_file(status_code)
     respond_to do |type|
-        type.html { render :template => "static/error", :layout => 'application'}
-        type.all  { render :nothing => true }
+        type.html { render template: "static/error", layout: 'application'}
+        type.all  { render nothing: true }
       end
   end
 
@@ -74,14 +74,14 @@ class ApplicationController < ActionController::Base
     # If user is in any of the groups, then s/he has access
     # If group_or_groups is not specified (called authorize with no arguments), then should return true if the person is logged in, false otherwise.
     if @current_user.nil?
-      redirect_to :login, :notice => "Please log in to access this page.", :flash => {:referer => request.fullpath}
+      redirect_to :login, notice: "Please log in to access this page.", flash: {referer: request.fullpath}
       return false
     end
     return true if group_or_groups.nil?
     groups = ([String, Symbol].include? group_or_groups.class) ? [group_or_groups] : group_or_groups
     groups = groups.map(&:to_s) | ["superusers"]
     if (groups & @current_user.groups.collect(&:name)).blank?
-      redirect_to :root, :notice => "Insufficient privileges to access this page."
+      redirect_to :root, notice: "Insufficient privileges to access this page."
       return false
     end
     true
@@ -129,13 +129,13 @@ class ApplicationController < ActionController::Base
 
   def set_view_variables
     @easter_eggs = {
-      :piglatin  => session[:piglatin],
-      :moonspeak => session[:moonspeak],
-      :mirror    => session[:mirror],
-      :acid      => session[:acid],
-      :b         => session[:b],
-      :dt        => session[:dt],
-      :kappa     => session[:kappa],
+      piglatin:  session[:piglatin],
+      moonspeak: session[:moonspeak],
+      mirror:    session[:mirror],
+      acid:      session[:acid],
+      b:         session[:b],
+      dt:        session[:dt],
+      kappa:     session[:kappa],
     }
 
     if @easter_eggs.values.any?
@@ -153,7 +153,7 @@ class ApplicationController < ActionController::Base
       return true
     end
 
-    if @current_user and @current_user.admin? and user = Person.exists?(:username => username)
+    if @current_user and @current_user.admin? and user = Person.exists?(username: username)
       session[:su] = username
       get_current_user
       return true

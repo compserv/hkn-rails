@@ -21,23 +21,23 @@
 class Election < ActiveRecord::Base
   belongs_to :person
 
-  validates_uniqueness_of   :person_id, :scope => [:position, :semester]
+  validates_uniqueness_of   :person_id, scope: [:position, :semester]
   validates_presence_of     :person_id, :position, :semester
-  validates                 :keycard, :numericality => {
-    :greater_than_or_equal_to => 10000,
-    :less_than_or_equal_to    => 999999,
-    :message                  => "must be a 5- or 6-digit number",
-    :allow_nil                => true
+  validates                 :keycard, numericality: {
+    greater_than_or_equal_to: 10000,
+    less_than_or_equal_to:    999999,
+    message:                  "must be a 5- or 6-digit number",
+    allow_nil:                true
   }
-  validates                 :sid, :numericality => { :allow_nil => true }
+  validates                 :sid, numericality: { allow_nil: true }
   validates_associated      :person
   validates_each            :position do |model, attr, value|
-      model.errors.add(attr, 'must be a committee') unless Group.committees.exists?(:name => value)
+    model.errors.add(attr, 'must be a committee') unless Group.committees.exists?(name: value)
   end
 
-  scope :current_semester, lambda { where(:semester => Property.next_semester) }
+  scope :current_semester, lambda { where(semester: Property.next_semester) }
   scope :ordered, lambda { order(:elected_time) }
-  scope :elected, lambda { where(:elected => true) }
+  scope :elected, lambda { where(elected: true) }
 
   before_validation :set_current
 
@@ -58,7 +58,7 @@ class Election < ActiveRecord::Base
   end
 
   def filled_out?
-    [ sid, keycard, non_hkn_email ].none? {|x| x.blank?}
+    [sid, keycard, non_hkn_email].none? { |x| x.blank? }
   end
 
   # Is this the person's first officership?
@@ -88,10 +88,10 @@ class Election < ActiveRecord::Base
     # group management
 #    person.groups = person.groups | [Group.find_by_name("officers"), Group.find_by_name("comms"),Group.find_by_name(self.position)]
     cship = Committeeship.create({
-        :person_id => self.person_id,
-        :committee => self.position,
-        :semester  => self.semester,
-        :title     => 'officer'
+        person_id: self.person_id,
+        committee: self.position,
+        semester:  self.semester,
+        title:     'officer'
       })
 
     # username changes
@@ -135,11 +135,10 @@ class Election < ActiveRecord::Base
     return true
   end
 
-private
+  private
 
   def set_current
     self.elected_time ||= Time.now
     self.semester ||= Property.next_semester #current_semester
   end
-
 end

@@ -1,7 +1,7 @@
 class ModifiedTutors < ActiveRecord::Migration
   def self.up
     create_table :tutors do |t|
-      t.references :person, :null => false
+      t.references :person, null: false
 
       t.integer :availability_id
       t.string :languages

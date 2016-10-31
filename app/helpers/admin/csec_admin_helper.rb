@@ -12,7 +12,7 @@ module SurveyData
     # only if COMMIT is true.
     def self.import(file, commit=false, is_ta=false)
       is_ta = is_ta.nil? ? false : true
-      results = { :errors => [], :info => [] }
+      results = { errors: [], info: [] }
       rows = CSV.read(file.path)
       [:instructors, :klasses, :instructorships, :courses].each {|s| ActiveRecord::Base.connection.execute "ANALYZE #{s.to_s};"}
 
@@ -112,7 +112,7 @@ module SurveyData
       course = Course.where(course_hash).first || Course.new(course_hash)
       raise ParseError, "Course save failed: #{course.inspect}" if not course.save
 
-      klass_hash = {:section => section, :course_id => course.id, :semester => semester}
+      klass_hash = {section: section, course_id: course.id, semester: semester}
       klass = Klass.where(klass_hash).first || Klass.new(klass_hash)
       klass.course = course
       raise ParseError, "Klass save failed: #{klass.inspect}" if not klass.save
@@ -176,4 +176,3 @@ module Admin
     include SurveyData
   end
 end
-

@@ -1,18 +1,18 @@
 class AlumnisController < ApplicationController
   before_filter :alumni_login_check
-  before_filter :alumni_duplication_filtration, :only => [:new,:create]
-  before_filter :alumni_modification_authorization_filtration, :only=> [:edit, :update, :destroy]
-  before_filter :authorize_alumrel, :only => :index
-  before_filter :input_helper, :only => [:update,:create,]
+  before_filter :alumni_duplication_filtration, only: [:new,:create]
+  before_filter :alumni_modification_authorization_filtration, only: [:edit, :update, :destroy]
+  before_filter :authorize_alumrel, only: :index
+  before_filter :input_helper, only: [:update,:create,]
 
   def alumni_login_check
-    redirect_to(login_url, :notice=>"You must log in to edit alumni information.") if not @current_user
+    redirect_to(login_url, notice: "You must log in to edit alumni information.") if not @current_user
   end
 
   def alumni_duplication_filtration
     if @current_user.alumni
       redirect_to(@current_user.alumni,
-                  :notice => "You already have an alumni record. I've helpfully brought it up for you.")
+                  notice: "You already have an alumni record. I've helpfully brought it up for you.")
     end
   end
 
@@ -21,7 +21,7 @@ class AlumnisController < ApplicationController
     unless @alumni and @current_user.alumni == @alumni or @auth['alumrel']
       redirect_to(if @current_user.alumni then edit_alumni_url(@current_user.alumni)
                     else new_alumni_url end,
-                  :notice => "You're not authorized to modify someone else's alumni information!")
+                  notice: "You're not authorized to modify someone else's alumni information!")
     end
   end
 
@@ -46,7 +46,7 @@ class AlumnisController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @alumnis }
+      format.xml  { render xml: @alumnis }
     end
   end
 
@@ -57,7 +57,7 @@ class AlumnisController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @alumni }
+      format.xml  { render xml: @alumni }
     end
   end
 
@@ -68,7 +68,7 @@ class AlumnisController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @alumni }
+      format.xml  { render xml: @alumni }
     end
   end
 
@@ -99,11 +99,11 @@ class AlumnisController < ApplicationController
           @alumni.subscribe
         end
 
-        format.html { redirect_to(@alumni, :notice => 'Alumni was successfully created.') }
-        format.xml  { render :xml => @alumni, :status => :created, :location => @alumni }
+        format.html { redirect_to(@alumni, notice: 'Alumni was successfully created.') }
+        format.xml  { render xml: @alumni, status: :created, location: @alumni }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @alumni.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @alumni.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -116,7 +116,7 @@ class AlumnisController < ApplicationController
     respond_to do |format|
       # params[:grad_season] is Spring or Fall
       if @alumni.update_attributes(alumni_params.merge(
-        :grad_semester => Alumni.grad_semester(params[:grad_season], params[:grad_year])
+        grad_semester: Alumni.grad_semester(params[:grad_season], params[:grad_year])
       ))
         if !@alumni.mailing_list && params[:on_mailing_list].eql?('true')
           @alumni.unsubscribe
@@ -124,11 +124,11 @@ class AlumnisController < ApplicationController
           @alumni.subscribe
         end
 
-        format.html { redirect_to(@alumni, :notice => 'Alumni was successfully updated.') }
+        format.html { redirect_to(@alumni, notice: 'Alumni was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @alumni.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @alumni.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -141,7 +141,7 @@ class AlumnisController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to (if @auth['alumrel'] then alumnis_url else root_url end),
-                      :notice=> "Alumni information for #{@alumni.person.full_name} destroyed."}
+                      notice: "Alumni information for #{@alumni.person.full_name} destroyed."}
       format.xml  { head :ok }
     end
   end

@@ -15,7 +15,6 @@
 class CourseChart < ActiveRecord::Base
   belongs_to :course
 
-  validates :course_id, :presence => true
-  validates :depth, :presence => true
-
+  validates :course_id, presence: true
+  validates :depth,     presence: true
 end

@@ -23,21 +23,22 @@ require 'rails_helper'
 describe Election do
   before(:each) do
     ppl_data = [
-      {:person   => {:first_name => 'Da Rock', :last_name => 'Obama', :username => 'bigpimpin'},
-       :election => {:desired_username => 'bossman08', :position => 'pres'},
+      {
+        person:   { first_name: 'Da Rock', last_name: 'Obama', username: 'bigpimpin' },
+        election: { desired_username: 'bossman08', position: 'pres' },
       },
-
-      {:person   => {:first_name => 'Hellory', :last_name => 'Clinton', :username => 'mzklinton'},
-       :election => {:desired_username => 'billypleaser', :position => 'pres'}
+      {
+        person:   { first_name: 'Hellory', last_name: 'Clinton', username: 'mzklinton' },
+        election: { desired_username: 'billypleaser', position: 'pres' }
       }
     ]
 
     ppl = ppl_data.collect do |stuff|
       person = Person.where(stuff[:person]).first_or_initialize
       stuff[:person].update({
-                             :password => 'asdfjkl1111',
-                             :password_confirmation => 'asdfjkl1111',
-                             :email => "#{stuff[:person][:username]}@whitehouse.com"
+                             password: 'asdfjkl1111',
+                             password_confirmation: 'asdfjkl1111',
+                             email: "#{stuff[:person][:username]}@whitehouse.com"
                            })
       person.update_attributes stuff[:person]
 
@@ -96,12 +97,12 @@ describe Election do
 
       it "should create a new committeeship" do
         assert @obama_election.commit
-        assert Committeeship.exists?(:semester => @obama_election.semester, :person_id => @obama.id, :committee => @obama_election.position, :title => 'officer')
+        assert Committeeship.exists?(semester: @obama_election.semester, person_id: @obama.id, committee: @obama_election.position, title: 'officer')
       end
 
       it "should add person to respective groups" do
         assert @obama_election.commit
-        Group.where(:name => [@obama_election.position, 'officers', 'comms', 'candplus']).each do |g|
+        Group.where(name: [@obama_election.position, 'officers', 'comms', 'candplus']).each do |g|
           @obama.groups.should include g
         end
       end # it

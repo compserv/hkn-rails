@@ -36,11 +36,11 @@
 
 <div id="instructor-select">
 <div>Choose some instructors to merge:</div>
-<%= form_tag coursesurveys_merge_instructors_path, :method => :get do %>
+<%= form_tag coursesurveys_merge_instructors_path, method: :get do %>
 <%- [0,1].each do |i| -%>
   <div id="autocomplete-<%=i%>">
-    <%= text_field_tag (l="ibox#{i}"), (@instructors[i].full_name_r if @instructors[i]), :id => l, :placeholder => "Instructor #{i+1}", :disabled => (@instructors[i]) %>
-    <%= hidden_field_tag (l="id_#{i}"), params[l], :id => l %>
+    <%= text_field_tag (l="ibox#{i}"), (@instructors[i].full_name_r if @instructors[i]), id: l, placeholder: "Instructor #{i+1}", disabled: (@instructors[i]) %>
+    <%= hidden_field_tag (l="id_#{i}"), params[l], id: l %>
   </div>
 <%- end # 0,1 -%>
 <%= submit_tag 'Let\'s do it!' %>

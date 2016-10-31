@@ -9,7 +9,7 @@ class AddDepartmentIdToCourses < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :courses, :department, :integer, :null => false, :default => 0
+    add_column :courses, :department, :integer, null: false, default: 0
     Course.reset_column_information
     Course.find_each do |c|
       c.update_attribute :department, c.department.id

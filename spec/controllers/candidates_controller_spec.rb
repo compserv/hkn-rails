@@ -14,7 +14,7 @@ describe CandidatesController do
 
   describe "GET 'portal'" do
     it "should be successful" do
-      allow(@cand).to receive(:requirements_status) { {:status => {}, :rsvps => []} }
+      allow(@cand).to receive(:requirements_status) { {status: {}, rsvps: []} }
       allow(@cand).to receive(:challenges) { [] }
       allow(@person).to receive(:resumes) { [] }
       allow(@cand).to receive(:quiz_responses) { [] }

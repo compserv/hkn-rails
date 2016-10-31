@@ -13,18 +13,18 @@ class ContactsController < ApplicationController
                      end
 
     @search_opts = {'sort' => "name"}.merge params
-    opts = { :page => params[:page], :per_page => per_page }
+    opts = { page: params[:page], per_page: per_page }
 
     if params[:sort] == "companies.name"
-      opts.merge!( { :joins => "LEFT OUTER JOIN companies ON companies.id = contacts.company_id" } )
+      opts.merge!( { joins: "LEFT OUTER JOIN companies ON companies.id = contacts.company_id" } )
     end
     @contacts = Contact.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @contacts }
+      format.xml  { render xml: @contacts }
       format.js {
-        render :partial => 'list'
+        render partial: 'list'
       }
     end
   end
@@ -36,7 +36,7 @@ class ContactsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @contact }
+      format.xml  { render xml: @contact }
     end
   end
 
@@ -47,7 +47,7 @@ class ContactsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @contact }
+      format.xml  { render xml: @contact }
     end
   end
 
@@ -65,10 +65,10 @@ class ContactsController < ApplicationController
       if @contact.save
         flash[:notice] = 'Contact was successfully created.'
         format.html { redirect_to(@contact) }
-        format.xml  { render :xml => @contact, :status => :created, :location => @contact }
+        format.xml  { render xml: @contact, status: :created, location: @contact }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @contact.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @contact.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -85,8 +85,8 @@ class ContactsController < ApplicationController
         format.html { redirect_to(@contact) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @contact.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @contact.errors, status: :unprocessable_entity }
       end
     end
   end

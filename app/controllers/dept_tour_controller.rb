@@ -21,12 +21,12 @@ class DeptTourController < ApplicationController
           mail = DeptTourMailer.dept_tour_email params[:name], date, params[:email], params[:phone], params[:comments]
           mail.deliver
           r = DeptTourRequest.new({
-            :name      => params[:name],
-            :date      => date,
-            :submitted => Time.now,
-            :contact   => params[:email],
-            :phone     => params[:phone],
-            :comments  => params[:comments],
+            name:      params[:name],
+            date:      date,
+            submitted: Time.now,
+            contact:   params[:email],
+            phone:     params[:phone],
+            comments:  params[:comments],
           })
           unless r.save
             Rails.logger.warn "ERROR saving DeptTourRequest #{r.inspect}"

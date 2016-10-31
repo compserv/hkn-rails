@@ -7,7 +7,7 @@
 #
 
 class EventType < ActiveRecord::Base
-  validates :name, :presence => true
+  validates :name, presence: true
 
   # Crappy pun for changing the name into a valid CSS class identifier
   def classify

@@ -13,7 +13,7 @@
         <%= link_to person.fullname, person %>
       </td>
       <td>
-        <% person.coursesurveys.includes(:klass => :course).current_semester.each do |coursesurvey| %>
+        <% person.coursesurveys.includes(klass: :course).current_semester.each do |coursesurvey| %>
           <%= coursesurvey.klass.course.course_abbr%>
         <% end %>
       </td>

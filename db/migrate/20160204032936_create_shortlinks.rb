@@ -3,7 +3,7 @@ class CreateShortlinks < ActiveRecord::Migration
     create_table :shortlinks do |t|
       t.string :in_url
       t.text :out_url
-      t.integer :http_status, :default => 301
+      t.integer :http_status, default: 301
       t.references :person
       t.timestamps
     end

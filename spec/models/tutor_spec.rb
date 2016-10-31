@@ -26,9 +26,9 @@ end
 describe Tutor do
   before(:each) do
     @good_opts = {
-      :person => mock_model(Person),
-      #:availabilities => [mock_model(Availability)],
-      :languages => "C"
+      person: mock_model(Person),
+      #availabilities: [mock_model(Availability)],
+      languages: "C"
     }
   end
 

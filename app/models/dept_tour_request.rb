@@ -19,5 +19,5 @@ class DeptTourRequest < ActiveRecord::Base
   validates_presence_of :date
   validates_presence_of :submitted
   validates_presence_of :contact
-  validates_inclusion_of :responded, :in => [true, false]
+  validates_inclusion_of :responded, in: [true, false]
 end

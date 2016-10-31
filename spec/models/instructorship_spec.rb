@@ -52,10 +52,10 @@ describe Instructorship do
 
 ### THIS TEST IS BOGUS LOL
 ##  it "should link an instructor with a klass for correct role" do
-##    iship1 = Instructorship.create :klass => @klass, :instructor => @inst1, :ta => false
+##    iship1 = Instructorship.create klass: @klass, instructor: @inst1, ta: false
 ##    iship1.should be_valid
 ##
-##    iship2 = Instructorship.create :klass => @klass, :instructor => @inst2, :ta => true
+##    iship2 = Instructorship.create klass: @klass, instructor: @inst2, ta: true
 ##    iship2.should be_valid
 ##
 ##    @inst1.reload

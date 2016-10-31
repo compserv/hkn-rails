@@ -11,9 +11,9 @@
 #
 
 class CoursePrereq < ActiveRecord::Base
-  belongs_to :course, :class_name => :Course
-  belongs_to :prereq, :class_name => :Course
+  belongs_to :course, class_name: :Course
+  belongs_to :prereq, class_name: :Course
 
-  validates :course_id, :presence => true
-  validates :prereq_id, :presence => true
+  validates :course_id, presence: true
+  validates :prereq_id, presence: true
 end

@@ -1,5 +1,5 @@
 <h1>Officer Photo Upload</h1>
-<%= form_for :Person, :html => { :multipart => true} do %>
+<%= form_for :Person, html: { multipart: true } do %>
   <div class="field">
     <%= label :name, "Officer Name" %>
     <%= collection_select(:person, :id, @Officers, :id, :full_name) %> </br>

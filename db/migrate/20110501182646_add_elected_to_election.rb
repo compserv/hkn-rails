@@ -1,6 +1,6 @@
 class AddElectedToElection < ActiveRecord::Migration
   def self.up
-    add_column :elections, :elected, :boolean, :null => false, :default => false
+    add_column :elections, :elected, :boolean, null: false, default: false
   end
 
   def self.down

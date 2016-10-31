@@ -27,10 +27,10 @@ end
 describe SlotChange do
   before(:each) do
     @good_opts = {
-      :tutor => Tutor.create(person_id: 1),
-      :date => DateTime.parse("2010-07-23 11:00:00 UTC"),
-      :add_sub => 1,
-      :slot_id => 1
+      tutor: Tutor.create(person_id: 1),
+      date: DateTime.parse("2010-07-23 11:00:00 UTC"),
+      add_sub: 1,
+      slot_id: 1
     }
   end
 
@@ -40,7 +40,7 @@ describe SlotChange do
   end
 
   it "should require a valid add/subtract option" do
-    slotChange = SlotChange.create(@good_opts.merge(:add_sub => 3))
+    slotChange = SlotChange.create(@good_opts.merge(add_sub: 3))
     slotChange.should_not be_valid
     slotChange.errors[:add_sub].should include("Must be either 0 (add) or 1 (subtract)")
   end

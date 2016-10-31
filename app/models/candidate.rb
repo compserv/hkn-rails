@@ -18,12 +18,12 @@ class Candidate < ActiveRecord::Base
   has_many :quiz_responses
   has_many :challenges
 
-  validates :person, :presence => true
+  validates :person, presence: true
   validate :committees_must_be_valid
 
   scope :current, lambda { where(["candidates.created_at > ? OR currently_initiating = TRUE", Property.semester_start_time]) }
   scope :initiating, lambda { where(["currently_initiating = TRUE"]) }
-  scope :approved, lambda { includes(:person).where(:people => {:approved => true}) }
+  scope :approved, lambda { includes(:person).where(people: { approved: true }) }
 
   def self.committee_defaults
     defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "StudRel", "Tutoring"]
@@ -91,7 +91,7 @@ class Candidate < ActiveRecord::Base
       status[key] = assign #Set the status to true if requirement finished (cand has done >= the actual requirement value)
     end
 
-    return {:status => status, :rsvps => sorted_rsvps}
+    return { status: status, rsvps: sorted_rsvps }
   end
 
   # Updates quiz score based on submitted {quiz_responses}.
@@ -112,5 +112,4 @@ class Candidate < ActiveRecord::Base
     quiz_score = quiz_responses.select(&:correct).count
     update_attribute :quiz_score, quiz_score
   end
-
 end

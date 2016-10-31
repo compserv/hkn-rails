@@ -28,7 +28,7 @@ class AddIndexes < ActiveRecord::Migration
   def self.up
     Uniques.each do |table_name, columns|
       #execute "ALTER TABLE '#{table_name}' ADD UNIQUE '#{iname columns}' (#{columns.collect{|c| "'#{c.to_s}'"}.join(',')})"
-      add_index table_name, columns, :unique => true
+      add_index table_name, columns, unique: true
     end
     Indexes.each do |table_name, columns|
       add_index table_name, columns
@@ -37,7 +37,7 @@ class AddIndexes < ActiveRecord::Migration
 
   def self.down
     (Uniques+Indexes).each do |table_name, columns|
-      remove_index table_name, :column => columns
+      remove_index table_name, column: columns
     end
   end
 end

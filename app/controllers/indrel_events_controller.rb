@@ -13,22 +13,22 @@ class IndrelEventsController < ApplicationController
 						end
 
 	@search_opts = {'sort' => "time", 'sort_direction' => "down" }.merge params
-	opts = { :page => params[:page], :per_page => per_page }
+	opts = { page: params[:page], per_page: per_page }
 
 	if params[:sort] == "companies.name"
-		opts.merge!( { :joins => "LEFT OUTER JOIN companies ON companies.id = indrel_events.company_id" } )
+		opts.merge!( { joins: "LEFT OUTER JOIN companies ON companies.id = indrel_events.company_id" } )
 	elsif params[:sort] == "locations.name"
-		opts.merge!( { :joins => "LEFT OUTER JOIN locations ON locations.id = indrel_events.location_id" } )
+		opts.merge!( { joins: "LEFT OUTER JOIN locations ON locations.id = indrel_events.location_id" } )
 	elsif params[:sort] == "indrel_event_types.name"
-		opts.merge!( { :joins => "LEFT OUTER JOIN indrel_event_types ON indrel_event_types.id = indrel_events.indrel_event_type_id" } )
+		opts.merge!( { joins: "LEFT OUTER JOIN indrel_event_types ON indrel_event_types.id = indrel_events.indrel_event_type_id" } )
 	end
     @events = IndrelEvent.order("#{order} #{sort_direction}").paginate opts
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @events }
+      format.xml  { render xml: @events }
       format.js {
-        render :partial => 'list'
+        render partial: 'list'
       }
     end
   end
@@ -40,7 +40,7 @@ class IndrelEventsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @event }
+      format.xml  { render xml: @event }
     end
   end
 
@@ -51,7 +51,7 @@ class IndrelEventsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @event }
+      format.xml  { render xml: @event }
     end
   end
 
@@ -69,10 +69,10 @@ class IndrelEventsController < ApplicationController
       if @event.save
         flash[:notice] = 'Event was successfully created.'
         format.html { redirect_to(@event) }
-        format.xml  { render :xml => @event, :status => :created, :location => @event }
+        format.xml  { render xml: @event, status: :created, location: @event }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @event.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -88,8 +88,8 @@ class IndrelEventsController < ApplicationController
         format.html { redirect_to(@event) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @event.errors, status: :unprocessable_entity }
       end
     end
   end

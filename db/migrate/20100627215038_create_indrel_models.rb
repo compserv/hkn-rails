@@ -1,6 +1,6 @@
 class CreateIndrelModels < ActiveRecord::Migration
   def self.up
-    create_table "companies", :force => true do |t|
+    create_table "companies", force: true do |t|
       t.string   "name"
       t.text     "address"
       t.string   "website"
@@ -9,7 +9,7 @@ class CreateIndrelModels < ActiveRecord::Migration
       t.text     "comments"
     end
 
-    create_table "contacts", :force => true do |t|
+    create_table "contacts", force: true do |t|
       t.string   "name"
       t.string   "email"
       t.string   "phone"
@@ -20,13 +20,13 @@ class CreateIndrelModels < ActiveRecord::Migration
       t.string   "cellphone"
     end
 
-    create_table "indrel_event_types", :force => true do |t|
+    create_table "indrel_event_types", force: true do |t|
       t.string   "name"
       t.datetime "created_at"
       t.datetime "updated_at"
     end
 
-    create_table "indrel_events", :force => true do |t|
+    create_table "indrel_events", force: true do |t|
       t.datetime "time"
       t.integer  "location_id"
       t.integer  "indrel_event_type_id"
@@ -42,7 +42,7 @@ class CreateIndrelModels < ActiveRecord::Migration
       t.datetime "updated_at"
     end
 
-    create_table "locations", :force => true do |t|
+    create_table "locations", force: true do |t|
       t.string   "name"
       t.integer  "capacity"
       t.datetime "created_at"

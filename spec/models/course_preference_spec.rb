@@ -36,14 +36,15 @@ end
 describe CoursePreference do
   before(:each) do
     @good_opts = {
-      :tutor => mock_model(Tutor),
-      :course => mock_model(Course),
-      :level => 1
+      tutor: mock_model(Tutor),
+      course: mock_model(Course),
+      level: 1
     }
+
     @bad_opts = {
-      :tutor => mock_model(Tutor),
-      :course => mock_model(Course),
-      :level => 3
+      tutor: mock_model(Tutor),
+      course: mock_model(Course),
+      level: 3
     }
   end
 

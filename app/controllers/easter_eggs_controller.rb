@@ -26,14 +26,14 @@ class EasterEggsController < ApplicationController
     end
 
     flash[:notice] = "Easter Egg settings updated." if ok
-    redirect_to :action => :edit
+    redirect_to action: :edit
   end
 
   easter_enabler :mirror
   easter_enabler :b
 
   def erection
-    render :status => 411
+    render status: 411
   end
 
   private

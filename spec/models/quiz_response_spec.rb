@@ -32,7 +32,7 @@ end
 describe QuizResponse do
   before(:each) do
     @candidate = mock_model(Candidate)
-    @qr = QuizResponse.create(:candidate => @candidate, :number => "q1")
+    @qr = QuizResponse.create(candidate: @candidate, number: "q1")
   end
 
   it "should be valid when supplying both a candidate and a number" do
@@ -40,13 +40,13 @@ describe QuizResponse do
   end
 
   it "should split major and minor number" do
-    QuizResponse.new(:number => :q2).split_number.should == [2, nil]
-    QuizResponse.new(:number => :q7_3).split_number.should == [7, 3]
+    QuizResponse.new(number: :q2).split_number.should == [2, nil]
+    QuizResponse.new(number: :q7_3).split_number.should == [7, 3]
   end
 
   context "when grading" do
     def r(number, response)
-      q = QuizResponse.new(:number => number.to_s, :response => response.to_s)
+      q = QuizResponse.new(number: number.to_s, response: response.to_s)
     end
 
     # @param q [QuizResponse]

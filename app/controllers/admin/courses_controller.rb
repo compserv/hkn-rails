@@ -1,7 +1,7 @@
 class Admin::CoursesController < ApplicationController
 
   before_filter :authorize_csec
-  before_filter :set_course, :only => [:show, :update]
+  before_filter :set_course, only: [:show, :update]
 
   def index
     @courses = Course.order(:department_id).ordered
@@ -11,7 +11,7 @@ class Admin::CoursesController < ApplicationController
   end
 
   def new
-    @course = Course.new :department_id => Department.first.id
+    @course = Course.new department_id: Department.first.id
   end
 
   def create
@@ -22,7 +22,7 @@ class Admin::CoursesController < ApplicationController
       redirect_to admin_courses_show_path(*@course.slug)
     else
       @messages << (["Validation failed:"]+@course.errors.full_messages).join('<br/>').html_safe
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -61,7 +61,7 @@ private
 
   def set_course
     unless @course = Course.lookup_by_short_name(params[:dept],params[:num])
-      redirect_to (request.referer || admin_courses_path), :notice => "No matching course found."
+      redirect_to (request.referer || admin_courses_path), notice: "No matching course found."
       return false
     end
   end
@@ -72,7 +72,7 @@ private
     @course.update_attributes course_params
 
     # Course number
-    cn = Course.split_course_number params[:course][:full_course_number], :hash=>false
+    cn = Course.split_course_number params[:course][:full_course_number], hash: false
     @messages << cn.inspect
     @course.prefix, @course.course_number, @course.suffix = cn
 

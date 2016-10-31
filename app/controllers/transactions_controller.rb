@@ -12,16 +12,16 @@ class TransactionsController < ApplicationController
   def show
     @transaction = Transaction.find(params[:id])
     @usd_amount  = @transaction.amount.to_i / 100.0
-    redirect_to :root, :error => "You are not authorized to view that." unless
+    redirect_to :root, error: "You are not authorized to view that." unless
         @transaction.receipt_secret == params[:receipt_secret]
   end
 
   def create
     charge = Stripe::Charge.create(
-      :card         => params[:stripeToken],
-      :amount       => params[:amount],
-      :description  => params[:description],
-      :currency     => 'usd'
+      card:         params[:stripeToken],
+      amount:       params[:amount],
+      description:  params[:description],
+      currency:     'usd'
     )
 
     receipt_secret = SecureRandom.base64
@@ -34,7 +34,7 @@ class TransactionsController < ApplicationController
 
     @transaction = Transaction.create(transaction_params)
     redirect_to transaction_path(@transaction,
-        { :receipt_secret => receipt_secret })
+        { receipt_secret: receipt_secret })
 
   rescue Stripe::CardError => e
     flash[:error] = e.message

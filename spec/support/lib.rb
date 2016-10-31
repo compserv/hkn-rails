@@ -2,7 +2,6 @@
 
 module Support
   module Lib
-
     ##
     # Takes a range and yields pairs of [value, valid?]
     #
@@ -10,7 +9,7 @@ module Support
     #
     # @example
     #   test_range(10..20) do |value, valid|
-    #     MyModel.new(:value => value).valid?.should == valid
+    #     MyModel.new(value: value).valid?.should == valid
     #   end
     #
     # Yields:
@@ -26,7 +25,6 @@ module Support
       yield [r.max,   true]
       yield [r.max+1, false]
     end
-
   end
 end
 

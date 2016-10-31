@@ -137,16 +137,16 @@
 
 <div id="add_course_errors"></div>
 <h1>Sign up for classes</h1>
-<%= form_tag("", :id => "form") do %>
+<%= form_tag("", id: "form") do %>
 
     <div style="margin: 0px auto;">
         <!-- Choose a class to add: -->
         <%= label_tag "Search for class:" %>
-        <%= text_field_tag "course_query", "", :id => "course_query" %>
+        <%= text_field_tag "course_query", "", id: "course_query" %>
         <br/>
-        <%= hidden_field_tag "course_id", "", :id => "course_id" %>
+        <%= hidden_field_tag "course_id", "", id: "course_id" %>
 
-        <%= submit_tag "Add To Current Courses", :id => "course_submit" %>
+        <%= submit_tag "Add To Current Courses", id: "course_submit" %>
     </div>
     <br></br>
 <% end %>
@@ -171,7 +171,7 @@
     <% end %>
 
     <div style="clear: both;">
-    <%= button_to "Save Changes", '#', :onclick => 'updatePreferences(); return false;' %>
+    <%= button_to "Save Changes", '#', onclick: 'updatePreferences(); return false;' %>
     </div>
 
 <%- content_for :header do -%>
@@ -208,4 +208,3 @@
       });
     </script>
 <% end %>
-

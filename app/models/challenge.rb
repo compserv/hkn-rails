@@ -18,13 +18,13 @@ class Challenge < ActiveRecord::Base
   PENDING   = nil
 
   belongs_to :candidate
-  belongs_to :officer, :class_name => "Person", :foreign_key => "officer_id"
+  belongs_to :officer, class_name: "Person", foreign_key: "officer_id"
 
-  validates :name, :length => { :maximum => 255 }
+  validates :name, length: { maximum: 255 }
 
   scope :ordered,   lambda { order(:updated_at) }
-  scope :confirmed, lambda { where(:status => CONFIRMED) }
-  scope :pending,   lambda { where(:status => PENDING) }
+  scope :confirmed, lambda { where(status: CONFIRMED) }
+  scope :pending,   lambda { where(status: PENDING) }
 
   acts_as_notification do
     image "/images/icons/notifications/challenge.jpg"
@@ -46,9 +46,8 @@ class Challenge < ActiveRecord::Base
   end
 
   def is_current_challenge?
-      person_id = Candidate.find_by_id(candidate_id).person_id
-      current_candidate = Person.current_candidates.find_by_id(person_id)
-      return current_candidate ? true : false
+    person_id = Candidate.find_by_id(candidate_id).person_id
+    current_candidate = Person.current_candidates.find_by_id(person_id)
+    return current_candidate ? true : false
   end
-
 end

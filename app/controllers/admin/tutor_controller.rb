@@ -1,8 +1,8 @@
 require 'json'
 
 class Admin::TutorController < Admin::AdminController
-  before_filter :authorize_tutoring, :except=>[:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule, :update_preferences]
-  before_filter :authorize_tutoring_signup, :only=>[:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule, :update_preferences]
+  before_filter :authorize_tutoring, except: [:signup_slots, :signup_courses, :update_slots, :add_course, :find_courses, :edit_schedule, :update_preferences]
+  before_filter :authorize_tutoring_signup, only: [:signup_slots, :update_slots, :signup_courses, :add_course, :find_courses, :edit_schedule, :update_preferences]
 
   def signup_slots
     prop = Property.get_or_create
@@ -41,7 +41,7 @@ class Admin::TutorController < Admin::AdminController
 
       if availability_count < 5 # Force at least 5 time slot availabilities per tutor
         redirect_to :admin_tutor_signup_slots,
-          :notice=>"Please provide at least 5 time slot availabilities."
+          notice: "Please provide at least 5 time slot availabilities."
         return
       end
 
@@ -53,9 +53,9 @@ class Admin::TutorController < Admin::AdminController
           pref = Availability::PREF[av[:preference_level].to_sym]
           slider = av[:slider].to_i
           room, strength = Availability.slider_to_room_strength(slider)
-          availability = Availability.where(:wday => wday, :hour => hour, :tutor_id => tutor.id).first
+          availability = Availability.where(wday: wday, hour: hour, tutor_id: tutor.id).first
           if availability.nil? and pref != 0
-            Availability.create!(:wday => wday, :hour => hour, :preference_level => pref, :preferred_room => room, :room_strength => strength, :tutor => tutor)
+            Availability.create!(wday: wday, hour: hour, preference_level: pref, preferred_room: room, room_strength: strength, tutor: tutor)
           elsif availability and pref == 0
             availability.destroy
           elsif availability
@@ -70,7 +70,7 @@ class Admin::TutorController < Admin::AdminController
       tutor.availabilities.destroy_all
     end
 
-    redirect_to :admin_tutor_signup_slots, :notice=>"Successfully updated your tutoring preferences"
+    redirect_to :admin_tutor_signup_slots, notice: "Successfully updated your tutoring preferences"
   end
 
   def signup_courses
@@ -81,7 +81,7 @@ class Admin::TutorController < Admin::AdminController
 
   def update_preferences
       tutor = @current_user.get_tutor
-      preferences_options = {:current=>0, :completed=>1, :preferred=>2}
+      preferences_options = {current: 0, completed: 1, preferred: 2}
       course_preferences = tutor.course_preferences
 
       for option in preferences_options.keys
@@ -99,7 +99,7 @@ class Admin::TutorController < Admin::AdminController
       flash[:notice] = "Successfully updated your tutoring preferences"
       tutor = @current_user.get_tutor
       @courses_added = tutor.courses
-      render :action => :signup_courses
+      render action: :signup_courses
       #redirect_to :admin_tutor_signup_courses
 
   end
@@ -111,7 +111,7 @@ class Admin::TutorController < Admin::AdminController
   def gen_course_list
     # Create ["cs61a", "cs61b", ... ]
     Course.joins(:course_preferences).
-      where(:course_preferences => {:tutor_id=>Tutor.current}).
+      where(course_preferences: {tutor_id: Tutor.current}).
       ordered.uniq.collect(&:course_abbr)
   end
 
@@ -246,7 +246,7 @@ class Admin::TutorController < Admin::AdminController
       'slots' => all_slots
     }
 
-    render :text => JSON.pretty_generate(ret)
+    render text: JSON.pretty_generate(ret)
   end
 
 
@@ -289,8 +289,8 @@ class Admin::TutorController < Admin::AdminController
 
     # Collect availability information by room, day, and hour
     # See ApplicationModel::foreign_scope for how this works
-    Availability.current.includes(:tutor => :person).each do |a|
-    #Availability.current.includes(:tutor => :person).foreign_scope(:tutor, :current_scope_helper).each do |a|
+    Availability.current.includes(tutor: :person).each do |a|
+    #Availability.current.includes(tutor: :person).foreign_scope(:tutor, :current_scope_helper).each do |a|
       tutor = a.tutor
       wday = a.wday
       hour = a.hour
@@ -315,8 +315,8 @@ class Admin::TutorController < Admin::AdminController
     end
     # Find Others per slot
     # This is equivalent to Slot.all.each{|slot| slot.tutors = slot.tutors.current}
-    Slot.includes(:tutors => :person).uniq.each do |slot|
-    #Slot.includes(:tutors => :person).foreign_scope(:tutors, :current_scope_helper).uniq.each do |slot|
+    Slot.includes(tutors: :person).uniq.each do |slot|
+    #Slot.includes(tutors: :person).foreign_scope(:tutors, :current_scope_helper).uniq.each do |slot|
       wday = slot.wday
       hour = slot.hour
       form_slot = form_slots[slot.room][wday][hour]
@@ -415,7 +415,7 @@ class Admin::TutorController < Admin::AdminController
       Slot.all.each{|slot| slot.tutors.clear}
     else
       flash[:notice] = "Invalid action."
-      redirect_to :action => "edit_schedule" and return
+      redirect_to action: "edit_schedule" and return
     end
 
     all_tutors = !params[:only_available] || nil
@@ -427,7 +427,7 @@ class Admin::TutorController < Admin::AdminController
       flash[:notice] = NOTHING_CHANGED
     end
     flash[:notice] += ' ' + errors.join(' ') unless errors.empty?
-    redirect_to :action => "edit_schedule", :all_tutors => all_tutors
+    redirect_to action: "edit_schedule", all_tutors: all_tutors
   end
 
   def json_update
@@ -470,7 +470,7 @@ class Admin::TutorController < Admin::AdminController
       flash[:notice] = NOTHING_CHANGED
     end
     flash[:notice] += ' ' + errors.join(' ') unless errors.empty?
-    redirect_to :action => "edit_schedule"
+    redirect_to action: "edit_schedule"
   end
 
   def upload_schedule
@@ -498,7 +498,7 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def find_courses
-    render :json => Course.all.map {|c| {:text => c.course_abbr, :url => c.id } }
+    render json: Course.all.map {|c| {text: c.course_abbr, url: c.id } }
   end
 
   def add_course
@@ -509,7 +509,7 @@ class Admin::TutorController < Admin::AdminController
         course = results.first
       else
         msg = results.empty? ? "No courses matched your query." : "Multiple courses matched your query: #{results.collect(&:course_abbr).join(', ')}<br/>Select one from the autocomplete."
-        render :json => [0, msg]
+        render json: [0, msg]
         return
       end
     else
@@ -520,11 +520,11 @@ class Admin::TutorController < Admin::AdminController
     @preference_options = {"current" => 0, "completed" => 1, "preferred" => 2}
 
     if !course
-      render :json => [0, "Course not found."]
+      render json: [0, "Course not found."]
       return
     end
     #if !@preference_options.include?(preference_level)
-      #render :json => [0, "Please select a preference level."]
+      #render json: [0, "Please select a preference level."]
       #return
     #end
 
@@ -538,9 +538,9 @@ class Admin::TutorController < Admin::AdminController
       cp.tutor_id = tutor.id
       cp.level = level
       cp.save
-      render :json => [1, course.course_abbr, cp.id]
+      render json: [1, course.course_abbr, cp.id]
     else
-      render :json => [0, "You were already signed up for #{course}."]
+      render json: [0, "You were already signed up for #{course}."]
     end
 
   end

@@ -14,6 +14,6 @@ class CommitteePreference < ActiveRecord::Base
   belongs_to :candidate
   belongs_to :group
 
-  validates :group, :presence => true
-  validates :candidate, :presence => true
+  validates :group,     presence: true
+  validates :candidate, presence: true
 end

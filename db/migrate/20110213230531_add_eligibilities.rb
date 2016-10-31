@@ -5,9 +5,9 @@ class AddEligibilities < ActiveRecord::Migration
         t.string field
       end
 
-      t.integer :group, :null => false, :default => 0
+      t.integer :group, null: false, default: 0
       t.integer :class_level
-      t.integer :confidence, :null => false, :default => 0
+      t.integer :confidence, null: false, default: 0
       t.date    :first_reg
       t.references :candidate
 

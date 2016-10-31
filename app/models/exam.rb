@@ -18,11 +18,11 @@ class Exam < ActiveRecord::Base
   belongs_to :klass
   belongs_to :course
 
-  validates :klass, :presence => true
-  validates :course, :presence => true
-  validates :filename, :presence => true
-  validates :exam_type, :presence => true
-  validates_inclusion_of :is_solution, :in => [true, false]
+  validates :klass,     presence: true
+  validates :course,    presence: true
+  validates :filename,  presence: true
+  validates :exam_type, presence: true
+  validates_inclusion_of :is_solution, in: [true, false]
 
   @@TYPE_ABBRS = { 0 => 'q', 1 => 'mt', 2 => 'f' }
   @@TYPE_NAMES = { 0 => 'quiz', 1 => 'midterm', 2 => 'final'}
@@ -59,5 +59,4 @@ class Exam < ActiveRecord::Base
                     .reject {|course| course.exams.empty?}
     return [dept_name, courses]
   end
-
 end

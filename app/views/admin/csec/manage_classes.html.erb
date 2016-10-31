@@ -28,7 +28,7 @@
     </tr>
     <% @coursesurveys.each do |coursesurvey| %>
       <tr>
-        <td><%= select_tag "survey#{coursesurvey.id}[status]", options_for_select(Coursesurvey.statusmap.invert.to_a.sort{|a,b| a.last <=> b.last }, :selected => coursesurvey.status ) %></td>
+        <td><%= select_tag "survey#{coursesurvey.id}[status]", options_for_select(Coursesurvey.statusmap.invert.to_a.sort{|a,b| a.last <=> b.last }, selected: coursesurvey.status ) %></td>
         <td><%= link_to coursesurvey.klass.course.course_abbr, admin_courses_show_path(*coursesurvey.klass.course.slug) %></td>
         <td><%= link_to coursesurvey.klass.section.to_s.center(5).gsub(' ','&nbsp').html_safe, admin_klasses_edit_path(coursesurvey.klass) %></td>
         <td><%= coursesurvey.klass.time %></td>

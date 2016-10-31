@@ -22,7 +22,7 @@ describe AlumnisController do
   describe "GET show" do
     it "assigns the requested alumni as @alumni" do
       allow(Alumni).to receive(:find).with("37") { mock_alumni }
-      get :show, :id => "37"
+      get :show, id: "37"
       assigns(:alumni).should be(mock_alumni)
     end
   end
@@ -38,21 +38,21 @@ describe AlumnisController do
   describe "POST create" do
     describe "with valid params" do
       it "assigns a newly created alumni as @alumni" do
-        post :create, :alumni => {:person_id => 1},
-                      :grad_season => "Fall",
-                      :grad_year => 1945
+        post :create, alumni: {person_id: 1},
+                      grad_season: "Fall",
+                      grad_year: 1945
         expect(assigns(:alumni).person_id).to be(1)
         expect(assigns(:alumni).grad_semester).to eq("Fall 1945")
       end
 
       it "redirects to the created alumni" do
         allow(@current_user).to receive(:save).and_return true
-        post :create, :alumni => {
-                        :person_id => 9999,
-                        :perm_email => "derp@derp.com"
+        post :create, alumni: {
+                        person_id: 9999,
+                        perm_email: "derp@derp.com"
                       },
-                      :grad_season => "Fall",
-                      :grad_year => 1945
+                      grad_season: "Fall",
+                      grad_year: 1945
 
         response.should redirect_to(alumni_url(assigns(:alumni)))
       end
@@ -64,16 +64,16 @@ describe AlumnisController do
       end
 
       it "assigns a newly created but unsaved alumni as @alumni" do
-        post :create, :alumni => {'these' => 'params'},
-                      :grad_season => "Fall",
-                      :grad_year => 1945
+        post :create, alumni: {'these' => 'params'},
+                      grad_season: "Fall",
+                      grad_year: 1945
         expect(assigns(:alumni).save).not_to be(true)
       end
 
       it "re-renders the 'new' template" do
-        post :create, :alumni => {"these" => "params"},
-                      :grad_season => "Fall",
-                      :grad_year => 1945
+        post :create, alumni: {"these" => "params"},
+                      grad_season: "Fall",
+                      grad_year: 1945
         response.should render_template("new")
       end
     end
@@ -81,16 +81,16 @@ describe AlumnisController do
 
   describe "PUT update" do
     let(:alum) do
-      Alumni.new({:id => 37, :person_id => 9999,
-                  :grad_semester => "Fall 1944",
-                  :perm_email => "derp@derp.com"})
+      Alumni.new({id: 37, person_id: 9999,
+                  grad_semester: "Fall 1944",
+                  perm_email: "derp@derp.com"})
     end
     describe "with valid params" do
 
       it "updates the requested alumni" do
         allow(Alumni).to receive(:find).with(
           :first,
-          {:conditions=>"\"alumnis\".person_id = 9999"}
+          {conditions: "\"alumnis\".person_id = 9999"}
         ) { alum }
         allow(Alumni).to receive(:find).with("37") { alum }
 
@@ -98,28 +98,28 @@ describe AlumnisController do
           { "person_id" => "9999", "grad_semester" => "Fall 1945" }
         )
 
-        put :update, :id => "37",
-                     :alumni => { :person_id => 9999 },
-                     :grad_season => "Fall",
-                     :grad_year => 1945
+        put :update, id: "37",
+                     alumni: { person_id: 9999 },
+                     grad_season: "Fall",
+                     grad_year: 1945
 
       end
 
       it "assigns the requested alumni as @alumni" do
         allow(Alumni).to receive(:find) { alum }
-        put :update, :id => "37",
-                     :alumni => { :person_id => 9999 },
-                     :grad_season => 'Fall',
-                     :grad_year => 1945
+        put :update, id: "37",
+                     alumni: { person_id: 9999 },
+                     grad_season: 'Fall',
+                     grad_year: 1945
         assigns(:alumni).should be(alum)
       end
 
       it "redirects to the alumni" do
         allow(Alumni).to receive(:find) { alum }
-        put :update, :id => "37",
-                     :alumni => { :person_id => 9999 },
-                     :grad_season => 'Fall',
-                     :grad_year => 1945
+        put :update, id: "37",
+                     alumni: { person_id: 9999 },
+                     grad_season: 'Fall',
+                     grad_year: 1945
         response.should redirect_to(alumni_url(alum))
       end
     end
@@ -127,19 +127,19 @@ describe AlumnisController do
     describe "with invalid params" do
       it "assigns the alumni as @alumni" do
         allow(Alumni).to receive(:find) { alum }
-        put :update, :id => "37",
-                     :alumni => { :salary => -100 },
-                     :grad_season => 'Fall',
-                     :grad_year => 1945
+        put :update, id: "37",
+                     alumni: { salary: -100 },
+                     grad_season: 'Fall',
+                     grad_year: 1945
         assigns(:alumni).should be(alum)
       end
 
       it "re-renders the 'edit' template" do
         allow(Alumni).to receive(:find) { alum }
-        put :update, :id => "37",
-                     :alumni => { :salary => -100 },
-                     :grad_season => 'Fall',
-                     :grad_year => 1945
+        put :update, id: "37",
+                     alumni: { salary: -100 },
+                     grad_season: 'Fall',
+                     grad_year: 1945
         response.should render_template("edit")
       end
     end
@@ -149,12 +149,12 @@ describe AlumnisController do
     it "destroys the requested alumni" do
       allow(Alumni).to receive(:find).with("37") { mock_alumni }
       expect(mock_alumni).to receive(:destroy)
-      delete :destroy, :id => "37"
+      delete :destroy, id: "37"
     end
 
     it "redirects to the alumnis list" do
       allow(Alumni).to receive(:find) { mock_alumni }
-      delete :destroy, :id => "1"
+      delete :destroy, id: "1"
       response.should redirect_to(alumnis_url)
     end
   end

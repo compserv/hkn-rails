@@ -1,7 +1,7 @@
 class CreateInstructors < ActiveRecord::Migration
   def self.up
     create_table :instructors do |t|
-      t.string :name, :null => false
+      t.string :name, null: false
       t.string :picture
       t.string :title
       t.string :phone_number

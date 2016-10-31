@@ -1,6 +1,6 @@
 class TutorController < ApplicationController
 
-  #caches_action :schedule, :layout => false
+  #caches_action :schedule, layout: false
 
   def schedule
     prop = Property.get_or_create
@@ -36,7 +36,7 @@ class TutorController < ApplicationController
     respond_to do |format|
       format.html
       format.js {
-        render :partial => 'calendar'
+        render partial: 'calendar'
       }
     end
   end

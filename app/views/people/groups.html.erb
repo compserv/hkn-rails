@@ -62,7 +62,7 @@
 <%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
 <%- end -%>
 
-<%= link_to "Save", '#', :onclick => 'updateGroups(); return false;' %>
+<%= link_to "Save", '#', onclick: 'updateGroups(); return false;' %>
 
 
 <style type="text/css">
@@ -116,4 +116,3 @@ $(function() {
 
 </script>
 <%- end # allow edit? -%>
-

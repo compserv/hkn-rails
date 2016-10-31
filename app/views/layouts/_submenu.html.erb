@@ -32,9 +32,9 @@
   </ul>
   <ul class="plain">
     <li><%= link_to "Candidates",        people_list_path("candidates") %></li>
-    <li><%= link_to 'Election Details', admin_election_details_path, :class => "navigation_sublevel_item" %></li>
+    <li><%= link_to 'Election Details', admin_election_details_path, class: "navigation_sublevel_item" %></li>
     <% if @auth["comms"] %>
-    <li><%= link_to 'Contact Card', contact_card_path, :class => 'navigation_sublevel_item'  %></li>
+    <li><%= link_to 'Contact Card', contact_card_path, class: 'navigation_sublevel_item'  %></li>
     <% end %>
   </ul>
 </div>
@@ -70,13 +70,13 @@
 <div class="submenu about_submenu">
   <ul class="plain">
     <li><a href="/about/contact/" class="navigation_sublevel_item">Contact Information</a></li>
-    <li><%= link_to "Photo Gallery", "https://www.flickr.com/photos/berkeley_hkn/", :class=>"navigation_sublevel_item" %></li>
-    <li><%= link_to "Yearbooks",     "/about/yearbook/",            :class=>"navigation_sublevel_item" %></li>
+    <li><%= link_to "Photo Gallery", "https://www.flickr.com/photos/berkeley_hkn/", class: "navigation_sublevel_item" %></li>
+    <li><%= link_to "Yearbooks",     "/about/yearbook/",            class: "navigation_sublevel_item" %></li>
   </ul>
   <ul class="plain">
     <li><a href="/about/slideshow/" class="navigation_sublevel_item">Slideshows</a></li>
-    <li><%= link_to "Current Officers", "/about/officers/", :class=>"navigation_sublevel_item" %></li>
-    <li><%= link_to "Current Committee Members", "/about/cmembers/", :class=>"navigation_sublevel_item" %></li>
+    <li><%= link_to "Current Officers", "/about/officers/", class: "navigation_sublevel_item" %></li>
+    <li><%= link_to "Current Committee Members", "/about/cmembers/", class: "navigation_sublevel_item" %></li>
   </ul>
 </div>
 
@@ -111,7 +111,7 @@
       <li><a href="/admin/csec" class="navigation_sublevel_item">Csec Admin</a></li>
     <% end %>
     <% if @auth['rsec'] %>
-      <li><%= link_to 'Rsec Admin', admin_rsec_path, :class => 'navigation_sublevel_item'  %></li>
+      <li><%= link_to 'Rsec Admin', admin_rsec_path, class: 'navigation_sublevel_item'  %></li>
     <% end %>
     <% if @auth["deprel"] %>
       <li><a href="/admin/deprel" class="navigation_sublevel_item">Deprel Admin [<%= controller.num_deprel_requests %>]</a></li>
@@ -120,16 +120,16 @@
       <li><a href="/admin/indrel/" class="navigation_sublevel_item">Indrel Admin</a></li>
     <% end %>
     <% if @auth["bridge"] %>
-      <li><%= link_to 'Bridge Admin', admin_bridge_index_path, :class => 'navigation_sublevel_item'  %></li>
+      <li><%= link_to 'Bridge Admin', admin_bridge_index_path, class: 'navigation_sublevel_item'  %></li>
     <% end %>
     <% if @auth["vp"] %>
-      <li><%= link_to "VP Admin", admin_vp_path, :class => "navigation_sublevel_item" %></li>
+      <li><%= link_to "VP Admin", admin_vp_path, class: "navigation_sublevel_item" %></li>
     <% end %>
     <% if @auth["pres"] %>
-      <li><%= link_to "Pres Admin", admin_pres_path, :class => "navigation_sublevel_item" %></li>
+      <li><%= link_to "Pres Admin", admin_pres_path, class: "navigation_sublevel_item" %></li>
     <% end %>
     <% if @auth["alumrel"] or @auth["csec"] or @auth["vp"] %>
-      <li><%= link_to "Alumrel/Grad Admin", admin_alumrel_path , :class => "navigation_sublevel_item" %></li>
+      <li><%= link_to "Alumrel/Grad Admin", admin_alumrel_path , class: "navigation_sublevel_item" %></li>
     <% end %>
   </ul>
 </div>

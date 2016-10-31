@@ -30,15 +30,15 @@ class Rsvp < ActiveRecord::Base
   belongs_to :event
   has_and_belongs_to_many :blocks
 
-  validates :person, :presence => true
-  validates :event, :presence => true
-  validates :comment, :length => { :maximum => 500 }
+  validates :person, presence: true
+  validates :event, presence: true
+  validates :comment, length: { maximum: 500 }
 
-  validates_inclusion_of :confirmed, :in => [Confirmed, Unconfirmed, Rejected, nil]
+  validates_inclusion_of :confirmed, in: [Confirmed, Unconfirmed, Rejected, nil]
 
   validate :at_least_one_block
 
-  validates_uniqueness_of :event_id, :scope => :person_id, :message => "has already been signed up for."
+  validates_uniqueness_of :event_id, scope: :person_id, message: "has already been signed up for."
 
   before_validation :set_default_transportation
 
@@ -56,12 +56,11 @@ class Rsvp < ActiveRecord::Base
     event and event.need_transportation
   end
 
-private
+  private
 
   def set_default_transportation
     if self.need_transportation
       self.transportation ||= TRANSPORT_ENUM.first.last
     end
   end
-
 end

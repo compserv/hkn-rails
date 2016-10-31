@@ -1,6 +1,6 @@
 <h1>Candidate Announcements</h1>
 <h2>Create an Announcement</h2>
-<% form_tag(admin_general_create_announcement_path, :method => "post") do %>
+<% form_tag(admin_general_create_announcement_path, method: "post") do %>
   <div class="field">
     <%= label_tag :title %><br />
     <%= text_field_tag :title %>
@@ -21,13 +21,11 @@
 <ul class="plain">
 <% for a in @announcements %>
   <li class="announcement">
-    <%= link_to "[Edit]", admin_general_edit_announcement_path(:id => a.id) %>
-    <%= link_to "[Delete]", admin_general_delete_announcement_path(:id => a.id) %>
+    <%= link_to "[Edit]", admin_general_edit_announcement_path(id: a.id) %>
+    <%= link_to "[Delete]", admin_general_delete_announcement_path(id: a.id) %>
     <span class="title"><%= a.title %></span> -
     <span class="body"><%= a.body %></span>
 
   </li>
 <% end %>
 </ul>
-
-

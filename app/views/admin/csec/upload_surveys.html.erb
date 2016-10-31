@@ -25,14 +25,14 @@
 </div>
 <div class="upload-form">
   <small>Upload raw survey data as <b>CSV</b> (a.k.a. doublequoted and comma-delimited).</small>
-  <%= form_tag admin_csec_upload_surveys_post_path, :multipart=>true, :method=>:post do %>
-    <%= file_field_tag :file, :accept => 'text/csv' %>
-    <%= submit_tag 'Upload', :disable_with => "Processing..." %>
+  <%= form_tag admin_csec_upload_surveys_post_path, multipart: true, method: :post do %>
+    <%= file_field_tag :file, accept: 'text/csv' %>
+    <%= submit_tag 'Upload', disable_with: "Processing..." %>
     <br/>
-    <%= label_tag :save, "Save", :for => :save %>
-    <%= check_box_tag :save, "1", false, :disabled => !@allow_save, :onclick => "if(this.checked) this.checked=confirm(\"Are you sure? If so, click OK and re-select the file to be uploaded. Make sure compserv has made a backup recently before you do this.\\n\\nBtw, this could take a while. DO NOT resubmit/refresh until the page comes back to you. If an error occurs, first check to see if the data was imported (it probably wasn't), then go back to the upload form via the url, NOT with back/refresh.\");" %>
+    <%= label_tag :save, "Save", for: :save %>
+    <%= check_box_tag :save, "1", false, disabled: !@allow_save, onclick: "if(this.checked) this.checked=confirm(\"Are you sure? If so, click OK and re-select the file to be uploaded. Make sure compserv has made a backup recently before you do this.\\n\\nBtw, this could take a while. DO NOT resubmit/refresh until the page comes back to you. If an error occurs, first check to see if the data was imported (it probably wasn't), then go back to the upload form via the url, NOT with back/refresh.\");" %>
     &nbsp;&nbsp;&nbsp;
-    <%= label_tag :ta, "TA?", :for => :ta %>
+    <%= label_tag :ta, "TA?", for: :ta %>
     <%= check_box_tag :ta, "1", @ta %>
   <%- end -%>
 </div>
@@ -47,4 +47,3 @@
     <%= raw @results[:info].collect(&:to_ul).join('<br/>') %>
   </div>
 </div>
-

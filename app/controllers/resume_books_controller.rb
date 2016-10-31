@@ -1,8 +1,8 @@
 class ResumeBooksController < ApplicationController
 
-  before_filter :authorize_indrel, :except => [:download_pdf]
+  before_filter :authorize_indrel, except: [:download_pdf]
 
-  before_filter :authorize_download, :only => [:download_pdf, :download_iso]
+  before_filter :authorize_download, only: [:download_pdf, :download_iso]
 
   def new
     @resume_book = ResumeBook.new
@@ -83,13 +83,13 @@ class ResumeBooksController < ApplicationController
   # Shows resumebook (PDF, not model data) after authorization
   def download_pdf
     @resume_book = ResumeBook.find(params[:id])
-    send_file @resume_book.pdf_file, :type => 'application/pdf', :x_sendfile => true
+    send_file @resume_book.pdf_file, type: 'application/pdf', x_sendfile: true
   end
 
   # Shows resumebook (ISO) after authorization
   def download_iso
     @resume_book = ResumeBook.find(params[:id])
-    send_file @resume_book.iso_file, :type => 'application/octet-stream', :x_sendfile => true
+    send_file @resume_book.iso_file, type: 'application/octet-stream', x_sendfile: true
   end
 
 private
@@ -98,7 +98,7 @@ private
     unless (Company.find_by_single_access_token(params[:access_key]) &&
       CompanySession.find(params[:access_key])) ||
       (@current_user && @current_user.in_groups?(['superusers', 'indrel']))
-      redirect_to :root, :notice => "Insufficient privileges to access this" \
+      redirect_to :root, notice: "Insufficient privileges to access this" \
         "page."
     end
   end

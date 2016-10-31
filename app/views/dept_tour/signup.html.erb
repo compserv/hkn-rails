@@ -14,29 +14,29 @@ HKN provides tours of the Berkeley EECS department. Sign up here, and your reque
   </div>
   <%- end -%>
 
-<%= form_tag(dept_tour_signup_path, :method => :post) do%>
+<%= form_tag(dept_tour_signup_path, method: :post) do%>
   <div class="field">
-    <%= label_tag :name, "Name", :class => 'required-field' %>
+    <%= label_tag :name, "Name", class: 'required-field' %>
     <%= text_field_tag :name %>
   </div>
 
   <div class="field">
-    <%= label_tag :date, "Desired date & time", :class => 'required-field' %>
-    <%= text_field_tag :date, nil, :class => "datetimepicker" %>
+    <%= label_tag :date, "Desired date & time", class: 'required-field' %>
+    <%= text_field_tag :date, nil, class: "datetimepicker" %>
   </div>
 
   <div class="field">
-    <%= label_tag :email, "Contact email address", :class => 'required-field' %>
+    <%= label_tag :email, "Contact email address", class: 'required-field' %>
     <%= text_field_tag :email %>
   </div>
 
   <div class="field">
-    <%= label_tag :email_confirmation, "Re-type email", :class => 'required-field' %>
+    <%= label_tag :email_confirmation, "Re-type email", class: 'required-field' %>
     <%= text_field_tag :email_confirmation %>
   </div>
 
   <div class="field">
-    <%= label_tag :phone, "Contact phone number", :class => 'required-field' %>
+    <%= label_tag :phone, "Contact phone number", class: 'required-field' %>
     <%= text_field_tag :phone %>
   </div>
 

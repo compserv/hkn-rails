@@ -14,7 +14,7 @@
 class SlotChange < ActiveRecord::Base
   belongs_to :tutor
 
-  validates :tutor, :presence => true
+  validates :tutor, presence: true
   validate :valid_add_sub
 
   def valid_add_sub

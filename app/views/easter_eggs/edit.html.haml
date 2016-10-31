@@ -1,5 +1,5 @@
 .no-translation
-  = form_tag :action => :update do
+  = form_tag action: :update do
     = check_box_tag :piglatin, true, @easter_eggs[:piglatin]
     = label_tag :piglatin, "Pig Latin mode"
     %br/

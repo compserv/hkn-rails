@@ -1,8 +1,8 @@
 class PeopleController < ApplicationController
-  before_filter :authorize, :only => [:list, :show, :edit, :update, :groups, :groups_update]
-  before_filter :authorize_superuser, :only => [:groups_update]
-  before_filter :authorize_vp, :only => [:approve, :destroy]
-  before_filter :authorize_comms, :only => [:groups, :contact_card]
+  before_filter :authorize, only: [:list, :show, :edit, :update, :groups, :groups_update]
+  before_filter :authorize_superuser, only: [:groups_update]
+  before_filter :authorize_vp, only: [:approve, :destroy]
+  before_filter :authorize_comms, only: [:groups, :contact_card]
 
   def list
     @category = params[:category] || "all"
@@ -24,8 +24,8 @@ class PeopleController < ApplicationController
                      end
 
     @search_opts = {'sort' => "first_name"}.merge params
-    opts = { :page     => params[:page],
-             :per_page => params[:per_page] || 20
+    opts = { page:     params[:page],
+             per_page: params[:per_page] || 20
            }
 
     if %w[officers].include? @category or %w[cmembers].include? @category
@@ -44,7 +44,7 @@ class PeopleController < ApplicationController
                             .joins(joinstr)
                             .where(cond)
     if @auth["vp"] and params[:not_approved]
-      person_selector = person_selector.where(:approved => nil )
+      person_selector = person_selector.where(approved: nil )
     end
 
     @people = person_selector.paginate opts
@@ -52,7 +52,7 @@ class PeopleController < ApplicationController
     respond_to do |format|
       format.html
       format.js {
-        render :partial => 'list_results'
+        render partial: 'list_results'
       }
     end
   end
@@ -79,8 +79,8 @@ class PeopleController < ApplicationController
       str = "%#{query}%"
       @results[:people] = FakeSearch.new
 
-      opts = { :page     => params[:page],
-               :per_page => params[:per_page] || 20
+      opts = { page:     params[:page],
+               per_page: params[:per_page] || 20
              }
 
       @results[:people].results = Person.where('(first_name||last_name||username||email) LIKE ?', str).paginate opts
@@ -109,11 +109,11 @@ class PeopleController < ApplicationController
     @candidate.person = @person
     @candidate.save
 
-    if verify_recaptcha(:message=>"Captcha validation failed", :model=>@person) && @person.save
+    if verify_recaptcha(message: "Captcha validation failed", model: @person) && @person.save
       flash[:notice] = "Account registered!"
       redirect_to root_url
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -124,7 +124,7 @@ class PeopleController < ApplicationController
         @person = Person.find(params[:login].to_i) #Find by id
       end
       if @person == nil
-        redirect_to :root, :notice => "The person you tried to view does not exist."
+        redirect_to :root, notice: "The person you tried to view does not exist."
         return
       end
     end
@@ -147,7 +147,7 @@ class PeopleController < ApplicationController
     @person.save
 
     AccountMailer.account_approval(@person).deliver
-    redirect_to :action => "show"
+    redirect_to action: "show"
   end
 
   def update
@@ -172,16 +172,16 @@ class PeopleController < ApplicationController
         params[:person][:password] = params[:password][:new]
         params[:person][:password_confirmation] = params[:password][:confirm]
       else
-        redirect_to(path, :notice => "You must enter in your current password to make any changes.")
+        redirect_to(path, notice: "You must enter in your current password to make any changes.")
         return
       end
     end
 
     # DO IT
     if @person.update_attributes(person_params)
-      redirect_to(path, :notice => 'Settings successfully updated.')
+      redirect_to(path, notice: 'Settings successfully updated.')
     else
-      redirect_to(path, :notice => 'Settings could not be updated.')
+      redirect_to(path, notice: 'Settings could not be updated.')
     end
   end
 
@@ -230,7 +230,7 @@ class PeopleController < ApplicationController
       flash[:notice] = "Error #{errors.join(', ').inspect}"
     end
 
-    render :action => :groups
+    render action: :groups
   end
 
   def contact_card
@@ -248,9 +248,9 @@ class PeopleController < ApplicationController
     end
 
     send_data csv_string,
-              :type => 'text/csv',
-              :disposition => "attachment",
-              :filename => "hkn-contacts.csv"
+              type: 'text/csv',
+              disposition: "attachment",
+              filename: "hkn-contacts.csv"
   end
 
   private

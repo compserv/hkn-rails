@@ -1,6 +1,6 @@
 class CourseguideController < ApplicationController
 
-  before_filter :authorize_tutoring, :only=>[:edit, :update]
+  before_filter :authorize_tutoring, only: [:edit, :update]
 
   def authorize_courseguides
     @current_user && (@auth['tutoring'] || @auth['superusers'])
@@ -18,21 +18,21 @@ class CourseguideController < ApplicationController
   def edit
     @course = Course.lookup_by_short_name(params[:dept_abbr], params[:course_number])
     if @course.nil?
-      redirect_back_or_default coursesurveys_path, :notice => "Error: No such course."
+      redirect_back_or_default coursesurveys_path, notice: "Error: No such course."
     end
   end
 
   def update
     @course = Course.lookup_by_short_name(params[:dept_abbr], params[:course_number])
     if @course.nil?
-      return redirect_back_or_default coursesurveys_path, :notice=>"Error: That course does not exist."
+      return redirect_back_or_default coursesurveys_path, notice: "Error: That course does not exist."
     end
 
     if !@course.update_attributes(courseguide_params)
-      return redirect_to courseguide_show_path(@course.dept_abbr, @course.full_course_number), :notice => "Error updating the entry: #{@course.errors.inspect}"
+      return redirect_to courseguide_show_path(@course.dept_abbr, @course.full_course_number), notice: "Error updating the entry: #{@course.errors.inspect}"
     end
 
-    return redirect_to courseguide_edit_path(@course.dept_abbr, @course.full_course_number), :notice => "Successfully updated the course guide for #{@course.course_name}."
+    return redirect_to courseguide_edit_path(@course.dept_abbr, @course.full_course_number), notice: "Successfully updated the course guide for #{@course.course_name}."
   end
 
   def get_courses_json

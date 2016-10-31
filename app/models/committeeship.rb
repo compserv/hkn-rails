@@ -19,10 +19,10 @@ class Committeeship < ActiveRecord::Base
   NonExecs = @Committees-Execs
 
   validates_presence_of :person_id
-  validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
-  validates_inclusion_of :title, :in => Positions, :message => "Not a valid title."
-  validates_inclusion_of :committee, :in => @Committees, :message => "Committee not recognized."
-  validates_uniqueness_of :committee, :scope => [:person_id, :semester]
+  validates_format_of :semester, with: Semester, message: "Not a valid semester."
+  validates_inclusion_of :title, in: Positions, message: "Not a valid title."
+  validates_inclusion_of :committee, in: @Committees, message: "Committee not recognized."
+  validates_uniqueness_of :committee, scope: [:person_id, :semester]
 
   belongs_to :person
 
@@ -30,13 +30,13 @@ class Committeeship < ActiveRecord::Base
 
   # We have this argumentless lambda because we don't want to evaluate
   # Property.semester until we call the scope, not when we define it
-  scope :current,    -> { where(:semester => Property.semester) }
-  scope :next,       lambda{ where(:semester => Property.next_semester) }
-  scope :semester,   lambda{ |s| where(:semester => s) }
-  scope :committee,  lambda{ |x| where(:committee => x) }
-  scope :officers,   -> { where(:title => "officer") }
-  scope :cmembers,   -> { where(:title => "cmember") }
-  scope :candidates, -> { where(:title => "candidate") }
+  scope :current,    -> { where(semester: Property.semester) }
+  scope :next,       lambda{ where(semester: Property.next_semester) }
+  scope :semester,   lambda{ |s| where(semester: s) }
+  scope :committee,  lambda{ |x| where(committee: x) }
+  scope :officers,   -> { where(title: "officer") }
+  scope :cmembers,   -> { where(title: "cmember") }
+  scope :candidates, -> { where(title: "candidate") }
 
   class << self
     attr_reader :Committees, :Positions
@@ -92,7 +92,8 @@ class Committeeship < ActiveRecord::Base
     nice_committees[committee]
   end
 
-private
+
+  private
 
   def assign_groups
     # Adds the associated person to:
@@ -121,5 +122,4 @@ private
 
     self.person.join_groups grups
   end
-
 end

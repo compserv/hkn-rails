@@ -2,7 +2,7 @@
 
 <%= link_to "&larr;&nbsp;#{@klass.course.to_s} classes".html_safe, admin_courses_klasses_path(*@klass.course.slug) %>
 
-<%= form_for @klass, :url => admin_klasses_update_path(@klass) do |f| -%>
+<%= form_for @klass, url: admin_klasses_update_path(@klass) do |f| -%>
 <table>
   <tr>
     <th>Attribute</th>

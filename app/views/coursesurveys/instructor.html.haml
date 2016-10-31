@@ -2,15 +2,15 @@
 #instructor_box.trans-bg
   %h1= @instructor.full_name
 
-  %div{:style => "float:left; margin-right: 1em;"}
+  %div{style: "float:left; margin-right: 1em;"}
     - if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank?
-      = image_tag "https://hkn.eecs.berkeley.edu/#{@instructor.picture}", :class=>"instructor-photo" unless @instructor.picture.blank?
+      = image_tag "https://hkn.eecs.berkeley.edu/#{@instructor.picture}", class: "instructor-photo" unless @instructor.picture.blank?
     - elsif @instructor.instructor? # guess the picture, but only if instructor..
-      = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", :class => 'instructor-photo'
+      = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", class: 'instructor-photo'
     - else
       -# no picture
 
-  %div{:style => "float:left;"}
+  %div{style: "float:left;"}
     - if @can_edit
       = link_to '[Edit]', coursesurveys_edit_instructor_path(@instructor)
       = link_to '[Merge]', coursesurveys_merge_instructors_path(@instructor.id)
@@ -46,7 +46,7 @@
 
 - unless @results[:klasses].blank?
   -# content_for :header do
-  %script{:type => "text/javascript", :src => "https://www.google.com/jsapi"}
+  %script{type: "text/javascript", src: "https://www.google.com/jsapi"}
   :javascript
     google.load("visualization", "1", {packages:["corechart"]});
 
@@ -119,7 +119,7 @@
 - [ [:klasses,     "Taught"], [:tad_klasses, "TA'd"  ]].each do |klasstype, label|
   - next if @results[klasstype].empty?
   <!-- Classes #{label} -->
-  %div{:id => (klasstype == :klasses) ? "instructor_table" : "ta_table"}
+  %div{id: (klasstype == :klasses) ? "instructor_table" : "ta_table"}
     #table
       %h3.center Classes #{label}
       %table#ratings.table
@@ -138,11 +138,11 @@
             <!-- #{klass.to_s} -->
             %tr
               %td
-                %span.semester= link_to klass.to_s, surveys_klass_path(klass, :instructor => @instructor.full_name_r_strip)
+                %span.semester= link_to klass.to_s, surveys_klass_path(klass, instructor: @instructor.full_name_r_strip)
               - if !@instructor.private || @privileged
                 %td= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a
               - else
-                %td{:style => "font-style:italic;"} hidden
+                %td{style: "font-style:italic;"} hidden
               - unless klasstype == :tad_klasses
                 %td= rating_and_bar ww_a.mean, ww_a.survey_question.max, surveys_rating_path(ww_a) if ww_a
               %td
@@ -171,7 +171,7 @@
                   - if !@instructor.private || @privileged
                     %td= rating_and_bar(stats[:eff].avg, stats[:eff_max]) if stats[:eff].any?
                   - else
-                    %td{:style => "font-style:italic;"} hidden
+                    %td{style: "font-style:italic;"} hidden
                   - unless klasstype == :tad_klasses
                     %td= rating_and_bar(stats[:ww].avg, stats[:ww_max]) if stats[:ww].any?
                   %td
@@ -188,11 +188,10 @@
                   - if s != :eff || !@instructor.private || @privileged
                     %td= rating_and_bar(numz.avg, courses.values.drop_while{|x|x.nil?}.collect{|x|x["#{s}_max".to_sym]}.compact.first || 1) unless courses.empty? || !numz.any?
                   - else
-                    %td{:style => "font-style:italic;"} hidden
+                    %td{style: "font-style:italic;"} hidden
                 %td
             -# end classification
     / end "table" div
 -# end klasstype
 
 -# end cache
-

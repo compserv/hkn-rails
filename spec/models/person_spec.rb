@@ -68,12 +68,12 @@ end
 
 describe Person do
   before(:each) do
-    @good_opts = { :first_name => "Jim",
-      :last_name => "Raynor",
-      :email => "jraynor@battle.net",
-      :username => "jraynor",
-      :password => "zergkiller",
-      :password_confirmation => "zergkiller"}
+    @good_opts = { first_name: "Jim",
+      last_name: "Raynor",
+      email: "jraynor@battle.net",
+      username: "jraynor",
+      password: "zergkiller",
+      password_confirmation: "zergkiller"}
   end
 
   it "should accept valid parameters" do
@@ -82,25 +82,25 @@ describe Person do
   end
 
   it "should require a username to be at least 2 characters long" do
-    person = Person.create(@good_opts.merge(:username => "a"))
+    person = Person.create(@good_opts.merge(username: "a"))
     person.should_not be_valid
     person.errors[:username].should include("is too short (minimum is 2 characters)")
   end
 
   it "should require an email to be correctly formatted" do
-    person = Person.create(@good_opts.merge(:email => "no_at_sign_and_no_domain"))
+    person = Person.create(@good_opts.merge(email: "no_at_sign_and_no_domain"))
     person.should_not be_valid
     person.errors[:email].should include("should look like an email address.")
   end
 
   it "should require the password to be at least 8 characters long" do
-    person = Person.create(@good_opts.merge(:password => "1234567"))
+    person = Person.create(@good_opts.merge(password: "1234567"))
     person.should_not be_valid
     person.errors[:password].should include("is too short (minimum is 8 characters)")
   end
 
   it "should require the password and password_confirmation to match" do
-    person = Person.create(@good_opts.merge(:password => "12345678", :password_confirmation => "12345679"))
+    person = Person.create(@good_opts.merge(password: "12345678", password_confirmation: "12345679"))
     person.should_not be_valid
     person.errors[:password_confirmation].should include("doesn't match Password")
   end
@@ -128,31 +128,31 @@ describe Person do
   context "phone number validation" do
     describe "#phone_number_is_valid?" do
       it "should be true for 10-digit phone numbers" do
-        person = Person.new(:phone_number => "5555555555")
+        person = Person.new(phone_number: "5555555555")
         expect(person.phone_number_is_valid?).to be_truthy
       end
 
       it "should be true for 10-digit phone numbers ignoring extra characters" do
-        person = Person.new(:phone_number => "(555) 555-5555")
+        person = Person.new(phone_number: "(555) 555-5555")
         expect(person.phone_number_is_valid?).to be_truthy
       end
 
       it "should be invalid for 9-digit phone numbers" do
-        person = Person.new(:phone_number => "123456789")
+        person = Person.new(phone_number: "123456789")
         expect(person.phone_number_is_valid?).to be_falsey
       end
     end
 
     describe "#phone_number_compact" do
       it "should return phone numbers without extra characters" do
-        person = Person.new(:phone_number => "(555) 555-5555")
+        person = Person.new(phone_number: "(555) 555-5555")
         person.phone_number_compact.should == "5555555555"
       end
     end
 
     describe "#sms_email_address" do
       it "should return sms email address" do
-        person = Person.new(:phone_number => "(555) 555-5555")
+        person = Person.new(phone_number: "(555) 555-5555")
         mc = mock_model(MobileCarrier)
         expect(mc).to receive(:sms_email).and_return("@example.com")
         person.mobile_carrier = mc

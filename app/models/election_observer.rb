@@ -48,18 +48,16 @@ class ElectionObserver < ActiveRecord::Observer
       fwidth = [20,                25,                        25]
 
       fields = fields.collect(&:to_s).collect(&:inspect).collect {|s| s.ljust fwidth.shift}
-      fields << ActiveSupport::JSON.decode(election.to_json).merge({:person => {:username => election.person.username}}).to_json
+      fields << ActiveSupport::JSON.decode(election.to_json).merge({person: {username: election.person.username}}).to_json
 
       # get event name
-      eventName = {:create  => 'NewElection',
-                   :update  => 'UpdateElection',
-                   :destroy => 'DestroyElection'
+      eventName = {create:  'NewElection',
+                   update:  'UpdateElection',
+                   destroy: 'DestroyElection'
                   } [event]
 
       f << "#{eventName}: #{fields.join ', '}"
       f << "\n"
     end
   end
-
 end
-

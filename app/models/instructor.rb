@@ -20,15 +20,15 @@
 class Instructor < ActiveRecord::Base
   has_many :instructorships
   has_many :klasses,     -> { where(instructorships: {ta: false}) },
-                         :through => :instructorships
+                         through: :instructorships
   has_many :tad_klasses, -> { where(instructorships: {ta: true}) },
-                         :through => :instructorships, :source => :klass
-  has_many :survey_answers, :through => :instructorships
+                         through: :instructorships, source: :klass
+  has_many :survey_answers, through: :instructorships
 
   #validates_presence_of :first_name
   validates_presence_of :last_name
 
-  validates_uniqueness_of :first_name, :scope => :last_name
+  validates_uniqueness_of :first_name, scope: :last_name
 
   # sunspot
   searchable do
@@ -71,15 +71,15 @@ class Instructor < ActiveRecord::Base
   end
 
   def instructed_courses
-    Course.where(:id => klasses.collect(&:course_id).uniq).ordered
+    Course.where(id: klasses.collect(&:course_id).uniq).ordered
   end
   def tad_courses
-    Course.where(:id => tad_klasses.collect(&:course_id).uniq).ordered
+    Course.where(id: tad_klasses.collect(&:course_id).uniq).ordered
   end
 
   def average_rating
     q = SurveyQuestion.find_by_keyword(self.student_instructor? || self.instructor? ? :prof_eff : :ta_eff)
-    survey_answers.where(:survey_question_id =>q.id).average(:mean)
+    survey_answers.where(survey_question_id: q.id).average(:mean)
   end
 
   def full_name
@@ -113,7 +113,7 @@ class Instructor < ActiveRecord::Base
   end
 
   def Instructor.find_by_name(first_name, last_name)
-    Instructor.where({:first_name => first_name, :last_name => last_name}).first
+    Instructor.where({first_name: first_name, last_name: last_name}).first
   end
 
   private
@@ -125,8 +125,6 @@ class Instructor < ActiveRecord::Base
       puts "  checkin #{x.inspect}"
       raise unless x.instructor == self
       true
-    end .all?
+    end.all?
   end
-
-
 end

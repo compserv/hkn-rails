@@ -20,7 +20,7 @@
   <h2>The Industrial Relations Committee</h2>
   <% @indrel_officers.each do |officer| %>
     <div>
-      <%= image_tag officer.picture, :class => "indrel-officer-photo" unless officer.picture.blank? %>
+      <%= image_tag officer.picture, class: "indrel-officer-photo" unless officer.picture.blank? %>
       <div>
         <b><%= officer.fullname %></b><br />
         <%= officer.username %>@hkn

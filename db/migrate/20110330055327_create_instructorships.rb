@@ -8,7 +8,7 @@ class CreateInstructorships < ActiveRecord::Migration
     create_table :instructorships do |t|
       t.references :klass
       t.references :instructor
-      t.boolean    :ta,           :null => false
+      t.boolean    :ta,           null: false
 
       t.timestamps
     end
@@ -28,17 +28,17 @@ class CreateInstructorships < ActiveRecord::Migration
 
   def self.down
     # Restore data to old tables
-    create_table "instructors_klasses", :id => false, :force => true do |t|
+    create_table "instructors_klasses", id: false, force: true do |t|
       t.integer "instructor_id"
       t.integer "klass_id"
     end
-    add_index "instructors_klasses", ["instructor_id", "klass_id"], :name => "index_instructors_klasses_on_instructor_id_and_klass_id", :unique => true
+    add_index "instructors_klasses", ["instructor_id", "klass_id"], name: "index_instructors_klasses_on_instructor_id_and_klass_id", unique: true
 
-    create_table "klasses_tas", :id => false, :force => true do |t|
+    create_table "klasses_tas", id: false, force: true do |t|
       t.integer "instructor_id"
       t.integer "klass_id"
     end
-    add_index "klasses_tas", ["instructor_id", "klass_id"], :name => "index_klasses_tas_on_instructor_id_and_klass_id", :unique => true
+    add_index "klasses_tas", ["instructor_id", "klass_id"], name: "index_klasses_tas_on_instructor_id_and_klass_id", unique: true
 
     # Migrate data
     OldTables.each do |table_name, is_ta|

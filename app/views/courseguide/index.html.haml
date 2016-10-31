@@ -5,9 +5,9 @@
 #sidebar.trans-bg
   %h1 Quicklinks
   %h2 Search For an Instructor or Course
-  = form_tag(coursesurveys_search_path, :method=>:get) do
+  = form_tag(coursesurveys_search_path, method: :get) do
     = text_field_tag(:q, "")
-    = submit_tag "Search", :name => nil
+    = submit_tag "Search", name: nil
   %h2 Browse Instructors and Courses
   %ul.plain
     %li= link_to "Instructors", coursesurveys_instructors_path
@@ -30,12 +30,12 @@
   %h2 Prerequisite Charts
   %p (Click on a course in the chart below to see the relevant course guide)
   %noscript
-    = render :partial => "eemap"
+    = render partial: "eemap"
     %br
-    = render :partial => "csmap"
+    = render partial: "csmap"
   %br
   %h1 EE Course Map
-  %div{:id => "ee"}
+  %div{id: "ee"}
   %br
   %h1 CS Course Map
-  %div{:id => "cs"}
+  %div{id: "cs"}

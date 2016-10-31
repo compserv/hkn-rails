@@ -5,16 +5,16 @@
       <%= link_to "[Approve Account]", approve_path(@person) %>
     <% end %>
     <% if @person.candidate.currently_initiating %>
-      <%= link_to "[Mark not initiating]", uninitiate_candidate_path({:id=>@person.id}), method: :post %>
+      <%= link_to "[Mark not initiating]", uninitiate_candidate_path({id: @person.id}), method: :post %>
     <% elsif %>
-      <%= link_to "[Mark initiating]", initiating_candidate_path({:id=>@person.id}), method: :post %>
+      <%= link_to "[Mark initiating]", initiating_candidate_path({id: @person.id}), method: :post %>
     <% end %>
     <% if @auth["superusers"] %>
       <%= link_to "[Edit]", edit_person_path(@person) %>
-      <%= link_to "[Delete]", person_path(@person), :method => :delete, :confirm => "Are you sure you want to remove \"" + @person.fullname + "\"?" %>
+      <%= link_to "[Delete]", person_path(@person), method: :delete, confirm: "Are you sure you want to remove \"" + @person.fullname + "\"?" %>
       <%= link_to "[Groups]", groups_person_path(@person.username) %>
     <% elsif @auth["vp"] and !@person.approved %>
-      <%= link_to "[Delete]", person_path(@person), :method => :delete, :confirm => "Are you sure you want to remove \"" + @person.fullname + "\"?" %>
+      <%= link_to "[Delete]", person_path(@person), method: :delete, confirm: "Are you sure you want to remove \"" + @person.fullname + "\"?" %>
     <% end %>
   <% end %>
 </div>
@@ -22,7 +22,7 @@
   <h1><%= @person.fullname %></h1>
 
   <div id="photo" <%= "class=no-photo" if @person.picture.blank? %>>
-    <%= image_tag @person.picture, :id => "profile_picture" unless @person.picture.blank? %>
+    <%= image_tag @person.picture, id: "profile_picture" unless @person.picture.blank? %>
   </div>
 
   <div id="info">
@@ -45,7 +45,7 @@
   <h2>Badges Earned</h2>
   <div id="badges">
     <% for badge in @badges %>
-    <%= image_tag badge.picture_url, :title=> badge.name, :class=>"badge" %>
+    <%= image_tag badge.picture_url, title: badge.name, class: "badge" %>
     <% end %>
   </div>
 
@@ -79,5 +79,3 @@
     * This event was not confirmed; either they didn't go, or VP forgot to confirm them.
 <% end %>
 </div>
-
-

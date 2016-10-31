@@ -1,6 +1,6 @@
 class CandidatesController < ApplicationController
-  before_filter :is_candidate?, :except => [:promote]
-  before_filter :authorize_vp, :only => [:promote]
+  before_filter :is_candidate?, except: [:promote]
+  before_filter :authorize_vp, only: [:promote]
   helper EventsHelper
 
   def is_candidate?
@@ -43,7 +43,7 @@ class CandidatesController < ApplicationController
   end
 
   def find_officers
-    render :json => Person.current_comms.map {|p| {:name => p.full_name, :id => p.id} }
+    render json: Person.current_comms.map {|p| {name: p.full_name, id: p.id} }
   end
 
   def application
@@ -51,16 +51,16 @@ class CandidatesController < ApplicationController
     @gradsemcands = r.to_a.map{ |t| ['Spring ' + t.to_s, 'Fall ' + t.to_s]}.flatten
     if(@current_user.candidate)
       @app_details = {
-        :phone => @current_user.phone_number,
-        :local_address => @current_user.local_address,
-        :perm_address => @current_user.perm_address,
-        :graduation => @current_user.graduation,
-        :picture => @current_user.picture,
-        :currently_initiating => (@current_user.candidate.currently_initiating or @current_user.candidate.currently_initiating == nil),
-        :release => @current_user.candidate.release,
-        :committee_prefs => !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
-        :committee_preference_note => @current_user.candidate.committee_preference_note,
-        :suggestion => @current_user.suggestion ? @current_user.suggestion.suggestion : ""
+        phone: @current_user.phone_number,
+        local_address: @current_user.local_address,
+        perm_address: @current_user.perm_address,
+        graduation: @current_user.graduation,
+        picture: @current_user.picture,
+        currently_initiating: (@current_user.candidate.currently_initiating or @current_user.candidate.currently_initiating == nil),
+        release: @current_user.candidate.release,
+        committee_prefs: !@current_user.candidate.committee_preferences ? Candidate.committee_defaults : @current_user.candidate.committee_preferences.split,
+        committee_preference_note: @current_user.candidate.committee_preference_note,
+        suggestion: @current_user.suggestion ? @current_user.suggestion.suggestion : ""
       }
     else
       flash[:notice] = "Oops, there's no candidate information for your account."
@@ -81,32 +81,32 @@ class CandidatesController < ApplicationController
   end
 
   def request_challenge
-    officer = Person.current_comms.where(:id => params[:officer_id]).first
+    officer = Person.current_comms.where(id: params[:officer_id]).first
     challenge_name = params[:name]
     description = params[:description]
 
     if officer.nil?
-      render :json => [false, "Invalid officer."]
+      render json: [false, "Invalid officer."]
       return
     elsif challenge_name.blank?
-       render :json => [false, "Challenge name is blank."]
+       render json: [false, "Challenge name is blank."]
        return
     end
 
-    challenge = Challenge.new(:name => challenge_name, :status => nil, :officer_id => officer.id, :description => description)
+    challenge = Challenge.new(name: challenge_name, status: nil, officer_id: officer.id, description: description)
     challenge.candidate = @current_user.candidate
     saved = challenge.save
 
     if(!saved) #challenge didn't save for some reason
-      render :json => [false, "Oops, something went wrong!"]
+      render json: [false, "Oops, something went wrong!"]
       return
     end
 
-    render :json => [true, challenge.id]
+    render json: [true, challenge.id]
   end
 
   def update_challenges
-    render :partial => "challenges"
+    render partial: "challenges"
   end
 
   def submit_quiz
@@ -115,7 +115,7 @@ class CandidatesController < ApplicationController
         quiz_resp = @current_user.candidate.quiz_responses.select {|x| x.number == key.to_s}
         q = nil
         if quiz_resp.empty? #No quiz responses for this candidate, create
-          q = QuizResponse.new(:number => key.to_s)
+          q = QuizResponse.new(number: key.to_s)
           q.candidate = @current_user.candidate
         else #Update existing quiz responses
           q = quiz_resp.first
@@ -139,17 +139,17 @@ class CandidatesController < ApplicationController
     end
 
     @current_user.update_attributes({
-      :phone_number => params[:phone],
-      :local_address => params[:local_address],
-      :perm_address => params[:perm_address],
-      :graduation => params[:graduation]
+      phone_number: params[:phone],
+      local_address: params[:local_address],
+      perm_address: params[:perm_address],
+      graduation: params[:graduation]
     })
 
     @current_user.candidate.update_attributes({
-      :committee_preferences => params[:committee_prefs],
-      :committee_preference_note=> params[:committee_preference_note],
-      :release => params[:release] ? true : false,
-      :currently_initiating => params[:currently_initiating] ? true : false
+      committee_preferences: params[:committee_prefs],
+      committee_preference_note: params[:committee_preference_note],
+      release: params[:release] ? true : false,
+      currently_initiating: params[:currently_initiating] ? true : false
     })
 
     suggestion = @current_user.suggestion
@@ -157,7 +157,7 @@ class CandidatesController < ApplicationController
       suggestion.suggestion = params[:suggestion]
       suggestion.save
     else #create a new one
-      suggestion = Suggestion.new(:suggestion => params[:suggestion])
+      suggestion = Suggestion.new(suggestion: params[:suggestion])
       @current_user.suggestion = suggestion
     end
 
@@ -181,25 +181,25 @@ class CandidatesController < ApplicationController
     param_ids = params.keys.reject{|x| !(x =~ /\Asurvey[0-9]*\z/)}
 
     # Don't allow more than 5 surveys
-    return redirect_to coursesurvey_signup_path, :notice => "You can sign up for a maximum of five classes." if (@current_user.coursesurveys.count+param_ids.count) > 5
+    return redirect_to coursesurvey_signup_path, notice: "You can sign up for a maximum of five classes." if (@current_user.coursesurveys.count+param_ids.count) > 5
 
     param_ids.each do |param_id|
       id = param_id[6..-1]
       coursesurvey = Coursesurvey.find(id)
 
       if @current_user.coursesurveys.include? coursesurvey
-        redirect_to(coursesurvey_signup_path, :notice => "You are already signed up for one or more classes you selected.")
+        redirect_to(coursesurvey_signup_path, notice: "You are already signed up for one or more classes you selected.")
         return
       end
 
       if coursesurvey.full?
-        redirect_to(coursesurvey_signup_path, :notice => "One or more classes you selected are full.")
+        redirect_to(coursesurvey_signup_path, notice: "One or more classes you selected are full.")
         return
       end
 
       @current_user.coursesurveys << coursesurvey
     end
-    redirect_to(candidate_portal_path, :notice => "Signed up for surveys.")
+    redirect_to(candidate_portal_path, notice: "Signed up for surveys.")
   end
 
   def promote

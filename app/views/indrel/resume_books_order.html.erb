@@ -16,46 +16,46 @@
     <h3>Company</h3>
     <div class="field">
       <%= label_tag "company_name", "Company Name*" %>
-      <%= text_field_tag "company_name", @fields['company_name'], :class => 'long' %>
+      <%= text_field_tag "company_name", @fields['company_name'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "address1", "Address 1*" %>
-      <%= text_field_tag "address1", @fields['address1'], :class => 'long' %>
+      <%= text_field_tag "address1", @fields['address1'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "address2", "Address 2" %>
-      <%= text_field_tag "address2", @fields['address2'], :class => 'long' %>
+      <%= text_field_tag "address2", @fields['address2'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "city", "City*" %>
-      <%= text_field_tag "city", @fields['city'], :class => 'long' %>
+      <%= text_field_tag "city", @fields['city'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "state", "State*" %>
-      <%= text_field_tag "state", @fields['state'], :class => 'long' %>
+      <%= text_field_tag "state", @fields['state'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "zip_code", "Zip Code*" %>
-      <%= text_field_tag "zip_code", @fields['zip_code'], :class => 'long' %>
+      <%= text_field_tag "zip_code", @fields['zip_code'], class: 'long' %>
     </div>
   </div>
   <div style="float:left; padding-left: 4em;">
     <h3>Contact Person</h3>
     <div class="field">
       <%= label_tag "name", "Name*" %>
-      <%= text_field_tag "name", @fields['name'], :class => 'long' %>
+      <%= text_field_tag "name", @fields['name'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "title" %>
-      <%= text_field_tag "title", @fields['title'], :class => 'long' %>
+      <%= text_field_tag "title", @fields['title'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "phone", "Phone*" %>
-      <%= text_field_tag "phone", @fields['phone'], :class => 'long' %>
+      <%= text_field_tag "phone", @fields['phone'], class: 'long' %>
     </div>
     <div class="field">
       <%= label_tag "email", "Email*" %>
-      <%= text_field_tag "email", @fields['email'], :class => 'long' %>
+      <%= text_field_tag "email", @fields['email'], class: 'long' %>
     </div>
   </div>
   <div class="clear"></div>
@@ -83,4 +83,3 @@
 
   <%= submit_tag 'Submit' %>
 <% end %>
-

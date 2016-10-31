@@ -14,7 +14,7 @@ class HomeController < ApplicationController
     @tutor_title = "#{time.strftime("%A")}'s Tutoring Schedule"
     if @tutoring_enabled
       @course_mapping = {}
-      @slots = Slot.includes(:tutors).where(:wday => time.wday)
+      @slots = Slot.includes(:tutors).where(wday: time.wday)
     else
       @tutoring_message = prop.tutoring_message
     end
@@ -31,7 +31,7 @@ class HomeController < ApplicationController
     else
       y = x.downto(1).inject(:*)
     end
-    redirect_to :root, :notice => y
+    redirect_to :root, notice: y
   end
 
 end

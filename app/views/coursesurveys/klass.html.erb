@@ -30,7 +30,7 @@
     </p>
   <% end %>
 
-  <%= render :partial => 'emailhkn' %>
+  <%= render partial: 'emailhkn' %>
 </div>
 
 
@@ -44,7 +44,7 @@
     <%# Instructor name %>
     <tr>
       <th<%=raw " colspan=\"2\"" if (private && !@privileged) %>>
-        <%= title %> <%= link_to instructor.full_name, surveys_klass_path(@klass, :instructor => instructor.full_name_r_strip) %>
+        <%= title %> <%= link_to instructor.full_name, surveys_klass_path(@klass, instructor: instructor.full_name_r_strip) %>
       </th>
       <%- unless (private && !@privileged) -%>
         <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.sum %> respondents</th>

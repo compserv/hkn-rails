@@ -29,7 +29,7 @@ end
 describe Candidate do
   before(:each) do
     @person = mock_model(Person)
-    @candidate = Candidate.create(:person => @person)
+    @candidate = Candidate.create(person: @person)
   end
 
   it "should be valid when supplying a person" do
@@ -38,12 +38,12 @@ describe Candidate do
 
   describe "with quiz responses" do
     it "should have a reference to its quiz responses" do
-      @qr = QuizResponse.create(:candidate => @candidate, :number => "1")
+      @qr = QuizResponse.create(candidate: @candidate, number: "1")
       @candidate.quiz_responses.should include(@qr)
     end
 
     it "should not have references to other candidates' quiz responses" do
-      @qr = QuizResponse.create(:candidate_id => (@candidate.id + 1), :number => "1")
+      @qr = QuizResponse.create(candidate_id: (@candidate.id + 1), number: "1")
       @candidate.quiz_responses.should_not include(@qr)
     end
   end

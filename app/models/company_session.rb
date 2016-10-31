@@ -18,6 +18,4 @@ class CompanySession < Authlogic::Session::Base
   def reset_persistence_token
     record.reset_persistence_token
   end
-
 end
-

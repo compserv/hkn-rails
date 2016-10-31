@@ -25,7 +25,7 @@ describe DeptTourRequestsController do
   describe "GET show" do
     it "assigns the requested dept_tour_request as @dept_tour_request" do
       allow(DeptTourRequest).to receive(:find).with("37") { mock_dept_tour_request }
-      get :show, :id => "37"
+      get :show, id: "37"
       assigns(:dept_tour_request).should be(mock_dept_tour_request)
     end
   end
@@ -33,7 +33,7 @@ describe DeptTourRequestsController do
   describe "GET edit" do
     it "assigns the requested dept_tour_request as @dept_tour_request" do
       allow(DeptTourRequest).to receive(:find).with("37") { mock_dept_tour_request }
-      get :edit, :id => "37"
+      get :edit, id: "37"
       assigns(:dept_tour_request).should be(mock_dept_tour_request)
     end
   end
@@ -78,12 +78,12 @@ describe DeptTourRequestsController do
     it "destroys the requested dept_tour_request" do
       expect(DeptTourRequest).to receive(:find).with("37") { mock_dept_tour_request }
       expect(mock_dept_tour_request).to receive(:destroy)
-      delete :destroy, :id => "37"
+      delete :destroy, id: "37"
     end
 
     it "redirects to the dept_tour_requests list" do
       allow(DeptTourRequest).to receive(:find) { mock_dept_tour_request }
-      delete :destroy, :id => "1"
+      delete :destroy, id: "1"
       response.should redirect_to(dept_tour_requests_url)
     end
   end

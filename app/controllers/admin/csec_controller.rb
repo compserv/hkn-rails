@@ -5,14 +5,14 @@ class Admin::CsecController < Admin::AdminController
 
   def upload_surveys
     # Displays form for upload course surveys
-    @results = {:errors=>[], :info=>[]}
+    @results = {errors: [], info: []}
     @success = @allow_save = false
   end
 
   def upload_surveys_post
     # The actual file upload
 
-    return redirect_to admin_csec_upload_surveys_path, :notice => "Please select a file to upload." unless params[:file]
+    return redirect_to admin_csec_upload_surveys_path, notice: "Please select a file to upload." unless params[:file]
 
 ##    if params[:save] then
 ##      Process.fork { system "rake db:backup:dump RAILS_ENV=#{Rails.env}" }
@@ -27,10 +27,10 @@ class Admin::CsecController < Admin::AdminController
     render 'upload_surveys'
 
 ##    unless results[:errors].empty? then
-##      return redirect_to admin_csec_upload_surveys_path, :notice => "There was #{results[:errors].length} #{'error'.pluralize_for results[:errors].length} parsing that file:\n#{results[:errors].join('
+##      return redirect_to admin_csec_upload_surveys_path, notice: "There was #{results[:errors].length} #{'error'.pluralize_for results[:errors].length} parsing that file:\n#{results[:errors].join('
 ##')}"   # wtf. it won't take '\n'.
 ##    else
-##      return redirect_to admin_csec_upload_surveys_path, :notice => "Successful upload and parse. Please verify the information below."
+##      return redirect_to admin_csec_upload_surveys_path, notice: "Successful upload and parse. Please verify the information below."
 ##    end
   end
 
@@ -45,7 +45,7 @@ class Admin::CsecController < Admin::AdminController
     Klass.current_semester.each do |klass|
       if params.has_key?("klass#{klass.id}") and klass.coursesurvey.nil?
         # This should not fail
-        Coursesurvey.create!(:klass => klass)
+        Coursesurvey.create!(klass: klass)
       elsif !params.has_key?("klass#{klass.id}") and !klass.coursesurvey.nil?
         klass.coursesurvey.delete
       end
@@ -53,7 +53,7 @@ class Admin::CsecController < Admin::AdminController
     prop = Property.get_or_create
     prop.coursesurveys_active = !params[:coursesurveys_active].blank?
     prop.save
-    redirect_to(admin_csec_select_classes_path, :notice => "Updated classes to be surveyed")
+    redirect_to(admin_csec_select_classes_path, notice: "Updated classes to be surveyed")
   end
 
   def manage_classes
@@ -67,31 +67,31 @@ class Admin::CsecController < Admin::AdminController
       # This should not fail
       coursesurvey.update_attributes(params.require(param_id).permit(:max_surveyors, :status))
       if !coursesurvey.valid?
-        redirect_to(admin_csec_manage_classes_path, :notice => "Error happened. Your input was probably not valid.")
+        redirect_to(admin_csec_manage_classes_path, notice: "Error happened. Your input was probably not valid.")
         return
       end
     end
-    redirect_to(admin_csec_manage_classes_path, :notice => "Updated classes")
+    redirect_to(admin_csec_manage_classes_path, notice: "Updated classes")
   end
 
   def coursesurvey_show
     @coursesurvey = Coursesurvey.find_by_id(params[:id]) rescue nil
 
-    return redirect_to admin_csec_manage_classes_path, :notice => "Invalid coursesurvey ID" unless @coursesurvey
+    return redirect_to admin_csec_manage_classes_path, notice: "Invalid coursesurvey ID" unless @coursesurvey
   end
 
   def coursesurvey_remove
     @coursesurvey = Coursesurvey.find_by_id(params[:coursesurvey_id]) rescue nil
     @person = Person.find_by_id(params[:person_id]) rescue nil
 
-    return redirect_to admin_csec_manage_classes_path, :notice => "Invalid coursesurvey ID" unless @coursesurvey
-    return redirect_to admin_csec_coursesurvey_path(@coursesurvey), :notice => "Invalid person ID" unless @person
-    return redirect_to admin_csec_coursesurvey_path(@coursesurvey), :notice => "#{@person.full_name} is not surveying #{@coursesurvey.klass.to_s}" unless @coursesurvey.surveyors.include?(@person)
+    return redirect_to admin_csec_manage_classes_path, notice: "Invalid coursesurvey ID" unless @coursesurvey
+    return redirect_to admin_csec_coursesurvey_path(@coursesurvey), notice: "Invalid person ID" unless @person
+    return redirect_to admin_csec_coursesurvey_path(@coursesurvey), notice: "#{@person.full_name} is not surveying #{@coursesurvey.klass.to_s}" unless @coursesurvey.surveyors.include?(@person)
 
     @coursesurvey.surveyors.delete(@person)
     @coursesurvey.save
 
-    redirect_to admin_csec_coursesurvey_path(@coursesurvey), :notice => "Removed #{@person.full_name} from #{@coursesurvey.klass.to_s} survey"
+    redirect_to admin_csec_coursesurvey_path(@coursesurvey), notice: "Removed #{@person.full_name} from #{@coursesurvey.klass.to_s} survey"
   end
 
   def manage_candidates

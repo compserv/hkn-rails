@@ -15,10 +15,10 @@
 
 class Property < ActiveRecord::Base
   Semester = /\A\d{4}[0-5]\z/	#A regex which validates the semester
-  validates_format_of :semester, :with => Semester, :message => "Not a valid semester."
-  validate :there_is_only_one, :on => :create
-  validates_numericality_of :tutoring_start, :greater_than_or_equal_to => 11
-  validates_numericality_of :tutoring_end, :greater_than => :tutoring_start, :less_than_or_equal_to => 16
+  validates_format_of :semester, with: Semester, message: "Not a valid semester."
+  validate :there_is_only_one, on: :create
+  validates_numericality_of :tutoring_start, greater_than_or_equal_to: 11
+  validates_numericality_of :tutoring_end, greater_than: :tutoring_start, less_than_or_equal_to: 16
 
   MONTH_SEMESTER_MAP = { 1..5 => 1, 6..7 => 2, 8..12 => 3 }
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
@@ -68,7 +68,7 @@ class Property < ActiveRecord::Base
     # With no arguments, calculates the current semester
     def make_semester(year_and_semester={}, options={})
       year_and_semester ||= {}
-      year_and_semester = {:year => year_and_semester[0..3], :semester => year_and_semester[4..4]} if year_and_semester.is_a? String
+      year_and_semester = {year: year_and_semester[0..3], semester: year_and_semester[4..4]} if year_and_semester.is_a? String
       year     = (year_and_semester.delete(:year)     || Time.now.year).to_i
       semester = (year_and_semester.delete(:semester) ||
                  ( case (year_and_semester.delete(:month) || Time.now.month)
@@ -76,7 +76,7 @@ class Property < ActiveRecord::Base
                    when 6..7 then 2
                    else       3 end     )).to_i
       if options.delete(:hash) then
-        {:year => year, :semester => semester}
+        {year: year, semester: semester}
       else
         "#{year}#{semester}"
       end
@@ -99,7 +99,7 @@ class Property < ActiveRecord::Base
     end
 
     def offset_semester(year_and_semester={}, options={})
-      s = make_semester(year_and_semester, :hash=>true)
+      s = make_semester(year_and_semester, hash: true)
       year, sem = s[:year], s[:semester]
       dir  = (options[:dir] == -1) ? -1 : 1
       sem  += dir
@@ -115,11 +115,11 @@ class Property < ActiveRecord::Base
      end
 
     def next_semester(year_and_semester={}, options={})
-      offset_semester year_and_semester, {:summer=>false, :dir=>1}.merge(options)
+      offset_semester year_and_semester, { summer: false, dir: 1 }.merge(options)
     end
 
     def prev_semester(year_and_semester={}, options={})
-      offset_semester year_and_semester, {:summer=>false, :dir=>-1}.merge(options)
+      offset_semester year_and_semester, { summer: false, dir: -1 }.merge(options)
     end
 
     # @return [Boolean] is it the end of the semester?

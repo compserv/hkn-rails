@@ -27,13 +27,13 @@
 
 <% end %>
 
-<%= form_for @exam, :url => :exams_create ,:html => { :multipart => true } do |f| %>
+<%= form_for @exam, url: :exams_create ,html: { multipart: true } do |f| %>
 
   <div>
     <div id="course_select">
       <%= label_tag "Search for class:" %>
-      <%= text_field_tag "course_query", "", :id => "course_query" %>
-      <%= hidden_field :exam, :course_id, :id => "course_id", :value => "" %>
+      <%= text_field_tag "course_query", "", id: "course_query" %>
+      <%= hidden_field :exam, :course_id, id: "course_id", value: "" %>
     </div>
 
     <!-- Need to determine what klass -->
@@ -48,7 +48,7 @@
     <div id="semester">
       <%= label_tag "Choose a semester:" %>
       <br />
-      <%= radio_button_tag :semester, 1, :checked => true %> Spring
+      <%= radio_button_tag :semester, 1, checked: true %> Spring
       <%= radio_button_tag :semester, 2 %> Summer
       <%= radio_button_tag :semester, 3 %> Fall
     </div>
@@ -59,7 +59,7 @@
       <%= label_tag "What kind of exam is this?" %>
       <br />
       <%= radio_button :exam, :exam_type, 0 %> Quiz
-      <%= radio_button :exam, :exam_type, 1, {:checked => true }%> Midterm
+      <%= radio_button :exam, :exam_type, 1, {checked: true }%> Midterm
       <%= radio_button :exam, :exam_type, 2 %> Final
     </div>
     <br />
@@ -69,14 +69,14 @@
                      Enter in a number.  If it is the only
                      exam of its type, leave this field blank." %>
       <br />
-      <%= text_field :exam, :number, :value => 1 %>
+      <%= text_field :exam, :number, value: 1 %>
     </div>
     <br />
 
     <div id="is_solution">
       <%= label_tag "Is this a solution?" %>
       <%= radio_button :exam, :is_solution, true %> Yes
-      <%= radio_button :exam, :is_solution, false, :checked => true %> No
+      <%= radio_button :exam, :is_solution, false, checked: true %> No
     </div>
 
     <div id="upload">

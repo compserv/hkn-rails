@@ -45,11 +45,11 @@ end
 describe Availability do
   before(:each) do
     @good_opts = {
-      :tutor => mock_model(Tutor),
-      :preference_level => 1,
-      :preferred_room => 1,
-      :hour => 11,
-      :wday => 1,
+      tutor: mock_model(Tutor),
+      preference_level: 1,
+      preferred_room: 1,
+      hour: 11,
+      wday: 1,
     }
   end
 
@@ -59,7 +59,7 @@ describe Availability do
   end
 
   it "should require a valid room" do
-    availability = Availability.create(@good_opts.merge(:preferred_room => 5))
+    availability = Availability.create(@good_opts.merge(preferred_room: 5))
     availability.should_not be_valid
     #availability.errors[:preferred_room].should include(Availability::ROOM_ERROR)
     availability.errors[:preferred_room].should_not be_empty

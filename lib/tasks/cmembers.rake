@@ -13,8 +13,8 @@ namespace :users do
           old_username = UI::request "old username"
           new_username = UI::request "new username"
 
-          raise(CheckError, "#{old_username} not found") if !Person.exists?(:username => old_username)
-          raise(CheckError, "#{new_username} already take") if Person.exists?(:username => new_username)
+          raise(CheckError, "#{old_username} not found") if !Person.exists?(username: old_username)
+          raise(CheckError, "#{new_username} already take") if Person.exists?(username: new_username)
 
           p = Person.find_by_username(old_username)
           unless p.update_attribute(:username, new_username)
@@ -39,7 +39,7 @@ namespace :users do
           raise CheckError, "committeeship already exists: #{c.inspect}"
         end
 
-        c = Committeeship.new(:committee => comm, :person => p, :semester => Property.current_semester, :title => 'cmember')
+        c = Committeeship.new(committee: comm, person: p, semester: Property.current_semester, title: 'cmember')
         unless c.save
           raise FatalError, "cship invalid: #{c.errors.inspect}"
         end

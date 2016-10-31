@@ -5,7 +5,7 @@ require 'will_paginate/array'
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  Bundler.require(*Rails.groups(assets: %w(development test)))
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
@@ -41,7 +41,7 @@ module HknRails
     # config.generators do |g|
     #   g.orm             :active_record
     #   g.template_engine :erb
-    #   g.test_framework  :test_unit, :fixture => true
+    #   g.test_framework  :test_unit, fixture: true
     # end
 
     # Configure the default encoding used in templates for Ruby 1.9.
@@ -52,10 +52,10 @@ module HknRails
 
     #Exception Notification
     config.middleware.use ExceptionNotification::Rack,
-      :email => {
-        :email_prefix => '[hkn-rails Exception] ',
-        :sender_address => '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
-        :exception_recipients => ['website-errors@hkn.moe']
+      email: {
+        email_prefix: '[hkn-rails Exception] ',
+        sender_address: '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
+        exception_recipients: ['website-errors@hkn.moe']
       }
 
     # Enable the asset pipeline

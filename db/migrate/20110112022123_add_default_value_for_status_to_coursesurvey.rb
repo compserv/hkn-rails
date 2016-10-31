@@ -1,6 +1,6 @@
 class AddDefaultValueForStatusToCoursesurvey < ActiveRecord::Migration
   def self.up
-    change_column :coursesurveys, :status, :integer, :default => 0, :null => false
+    change_column :coursesurveys, :status, :integer, default: 0, null: false
   end
 
   def self.down

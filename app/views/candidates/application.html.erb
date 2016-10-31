@@ -101,7 +101,7 @@
 
   <div style="float:left; width: 45%; padding-left: 3em;">
       <%= label_tag "committee_prefs", "Committee Preferences" %><br/>
-    <%= hidden_field_tag(:committee_prefs, "", :id=>"committee_prefs") %>
+    <%= hidden_field_tag(:committee_prefs, "", id: "committee_prefs") %>
     <b>Click and drag</b> the bars to sort by your committee preferences (top being the most preferable).
     <ul id="sortable" class="plain">
       <% for pref in @app_details[:committee_prefs] %>
@@ -116,5 +116,5 @@
 
 
 
-<%= submit_tag "Save and Submit Application", :id=>"submit_app" %>
+<%= submit_tag "Save and Submit Application", id: "submit_app" %>
 <% end %>

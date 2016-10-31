@@ -51,17 +51,17 @@
 <%- @elections.each do |e|
 
     field_map = {
-      :name => e.person.full_name,
-      :username => e.desired_username.present? ? e.desired_username : e.person.username,
-      :phone_number => e.person.phone_number,
-      :position => e.position,
-      :sid => e.sid,
-      :keycard => e.keycard,
-      :email => e.non_hkn_email.present? ? e.non_hkn_email : e.person.email,
-      :address => e.person.local_address,
-      :date_of_birth => e.person.date_of_birth,
-      :midnight_meeting => e.midnight_meeting,
-      :txt => e.txt
+      name: e.person.full_name,
+      username: e.desired_username.present? ? e.desired_username : e.person.username,
+      phone_number: e.person.phone_number,
+      position: e.position,
+      sid: e.sid,
+      keycard: e.keycard,
+      email: e.non_hkn_email.present? ? e.non_hkn_email : e.person.email,
+      address: e.person.local_address,
+      date_of_birth: e.person.date_of_birth,
+      midnight_meeting: e.midnight_meeting,
+      txt: e.txt
     }
 
 -%>
@@ -75,7 +75,7 @@
     <%- end -%>
 
     <td>
-      <%= button_to 'Commit', admin_rsec_commit_path(e.id), :confirm => "Are you sure you want to commit #{e.person.full_name}? Read the notice next to the red button at the bottom of the page!" %>
+      <%= button_to 'Commit', admin_rsec_commit_path(e.id), confirm: "Are you sure you want to commit #{e.person.full_name}? Read the notice next to the red button at the bottom of the page!" %>
     </td>
   </tr>
 <%- end -%>
@@ -83,7 +83,7 @@
 
 <div id="big-red-wrapper">
   <div id="big-red-button-wrapper">
-      <%= button_to 'BIG RED BUTTON', admin_rsec_commit_all_path, :id => 'big-red-button', :confirm => commitWarningMessage %>
+      <%= button_to 'BIG RED BUTTON', admin_rsec_commit_all_path, id: 'big-red-button', confirm: commitWarningMessage %>
   </div>
   <div id="warning-wrapper">
     Don't click this button until you <%= link_to 'READ YOUR DUTIES', 'https://hkn.eecs.berkeley.edu/prot/Recording_Secretary#Upon_Being_Elected' %>

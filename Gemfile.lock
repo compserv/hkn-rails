@@ -5,15 +5,6 @@ GIT
     rubycas-client (2.3.10.rc1)
       activesupport
 
-GIT
-  remote: https://github.com/stripe/stripe-ruby
-  revision: 403e92fc8877d2dc1a5b9c17485dac8d3937989a
-  specs:
-    stripe (1.20.3)
-      json (~> 1.8.1)
-      mime-types (>= 1.25, < 3.0)
-      rest-client (~> 1.4)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -207,6 +198,8 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
+    stripe (1.56.0)
+      rest-client (>= 1.4, < 4.0)
     sunspot (2.1.1)
       pr_geohash (~> 1.0)
       rsolr (~> 1.0.7)
@@ -265,7 +258,7 @@ DEPENDENCIES
   rubycas-client!
   scrypt
   simplecov (~> 0.7.1)
-  stripe!
+  stripe
   sunspot_rails
   sunspot_solr
   webrat

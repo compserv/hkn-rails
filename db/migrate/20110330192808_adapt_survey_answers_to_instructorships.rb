@@ -21,7 +21,7 @@ class AdaptSurveyAnswersToInstructorships < ActiveRecord::Migration
             "
 
     # Finalize
-    change_column :survey_answers, :instructorship_id, :integer, :null => false
+    change_column :survey_answers, :instructorship_id, :integer, null: false
     drop_table :temp_answers
 
     # Remove old columns
@@ -43,8 +43,8 @@ class AdaptSurveyAnswersToInstructorships < ActiveRecord::Migration
              WHERE instructorships.klass_id = survey_answers.klass_id
                AND instructorships.instructor_id = survey_answers.instructor_id"
 
-    change_column :survey_answers, :klass_id,      :integer, :null => false
-    change_column :survey_answers, :instructor_id, :integer, :null => false
+    change_column :survey_answers, :klass_id,      :integer, null: false
+    change_column :survey_answers, :instructor_id, :integer, null: false
 
     # Remove instructorship
     remove_index  :survey_answers, :instructorship_id

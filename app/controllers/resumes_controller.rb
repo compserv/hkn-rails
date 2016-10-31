@@ -1,6 +1,6 @@
 class ResumesController < ApplicationController
 
-  before_filter :authorize_indrel, :only => [:index, :resume_books, :upload_for, :include, :exclude, :status_list]
+  before_filter :authorize_indrel, only: [:index, :resume_books, :upload_for, :include, :exclude, :status_list]
 
   def new
     @resume = Resume.new
@@ -24,7 +24,7 @@ class ResumesController < ApplicationController
       flash[:notice] = "Please attach your resume file"
       @resume = Resume.new(resume_params)
       @person = @current_user
-      render :action => "new"
+      render action: "new"
       return
     end
 
@@ -58,7 +58,7 @@ class ResumesController < ApplicationController
         old_resumes = @person.resumes[(1..-1)] # All but most recent res.
         old_resumes.each { |resume| @person.resumes.destroy(resume.id) }
       else
-        render :action => "new"
+        render action: "new"
       end
     ensure
       f.close if f
@@ -80,9 +80,9 @@ class ResumesController < ApplicationController
   def download
     @resume = Resume.find(params[:id])
     if @current_user and ( (@current_user == @resume.person) or (@current_user.in_groups?(['superusers', 'indrel'])) )
-      send_file @resume.file, :type => 'application/pdf', :x_sendfile => true
+      send_file @resume.file, type: 'application/pdf', x_sendfile: true
     else
-      redirect_to :root, :notice => "Insufficient privileges to access this page."
+      redirect_to :root, notice: "Insufficient privileges to access this page."
     end
   end
 
@@ -90,13 +90,13 @@ class ResumesController < ApplicationController
   def include
     @resume = Resume.find(params[:id])
     @resume.update_attribute :included, true
-    render :js => 'location.reload();'
+    render js: 'location.reload();'
   end
 
   def exclude
     @resume = Resume.find(params[:id])
     @resume.update_attribute :included, false
-    render :js => 'location.reload();'
+    render js: 'location.reload();'
   end
 
   private

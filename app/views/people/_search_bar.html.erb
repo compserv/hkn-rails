@@ -1,7 +1,6 @@
 <div id="peoplesearch" class="searchcontrol">
-  <%= form_tag(people_search_path, :method => :get) do %>
-    <%= text_field_tag :query, params[:query], :class => "text", :placeholder=>"Search Users", :id => "peoplesearch_query" %>
-    <%= submit_tag "Search", :name=>nil  %>
+  <%= form_tag(people_search_path, method: :get) do %>
+    <%= text_field_tag :query, params[:query], class: "text", placeholder: "Search Users", id: "peoplesearch_query" %>
+    <%= submit_tag "Search", name: nil  %>
   <%- end -%>
 </div>
-

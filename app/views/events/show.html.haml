@@ -1,4 +1,4 @@
-#sidebar{:style => "width:50%;"}
+#sidebar{style: "width:50%;"}
   - if @auth['comms'] and @easter_eggs[:dt]
     %h1 Who's DT#{@event.name.first.upcase}?
   - else
@@ -31,7 +31,7 @@
                 = rsvp.person.fullname
                 = " (#{rsvp.person.email})" if @auth_event_owner
 %h1= @event.name
-%table#event_info.infobox{:style => "width: auto; margin-right: 20px;"}
+%table#event_info.infobox{style: "width: auto; margin-right: 20px;"}
   %tr
     %th Date
     %td= @event.nice_time_range(true) # Enable year
@@ -52,18 +52,18 @@
   - if @auth["comms"]
     = link_to 'Edit', edit_event_path(@event)
     |
-    = link_to 'Delete Event', event_path(@event), :method => :delete, :confirm => "Are you sure you want to delete this event?"
+    = link_to 'Delete Event', event_path(@event), method: :delete, confirm: "Are you sure you want to delete this event?"
     |
-  = link_to "Add to iCal", single_ical_path(@event.id, :format => :ics)
+  = link_to "Add to iCal", single_ical_path(@event.id, format: :ics)
   |
   - if @auth["comms"] && @event.allows_rsvps?
     = link_to "View RSVPs", event_rsvps_path(@event)
     |
   - if @event.allows_rsvps? and @auth["candplus"]
     - if @current_user_rsvp
-      = link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp), :id=>'edit_rsvp', "data-rsvp_id" => @current_user_rsvp.id.to_s
+      = link_to 'Change RSVP', edit_event_rsvp_path(@event, @current_user_rsvp), id: 'edit_rsvp', "data-rsvp_id" => @current_user_rsvp.id.to_s
       |
-      = link_to 'Remove My RSVP', event_rsvp_path(@event, @current_user_rsvp), :confirm => 'Are you sure?', :method => :delete
+      = link_to 'Remove My RSVP', event_rsvp_path(@event, @current_user_rsvp), confirm: 'Are you sure?', method: :delete
       |
     - elsif @event.can_rsvp? @current_user
       - if ((@event.blocks.size == 1 and !@event.blocks.first.full?) or (@event.blocks.size > 1))
@@ -72,4 +72,4 @@
       - else
         %strong RSVPs FULL
         |
-  = link_to 'Back to Calendar', events_calendar_path(:year => @event.start_time.year, :month => @event.start_time.month)
+  = link_to 'Back to Calendar', events_calendar_path(year: @event.start_time.year, month: @event.start_time.month)

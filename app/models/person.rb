@@ -35,24 +35,24 @@
 require 'net/ldap'
 
 class Person < ActiveRecord::Base
-  has_one :candidate, :dependent => :destroy
-  has_one :alumni, :dependent => :destroy
-  has_one :tutor, :dependent => :destroy
-  has_many :committeeships, :dependent => :destroy
+  has_one :candidate, dependent: :destroy
+  has_one :alumni, dependent: :destroy
+  has_one :tutor, dependent: :destroy
+  has_many :committeeships, dependent: :destroy
   has_and_belongs_to_many :groups
-  has_many :rsvps, :dependent => :destroy
-  has_many :events, :through => :rsvps
-  has_many :challenges, :through => :candidate
-  has_many :resumes, :dependent => :destroy
+  has_many :rsvps, dependent: :destroy
+  has_many :events, through: :rsvps
+  has_many :challenges, through: :candidate
+  has_many :resumes, dependent: :destroy
   has_one :suggestion
   has_and_belongs_to_many :coursesurveys
   has_and_belongs_to_many :badges
-  has_many :elections, :dependent => :destroy
+  has_many :elections, dependent: :destroy
   has_many :shortlinks
   belongs_to :mobile_carrier
 
-  validates :first_name,  :presence => true
-  validates :last_name,   :presence => true
+  validates :first_name,  presence: true
+  validates :last_name,   presence: true
 
   module Validation
     module Regex
@@ -60,24 +60,24 @@ class Person < ActiveRecord::Base
     end
   end
 
-  validates_format_of :picture,    :with => Validation::Regex::Https,
-                                   :allow_nil => true,
-                                   :allow_blank => true
+  validates_format_of :picture,    with: Validation::Regex::Https,
+                                   allow_nil: true,
+                                   allow_blank: true
   # Username, password, and email validation is done by AuthLogic
 
-  scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'candidates').first) }
-  scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.where(:name => 'comms').first) }
+  scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.where(name: 'candidates').first) }
+  scope :current_comms, lambda{ joins(:groups).where('groups.id' => Group.where(name: 'comms').first) }
   scope :alpha_last, lambda {order('last_name, first_name')}
   scope :alpha,      lambda {order('first_name, last_name')}
 
   acts_as_authentic do |c|
     # Options go here if you have any
-    c.merge_validates_length_of_password_field_options :minimum => 8
+    c.merge_validates_length_of_password_field_options minimum: 8
     # Allows us to use the old password hashes. Upon successfully logging in,
     # the password hash will be automatically converted to SHA512
     c.transition_from_crypto_providers = DjangoSha1
 
-    c.validates_length_of_login_field_options = {:within => 2..100}
+    c.validates_length_of_login_field_options = {within: 2..100}
   end
 
   # Sunspot
@@ -86,10 +86,10 @@ class Person < ActiveRecord::Base
     text :last_name
     text :username
     text :email
-    text :first_name, :as => 'first_name_text_ngram'
-    text :last_name, :as => 'last_name_text_ngram'
-    text :username, :as => 'username_text_ngram'
-    text :email, :as => 'email_text_ngram'
+    text :first_name, as: 'first_name_text_ngram'
+    text :last_name, as: 'last_name_text_ngram'
+    text :username, as: 'username_text_ngram'
+    text :email, as: 'email_text_ngram'
   end
   # end sunspot
 
@@ -175,7 +175,7 @@ class Person < ActiveRecord::Base
   end
 
   def current_election
-      Election.current_semester.elected.where(:person_id => self.id).first
+      Election.current_semester.elected.where(person_id: self.id).first
   end
 
   def last_election
@@ -193,8 +193,8 @@ class Person < ActiveRecord::Base
 
   def valid_ldap?(password)
     begin
-      ldap = Net::LDAP.new( :host => LDAP_SERVER, :port => LDAP_SERVER_PORT )
-      a = ldap.bind( :method => :simple, :username => "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", :password => password )
+      ldap = Net::LDAP.new( host: LDAP_SERVER, port: LDAP_SERVER_PORT )
+      a = ldap.bind( method: :simple, username: "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", password: password )
     rescue Net::LDAP::LdapError
       return false
     end
@@ -238,7 +238,7 @@ class Person < ActiveRecord::Base
 
   def in_group?(group)
     if group.class == String
-      group = Group.where(:name => group).first
+      group = Group.where(name: group).first
     end
     groups.include?(group)
   end
@@ -255,9 +255,9 @@ class Person < ActiveRecord::Base
   def status
     current_committeeship = committeeships.where(semester: Property.semester).first
     if current_committeeship.nil?
-      if groups.include? Group.where(:name => "members").first
+      if groups.include? Group.where(name: "members").first
         "Member"
-      elsif groups.include? Group.where(:name => "candidates").first
+      elsif groups.include? Group.where(name: "candidates").first
         "Candidate"
       else
         "Person"
@@ -268,7 +268,7 @@ class Person < ActiveRecord::Base
   end
 
   def join_groups(gnames)
-    self.groups |= Group.where(:name => [*gnames])
+    self.groups |= Group.where(name: [*gnames])
   end
   def join_groups!(gnames)
     self.join_groups gnames
@@ -276,7 +276,7 @@ class Person < ActiveRecord::Base
   end
 
   def requested_challenges
-    self.id ? Challenge.where(:officer_id => self.id) : Challenge.where(:id => nil) # dummy empty relation
+    self.id ? Challenge.where(officer_id: self.id) : Challenge.where(id: nil) # dummy empty relation
   end
 
 end
