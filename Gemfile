@@ -33,6 +33,9 @@ group :development do
   # Generate entity relationship diagram
   gem 'rails-erd'
 
+  # Use a different development server
+  gem 'thin'
+
   # Annotate models with database information
   gem 'annotate'
 end

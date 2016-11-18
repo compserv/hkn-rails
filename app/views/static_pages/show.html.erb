@@ -1,0 +1,3 @@
+<h1><%= @static_page.title %></h1>
+
+<%= RDiscount.new(@static_page.content).to_html.html_safe %>

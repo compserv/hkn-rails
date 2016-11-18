@@ -398,6 +398,13 @@ HknRails::Application.routes.draw do
   match "factorial/:x" => "home#factorial", via: [:get, :post]
 
   resources :shortlinks
-  get ':in_url' => 'shortlinks#go'
 
+  resources :static_pages, path: '/pages', only: [:create, :index, :new], as: :root_static_page
+  get    '(/*parents)/:url/edit',    to: 'static_pages#edit',    as: :edit_static_page
+  get    '(/*parents)/:url/new',     to: 'static_pages#new',     as: :new_static_page
+  get    '(/*parents)/:url/index',   to: 'static_pages#index',   as: :static_pages
+  post   '(/*parents)/:url/index',   to: 'static_pages#create'
+  get    '(/*parents)/:url',         to: 'static_pages#show',    as: :static_page
+  match  '(/*parents)/:url',         to: 'static_pages#update',  via: [:put, :patch]
+  delete '(/*parents)/:url',         to: 'static_pages#destroy'
 end

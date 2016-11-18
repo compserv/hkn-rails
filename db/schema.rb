@@ -182,8 +182,8 @@ ActiveRecord::Schema.define(version: 20161104211224) do
   create_table "course_types", force: true do |t|
     t.float    "chart_pref_x"
     t.float    "chart_pref_y"
-    t.string   "color"
-    t.string   "name"
+    t.string   "color",        limit: nil
+    t.string   "name",         limit: nil
     t.datetime "created_at"
     t.datetime "updated_at"
   end
