@@ -54,7 +54,7 @@ class Candidate < ActiveRecord::Base
   end
 
   def self.required_surveys
-    4
+    1
   end
 
   def requirements_count
