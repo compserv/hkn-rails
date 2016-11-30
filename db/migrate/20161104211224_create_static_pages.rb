@@ -7,5 +7,8 @@ class CreateStaticPages < ActiveRecord::Migration
       t.string :url,   null: false
       t.timestamps
     end
+
+    add_index :static_pages, :parent_id
+    add_index :static_pages, :url
   end
 end

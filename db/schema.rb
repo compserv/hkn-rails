@@ -541,6 +541,9 @@ ActiveRecord::Schema.define(version: 20161104211224) do
     t.datetime "updated_at"
   end
 
+  add_index "static_pages", ["parent_id"], name: "index_static_pages_on_parent_id", using: :btree
+  add_index "static_pages", ["url"], name: "index_static_pages_on_url", using: :btree
+
   create_table "suggestions", force: true do |t|
     t.integer  "person_id"
     t.text     "suggestion"

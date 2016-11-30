@@ -1,81 +1,79 @@
 class StaticPagesController < ApplicationController
-  # before_filter :authorize_csec
-  # before_filter :set_staticpage, only: [:show, :update]
+  before_action :find_static_page
+  before_filter :authorize_static_pages, except: [:show]
 
   def index
-    @static_pages = StaticPage.all
-  end
-
-  def show
-    @link = Shortlink.find_by_in_url(params[:url])
-    if @link
-      redirect_to @link.out_url, status: @link.http_status
+    if @static_page
+      @static_pages = @static_page.children
     else
-      # Treat this as a static page, as it doesn't match a Shortlink
-      @static_page = StaticPage.find_by_url!(params[:url])
+      @static_pages = StaticPage.root_pages
     end
   end
 
+  def show
+    # Only redirect if a shortlink is found that matches
+    redirect_to @link.out_url, status: @link.http_status and return if @link
+
+    @page_content = RDiscount.new(@static_page.content).to_html
+  end
+
   def new
-    @static_page = StaticPage.new
+    @new_page = StaticPage.new
+    @parents += [@static_page]
+    @parent = @static_page
   end
 
   def create
-    @static_page = StaticPage.new(staticpage_params)
+    @new_page = StaticPage.new(static_page_params.merge(parent_id: @static_page.try(:id)))
+    @parent ||= @static_page
 
-    if process_staticpage_params! and @static_page.save
+    if @new_page.save
       @messages << "Successfully added static page."
-      redirect_to admin_staticpages_show_path(*@static_page.url)
+      redirect_to static_page_path(parents: @parents.map(&:url), url: @new_page.url)
     else
-      @messages << (["Validation failed:"]+@static_page.errors.full_messages).join('<br/>').html_safe
-      render action: :new
+      @messages << (["Validation failed:"] + @new_page.errors.full_messages).join('<br/>').html_safe
+      render :new
     end
   end
 
   def edit
-    @static_page = StaticPage.find_by_url!(params[:url])
   end
 
   def update
-    url1 = @static_page.url
-    unless process_staticpage_params!
-      render :show
-      return
-    end
+    url = @static_page.url
 
-    if @static_page.save
+    if @static_page.update_attributes(static_page_params)
       flash[:notice] = "Successfully updated static page."
-      if url1 != @static_page.url
-        redirect_to admin_staticpages_show_path(*@static_page.url)
-        return
-      end
+      @parents ||= []
+      redirect_to static_page_path(parents: @parents.map(&:url), url: @static_page.url) and return if url != @static_page.url
+      render :show
     else
       flash[:notice] = "Validation error"
+      render :edit
     end
-    render :show
   end
 
 private
-
   def static_page_params
-    params.require(:static_page).permit(
-      :parent_id,
-      :content,
-      :title,
-      :url
-    )
+    params.require(:static_page).permit(:content, :title, :url)
   end
 
-  # def set_staticpage
-  #   unless @static_page = StaticPage.lookup_by_short_name(params[:dept], params[:num])
-  #     redirect_to (request.referer || admin_staticpages_path), notice: "No matching static page found."
-  #     return false
-  #   end
-  # end
+  def find_static_page
+    @parents = []
+    if params[:parents]
+      @static_page = StaticPage.find_by_url!(params[:url])
 
-  # Save parameters from params[:staticpage] to @static_page
-  # @return [Boolean] whether processing was successful. Flash error is set if false.
-  def process_staticpage_params!
-    @static_page.update_attributes static_page_params
+      # Make an array of parent page urls
+      parent_urls = params[:parents].split('/')
+      @parents = parent_urls.map { |purl| StaticPage.find_by_url!(purl) }
+      @parent = @parents[-1]
+    elsif params[:url]
+      @link = Shortlink.find_by_in_url(params[:url])
+      @static_page = StaticPage.find_by_url!(params[:url]) if not @link
+    end
+  end
+
+  def authorize_static_pages
+    authorize(['officers', 'serv'])
   end
 end

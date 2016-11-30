@@ -1,3 +1,13 @@
-<h1><%= @static_page.title %></h1>
+<%= stylesheet_link_tag 'static' %>
 
-<%= RDiscount.new(@static_page.content).to_html.html_safe %>
+<div class="white-bg" id="contain">
+  <h1 class="big">
+    <%= @static_page.title %>
+    <% if @auth['officers'] || @auth['serv'] %>
+      <%= link_to '[Edit this page]', edit_static_page_path(parents: @parents.try(:map, &:url), url: @static_page.url) %>
+      <%= link_to '[Show sub-pages]', static_pages_path(parents: @parents.try(:map, &:url), url: @static_page.url) %>
+    <% end %>
+  </h1>
+
+  <%= @page_content.html_safe %>
+</div>
