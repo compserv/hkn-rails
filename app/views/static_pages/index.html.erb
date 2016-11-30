@@ -3,7 +3,10 @@
   <% if @static_pages.present? %>
     <ul>
       <% @static_pages.each do |sp| %>
-        <li><%= sp.title %> <%= link_to '[edit]', edit_static_page_path(parents: @parents.map(&:url) + [@static_page.try(:url)], url: sp.url) %></li>
+        <li>
+          <%= link_to sp.title, static_page_path(parents: @parents.map(&:url) + [@static_page.try(:url)], url: sp.url) %> -
+          <%= link_to '[edit]', edit_static_page_path(parents: @parents.map(&:url) + [@static_page.try(:url)], url: sp.url) %>
+        </li>
       <% end %>
     </ul>
     <p><%= link_to 'Create a new page', (@static_page ? new_static_page_path(parents: @parents.map(&:url), url: @static_page.url) : new_root_static_page_path) %></p>
