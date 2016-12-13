@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/rubycas/rubycas-client.git
-  revision: 195a4b70333029be474b0ac70efdc85bd4288861
+  remote: https://github.com/rubycas/rubycas-client
+  revision: 7b67c8f1b5515ee4e28479d640d2da0a5aadfbe0
   specs:
     rubycas-client (2.3.10.rc1)
       activesupport
@@ -265,3 +265,9 @@ DEPENDENCIES
   will_paginate (~> 3.0)
   yaml_db
   yard
+
+RUBY VERSION
+   ruby 2.1.2p95
+
+BUNDLED WITH
+   1.13.6
