@@ -400,4 +400,5 @@ HknRails::Application.routes.draw do
   resources :shortlinks
   get ':in_url' => 'shortlinks#go'
 
+  get  'hoodies' => "static#hoodies", :as => :hoodies
 end
