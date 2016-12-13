@@ -15,6 +15,7 @@ HknRails::Application.routes.draw do
       match "confirm_challenges" => "admin#confirm_challenges", via: [:get, :post]
       match "confirm_challenge/:id" => "admin#confirm_challenge", via: [:get, :post]
       match "reject_challenge/:id" => "admin#reject_challenge", via: [:get, :post]
+
       # TODO: Shouldn't this be done with resources?
       scope "candidate_announcements" do
           match "/" => "admin#candidate_announcements", via: [:get, :post]
@@ -321,7 +322,8 @@ HknRails::Application.routes.draw do
     resources :locations
   end
 
-  #remove later for coming soon pages
+  # TODO: Remove later for coming soon pages
+  # TODO: Move these into the database as hierarchical static pages
   scope "service" do
     get "/" => "static#service", as: "service"
     get "eecsday" => "static#eecsday", as: "service_eecsday"
@@ -398,6 +400,16 @@ HknRails::Application.routes.draw do
   match "factorial/:x" => "home#factorial", via: [:get, :post]
 
   resources :shortlinks
-  get ':in_url' => 'shortlinks#go'
 
+
+  # This section must remain at the bottom of the routes, since they are
+  # catch-all routes to enable arbitrary hierarchy and placement of static pages
+  resources :static_pages, path: '/pages', only: [:create, :index, :new], as: :root_static_page
+  get    '(/*parents)/:url/edit',    to: 'static_pages#edit',    as: :edit_static_page
+  get    '(/*parents)/:url/new',     to: 'static_pages#new',     as: :new_static_page
+  get    '(/*parents)/:url/pages',   to: 'static_pages#index',   as: :static_pages
+  post   '(/*parents)/:url/pages',   to: 'static_pages#create'
+  get    '(/*parents)/:url',         to: 'static_pages#show',    as: :static_page
+  match  '(/*parents)/:url',         to: 'static_pages#update',  via: [:put, :patch]
+  delete '(/*parents)/:url',         to: 'static_pages#destroy'
 end

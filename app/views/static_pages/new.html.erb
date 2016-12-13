@@ -1,0 +1,33 @@
+<div class="white-bg" id="contain">
+  <h1>Create a new sub-page of <%= @parent.try(:title) || 'Root' %></h1>
+
+  <%= form_for @new_page, url: (@parent ? static_pages_path(parents: @parents[0..-2].map(&:url), url: @parent.url) : root_static_page_index_path) do |f| %>
+    <% if @new_page.errors.any? %>
+      <div id="errorExplanation">
+        <h2><%= pluralize(@new_page.errors.count, "error") %> prohibited this page from being saved:</h2>
+        <ul>
+          <% @new_page.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <%- end -%>
+
+    <div class="field">
+      <%= f.label :url %>
+      <%= f.text_field :url %>
+    </div>
+    <div class="field">
+      <%= f.label :title %>
+      <%= f.text_field :title %>
+    </div>
+    <div class="field">
+      <%= f.label :content %>
+      <%= f.text_area :content %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Create page" %>
+    </div>
+  <%- end -%>
+</div>

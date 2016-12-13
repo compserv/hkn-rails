@@ -1,0 +1,16 @@
+<div class="white-bg" id="contain">
+  <h1>Sub-pages of <%= @static_page.present? ? @static_page.title : 'Root' %></h1>
+  <% if @static_pages.present? %>
+    <ul>
+      <% @static_pages.each do |sp| %>
+        <li>
+          <%= link_to sp.title, static_page_path(parents: @parents.map(&:url) + [@static_page.try(:url)], url: sp.url) %> -
+          <%= link_to '[edit]', edit_static_page_path(parents: @parents.map(&:url) + [@static_page.try(:url)], url: sp.url) %>
+        </li>
+      <% end %>
+    </ul>
+    <p><%= link_to 'Create a new page', (@static_page ? new_static_page_path(parents: @parents.map(&:url), url: @static_page.url) : new_root_static_page_path) %></p>
+  <% else %>
+    <p>No static pages currently, <%= link_to 'create one', new_static_page_path(parents: @parents.map(&:url), url: @static_page.url) %>?</p>
+  <% end %>
+</div>

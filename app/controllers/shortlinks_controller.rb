@@ -1,6 +1,6 @@
 class ShortlinksController < ApplicationController
   before_action :set_shortlink, only: [:show, :edit, :update, :destroy]
-  before_filter :authorize_shortlinks, except: [:go]
+  before_filter :authorize_shortlinks
   before_filter :authorize_own_shortlink, only: [:edit, :update, :destroy]
 
   # GET /shortlinks
@@ -53,12 +53,6 @@ class ShortlinksController < ApplicationController
   def destroy
     @shortlink.destroy
     redirect_to shortlinks_url, notice: 'Shortlink was successfully destroyed.'
-  end
-
-  # Follow created shortlink, without validation.
-  def go
-    @link = Shortlink.find_by_in_url!(params[:in_url])
-    redirect_to @link.out_url, status: @link.http_status
   end
 
   private

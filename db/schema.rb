@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204032936) do
+ActiveRecord::Schema.define(version: 20161104211224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -182,8 +182,8 @@ ActiveRecord::Schema.define(version: 20160204032936) do
   create_table "course_types", force: true do |t|
     t.float    "chart_pref_x"
     t.float    "chart_pref_y"
-    t.string   "color"
-    t.string   "name"
+    t.string   "color",        limit: nil
+    t.string   "name",         limit: nil
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -531,6 +531,18 @@ ActiveRecord::Schema.define(version: 20160204032936) do
   end
 
   add_index "slots_tutors", ["slot_id", "tutor_id"], name: "index_slots_tutors_on_slot_id_and_tutor_id", unique: true, using: :btree
+
+  create_table "static_pages", force: true do |t|
+    t.integer  "parent_id"
+    t.text     "content"
+    t.string   "title",      null: false
+    t.string   "url",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "static_pages", ["parent_id"], name: "index_static_pages_on_parent_id", using: :btree
+  add_index "static_pages", ["url"], name: "index_static_pages_on_url", using: :btree
 
   create_table "suggestions", force: true do |t|
     t.integer  "person_id"
