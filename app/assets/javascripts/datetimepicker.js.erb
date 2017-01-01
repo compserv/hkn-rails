@@ -38,12 +38,18 @@ $(document).ready(function() {
   dateOneWeekFromNow += hours + ":" + minutes + " " + suffix;
   $(function() {
     $(".datetimepicker").datetimepicker({
+      beforeShowDay: function(date) {
+        var td = date.getDay();
+        return [(date.getDay() != 0 && date.getDay() != 6), '', (td != 'Sat' && td != 'Sun') ? '' : 'only on workday'];
+      },
+      hourMin: 11,
+      hourMax: 16,
       defaultValue: dateOneWeekFromNow,
       dateFormat: 'yy-mm-dd',
       timeFormat: 'hh:mm tt',
       stepHour: 1,
       stepMinute: 5,
-      hourGrid: 6,
+      hourGrid: 1,
       minuteGrid: 15,
       showOn: "button",
       buttonImage: "<%= asset_path('icons/calendar.gif') %>",
