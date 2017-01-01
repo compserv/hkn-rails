@@ -5,6 +5,7 @@
 .bundle
 .yardoc
 config/database.yml
+config/secrets.yml
 db/*.sqlite3
 db/goodprofornot_dump/
 db/backups
