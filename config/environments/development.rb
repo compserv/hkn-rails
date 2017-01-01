@@ -39,4 +39,7 @@ HknRails::Application.configure do
   config.assets.debug = true
 
   config.eager_load = false
+
+  # Allow everyone to access the development error pages
+  BetterErrors::Middleware.allow_ip! "0.0.0.0/0"
 end
