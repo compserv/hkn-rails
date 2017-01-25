@@ -26,7 +26,7 @@ class Candidate < ActiveRecord::Base
   scope :approved, lambda { includes(:person).where(people: { approved: true }) }
 
   def self.committee_defaults
-    defaults = ["Activities", "Bridge", "CompServ", "Service", "Indrel", "StudRel", "Tutoring"]
+    defaults = ["Activities", "Bridge", "CompServ", "Decal", "Indrel", "Service", "StudRel", "Tutoring"]
     return defaults
   end
 
