@@ -2,6 +2,8 @@
 <% if @tutoring_enabled %>
 <div style="float: left; width: 80%; text-align: center; margin-bottom: 30px;">
 
+<p><strong>Notice:</strong> Due to course policy, HKN tutors cannot help with projects.</p>
+
 <% tutors = [] %>
 <% Slot::Room::Both.each do |room| %>
 <h1><%= @room_numbers[room] %></h1>
