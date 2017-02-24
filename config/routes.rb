@@ -69,7 +69,7 @@ HknRails::Application.routes.draw do
         post  "update"    => "eligibilities#update",    as: :update_eligibilities
         post  "upload"    => "eligibilities#upload",    as: :upload_eligibilities
         post  "reprocess" => "eligibilities#reprocess", as: :reprocess_eligibilities
-        get   "candidates.csv" => "eligibilities#csv",       as: :eligibilities_csv
+        get   "candidates.csv" => "eligibilities#csv",  as: :eligibilities_csv
       end
       scope "cand", as: :cand do
         get   "/"            => "applications#index", as: :applications
@@ -311,47 +311,49 @@ HknRails::Application.routes.draw do
     match "resume-books"              => "indrel#resume_books",                   as: "resume_books_about", via: [:get, :post]
     get   "resume-books/order"        => "indrel#resume_books_order",             as: "resume_books_order"
     post  "resume-books/order"        => "indrel#resume_books_order_post",        as: "resume_books_order_post"
+
     resources :companies do
       member do
-        post "reset_access", as: "reset_access"
+        post "reset_access", as: :reset_access
       end
     end
+
     resources :contacts
-    resources :events,      controller: "indrel_events",      as: "indrel_events"
-    resources :event_types, controller: "indrel_event_types", as: "indrel_event_types"
+    resources :events,      controller: "indrel_events",      as: :indrel_events
+    resources :event_types, controller: "indrel_event_types", as: :indrel_event_types
     resources :locations
   end
 
   # TODO: Remove later for coming soon pages
   # TODO: Move these into the database as hierarchical static pages
   scope "service" do
-    get "/" => "static#service", as: "service"
-    get "eecsday" => "static#eecsday", as: "service_eecsday"
-    get "bearhacks" => "static#bearhacks", as: "service_bearhacks"
+    get "/" => "static#service",           as: :service
+    get "eecsday" => "static#eecsday",     as: :service_eecsday
+    get "bearhacks" => "static#bearhacks", as: :service_bearhacks
   end
 
   # Static pages
   scope "about" do
-    match "contact"   => "static#contact", via: [:get, :post]
+    match "contact"   => "static#contact",     via: [:get, :post]
     match "comingsoon" => "static#comingsoon", via: [:get, :post]
-    match "yearbook"  => "static#yearbook", via: [:get, :post]
-    match "slideshow" => "static#slideshow", via: [:get, :post]
-    match "officers(/:semester)" => "static#officers", as: "about_officers", via: [:get, :post]
-    match "cmembers(/:semester)" => "static#cmembers", as: "about_cmembers", via: [:get, :post]
+    match "yearbook"  => "static#yearbook",    via: [:get, :post]
+    match "slideshow" => "static#slideshow",   via: [:get, :post]
+    match "officers(/:semester)" => "static#officers", as: :about_officers, via: [:get, :post]
+    match "cmembers(/:semester)" => "static#cmembers", as: :about_cmembers, via: [:get, :post]
   end
 
   #Tutoring pages
   scope "tutor" do
     match "/" => "tutor#schedule", as: "tutor", via: [:get, :post]
-    match "schedule" => "tutor#schedule", via: [:get, :post]
-    match "calendar" => "tutor#calendar", via: [:get, :post]
+    match "schedule" => "tutor#schedule",       via: [:get, :post]
+    match "calendar" => "tutor#calendar",       via: [:get, :post]
   end
 
   # Exams
   scope "exams" do
     match '/'                                     => "exams#index", via: [:get, :post],
       as: :exams
-    match "search(/:q)"                                => "exams#search",
+    match "search(/:q)"                           => "exams#search",
       as: :exams_search, via: [:get, :post]
     match "course/:dept_abbr"                     => "exams#department",
       as: :exams_department, via: [:get, :post]
