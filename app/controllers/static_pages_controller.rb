@@ -14,7 +14,7 @@ class StaticPagesController < ApplicationController
     # Only redirect if a shortlink is found that matches
     redirect_to @link.out_url, status: @link.http_status and return if @link
 
-    @page_content = RDiscount.new(@static_page.content).to_html
+    @page_content = RDiscount.new(@static_page.content).to_html or ''
   end
 
   def new
