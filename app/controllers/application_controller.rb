@@ -46,21 +46,6 @@ class ApplicationController < ActionController::Base
     @auth = auth
   end
 
-  # Needs to be accessible everywhere
-  # this is crap, we'll probably end up duplicating this many times for different req types
-  # redo with some kind of fancy schmancy reflection automagic?
-  def num_deprel_requests
-    DeptTourRequest.all.count
-  end
-
-  #Custom error pages
-  def render_optional_error_file(status_code)
-    respond_to do |type|
-        type.html { render template: "static/error", layout: 'application'}
-        type.all  { render nothing: true }
-      end
-  end
-
   def render_404
     raise ActionController::RoutingError.new('Not Found')
   end
