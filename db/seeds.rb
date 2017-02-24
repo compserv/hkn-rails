@@ -24,13 +24,14 @@ def initialize_groups
     {"name"=>"superusers","description"=>"Admin"},
 
     # Member types
-    {"name"=>"members",   "description"=>"Members"},
-    {"name"=>"candidates","description"=>"Candidates"},
-    {"name"=>"candplus",  "description"=>"Candidates and Members"},
-    {"name"=>"officers",  "description"=>"Officers"},
-    {"name"=>"comms",     "description"=>"Committee Members and Officers"},
-    {"name"=>"cmembers",  "description"=>"Committee Members"},
-    {"name"=>"alumni",    "description"=>"Alumni"},
+    {"name"=>"members",    "description"=>"Members"},
+    {"name"=>"candidates", "description"=>"Candidates"},
+    {"name"=>"candplus",   "description"=>"Candidates and Members"},
+    {"name"=>"officers",   "description"=>"Officers"},
+    {"name"=>"assistants", "description"=>"Assistant Officers"},
+    {"name"=>"comms",      "description"=>"Committee Members and Officers"},
+    {"name"=>"cmembers",   "description"=>"Committee Members"},
+    {"name"=>"alumni",     "description"=>"Alumni"},
 
     # Committees
     {"name"=>"pres",      "description"=>"President"},

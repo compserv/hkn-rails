@@ -87,12 +87,13 @@ class Election < ActiveRecord::Base
 
     # group management
 #    person.groups = person.groups | [Group.find_by_name("officers"), Group.find_by_name("comms"),Group.find_by_name(self.position)]
+    # TODO: Support adding assistant officers too
     cship = Committeeship.create({
         person_id: self.person_id,
         committee: self.position,
         semester:  self.semester,
         title:     'officer'
-      })
+    })
 
     # username changes
     person.username = self.final_username

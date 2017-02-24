@@ -13,6 +13,6 @@
   <br /><a href="http://www.google.com/calendar/render?cid=http%3A%2F%2Fwebcal%3A%2F%2Fhkn.eecs.berkeley.edu%2Fevents%2Fhkn.ics" target="_blank"><img src="//www.google.com/calendar/images/ext/gc_button1.gif" border=0></a>
 </div>
 
-<% if @auth["officers"] || @auth["cmembers"] %>
+<% if @auth["officers"] || @auth["assistants"] || @auth["cmembers"] %>
   <span style="float:left"><%= link_to 'New Event', new_event_path %></span>
 <% end %>

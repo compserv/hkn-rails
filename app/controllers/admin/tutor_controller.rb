@@ -583,7 +583,7 @@ class Admin::TutorController < Admin::AdminController
 
         adj_closed_list = []
         # If is a current_officer
-        if tutor.adjacency != 0 and tutor.person.committeeships.current.map{|c| c.title == "officers"}.reduce(false){|x, y| x || y}
+        if tutor.adjacency != 0 and tutor.person.committeeships.current.map {|c| c.title == "officers"}.reduce(false){|x, y| x || y}
           tutor.slots.each do |other_slot|
             if not adj_closed_list.include?(other_slot)
               if slot.adjacent_to(other_slot)

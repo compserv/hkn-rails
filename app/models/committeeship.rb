@@ -14,9 +14,9 @@
 class Committeeship < ActiveRecord::Base
   @Committees = %w(pres vp rsec treas csec deprel act alumrel bridge compserv decal indrel serv studrel tutoring pub examfiles ejc)	#This generates a constant which is an array of possible committees.
   Semester = /\A\d{4}[0-4]\z/                  # A regex which validates the semester
-  Positions = %w(officer cmember candidate)  # A list of possible positions
-  Execs = %w(pres vp rsec csec treas deprel) # Executive positions
-  NonExecs = @Committees-Execs
+  Positions = %w(officer assistant cmember candidate)  # A list of possible positions
+  Execs = %w(pres vp rsec csec treas deprel alumrel) # Executive positions
+  NonExecs = @Committees - Execs
 
   validates_presence_of :person_id
   validates_format_of :semester, with: Semester, message: "Not a valid semester."
@@ -30,13 +30,15 @@ class Committeeship < ActiveRecord::Base
 
   # We have this argumentless lambda because we don't want to evaluate
   # Property.semester until we call the scope, not when we define it
-  scope :current,    -> { where(semester: Property.semester) }
-  scope :next,       lambda{ where(semester: Property.next_semester) }
-  scope :semester,   lambda{ |s| where(semester: s) }
-  scope :committee,  lambda{ |x| where(committee: x) }
-  scope :officers,   -> { where(title: "officer") }
-  scope :cmembers,   -> { where(title: "cmember") }
-  scope :candidates, -> { where(title: "candidate") }
+  scope :current,      -> { where(semester: Property.semester) }
+  scope :next,         lambda { where(semester: Property.next_semester) }
+  scope :semester,     lambda { |s| where(semester: s) }
+  scope :committee,    lambda { |x| where(committee: x) }
+  scope :officers,     -> { where(title: "officer") }
+  scope :all_officers, -> { where(title: ["officer", "assistant"]) }
+  scope :assistants,   -> { where(title: "assistant") }
+  scope :cmembers,     -> { where(title: "cmember") }
+  scope :candidates,   -> { where(title: "candidate") }
 
   class << self
     attr_reader :Committees, :Positions
@@ -63,8 +65,9 @@ class Committeeship < ActiveRecord::Base
 
   def nice_title
     nice_titles = {
-      "officer" => "Officer",
-      "cmember" => "Committee Member",
+      "officer"   => "Officer",
+      "assistant" => "Assistant Officer",
+      "cmember"   => "Committee Member",
       "candidate" => "Candidate"
     }
     nice_titles[title]

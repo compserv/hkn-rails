@@ -11,7 +11,7 @@ class PeopleController < ApplicationController
     #   (1) you're a superuser
     #   (2) you're in it
     #   (3) it's a public group      (  vvv      one of these      vvv        )
-    unless @auth['superusers'] or (%w[officers cmembers members candidates all] | @current_user.groups.collect(&:name)).include?(@category)
+    unless @auth['superusers'] or (%w[officers assistants cmembers members candidates all] | @current_user.groups.collect(&:name)).include?(@category)
       @messages << "No category named #{@category}. Displaying all people."
       @category = "all"
     end
@@ -236,7 +236,7 @@ class PeopleController < ApplicationController
   def contact_card
     comms = Person.joins(:committeeships)
       .where("committeeships.semester" => Property.semester)
-      .where("committeeships.title IN (?)", ["officer", "cmember"])
+      .where("committeeships.title IN (?)", ["officer", "assistant", "cmember"])
 
     csv_string = CSV.generate do |csv|
       csv << ['First Name', 'Last Name', 'Email Address', 'Mobile Phone']

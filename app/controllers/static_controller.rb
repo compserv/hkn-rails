@@ -42,7 +42,7 @@ class StaticController < ApplicationController
   def officers
     @semester = params[:semester] || Election.maximum(:semester)
 
-    cships = Committeeship.semester(@semester).officers.sort_by do |c|
+    cships = Committeeship.semester(@semester).all_officers.sort_by do |c|
       if c.exec?  # exec position
         [0, Committeeship::Execs.find_index(c.committee)].join
       else        # normal committee

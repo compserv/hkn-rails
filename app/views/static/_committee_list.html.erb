@@ -1,18 +1,23 @@
 <div id="<%= position_type %>">
+  <h2><%= position_type.capitalize %></h2>
+  <hr>
   <% @committeeships[position_type].each do |c_name, cships| %>
-    <%# begin partial %>
+    <% next if c_name == 'deprel' and @semester >= '20171' %>
     <div class="<%= position_type.to_s.singularize %>">
-      <h2><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h2>
-      <% for person in cships.collect(&:person).sort_by(&:full_name) %>
-      <div class="officer">
-        <div class="photo <%= "no-photo" if person.picture.blank? %>">
-          <%= image_tag( person.picture, style: 'width: 125px; height: 100px;')   unless person.picture.blank? %>
+      <h3><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h3>
+      <% for cship, person in cships.collect { |c| [c, c.person] }.sort { |a, b| [b[0].title, a[1].last_name] <=> [a[0].title, b[1].last_name] } %>
+        <div class="officer">
+          <div class="photo <%= "no-photo" if person.picture.blank? %>">
+            <%= image_tag(person.picture, style: 'width: 125px; height: 100px;') unless person.picture.blank? %>
+          </div>
+          <span class="name"><%= person.full_name %></span>
+          <span class="email"><%= person.username %>@hkn</span>
+          <% if position_type != :execs %>
+            <span class="title"><%= cship.nice_title %></span>
+          <% end %>
         </div>
-        <span class="name"><%= person.full_name %></span>
-        <span class="email"><%= person.username %>@hkn</span>
-      </div>
       <% end %>
     </div>
-    <%# end partial %>
-  <% end %><%# cships, @committeeships %>
+  <% end %>
+  <hr>
 </div>

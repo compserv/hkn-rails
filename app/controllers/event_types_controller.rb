@@ -1,6 +1,6 @@
 class EventTypesController < ApplicationController
   before_filter do
-    authorize ["officers", "cmembers"]
+    authorize ["officers", "assistants", "cmembers"]
   end
 
   # GET /event_types

@@ -116,7 +116,7 @@ class Person < ActiveRecord::Base
     titles = committeeships.where(semester: Property.semester)
                            .collect(&:title)
                            .uniq
-    titles.include? "cmember"
+    titles.include? "cmember" or titles.include? "assistant"
   end
 
   def change_username(opts)
