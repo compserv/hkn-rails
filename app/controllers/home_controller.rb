@@ -12,12 +12,16 @@ class HomeController < ApplicationController
     time = time.next_week unless (1..5).include? time.wday
     @day = time.wday
     @tutor_title = "#{time.strftime("%A")}'s Tutoring Schedule"
+
     if @tutoring_enabled
       @course_mapping = {}
       @slots = Slot.includes(:tutors).where(wday: time.wday)
     else
       @tutoring_message = prop.tutoring_message
     end
+
+    # Only respond with HTML to not error when other formats are requested
+    respond_to :html
   end
 
   def factorial
@@ -33,5 +37,4 @@ class HomeController < ApplicationController
     end
     redirect_to :root, notice: y
   end
-
 end
