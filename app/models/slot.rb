@@ -51,6 +51,11 @@ class Slot < ActiveRecord::Base
     "<#Slot #{room_name} #{day_name} #{hour}>"
   end
 
+  def display
+    start, stop = [hour, hour + 1].collect { |h| h > 12 ? h - 12 : h }
+    "#{day_name}, #{start}-#{stop} @ #{room_name}"
+  end
+
   def room_name
     if room == Room::Cory then
       "Cory"
