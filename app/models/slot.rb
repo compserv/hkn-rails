@@ -33,7 +33,6 @@ class Slot < ActiveRecord::Base
   ROOMS = { cory: Room::Cory, soda: Room::Soda }
 
   has_and_belongs_to_many :tutors, before_add: :check_tutor
-  has_many :slot_changes
 
   validate :valid_room
   validate :valid_hour
