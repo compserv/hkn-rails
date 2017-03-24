@@ -151,10 +151,9 @@ class CoursesurveysController < ApplicationController
 
     [ :effectiveness, :worthwhile ].each do |qname|
       @overall[qname][:score] = @results.collect do |result|
-        result[:ratings].map{|r| r[qname]}.sum.to_f/result[:ratings].size
+        result[:ratings].map { |r| r[qname] }.sum.to_f / result[:ratings].size
       end.sum / @results.size.to_f
     end
-
   end
 
   def klass
@@ -164,21 +163,19 @@ class CoursesurveysController < ApplicationController
 
     # Error checking
     if @klass.blank?
-       flash[:notice] = "No class found for #{params[:semester].gsub('_',' ')}."
-       return redirect_to coursesurveys_course_path(params[:dept_abbr], params[:short_name])
+      flash[:notice] = "No class found for #{params[:semester].gsub('_',' ')}."
+      return redirect_to coursesurveys_course_path(params[:dept_abbr], params[:short_name])
     end
 
     @instructors, @tas = [], []
 
     @klass.instructorships.each do |i|
       if @instructor.nil? or @instructor == i.instructor
-        (i.ta ? @tas : @instructors) << { instructor: i.instructor,
-                                        answers:    (i.instructor.private && !@privileged ?
-                                                        nil : i.survey_answers) }
+        answers = (i.instructor.private && !@privileged ? nil : i.survey_answers)
+        (i.ta ? @tas : @instructors) << { instructor: i.instructor, answers: answers }
       end
-      if @instructor == i.instructor
-        @instructorship = i
-      end
+
+      @instructorship = i if @instructor == i.instructor
     end
 
     if @instructor && @instructors.empty? && @tas.empty?
@@ -216,10 +213,10 @@ class CoursesurveysController < ApplicationController
     # I know this is very convoluted, but it tries to pull as much data
     # as possible from a single query, to avoid hammering the database.
     if (sem == nil)
-      instructors = Instructor.where(id:                       Instructorship.select(:instructor_id).
-                                    where(id:                                            SurveyAnswer.select(:instructorship_id).
-                                                        where(survey_question_id: @eff_q.id).
-                                                        collect(&:instructorship_id),
+      instructors = Instructor.where(id: Instructorship.select(:instructor_id).
+                                    where(id: SurveyAnswer.select(:instructorship_id).
+                                                           where(survey_question_id: @eff_q.id).
+                                                           collect(&:instructorship_id),
                                            ta: is_ta
                                           ).
                                     collect(&:instructor_id)
@@ -408,11 +405,11 @@ class CoursesurveysController < ApplicationController
 
     @klass  = @answer.klass
     @course = @klass.course
-    @frequencies = ActiveSupport::JSON.decode(@answer.frequencies)
-    @total_responses = @frequencies.values.reduce{|x,y| x.to_i+y.to_i}
+    @frequencies = @answer.frequencies ? ActiveSupport::JSON.decode(@answer.frequencies) : []
+    @total_responses = @frequencies.present? ? @frequencies.values.reduce { |x,y| x.to_i + y.to_i } : @answer.num_responses
     @mode = @frequencies.values.max # TODO: i think this is wrong and always returns the highest score...
     # Someone who understands statistics, please make sure the following line is correct
-    @conf_intrvl = @total_responses > 0 ? 1.96*@answer.deviation/Math.sqrt(@total_responses) : 0
+    @conf_intrvl = @answer.deviation ? (@total_responses > 0 ? 1.96*@answer.deviation/Math.sqrt(@total_responses) : 0) : nil
     @can_edit = @current_user && authorize_coursesurveys
   end
 

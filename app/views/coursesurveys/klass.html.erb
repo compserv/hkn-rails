@@ -47,7 +47,7 @@
         <%= title %> <%= link_to instructor.full_name, surveys_klass_path(@klass, instructor: instructor.full_name_r_strip) %>
       </th>
       <%- unless (private && !@privileged) -%>
-        <th><%= ActiveSupport::JSON.decode(answers.first.frequencies).values.sum %> respondents</th>
+        <th><%= answers.first.frequencies != "{}" ? ActiveSupport::JSON.decode(answers.first.frequencies).values.sum : answers.first.num_responses %> respondents</th>
       <%- end -%>
     </tr>
 
@@ -57,14 +57,14 @@
         <td colspan="2">This instructor's ratings are <%= link_to 'hidden', coursesurveys_ferpa_path %>.</td>
       </tr>
     <%- else -%>
-    <%- answers.each do |answer| -%>
-      <tr>
-        <%- t = [answer.survey_question.text]
-            t.unshift("<strong>").push("</strong>") if answer.survey_question.important -%>
-        <td><%=raw t.join %></td>
-        <td><%= answer.mean == 0 ? 'N/A' : (rating_and_bar answer.mean, answer.survey_question.max, surveys_rating_path(answer), answer.survey_question.inverted) %></td>
-      </tr>
-    <%- end end # answers -%>
+      <%- answers.each do |answer| -%>
+        <tr>
+          <%- t = [answer.survey_question.text]
+              t.unshift("<strong>").push("</strong>") if answer.survey_question.important -%>
+          <td><%=raw t.join %></td>
+          <td><%= answer.mean == 0 ? 'N/A' : (rating_and_bar answer.mean, answer.survey_question.max, surveys_rating_path(answer), answer.survey_question.inverted) %></td>
+        </tr>
+      <%- end end # answers -%>
     <%- end end # instructors+tas -%>
   </table>
 </div>

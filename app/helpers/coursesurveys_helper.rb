@@ -80,6 +80,7 @@ module CoursesurveysHelper
   end
 
   def decode_frequencies(f)
+    return unless f
     # If key is a String(Integer), make it just an integer.
     # "5"=>17 becomes 5=>17
     # This is needed because JSON.encode puts quotes around integer keys, and

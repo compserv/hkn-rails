@@ -6,12 +6,14 @@
         <th>Score</th>
         <th>Count</th>
     </tr>
-    <% @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key| %>
-        <tr>
-            <td><%= label_tag key.to_s.first, key %></td>
-            <td><%= number_field_tag "frequencies[#{key.to_s}]", @frequencies[key], {min: 0, step: 1} %></td>
-        </tr>
-    <% end #frequencies %>
+    <%- if @frequencies -%>
+      <% @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key| %>
+          <tr>
+              <td><%= label_tag key.to_s.first, key %></td>
+              <td><%= number_field_tag "frequencies[#{key.to_s}]", @frequencies[key], {min: 0, step: 1} %></td>
+          </tr>
+      <% end #frequencies %>
+    <%- end -%>
 </table>
 
 <%= submit_tag 'Save' %>

@@ -27,6 +27,8 @@ class SurveyAnswer < ActiveRecord::Base
 
 
   def recompute_stats!
+    return unless frequencies
+
     f = decode_frequencies(self.frequencies)
 
     # We can use these as temps for now..
@@ -71,6 +73,7 @@ class SurveyAnswer < ActiveRecord::Base
   end #recompute_stats!
 
   def confidence_interval
+    return unless frequencies
 #    k = "survey_answer/#{self.id}/confidence_interval"
 #    v = Rails.cache.read(k)
 #    return v if v

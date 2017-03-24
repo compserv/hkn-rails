@@ -1,15 +1,14 @@
-
 <h1><%= link_to @course.course_name, surveys_course_path(@course) %> - <%= link_to @klass.proper_semester, surveys_klass_path(@klass) %> - <%= link_to @instructor.full_name, surveys_instructor_path(@instructor) %></h1>
 
 <%- if @instructor.private %>
-<%= @instructor.full_name %>'s results are private. You're seeing these survey results because you are currently logged in with privileged access. These results are not publicly available.
+  <%= @instructor.full_name %>'s results are private. You're seeing these survey results because you are currently logged in with privileged access. These results are not publicly available.
 <% end %>
 
 <h2><%= @answer.survey_question.text %></h2>
 <span class="edit">
-<%- if @can_edit -%>
-  <%= link_to '[Edit]', coursesurveys_edit_rating_path(@answer) %>
-<%- end -%>
+  <%- if @can_edit -%>
+    <%= link_to '[Edit]', coursesurveys_edit_rating_path(@answer) %>
+  <%- end -%>
 </span>
 
 <div id="rating-info" class="infobox">
@@ -17,41 +16,55 @@
     <span class="info-label">Number of Respondents</span>
     <div class="info-item"><%= @total_responses %></div>
   </div>
+
   <div class="info-row">
     <span class="info-label">Mean</span>
     <div class="info-item"><%= sprintf "%.1f", @answer.mean %></div>
   </div>
-  <div class="info-row">
-    <span class="info-label">Standard Deviation</span>
-    <div class="info-item"><%= sprintf "%.1f", @answer.deviation %></div>
-  </div>
-  <div class="info-row">
-    <span class="info-label">Median</span>
-    <div class="info-item"><%= sprintf "%.1f", @answer.median %></div>
-  </div>
-  <div class="info-row">
-    <span class="info-label">95% Confidence Interval</span>
-    <div class="info-item"><%= sprintf "%.1f", @answer.mean %> &plusmn; <%= sprintf "%.1f", @conf_intrvl %></div>
-  </div>
+
+  <%- if @answer.deviation -%>
+    <div class="info-row">
+      <span class="info-label">Standard Deviation</span>
+      <div class="info-item"><%= sprintf "%.1f", @answer.deviation %></div>
+    </div>
+  <%- end -%>
+
+  <%- if @answer.median -%>
+    <div class="info-row">
+      <span class="info-label">Median</span>
+      <div class="info-item"><%= sprintf "%.1f", @answer.median %></div>
+    </div>
+  <%- end -%>
+
+  <%- if @conf_intrvl -%>
+    <div class="info-row">
+      <span class="info-label">95% Confidence Interval</span>
+      <div class="info-item"><%= sprintf "%.1f", @answer.mean %> &plusmn; <%= sprintf "%.1f", @conf_intrvl %></div>
+    </div>
+  <%- end -%>
+
   <div class="info-row">
     <span class="info-label">Max</span>
     <div class="info-item"><%= @answer.survey_question.max.to_f %></div>
   </div>
-   <div class="info-row">
-    <span class="info-label">Frequency Distribution</span>
-    <div class="info-item">
-      <table class="histogram">
-        <%- @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key|
-            next if key.to_s.is_int? && key.to_i > @answer.survey_question.max
-        -%>
-          <tr>
-            <th><%= key %></th>
-            <td><%= frequency_bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %> (<%= @total_responses > 0 ? sprintf("%.1f", 100.0*@frequencies[key]/@total_responses) : 0 %>%)</td>
-          </tr>
-        <%- end -%>
-      </table>
+
+  <%- if @frequencies.present? -%>
+    <div class="info-row">
+      <span class="info-label">Frequency Distribution</span>
+      <div class="info-item">
+        <table class="histogram">
+          <%- @frequencies.keys.sort{|a,b| a.to_s<=>b.to_s}.each do |key|
+              next if key.to_s.is_int? && key.to_i > @answer.survey_question.max
+          -%>
+            <tr>
+              <th><%= key %></th>
+              <td><%= frequency_bar(@frequencies[key].to_f/@mode) %> <%= @frequencies[key] %> (<%= @total_responses > 0 ? sprintf("%.1f", 100.0*@frequencies[key]/@total_responses) : 0 %>%)</td>
+            </tr>
+          <%- end -%>
+        </table>
+      </div>
     </div>
-  </div>
+  <%- end -%>
 </div>
 
 <%= render partial: 'emailhkn' %>

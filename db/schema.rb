@@ -543,13 +543,15 @@ ActiveRecord::Schema.define(version: 20170306022053) do
   end
 
   create_table "survey_answers", force: true do |t|
-    t.integer "survey_question_id", null: false
-    t.string  "frequencies",        null: false
+    t.integer "survey_question_id",             null: false
+    t.string  "frequencies",                    null: false
     t.float   "mean"
     t.float   "deviation"
     t.float   "median"
     t.integer "order"
-    t.integer "instructorship_id",  null: false
+    t.integer "instructorship_id",              null: false
+    t.integer "enrollment",         default: 0
+    t.integer "num_responses",      default: 0
   end
 
   add_index "survey_answers", ["instructorship_id"], name: "index_survey_answers_on_instructorship_id", using: :btree

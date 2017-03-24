@@ -6,7 +6,7 @@ class Admin::CsecController < Admin::AdminController
   def upload_surveys
     # Displays form for upload course surveys
     @results = {errors: [], info: []}
-    @success = @allow_save = false
+    @success = false
   end
 
   def upload_surveys_post
@@ -19,10 +19,9 @@ class Admin::CsecController < Admin::AdminController
 ##      Process.wait
 ##    end
 
-    @results    = SurveyData::Importer.import(params[:file].tempfile, params[:save], params[:ta])
-    @success    = @results[:errors].empty?
-    @allow_save = @success && !params[:save]
     @ta         = !!params[:ta]
+    @results    = SurveyData::Importer.import(params[:file].tempfile, params[:save], @ta)
+    @success    = @results[:errors].empty?
     @results[:errors] << "No data was imported because of the above errors." if !@success && params[:save]
     render 'upload_surveys'
 

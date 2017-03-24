@@ -1,33 +1,40 @@
 module SurveyData
   class Importer
     require 'csv'
-    require 'json'
 
-    QMATCH = /\A\d\. (.+)/
-    PROF_FREQUENCY_KEYS = ['1', '2', '3', '4', '5', '6', '7', 'N/A', 'Omit']
-    TA_FREQUENCY_KEYS = ['1', '2', '3', '4', '5', 'N/A', 'Omit']
-    INFO_EXAMPLE = "[\"EE 100-1 HILFINGER,PAUL N. (prof)\", \"60 RESPONDENTS\", nil, nil, nil, nil, nil, nil, nil, nil, nil, \"FALL 2010\", nil]"
+    COURSE_MATCH = /([A-Z ]+) (\w+) (\w+) (\d+) (.+)/
+    QUESTION_MAPPING = {
+      "Considering both the limitations and possibilities of the subject matter and course, how would you rate the overall teaching effectiveness of this instructor?" => "Rate the overall teaching effectiveness of this instructor",
+      "Focusing now on the course content, how worthwhile was this course in comparison to others you have taken in this department?" => "How worthwhile was this course compared with others at U.C.?",
+      "Overall teaching effectiveness" => "Rate the T.A.'s overall teaching effectiveness",
+    }
 
     # Imports all of the course surveys from the specified file. Commits
     # only if COMMIT is true.
     def self.import(file, commit=false, is_ta=false)
-      is_ta = is_ta.nil? ? false : true
       results = { errors: [], info: [] }
       rows = CSV.read(file.path)
-      [:instructors, :klasses, :instructorships, :courses].each {|s| ActiveRecord::Base.connection.execute "ANALYZE #{s.to_s};"}
+      header = rows.first
+
+      header.each_with_index do |header_item, index|
+        header[index].slice!(' - Mean') if header_item.end_with? ' - Mean'
+        header[index].slice!(' (Mean)') if header_item.end_with? ' (Mean)'
+      end
+
+      # TODO: Don't hardcode this, input it through the form!
+      semester = Klass.semester_code_from_s("Fall 2016")
 
       log = []
       begin
         ActiveRecord::Base.transaction do
-          while true
-            data = self.next_survey(rows, is_ta, log)
-            break if data.nil?
-            semester, dept_id, course_number, section, instructor, survey_answers = data
-            self.save_survey(semester, dept_id, course_number, section, instructor, survey_answers, is_ta) if commit
+          # Go through all rows but the first one (contains the header information)
+          rows.drop(1).each do |row|
+            data = self.parse_row(row, header, semester, is_ta, log)
+            self.save_survey(*data) if commit
           end
         end
       rescue ParseError => e
-        results[:errors] = [e.message, " Example: #{INFO_EXAMPLE}"]
+        results[:errors] = [e.message]
         return results
       end
 
@@ -35,78 +42,70 @@ module SurveyData
       return results
     end
 
-    # Returns all the relevant data for the next survey in ROWS, or nil
-    # if the file ends before then. Appends log output to LOG.
-    def self.next_survey(rows, is_ta, log)
-      survey_row = self.next_row(rows)
-      return nil if survey_row.nil?
+    # Takes a row from the course evaluation csv and extracts ratings.
+    # Appends log output to LOG.
+    def self.parse_row(row, header, semester, is_ta, log)
+      # Remove 6 headers (class name, first name, last name, invited count, response count, response rate)
+      rating_names = header.drop(6)
+      name, first_name, last_name, enrollment, responses, _, *ratings = row
+      dept_abbr, course_number, type, section, long_name = name.match(COURSE_MATCH).captures
 
-      survey_info = survey_row.compact
-      semester = Klass.semester_code_from_s(survey_info.pop) # fall 2010
+      if rating_names.length != ratings.length
+        raise ParseError, "Ratings and header information do not match, got #{rating_names.length} header names but #{ratings.length} ratings in row #{row}"
+      end
 
-      course_info = survey_info.shift.downcase.split /\s+/
-      dept_abbr = course_info.shift # EE
-      course_number, section = course_info.shift.split '-' # 100-1 => [100, 1]
-      raise ParseError, "No section listed in: #{survey_info}" if section.blank?
       section = section.to_i
+      enrollment = enrollment.to_i
+      responses = responses.to_i
 
-      #course_info now e.g. ["HILFINGER,PAUL", "N.", "(prof)"]
-      course_info.pop
-      instructor_name = course_info.join(" ")
-      last_name, first_name = instructor_name.split(',').collect(&:titleize_with_dashes)
-      if last_name.nil? or first_name.nil?
-          raise ParseError, "Professor /#{first_name}/#{last_name}/ does not exist in: #{survey_row}"
+      if last_name.blank? or first_name.blank?
+        raise ParseError, "Professor/T.A. '#{first_name}, #{last_name}' does have a first/last name in row #{row}"
       end
+
       instructor = Instructor.find_by(['UPPER(last_name) LIKE ? AND UPPER(first_name) LIKE ?', last_name.upcase, first_name.upcase])
-      if instructor.nil? # We can create klasses/TAs, but creating professors leads to pain with typos
+      if instructor.nil?
+        # We can create klasses/TAs, but creating professors leads to pain with typos
         if is_ta
-          instructor = Instructor.new({title: 'ta', private: true, title: 'Teaching Assistant',
-            last_name: last_name, first_name: first_name})
+          instructor = Instructor.new({ private: true, title: 'Teaching Assistant', last_name: last_name, first_name: first_name })
         else
-          raise ParseError, "Professor /#{first_name}/#{last_name}/ does not exist in: #{survey_row}"
+          raise ParseError, "Could not find professor/T.A. '#{first_name}, #{last_name}' in database (from row #{row})"
         end
-      end
-
-      row = self.next_row(rows)
-      survey_answers = []
-      while not self.contains(row, "data processed")
-        #"1. Rate the overall teaching effectiveness of this instructor",1,7,22,27,57,30,12,,3,4.7,1.3,5
-        row_data = row.dup
-        qtext = row_data.shift
-        if qtext =~ QMATCH
-          qtext = qtext.match(QMATCH).captures[0]
-        else
-          raise ParseError, "Invalid survey question format: '#{qtext}' (expected '1. blah blah') in #{row}"
-        end
-
-        question = SurveyQuestion.where({text: qtext}).first || SurveyQuestion.search {keywords qtext}.results.first
-        raise ParseError, "Invalid survey question '#{qtext}' in #{row}" if question.nil?
-
-        frequencies = {}
-        keys = is_ta ? TA_FREQUENCY_KEYS : PROF_FREQUENCY_KEYS
-        keys.each do |key|
-          frequencies[key] = row_data.shift.to_i
-        end
-        survey_answers << [question.id, frequencies.to_json]
-        row = self.next_row(rows)
       end
 
       dept = Department.find_by_nice_abbr(dept_abbr)
       if dept.nil?
-        raise ParseError, "Invalid department #{dept_abbr} in: #{survey_row}"
+        raise ParseError, "Invalid department '#{dept_abbr}' in row '#{row}'"
       else
         dept_id = dept.id
       end
 
-      log << "Parsed /#{instructor.first_name}/#{instructor.last_name}/ teaching " +
-             "section #{section} of #{course_number}."
+      survey_answers = []
 
-      return semester, dept_id, course_number, section, instructor, survey_answers
+      rating_names.zip(ratings).each do |rating_name, rating|
+        next if rating.blank?
+
+        if QUESTION_MAPPING.keys.include? rating_name
+          name = QUESTION_MAPPING[rating_name]
+        else
+          name = rating_name
+        end
+
+        question = SurveyQuestion.where({ text: name }).first || SurveyQuestion.search { keywords name }.results.first
+        raise ParseError, "Could not find survey question '#{name}' in database (from row #{row})" if question.nil?
+
+        survey_answers << [question.id, { mean: rating.to_f, frequencies: '{}', enrollment: enrollment, responses: responses }]
+      end
+
+      log << "Parsed #{instructor.first_name} #{instructor.last_name} #{is_ta ? '(TA)' : '(Professor)'} " +
+             "teaching section #{section} of #{course_number}."
+
+      return semester, dept_id, course_number, section, instructor, is_ta, survey_answers
     end
 
+
     # Given some relevant data about a course survey, validates the survey,
-    # and saves it if COMMIT is true.
-    def self.save_survey(semester, dept_id, course_number, section, instructor, survey_answers, is_ta)
+    # and saves it if COMMIT is true. Make sure arguments match the return values of self.parse_row (above)
+    def self.save_survey(semester, dept_id, course_number, section, instructor, is_ta, survey_answers)
       prefix, course_number, suffix = Course.split_course_number(course_number, {hash: false})
       course_hash = {prefix: prefix, course_number: course_number, suffix: suffix, department_id: dept_id}
       course = Course.where(course_hash).first || Course.new(course_hash)
@@ -121,49 +120,25 @@ module SurveyData
 
       instructorship = Instructorship.where(klass_id: klass.id, instructor_id: instructor.id).first || Instructorship.new
       instructorship.ta, instructorship.instructor, instructorship.klass = is_ta, instructor, klass
-      raise ParseError, "Instructorship save failed: #{instructorship.inspect}" if not instructorship.save
+      raise ParseError, "Instructorship save failed: #{instructorship.inspect}, errors: #{instructorship.errors.inspect}" if not instructorship.save
 
       order = 1
       survey_answers.each do |pair|
-        qid, frequencies = pair
-        answer_hash = {survey_question_id: qid, instructorship_id: instructorship.id}
+        qid, attrs = pair
+        answer_hash = { survey_question_id: qid, instructorship_id: instructorship.id }
         a = SurveyAnswer.where(answer_hash).first || SurveyAnswer.new(answer_hash)
-        a.frequencies = frequencies
+        a.mean = attrs[:mean]
+        a.frequencies = attrs[:frequencies]
+        a.enrollment = attrs[:enrollment]
+        a.num_responses = attrs[:responses]
+
         if a.save
           a.order = order
           order += 1
-          a.recompute_stats!  # only do for commit because new klasses will cause null constraint errors
         else
           raise ParseError, "Error with survey answer #{a.inspect}"
         end
       end
-    end
-
-    # Returns the next relevant row, or nil if the file ends before then.
-    def self.next_row(rows)
-      row = rows.shift
-      while row != nil and self.skippable(row)
-        row = rows.shift
-      end
-      return row
-    end
-
-    # Returns true if a row has no relevant content.
-    def self.skippable(row)
-      if self.contains(row, "data processed")
-        return false
-      elsif row.compact.length <= 1
-        return true
-      elsif self.contains(row, "omit")
-        return true
-      else
-        return false
-      end
-    end
-
-    def self.contains(row, text)
-      row = row.collect {|x| x.nil? ? "" : x}
-      return row.sum.downcase.include? text
     end
   end
 
