@@ -11,7 +11,7 @@ module SurveyData
 
     # Imports all of the course surveys from the specified file. Commits
     # only if COMMIT is true.
-    def self.import(file, commit=false, is_ta=false)
+    def self.import(file, semester, commit=false, is_ta=false)
       results = { errors: [], info: [] }
       rows = CSV.read(file.path)
       header = rows.first
@@ -21,8 +21,8 @@ module SurveyData
         header[index].slice!(' (Mean)') if header_item.end_with? ' (Mean)'
       end
 
-      # TODO: Don't hardcode this, input it through the form!
-      semester = Klass.semester_code_from_s("Fall 2016")
+      semester = Klass.semester_code_from_s(semester)
+      raise ParseError, "Semester not recognized, should be in one of the formats: 'Fall 20XX', 'Spring 20XX', 'Summer 20XX'" if semester.nil?
 
       log = []
       begin

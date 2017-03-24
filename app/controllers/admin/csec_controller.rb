@@ -20,7 +20,7 @@ class Admin::CsecController < Admin::AdminController
 ##    end
 
     @ta         = !!params[:ta]
-    @results    = SurveyData::Importer.import(params[:file].tempfile, params[:save], @ta)
+    @results    = SurveyData::Importer.import(params[:file].tempfile, params[:semester], params[:save], @ta)
     @success    = @results[:errors].empty?
     @results[:errors] << "No data was imported because of the above errors." if !@success && params[:save]
     render 'upload_surveys'
