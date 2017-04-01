@@ -43,6 +43,7 @@ class Klass < ActiveRecord::Base
   def self.semester_code_from_s(s)
     # Converts string like "FALL 2010" to "20103"
     year, sem = s.scan(/\d+/).first, s.scan(/[a-zA-Z]+/).first
+    return nil if sem.empty?
     sem = SEMESTER_MAP.invert[sem.capitalize]
     return nil unless sem.present? && year.is_int?
     "#{year}#{sem}"
