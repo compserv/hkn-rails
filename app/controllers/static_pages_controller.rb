@@ -45,8 +45,7 @@ class StaticPagesController < ApplicationController
     if @static_page.update_attributes(static_page_params)
       flash[:notice] = "Successfully updated static page."
       @parents ||= []
-      redirect_to static_page_path(parents: @parents.map(&:url), url: @static_page.url) and return if url != @static_page.url
-      render :show
+      redirect_to static_page_path(parents: @parents.map(&:url), url: @static_page.url)
     else
       flash[:notice] = "Validation error"
       render :edit
@@ -61,15 +60,21 @@ private
   def find_static_page
     @parents = []
     if params[:parents]
-      @static_page = StaticPage.find_by_url!(params[:url])
-
       # Make an array of parent page urls
       parent_urls = params[:parents].split('/')
-      @parents = parent_urls.map { |purl| StaticPage.find_by_url!(purl) }
+      parent_urls.each do |purl|
+        if @parents.present?
+          @parents.append(@parents.last.children.find_by_url!(purl))
+        else
+          @parents.append(StaticPage.root_pages.find_by_url!(purl))
+        end
+      end
       @parent = @parents[-1]
+
+      @static_page = @parent.children.find_by_url!(params[:url])
     elsif params[:url]
       @link = Shortlink.find_by_in_url(params[:url])
-      @static_page = StaticPage.find_by_url!(params[:url]) if not @link
+      @static_page = StaticPage.root_pages.find_by_url!(params[:url]) if not @link
     end
   end
 

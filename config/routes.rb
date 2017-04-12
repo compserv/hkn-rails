@@ -324,14 +324,6 @@ HknRails::Application.routes.draw do
     resources :locations
   end
 
-  # TODO: Remove later for coming soon pages
-  # TODO: Move these into the database as hierarchical static pages
-  scope "service" do
-    get "/" => "static#service",           as: :service
-    get "eecsday" => "static#eecsday",     as: :service_eecsday
-    get "bearhacks" => "static#bearhacks", as: :service_bearhacks
-  end
-
   # Static pages
   scope "about" do
     match "contact"   => "static#contact",     via: [:get, :post]
