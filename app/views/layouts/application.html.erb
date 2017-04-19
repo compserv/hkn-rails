@@ -10,7 +10,6 @@
   <%= javascript_include_tag "jquery.history" %>
   <%= javascript_include_tag "common" %>
   <%= javascript_include_tag "navigation" %>
-  <%= javascript_include_tag "chat" %>
   <%= javascript_include_tag "quick-rsvp" %>
   <%= javascript_include_tag 'ga' if Rails.env == 'production' %>
   <%= stylesheet_link_tag "jquery-ui-1.10.0.custom.min.css" %>
@@ -29,53 +28,49 @@
   <%= stylesheet_link_tag controller.controller_name if Rails.application.assets.find_asset("#{controller.controller_name}.css") %>
   <meta name="google-site-verification" content="J_Vtxbv72xOD7F9XtcIhbAB3lcYexZ_jjg33Hvc3zxw" />
 </head>
+
 <body>
-<div id="bar">
-  <div id="chat" class="bar-icon"></div>
-</div>
-<div id="chatwindow">
-</div>
 <div id="wrapper">
   <div id="header">
-  	<div id="navigation">
-  	    <% if @current_user %>
-  	      <span id="userbar" class="userbar">
-  	        Welcome, <%= link_to @current_user.full_name, @current_user %>
-  	      </span>
-  	      <span class="userbar" id="user-dropdown">
-  	        <span class="list-item"><a href="/account-settings"><span class="icon" id="settings"></span>Settings</a></span>
-  	        <span class="list-item"><a href="/logout"><span class="icon" id="logout"></span>Logout</a></span>
-  	        <span id="username" style="display:none;"><%= @current_user.username %></span>
-  	      </span>
-  	    <% else %>
-  	      <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
-  	      <span id="username" style="display:none;">guest</span>
-  	    <% end %>
-          <%= render 'notifications/notifications' if @auth['comms'] %>
-  	  <ul>
-  	    <li><a class="navigation_toplevel_item" id="services" href="#">Student Services</a></li>
-  	    <li><a class="navigation_toplevel_item" id="indrel" href="#">Industry Relations</a></li>
-  	    <li><a class="navigation_toplevel_item" id="events" href="#">Events</a></li>
-  	    <% if @current_user %>
-  	      <li><a class="navigation_toplevel_item" id="people" href="#">People</a></li>
-  	    <% end %>
-  	    <li><a class="navigation_toplevel_item" id="alumni" href="#">Alumni Network</a></li>
-  	    <li><a class="navigation_toplevel_item" id="about" href="#">About HKN</a></li>
-  	    <% if @auth["candidates"] %>
-  	      <li><a class="navigation_toplevel_item" id="cand" href="#">Candidate Portal</a></li>
-  	    <% end %>
-  	    <% if @auth["comms"] %>
-  	      <li><a class="navigation_toplevel_item" id="admin" href="#">Admin</a></li>
-  	    <% end %>
+    <div id="navigation">
+        <% if @current_user %>
+          <span id="userbar" class="userbar">
+            Welcome, <%= link_to @current_user.full_name, @current_user %>
+          </span>
+          <span class="userbar" id="user-dropdown">
+            <span class="list-item"><a href="/account-settings"><span class="icon" id="settings"></span>Settings</a></span>
+            <span class="list-item"><a href="/logout"><span class="icon" id="logout"></span>Logout</a></span>
+            <span id="username" style="display:none;"><%= @current_user.username %></span>
+          </span>
+        <% else %>
+          <span class="userbar"><%= link_to "Log In", "/login"%> | <%= link_to "Register", "/register"%></span>
+          <span id="username" style="display:none;">guest</span>
+        <% end %>
+        <%= render 'notifications/notifications' if @auth['comms'] %>
+      <ul>
+        <li><a class="navigation_toplevel_item" id="services" href="#">Student Services</a></li>
+        <li><a class="navigation_toplevel_item" id="indrel" href="#">Industry Relations</a></li>
+        <li><a class="navigation_toplevel_item" id="events" href="#">Events</a></li>
+        <% if @current_user %>
+          <li><a class="navigation_toplevel_item" id="people" href="#">People</a></li>
+        <% end %>
+        <li><a class="navigation_toplevel_item" id="alumni" href="#">Alumni Network</a></li>
+        <li><a class="navigation_toplevel_item" id="about" href="#">About HKN</a></li>
+        <% if @auth["candidates"] %>
+          <li><a class="navigation_toplevel_item" id="cand" href="#">Candidate Portal</a></li>
+        <% end %>
+        <% if @auth["comms"] %>
+          <li><a class="navigation_toplevel_item" id="admin" href="#">Admin</a></li>
+        <% end %>
+      </ul>
+      <div class="clear"></div>
+    </div>
 
-  	  </ul>
-  	  <div class="clear"></div>
-  	</div>
-  	<div id="lower">
-  	    <div id="submenu-thin">
-    	    <%= render "layouts/submenu" %>
-    	  </div>
-  	    <div id="logo">
+    <div id="lower">
+        <div id="submenu-thin">
+          <%= render "layouts/submenu" %>
+        </div>
+        <div id="logo">
           <%= link_to ("/") do %>
             <% if @easter_eggs[:kappa] %>
                 <%= image_tag("hkn_logo_kappa.png", alt: "Eta Kappa Nu, Mu Chapter") %>
@@ -83,16 +78,17 @@
                 <%= image_tag("hkn_logo.png", alt: "Eta Kappa Nu, Mu Chapter") %>
             <% end %>
           <% end %>
-    	  </div>
-    	  <div id="submenu">
-    	    <%= render "layouts/submenu" %>
-    	  </div>
-    	  <div id="topbar">
+        </div>
+        <div id="submenu">
+          <%= render "layouts/submenu" %>
+        </div>
+        <div id="topbar">
           <%= render "layouts/searcharea" %>
           <div class="clear"></div>
         </div>
     	  <div class="clear"></div>
-  	</div>
+    </div>
+
     <% if session[:cas_user] %>
       <div id="calnet-notice">
       You are currently logged in via Calnet.
@@ -103,21 +99,23 @@
 
   <div id="content">
     <div id="container">
-          <%- @messages |= [flash[:notice]] if flash[:notice] -%>
-  	  <% if !@messages.empty? %>
-    	  <div id="messages" class="no-translation">
-      		<% @messages.each do |message| %>
-      		  <div class="message"><%= message =~ /\n|<.>/ ? simple_format(message) : message %></div>
-      		<% end %>
-      	</div>
-    	<% end %>
-    	<% if Rails.env=="development" and !@debug.empty? %>
-    	  <div id="debug">
-      		<% @debug.each do |message| %>
-      		  <div class="message">Debug:<%= message %></div>
-      		<% end %>
-    	  </div>
-  	  <% end %>
+      <%- @messages |= [flash[:notice]] if flash[:notice] -%>
+
+      <% if !@messages.empty? %>
+        <div id="messages" class="no-translation">
+          <% @messages.each do |message| %>
+            <div class="message"><%= message =~ /\n|<.>/ ? simple_format(message) : message %></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if Rails.env=="development" and !@debug.empty? %>
+        <div id="debug">
+          <% @debug.each do |message| %>
+            <div class="message">Debug:<%= message %></div>
+          <% end %>
+        </div>
+      <% end %>
 
       <%= yield %>
     </div>
