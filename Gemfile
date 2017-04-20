@@ -56,3 +56,7 @@ group :development, :test do
   gem 'webrat'
   gem 'yard'
 end
+
+group :production do
+  gem 'rollbar'
+end

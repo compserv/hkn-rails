@@ -50,7 +50,7 @@ module HknRails
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
 
-    #Exception Notification
+    # Exception Notification
     config.middleware.use ExceptionNotification::Rack,
       email: {
         email_prefix: '[hkn-rails Exception] ',
