@@ -1,7 +1,7 @@
 class PeopleController < ApplicationController
   before_filter :authorize, only: [:list, :show, :edit, :update, :groups, :groups_update]
   before_filter :authorize_superuser, only: [:groups_update]
-  before_filter :authorize_vp, only: [:approve, :destroy]
+  before_filter :authorize_vp, only: [:approve, :destroy, :approve_emails]
   before_filter :authorize_comms, only: [:groups, :contact_card]
 
   def list
@@ -110,6 +110,13 @@ class PeopleController < ApplicationController
     @candidate.save
 
     if verify_recaptcha(message: "Captcha validation failed", model: @person) && @person.save
+
+      @approved = ApprovedEmails.find_by_email(person_params[:email])
+      if !@approved.nil?
+        @approved.destroy
+        approve_candidate(@person)
+      end
+      # TODO: maybe different message if approved?
       flash[:notice] = "Account registered!"
       redirect_to root_url
     else
@@ -141,13 +148,32 @@ class PeopleController < ApplicationController
     @mobile_carriers = MobileCarrier.all
   end
 
+  def approve_candidate(candidate)
+    candidate.approved = true
+    candidate.save
+
+    AccountMailer.account_approval(candidate).deliver
+  end
+  private :approve_candidate
+
   def approve
     @person = Person.find(params[:id])
-    @person.approved = true
-    @person.save
-
-    AccountMailer.account_approval(@person).deliver
+    approve_candidate(@person)
     redirect_to action: "show"
+  end
+
+  def approve_emails
+    params[:emails].each do |email|
+      person = Person.find_by_email(email)
+      if !person.nil?
+        approve_candidate(person)
+      else
+        ApprovedEmails.create(email: email)
+      end
+    end
+
+    # TODO fix redirect
+    redirect_to account_settings_path
   end
 
   def update

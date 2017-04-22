@@ -177,9 +177,10 @@ HknRails::Application.routes.draw do
     match "list(/:category)" => "people#list", as: :people_list, via: [:get, :post]
     match "contact_card"     => "people#contact_card", as: :contact_card, via: [:get, :post]
   end
-  match "account-settings"   => "people#edit",    as: :account_settings, via: [:get, :post]
-  match "people/:id/edit"    => "people#edit", via: [:get, :post]
-  match "people/:id/approve" => "people#approve", as: :approve, via: [:get, :post]
+  match "account-settings"      => "people#edit",    as: :account_settings, via: [:get, :post]
+  match "people/:id/edit"       => "people#edit", via: [:get, :post]
+  match "people/:id/approve"    => "people#approve", as: :approve, via: [:get, :post]
+  match "people/approve_emails" => "people#approve_emails", via: [:post]
   get   "people/:login"      => "people#show",    as: :profile, constraints: {login: /[^\/]+/}
   resources :people, except: [:new, :create, :index] do
     member do
