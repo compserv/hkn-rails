@@ -149,7 +149,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdiscount (2.1.8)
-    recaptcha (0.3.6)
+    recaptcha (4.1.0)
     request_store (1.1.0)
     rest-client (1.7.3)
       mime-types (>= 1.16, < 3.0)
