@@ -57,12 +57,16 @@ class Person < ActiveRecord::Base
   module Validation
     module Regex
       Https = /\A(https:\/\/|\/).*\z/i
+      BerkeleyEmail = /@berkeley\.edu\z/i
     end
   end
 
   validates_format_of :picture,    with: Validation::Regex::Https,
                                    allow_nil: true,
                                    allow_blank: true
+  validates_format_of :email,      with: Validation::Regex::BerkeleyEmail,
+                                   message: 'must be an @berkeley.edu email'
+
   # Username, password, and email validation is done by AuthLogic
 
   scope :current_candidates, lambda{ joins(:groups).where('groups.id' => Group.where(name: 'candidates').first) }
