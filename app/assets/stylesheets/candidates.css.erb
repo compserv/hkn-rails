@@ -1,34 +1,38 @@
-#checklist{
+#checklist {
   background: white;
   padding: 1em;
   -webkit-box-shadow: 0px 5px 20px #eee;
 }
 
-#sidebar, #announcements{
+#sidebar, #announcements {
   margin: 1em 0px;
 }
-ul.semi-plain{
+
+ul.semi-plain {
   list-style: none;
   padding: 0px;
   margin: 0px;
   padding-left: 1em;
 }
-.req_status{
+
+.req_status {
   display: inline-block;
   width: 16px;
   height: 13px;
   position:relative;
   top:2px;
 }
-.status_done{
+
+.status_done {
   background: url(<%= asset_path 'icons/check.png' %>);
 }
-.status_notdone{
+
+.status_notdone {
 
   background: url(<%= asset_path 'icons/uncheck.png' %>);
 }
 
-.event_status{
+.event_status {
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -36,11 +40,11 @@ ul.semi-plain{
   top: 4px;
 }
 
-.event_done{
+.event_done {
   background: url(<%= asset_path 'icons/bullet_green.png' %>);
 }
 
-.event_notdone{
+.event_notdone {
   background: url(<%= asset_path 'icons/bullet_red.png' %>);
 }
 
@@ -50,20 +54,20 @@ ul.semi-plain{
   text-indent: 0px;
 }
 
-.announcement .title{
+.announcement .title {
   font-weight: bold;
 }
 
-.announcement .body{
+.announcement .body {
   display: block;
 }
 
-#upcoming_events, #announcements ul{
+#upcoming_events, #announcements ul {
   padding-left: 0px;
   text-indent: 0px;
 }
 
 #description {
-    width: 178px;
-    height: 50px;
+  width: 178px;
+  height: 50px;
 }

@@ -7,5 +7,11 @@
 //= require jquery
 //= require jquery_ujs
 //= require d3
-//= require jquery
-//= require materialize-sprockets
+//= require jquery.history
+//= require jquery-ui-1.10.0.custom.min.js
+//= require jquery-ui-timepicker-addon.js
+//= require common
+//= require navigation
+//= require quick-rsvp
+//= require ga
+//= require datetimepicker

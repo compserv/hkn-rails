@@ -9,7 +9,7 @@ gem 'exception_notification', '~> 4'
 gem 'haml-rails'
 gem 'jquery-rails', '~> 2.1.4'
 gem 'mechanize'
-gem 'net-ldap', require: 'net/http'
+gem 'net-ldap', '~> 0.16.0', require: 'net/http'
 gem 'nokogiri'
 gem 'pg'
 gem 'rails', '4.1.9'
@@ -23,7 +23,7 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
-gem 'materialize-sass'
+gem 'sass-rails'
 
 # TODO: Replace this gem with one that is maintained, like
 # rack-cas or omniauth-cas

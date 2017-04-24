@@ -5,18 +5,9 @@
   <%= favicon_link_tag %>
   <title><%= "Eta Kappa Nu (HKN), Mu Chapter"%><%= " - #{@module_title}" unless @module_title.blank? %><%= " - #{@submodule_title}" unless @submodule_title.blank? %></title>
   <%= javascript_include_tag 'application' %>
-  <%= stylesheet_link_tag 'main' %>
+  <%= stylesheet_link_tag 'application' %>
   <%= stylesheet_link_tag 'print', media: 'print' %>
-  <%= javascript_include_tag "jquery.history" %>
-  <%= javascript_include_tag "common" %>
-  <%= javascript_include_tag "navigation" %>
-  <%= javascript_include_tag "quick-rsvp" %>
-  <%= javascript_include_tag 'ga' if Rails.env == 'production' %>
-  <%= stylesheet_link_tag "jquery-ui-1.10.0.custom.min.css" %>
-  <%= stylesheet_link_tag "jquery-ui-timepicker-addon.css" %>
-  <%= javascript_include_tag "jquery-ui-1.10.0.custom.min.js" %>
-  <%= javascript_include_tag "jquery-ui-timepicker-addon.js" %>
-  <%= javascript_include_tag "datetimepicker" %>
+
   <%= render partial: 'easter_eggs/js' %>
   <%= csrf_meta_tag %>
   <link href='https://fonts.googleapis.com/css?family=Puritan|Cuprum' rel='stylesheet' type='text/css' />
