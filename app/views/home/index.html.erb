@@ -15,6 +15,7 @@
     });
   </script>
 <% end %>
+
 <div id="contain">
   <div id="sidebar" class="white-bg">
     <div class="section">
@@ -34,65 +35,61 @@
     </div>
   </div>
 
-  <% cache do %>
   <div id="main">
-
-
-      <div id="what" class="section-header current-header">
-        <div class="text"><h1>What is HKN?</h1></div>
-      </div>
-      <div id="what_sec" class="section current-section">
-        <div class="text">
-          <div>
-            Eta Kappa Nu (HKN) is the <a href="http://www.hkn.org/">national Electrical and Computer Engineering honor society</a>.
-            The Berkeley chapter is among the most active engineering societies at Berkeley, providing academic services to fellow undergraduates.
-            Our two offices are located in 290 Cory and 345 Soda near the <a href="http://berkeley.edu/map/maps/AB45.html">northeastern corner of the UC Berkeley campus</a>.
-          </div>
+    <div id="what" class="section-header current-header">
+      <div class="text"><h1>What is HKN?</h1></div>
+    </div>
+    <div id="what_sec" class="section current-section">
+      <div class="text">
+        <div>
+          Eta Kappa Nu (HKN) is the <a href="http://www.hkn.org/">national Electrical and Computer Engineering honor society</a>.
+          The Berkeley chapter is among the most active engineering societies at Berkeley, providing academic services to fellow undergraduates.
+          Our two offices are located in 290 Cory and 345 Soda near the <a href="http://berkeley.edu/map/maps/AB45.html">northeastern corner of the UC Berkeley campus</a>.
         </div>
       </div>
+    </div>
 
-      <div id="student-services" class="section-header">
-        <div class="text"><h1>Student Services</h1></div>
-      </div>
-      <div id="student-services_sec" class="section">
-        <div class="text">
-          <div>
-            <h2>Tutoring</h2>
-            Students who need advice or tutoring in EE and CS courses are encouraged to drop by for free assistance. Officers hold <a href="/tutor/">office hours</a> from 11am to 5pm every weekday.
+    <div id="student-services" class="section-header">
+      <div class="text"><h1>Student Services</h1></div>
+    </div>
+    <div id="student-services_sec" class="section">
+      <div class="text">
+        <div>
+          <h2>Tutoring</h2>
+          Students who need advice or tutoring in EE and CS courses are encouraged to drop by for free assistance. Officers hold <a href="/tutor/">office hours</a> from 11am to 5pm every weekday.
 
-            <h2>Exam Preparation</h2>
-            HKN provides a database of <%= link_to "past exams", exams_path %> and review problems to prepare students for midterms and finals. In addition, look out for exam <a href="/tutor/calendar">review sessions</a> for lower-division courses.
+          <h2>Exam Preparation</h2>
+          HKN provides a database of <%= link_to "past exams", exams_path %> and review problems to prepare students for midterms and finals. In addition, look out for exam <a href="/tutor/calendar">review sessions</a> for lower-division courses.
 
-            <h2>Course Surveys and Peer Advising</h2>
-            HKN conducts course surveys for all classes offered by the EECS department every semester. The results for all professors and TAs who have opted-in are <%= link_to "available online", coursesurveys_path %>. Students who need more advice in choosing classes are encouraged to consult our officers during <a href="/tutor/">office hours</a>.
-          </div>
-          </div>
-      </div>
+          <h2>Course Surveys and Peer Advising</h2>
+          HKN conducts course surveys for all classes offered by the EECS department every semester. The results for all professors and TAs who have opted-in are <%= link_to "available online", coursesurveys_path %>. Students who need more advice in choosing classes are encouraged to consult our officers during <a href="/tutor/">office hours</a>.
+        </div>
+        </div>
+    </div>
 
-      <div id="ind_rel" class="section-header">
-        <div class="text"><h1>Industrial Relations</h1></div>
-      </div>
-      <div id="ind_rel_sec" class="section">
-        <div class="text">
-          <div>
-            HKN has strong ties with industry, linking students with companies by setting up <%= link_to "info sessions", infosessions_path %> where companies can give a presentation about themselves and provide a forum for students to talk to industry and find out more about the work environment. Additionally, we sell <%= link_to "resume books", resume_books_about_path %> containing the resumes of our members.
-          </div>
+    <div id="ind_rel" class="section-header">
+      <div class="text"><h1>Industrial Relations</h1></div>
+    </div>
+    <div id="ind_rel_sec" class="section">
+      <div class="text">
+        <div>
+          HKN has strong ties with industry, linking students with companies by setting up <%= link_to "info sessions", infosessions_path %> where companies can give a presentation about themselves and provide a forum for students to talk to industry and find out more about the work environment. Additionally, we sell <%= link_to "resume books", resume_books_about_path %> containing the resumes of our members.
         </div>
       </div>
+    </div>
 
-      <div id="membership" class="section-header">
-        <div class="text"><h1>Membership</h1></div>
-      </div>
-      <div id="membership_sec" class="section">
-        <div class="text">
-          <div>
-          <p>Membership in Eta Kappa Nu is extended to undergraduates in the top fourth of the junior class and the top third of the senior class in EECS, and all continuing EE graduate students. Interested students should watch for the list of eligible names, which is posted around Cory Hall and Soda Hall about a month after the beginning of each semester. </p>
-          <p>After being invited to join, prospective members participate in projects and social activities that demonstrate their dedication to serving fellow members of the EECS community, the ultimate goal of HKN.</p>
-          </div>
+    <div id="membership" class="section-header">
+      <div class="text"><h1>Membership</h1></div>
+    </div>
+    <div id="membership_sec" class="section">
+      <div class="text">
+        <div>
+        <p>Membership in Eta Kappa Nu is extended to undergraduates in the top fourth of the junior class and the top third of the senior class in EECS, and all continuing EE graduate students. Interested students should watch for the list of eligible names, which is posted around Cory Hall and Soda Hall about a month after the beginning of each semester. </p>
+        <p>After being invited to join, prospective members participate in projects and social activities that demonstrate their dedication to serving fellow members of the EECS community, the ultimate goal of HKN.</p>
         </div>
       </div>
+    </div>
   </div>
-  <% end %>
 
   <div class="clear"></div>
 </div>
