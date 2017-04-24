@@ -31,8 +31,15 @@ HknRails::Application.configure do
   config.assets.digest = true
 
   config.assets.precompile += %w(application.js piglatin.js moonspeak.js acid.js
-                                 b.js kappa.js application.scss static.scss
-                                 mirror.css print.css *.pdf)
+                                 b.js kappa.js application.scss mirror.css
+                                 print.css *.pdf)
+
+  # These are per-controller stylesheets or javascripts
+  config.assets.precompile += %w(candidates.css coursesurveys.css events.css
+                                 exams.css home.css.erb indrel.css people.css.erb
+                                 static.scss resume_books.css tutor.css.erb
+                                 courseguide.js.erb coursesurveys.js.erb
+                                 tutor.js)
 
   # Specifies the header that your server uses for sending files
   config.action_dispatch.x_sendfile_header = "X-Sendfile"
