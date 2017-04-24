@@ -197,9 +197,9 @@ class Person < ActiveRecord::Base
 
   def valid_ldap?(password)
     begin
-      ldap = Net::LDAP.new( host: LDAP_SERVER, port: LDAP_SERVER_PORT )
-      a = ldap.bind( method: :simple, username: "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", password: password )
-    rescue Net::LDAP::LdapError
+      ldap = Net::LDAP.new(host: LDAP_SERVER, port: LDAP_SERVER_PORT, connect_timeout: 1)
+      a = ldap.bind(method: :simple, username: "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", password: password)
+    rescue Net::LDAP::LdapError, Net::LDAP::Error
       return false
     end
     return a
