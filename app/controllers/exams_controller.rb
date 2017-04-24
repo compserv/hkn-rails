@@ -1,5 +1,5 @@
 class ExamsController < ApplicationController
-  before_filter :authorize_tutoring, only: [:create, :new]
+  before_filter :authorize_tutoring, except: [:index, :department, :search, :course]
 
 # [:index, :department, :course].each {|a| caches_action a, layout: false}
 
@@ -8,8 +8,10 @@ class ExamsController < ApplicationController
 
   def destroy
     @exam = Exam.find(params.require(:id))
+    course = @exam.course
     @exam.destroy
-    redirect_to exams_path
+    flash[:notice] = "Exam deleted."
+    redirect_to exams_course_path(course.department.abbr, course.full_course_number)
   end
 
   def new
@@ -65,7 +67,7 @@ class ExamsController < ApplicationController
       # the only case where we don't have a number with the exam type
       # is for finals
       if params[:exam][:number].empty? or params[:exam][:number].to_i <= 0
-        flash[:notice] = "Must supply number representing which exam this                          is."
+        flash[:notice] = "Must supply number representing which exam this is."
         redirect_to action: :new
         return
       else
@@ -111,7 +113,7 @@ class ExamsController < ApplicationController
                             number: exam_constructor_args[:number],
                             is_solution: exam_constructor_args[:is_solution]})
     unless existing.empty?
-      flash[:notice] = "An uploaded exam already exists for that input"
+      flash[:notice] = "An exam record already exists for that input"
       redirect_to action: :new
       return
     end
@@ -119,7 +121,7 @@ class ExamsController < ApplicationController
     begin
       @exam = Exam.new(exam_params)
       if File.exists? exam_path
-        flash[:notice] = "An uploaded exam already exists for that input"
+        flash[:notice] = "An uploaded exam file already exists for that input"
         redirect_to action: :new
         return
       end

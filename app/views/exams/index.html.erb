@@ -1,20 +1,20 @@
 <h1>Browse Exams by Department</h1>
 
 <% @dept_courses.each do |dept_name, courses| %>
-<div class="exam_table">
-  <table class="table">
-    <tbody>
-      <tr>
-        <th class="dept_name"><%= dept_name %></th>
-      </tr>
-      <% courses.each do |course| %>
-	    <tr>
-	      <td><%= link_to "#{course.dept_abbr} #{course.course_number}#{course.suffix} - #{@counts[course.id]} exam(s)", exams_course_path(course.dept_abbr.downcase, course.full_course_number.downcase) %></td>
-	    </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+  <div class="exam_table">
+    <table class="table">
+      <tbody>
+        <tr>
+          <th class="dept_name"><%= dept_name %></th>
+        </tr>
+        <% courses.each do |course| %>
+  	    <tr>
+  	      <td><%= link_to "#{course.dept_abbr} #{course.course_number}#{course.suffix} - #{@counts[course.id]} exam(s)", exams_course_path(course.dept_abbr.downcase, course.full_course_number.downcase) %></td>
+  	    </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% end %>
 <div class="clear"></div>
 

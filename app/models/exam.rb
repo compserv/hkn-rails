@@ -24,6 +24,8 @@ class Exam < ActiveRecord::Base
   validates :exam_type, presence: true
   validates_inclusion_of :is_solution, in: [true, false]
 
+  before_destroy :delete_exam_file
+
   @@TYPE_ABBRS = { 0 => 'q', 1 => 'mt', 2 => 'f' }
   @@TYPE_NAMES = { 0 => 'quiz', 1 => 'midterm', 2 => 'final'}
   @@TYPE_NUMS = {'q' => 0, 'mt' => 1, 'f' => 2 }
@@ -58,5 +60,10 @@ class Exam < ActiveRecord::Base
                     .order(:course_number)
                     .reject {|course| course.exams.empty?}
     return [dept_name, courses]
+  end
+
+private
+  def delete_exam_file
+    File.delete(File.join('public', 'examfiles', filename))
   end
 end
