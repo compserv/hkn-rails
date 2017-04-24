@@ -61,6 +61,9 @@ module HknRails
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    # Add jquery images to the asset pipeline
+    config.assets.paths << Rails.root.join('app', 'assets', 'jquery-ui', 'images')
+
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
   end
