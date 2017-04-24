@@ -1,60 +1,29 @@
 $(document).ready(function() {
-  //calculate date one week from now
-  var currentTime = new Date();
-  var oneWeekFromNow = new Date(currentTime.getTime() + 7*24*60*60*1000);
-  var year = oneWeekFromNow.getFullYear();
-  var month = oneWeekFromNow.getMonth() + 1;
-  var day = oneWeekFromNow.getDate();
-  var hours = oneWeekFromNow.getHours();
-  var minutes = oneWeekFromNow.getMinutes();
-  var suffix = "am";
-  //convert hours to AM/PM format
-  if (hours >= 12)
-  {
-    suffix = "pm";
-  }
-  if (hours == 0)
-  {
-    hours += 12;
-  }
-  else if (hours > 12)
-  {
-    hours %= 12;
-  }
-  //fix up formatting of default date (one week from current date)
-  if (minutes < 10)
-  {
-    minutes = "0" + minutes;
-  }
-  if (hours < 10)
-  {
-    hours = "0" + hours;
-  }
-  if (month < 10)
-  {
-    month = "0" + month;
-  }
-  var dateOneWeekFromNow = year + "-" + month + "-" + day + " ";
-  dateOneWeekFromNow += hours + ":" + minutes + " " + suffix;
-  $(function() {
-    $(".datetimepicker").datetimepicker({
-      beforeShowDay: function(date) {
-        var td = date.getDay();
-        return [(date.getDay() != 0 && date.getDay() != 6), '', (td != 'Sat' && td != 'Sun') ? '' : 'only on workday'];
-      },
-      hourMin: 11,
-      hourMax: 16,
-      defaultValue: dateOneWeekFromNow,
-      dateFormat: 'yy-mm-dd',
-      timeFormat: 'hh:mm tt',
-      stepHour: 1,
-      stepMinute: 5,
-      hourGrid: 1,
-      minuteGrid: 15,
-      showOn: "button",
-      buttonImage: "<%= asset_path('icons/calendar.gif') %>",
-      buttonImageOnly: true,
-      buttonText: "show calendar"
-    });
+  $(".datetimepicker").datetimepicker({
+    beforeShowDay: function(date) {
+      var td = date.getDay();
+      return [(date.getDay() != 0 && date.getDay() != 6), '', (td != 'Sat' && td != 'Sun') ? '' : 'only on weekday'];
+    },
+
+    // Make sure to change this as needed to only allow tours within dates and times that HKN is open
+    // This goes along with the restrictions in dept_tour_controller.rb
+    // Months in JS are strange, they are actually zero-indexed while everything else is not.
+    hourMin: 11,
+    hourMax: 16,
+    minDate: 0,
+    maxDate: new Date(2017, 4, 12),
+
+    dateFormat: 'yy-mm-dd',
+    timeFormat: 'hh:mm tt',
+
+    stepHour: 1,
+    stepMinute: 5,
+    hourGrid: 1,
+    minuteGrid: 15,
+
+    showOn: "button",
+    buttonImage: "<%= asset_path('icons/calendar.gif') %>",
+    buttonImageOnly: true,
+    buttonText: "Show calendar",
   });
 });
