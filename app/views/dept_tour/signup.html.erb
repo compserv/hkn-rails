@@ -8,14 +8,14 @@
 </p>
 
   <% if @errors && @errors.any? %>
-  <div id="errorExplanation">
-    <h2>There are <%= pluralize(@errors.count, "error") %> with the information entered:</h2>
-    <ul>
-    <% @errors.each_pair do |field, msg| %>
-      <li><%= msg %></li>
-    <% end %>
-    </ul>
-  </div>
+    <div id="errorExplanation">
+      <h2>There are <%= pluralize(@errors.count, "error") %> with the information entered:</h2>
+      <ul>
+      <% @errors.each_pair do |field, msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
   <%- end -%>
 
 <%= form_tag(dept_tour_signup_path, method: :post) do%>
@@ -51,8 +51,6 @@
 
   <div class="field">
     <br />
-    <%# dirty hack to get captcha to align properly %>
-    <label>&nbsp;</label>
     <%= captcha %>
   </div>
 
@@ -63,6 +61,4 @@
   <div>
     <p><span class="required-field"></span> denotes a required field</p>
   </div>
-
-
 <% end %>
