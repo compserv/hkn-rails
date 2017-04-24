@@ -4,11 +4,13 @@
     <% if !@person.approved %>
       <%= link_to "[Approve Account]", approve_path(@person) %>
     <% end %>
-    <% if @person.candidate.currently_initiating %>
-      <%= link_to "[Mark not initiating]", uninitiate_candidate_path({id: @person.id}), method: :post %>
+
+    <% if @person.candidate && @person.candidate.currently_initiating %>
+      <%= link_to "[Mark not initiating]", uninitiate_candidate_path({ id: @person.id }), method: :post %>
     <% elsif %>
-      <%= link_to "[Mark initiating]", initiating_candidate_path({id: @person.id}), method: :post %>
+      <%= link_to "[Mark initiating]", initiating_candidate_path({ id: @person.id }), method: :post %>
     <% end %>
+
     <% if @auth["superusers"] %>
       <%= link_to "[Edit]", edit_person_path(@person) %>
       <%= link_to "[Delete]", person_path(@person), method: :delete, confirm: "Are you sure you want to remove \"" + @person.fullname + "\"?" %>
