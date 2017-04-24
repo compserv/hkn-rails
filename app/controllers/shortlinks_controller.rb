@@ -1,19 +1,11 @@
 class ShortlinksController < ApplicationController
-  before_action :set_shortlink, only: [:show, :edit, :update, :destroy]
+  before_action :set_shortlink, only: [:edit, :update, :destroy]
   before_filter :authorize_shortlinks
   before_filter :authorize_own_shortlink, only: [:edit, :update, :destroy]
 
   # GET /shortlinks
   def index
-    if @auth['superusers']
-      @shortlinks = Shortlink.all
-    else
-      @shortlinks = Shortlink.where(person_id: @current_user.id)
-    end
-  end
-
-  # GET /shortlinks/1
-  def show
+    @shortlinks = Shortlink.all
   end
 
   # GET /shortlinks/new
@@ -29,6 +21,7 @@ class ShortlinksController < ApplicationController
   def create
     @shortlink = Shortlink.new(shortlink_params)
     @shortlink.person = @current_user
+
     unless @shortlink.out_url.start_with?("http")
       @shortlink.out_url = "http://" + @shortlink.out_url
     end
@@ -71,6 +64,6 @@ class ShortlinksController < ApplicationController
     end
 
     def authorize_own_shortlink
-      @shortlink.person == @current_user || @auth['superuser']
+      @shortlink.own?(@current_user, @auth)
     end
 end

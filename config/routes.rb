@@ -393,7 +393,7 @@ HknRails::Application.routes.draw do
 
   match "factorial/:x" => "home#factorial", via: [:get, :post]
 
-  resources :shortlinks
+  resources :shortlinks, except: :show
 
 
   # This section must remain at the bottom of the routes, since they are

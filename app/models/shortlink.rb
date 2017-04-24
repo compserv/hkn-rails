@@ -17,4 +17,8 @@ class Shortlink < ActiveRecord::Base
   # Don't allow fake redirects of important files, even if the rails default behavior changes.
   validates_format_of :in_url, without: /\.|\//
   belongs_to :person
+
+  def own?(current_user, auth)
+    person == current_user || auth['superuser']
+  end
 end
