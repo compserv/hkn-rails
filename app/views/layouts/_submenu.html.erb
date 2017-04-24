@@ -102,9 +102,7 @@
     <ul class="plain">
       <li><a href="/admin/general/confirm_challenges/" class="navigation_sublevel_item">Confirm Challenges</a></li>
       <% if @auth["tutoring"] %>
-        <li><a href="/admin/studrel/" class="navigation_sublevel_item">Exam Admin</a></li>
-      <% end %>
-      <% if @auth["tutoring"] %>
+        <li><a href="/admin/exam/" class="navigation_sublevel_item">Exam Admin</a></li>
         <li><a href="/admin/tutor/" class="navigation_sublevel_item">Tutor Admin</a></li>
       <% end %>
       <% if @auth['csec'] %>

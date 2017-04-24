@@ -130,8 +130,8 @@ HknRails::Application.routes.draw do
       match "update_slots" => "tutor#update_slots", as: :tutor_update_slots, via: [:get, :post]
     end
 
-    scope "studrel" do
-      match "/" => "studrel#index", via: [:get, :post]
+    scope "exam" do
+      match "/" => "exam#index", via: [:get, :post]
     end
 
     scope "alumrel", as: "alumrel" do
