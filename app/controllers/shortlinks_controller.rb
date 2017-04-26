@@ -27,7 +27,7 @@ class ShortlinksController < ApplicationController
     end
 
     if @shortlink.save
-      redirect_to @shortlink, notice: 'Shortlink was successfully created.'
+      redirect_to shortlinks_url, notice: 'Shortlink was successfully created.'
     else
       render :new
     end
