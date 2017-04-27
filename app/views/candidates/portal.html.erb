@@ -134,11 +134,11 @@
       <ul id="forms" class="semi-plain">
         <li>
           <span class="<%= "event_status " + (@done["resume"] ? 'event_done' : 'event_notdone') %>"></span>
-          <%= link_to "Resume", "../../resumes/upload" %>
+          <%= link_to "Resume", resumes_upload_path %>
         </li>
         <li>
           <span class="<%= "event_status " + (@done["quiz"] ? 'event_done' : 'event_notdone') %>"></span>
-          <%= link_to "Quiz", "../quiz" %>
+          <%= link_to "Quiz", candidate_quiz_path %>
         </li>
       </ul>
 
@@ -147,13 +147,6 @@
     <h3>
       <span class="<%= "req_status " + (@done["course_surveys"] ? "status_done" : "status_notdone") %>"></span>
       Course Surveys</h3>
-<% if Property.get_or_create.coursesurveys_active %>
-    <%= link_to 'View Course Surveys', :coursesurvey_signup %>
-    <%= render partial: "coursesurveys" %>
-<% else %>
-    [Coming Soon]
-<% end %>
-
-
+        Course surveys are not currently recorded through the website, sign up when an email is sent to you around the end of the semester.
   </div>
 </div>

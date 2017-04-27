@@ -75,7 +75,7 @@ class QuizResponse < ActiveRecord::Base
         case r
         when /\A(bridge|news) correspondent\z/i
           1
-        when /\Acorresponding secretary\z/i
+        when /\Acorrespond(ing|ence) secretary\z/i
           2
         when /\Afaculty advisor\z/i
           3

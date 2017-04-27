@@ -26,10 +26,10 @@ class CandidatesController < ApplicationController
       @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
 
       @done["events"] = !@status.has_value?(false)
-      @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 5
+      @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 3
       @done["resume"] = @current_user.resumes.length >= 0
-      @done["quiz"] = @current_user.candidate.quiz_responses.length >= 0
-      @done["forms"] = @done["resume"] and @done["quiz"]
+      @done["quiz"] = @current_user.candidate.quiz_score >= 18
+      @done["forms"] = (@done["resume"] and @done["quiz"])
       @done["course_surveys"] = false
 
       @coursesurveys_active = Property.get_or_create.coursesurveys_active
@@ -124,8 +124,9 @@ class CandidatesController < ApplicationController
         q.save
       end
     end
+    @current_user.candidate.grade_quiz
     flash[:notice] = "Your quiz responses have been recorded."
-    redirect_to :back
+    redirect_to candidate_portal_path
   end
 
   def submit_app
