@@ -36,12 +36,12 @@ class Admin::RsecController < Admin::AdminController
     #@groups is a list of hashes in the form of {name: "pres", positions: [@Person, @Person]}
     grouped_elections = Election.current_semester.ordered.group_by(&:position)
     @groups = Group.committees.collect do |g|
-        {name: g.name, positions: (grouped_elections[g.name] || [])}
+        { name: g.name, positions: (grouped_elections[g.name] || []) }
     end
   end
 
   def find_members
-    render json: Group.find_by_name("candplus").people.map {|c| {name: c.full_name, id: c.id } }
+    render json: Group.find_by_name("candplus").people.map { |c| { name: c.full_name, id: c.id, email: c.email } }
   end
 
   # POST add_elected/:id/:position

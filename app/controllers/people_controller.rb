@@ -44,7 +44,7 @@ class PeopleController < ApplicationController
                             .joins(joinstr)
                             .where(cond)
     if @auth["vp"] and params[:not_approved]
-      person_selector = person_selector.where(approved: nil )
+      person_selector = person_selector.where(approved: nil)
     end
 
     @people = person_selector.paginate opts

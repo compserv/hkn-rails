@@ -8,7 +8,7 @@
         success: function(data) {
           $("#officer").autocomplete(data, {
             formatItem: function(item) {
-              return item.name;
+              return item.name + ' ' + item.email;
             }
           }).result(function(event, item){
             $('#officer_id').val(item.id);

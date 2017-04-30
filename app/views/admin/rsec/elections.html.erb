@@ -13,24 +13,23 @@
       }
   </style>
 
-<script type="text/javascript">
-    $(document).ready(function (){
-        $.ajax({
-            url: 'find_members',
-            success: function(data) {
-                    $(".find_user").autocomplete(data, {
-                        formatItem: function(item) {
-                            return item.name;
-                        }
-                    }).result(function(event, item) {
-                        // $("#user_id").val(item.id);
-                        $(this).parent().find(".user-id").val(item.id);
-                    });
-            }
-        });
-    });
-</script>
-
+  <script type="text/javascript">
+      $(document).ready(function() {
+          $.ajax({
+              url: 'find_members',
+              success: function(data) {
+                  $(".find_user").autocomplete(data, {
+                      formatItem: function(item) {
+                          return item.name + ' ' + item.email;
+                      }
+                  }).result(function(event, item) {
+                      // $("#user_id").val(item.id);
+                      $(this).parent().find(".user-id").val(item.id);
+                  });
+              }
+          });
+      });
+  </script>
 <% end %>
 
 <h1>Add New Officers</h1>
@@ -38,28 +37,28 @@
 <% for group in @groups %>
     <a name="<%= group[:name] %>"></a>
     <div class="group" id="group-<%=group[:name]%>">
-    <h2><%= group[:name].titleize %></h2>
-    <% for position in group[:positions] %>
-        <div class="elected-person">
-          <% if position.person != nil %>
-            <%= link_to position.person.full_name, admin_election_edit_details_path(position.person.username) %>
-            <%= link_to '[X]', admin_rsec_unelect_path(position.id), onClick: "return confirm('Really un-elect #{position.person.full_name} from #{group[:name]}?');" %>
-          <% else %>
-            There is an error here...
-          <% end %>
+      <h2><%= group[:name].titleize %></h2>
+      <% for position in group[:positions] %>
+          <div class="elected-person">
+            <% if position.person != nil %>
+              <%= link_to position.person.full_name, admin_election_edit_details_path(position.person.username) %>
+              <%= link_to '[X]', admin_rsec_unelect_path(position.id), onClick: "return confirm('Really un-elect #{position.person.full_name} from #{group[:name]}?');" %>
+            <% else %>
+              There is an error here...
+            <% end %>
             <%= link_to '[Elect]', admin_rsec_elect_path(position.id) unless position.elected %>
-        </div>
-    <%- end -%>
-    <div class="add-new" id="new-<%=group[:name]%>">
-        <%= form_for :election, url: admin_rsec_add_elected_path do |f| %>
-            <p>
-            <%= label_tag :name, "Add #{group[:name]} candidate:" %>
-            <%= text_field_tag :name, nil, class: 'find_user' %>
-            <%= hidden_field_tag :person_id, nil, class: 'user-id' %>
-            <%= hidden_field_tag :position, group[:name] %>
-            </p>
-            <%= f.submit 'Nominate!', name: nil %>
-        <%- end -%>
-    </div>
+          </div>
+      <%- end -%>
+      <div class="add-new" id="new-<%=group[:name]%>">
+          <%= form_for :election, url: admin_rsec_add_elected_path do |f| %>
+              <p>
+              <%= label_tag :name, "Add #{group[:name]} candidate:" %>
+              <%= text_field_tag :name, nil, class: 'find_user' %>
+              <%= hidden_field_tag :person_id, nil, class: 'user-id' %>
+              <%= hidden_field_tag :position, group[:name] %>
+              </p>
+              <%= f.submit 'Nominate!', name: nil %>
+          <%- end -%>
+      </div>
     </div><%# div .group %>
 <% end %>
