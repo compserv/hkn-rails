@@ -57,12 +57,24 @@
   <% end %>
 </div>
 
+<div class="submenu service_submenu">
+  <ul class="plain">
+    <li><a href="/service">Service</a></li>
+    <li><a href="/service/junioreecsday">Junior EECS Day</a></li>
+    <li><a href="/service/makerworkshops">Maker Workshops</a></li>
+  </ul>
+  <ul class="plain">
+    <li><a href="/service/eecsday">EECS Day</a></li>
+    <li><a href="/service/bearhacks">Bearhacks</a></li>
+  </ul>
+</div>
+
 <div class="submenu alumni_submenu">
   <ul class="plain">
-    <% unless @current_user and @current_user.alumni %>
-      <li><%= link_to "Alumni Contact Information", new_alumni_path %></li>
+    <% if @current_user and @current_user.alumni %>
+      <li><%= link_to "View My Alumni Information", me_alumnis_url %></li>
     <% else %>
-      <%= link_to "View My Alumni Information", me_alumnis_url %>
+      <li><%= link_to "Alumni Contact Information", new_alumni_path %></li>
     <% end %>
   </ul>
 </div>
