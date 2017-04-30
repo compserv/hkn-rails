@@ -64,8 +64,8 @@ class Person < ActiveRecord::Base
   validates_format_of :picture,    with: Validation::Regex::Https,
                                    allow_nil: true,
                                    allow_blank: true
-  validates_format_of :email,      with: Validation::Regex::BerkeleyEmail,
-                                   message: 'must be an @berkeley.edu email'
+  # validates_format_of :email,      with: Validation::Regex::BerkeleyEmail,
+  #                                  message: 'must be an @berkeley.edu email'
 
   # Username, password, and email validation is done by AuthLogic
 
