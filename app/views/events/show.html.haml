@@ -1,35 +1,37 @@
-#sidebar{style: "width:50%;"}
-  - if @auth['comms'] and @easter_eggs[:dt]
-    %h1 Who's DT#{@event.name.first.upcase}?
-  - else
-    %h1 Who's coming?
-  %p
-    Total RSVPs: #{@event.rsvps.size}
-  - if @auth["comms"] and @event.need_transportation
+- if @auth['comms']
+  #sidebar{style: "width:50%;"}
+    - if @easter_eggs[:dt]
+      %h1 Who's DT#{@event.name.first.upcase}?
+    - else
+      %h1 Who's coming?
     %p
-      Total Transportation: #{@total_transportation}
-  %p
-    - events = @event.rsvps.sort {|x,y| x.person.first_name <=> y.person.first_name }
-    - events.each do |rsvp|
-      - person = rsvp.person
-      = link_to person.fullname, person
-      = " (#{person.email})" if @auth_event_owner
-      - if @auth["comms"] and @event.need_transportation
-        (#{rsvp.transportation})
-      - if events.last != rsvp
-        ,
-    - if @event.blocks.size > 1
-      %h1 Time Slots
-      - @event.blocks.each do |block|
-        %h3= block.nice_time_range
-        - if block.rsvps.empty?
-          %p None signed up
-        - else
-          %ul
-            - block.rsvps.each do |rsvp|
-              %li
-                = rsvp.person.fullname
-                = " (#{rsvp.person.email})" if @auth_event_owner
+      Total RSVPs: #{@event.rsvps.size}
+    - if @event.need_transportation
+      %p
+        Total Transportation: #{@total_transportation}
+    %p
+      - events = @event.rsvps.sort {|x,y| x.person.first_name <=> y.person.first_name }
+      - events.each do |rsvp|
+        - person = rsvp.person
+        = link_to person.fullname, person
+        = " (#{person.email})" if @auth_event_owner
+        - if @event.need_transportation
+          (#{rsvp.transportation})
+        - if events.last != rsvp
+          ,
+      - if @event.blocks.size > 1
+        %h1 Time Slots
+        - @event.blocks.each do |block|
+          %h3= block.nice_time_range
+          - if block.rsvps.empty?
+            %p None signed up
+          - else
+            %ul
+              - block.rsvps.each do |rsvp|
+                %li
+                  = rsvp.person.fullname
+                  = " (#{rsvp.person.email})" if @auth_event_owner
+
 %h1= @event.name
 %table#event_info.infobox{style: "width: auto; margin-right: 20px;"}
   %tr
