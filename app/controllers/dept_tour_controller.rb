@@ -49,7 +49,7 @@ class DeptTourController < ApplicationController
       # Make sure to update this (along with the date/time restrictions in
       # datetimepicker.js.erb to match only times and dates that HKN is open)
       time_valid = (11..17).include?(dt.hour) && dt > DateTime.now
-      date_valid = dt <= DateTime.new(2017, 5, 12) or dt >= DateTime.new(2017, 8, 23)
+      date_valid = dt >= DateTime.new(2017, 8, 23) and dt <= DateTime.new(2017, 12, 8)
     rescue ArgumentError
       # If this isn't something that can be parsed as a time, it's obviously invalid
       return false

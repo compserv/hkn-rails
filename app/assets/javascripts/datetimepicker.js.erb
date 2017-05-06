@@ -1,18 +1,49 @@
 $(document).ready(function() {
-  $(".datetimepicker").datetimepicker({
-    // beforeShowDay: function(date) {
-    //   var td = date.getDay();
-    //   return [(date.getDay() != 0 && date.getDay() != 6), '', (td != 'Sat' && td != 'Sun') ? '' : 'only on weekday'];
-    // },
+  // This one is used for department tour requests
+  $(".datetimepicker.depttourpicker").datetimepicker({
 
-    // Make sure to change this as needed to only allow tours within dates and times that HKN is open
+    // Only show weekdays, since tours are not offered on weekends
+    beforeShowDay: function(date) {
+      var td = date.getDay();
+      // Don't allow Saturday (6) or Sunday (0) for tours
+      var selectable = (td != 0 && td != 6);
+
+      // This must return [0: Whether this date is selectable or not,
+      //                   1: A CSS class name to use (or '' for the default,
+      //                   2: An optional popup tooltip for the date]
+      return [selectable, '', ''];
+    },
+
+    // Make sure to change these hours and dates as needed to only allow tours
+    // within dates and times that HKN is open.
     // This goes along with the restrictions in dept_tour_controller.rb
+    hourMin: 11,
+    hourMax: 16,
+    minTime: '11:00 am',
+    maxTime: '4:00 pm',
     // Months in JS are strange, they are actually zero-indexed while everything else is not.
-    // hourMin: 11,
-    // hourMax: 16,
-    minDate: 0,
-    maxDate: new Date(2017, 4, 12),
+    // This is actually August, but zero-indexing makes it 7
+    minDate: new Date(2017, 7, 23),
+    // This is actually December, but zero-indexing makes it 11
+    maxDate: new Date(2017, 11, 8),
 
+    dateFormat: 'yy-mm-dd',
+    timeFormat: 'hh:mm tt',
+
+    stepHour: 1,
+    stepMinute: 5,
+    hourGrid: 1,
+    minuteGrid: 15,
+
+    showOn: "button",
+    buttonImage: "<%= asset_path('icons/calendar.gif') %>",
+    buttonImageOnly: true,
+    buttonText: "Show calendar",
+  });
+
+
+  // This one is used for calendar events (website calendars)
+  $(".datetimepicker.eventpicker").datetimepicker({
     dateFormat: 'yy-mm-dd',
     timeFormat: 'hh:mm tt',
 

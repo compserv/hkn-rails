@@ -111,10 +111,10 @@
     = f.select :event_type_id, EventType.all.map{|x| [x.name, x.id]}
   .field
     = f.label :start_time
-    = f.text_field :start_time, size: 20, class: "datetimepicker"
+    = f.text_field :start_time, size: 20, class: "datetimepicker eventpicker"
   .field
     = f.label :end_time
-    = f.text_field :end_time, size: 20, class: "datetimepicker"
+    = f.text_field :end_time, size: 20, class: "datetimepicker eventpicker"
   - permission_options = options_for_select([['All', nil]]+['candplus', 'candidates', 'members', 'comms'].map{|name| g = Group.find_by_name(name); [g.description, g.id]}, @event.view_permission_group_id)
   .field
     = f.label :view_permission_group_id, 'View Permission'
@@ -152,10 +152,10 @@
             = number_field block_name, :rsvp_cap, value: block.rsvp_cap
           .field
             = label_tag :start_time, 'Start Time'
-            = text_field block_name, :start_time, size: 20, class: "datetimepicker", value: block.start_time
+            = text_field block_name, :start_time, size: 20, class: "datetimepicker eventpicker", value: block.start_time
           .field
             = label_tag :end_time, 'End Time'
-            = text_field block_name, :end_time, size: 20, class: "datetimepicker", value: block.end_time
+            = text_field block_name, :end_time, size: 20, class: "datetimepicker eventpicker", value: block.end_time
           %div
             - unless block.rsvps.empty?
               This block has RSVPs from the following people:
@@ -168,10 +168,10 @@
         = number_field :block, :rsvp_cap
       .field
         = label_tag :start_time, 'Start Time'
-        = text_field :block, :start_time, size: 20, class: "datetimepicker"
+        = text_field :block, :start_time, size: 20, class: "datetimepicker eventpicker"
       .field
         = label_tag :end_time, 'End Time'
-        = text_field :block, :end_time, size: 20, class: "datetimepicker"
+        = text_field :block, :end_time, size: 20, class: "datetimepicker eventpicker"
       = link_to 'Delete', '#', onclick: "$(this).parent().remove()"
   .field
     = f.label :need_transportation
