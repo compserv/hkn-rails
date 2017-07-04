@@ -7,7 +7,7 @@ source /etc/default/locale
 apt-get update
 apt-get install -y make g++
 apt-get install -y curl make openjdk-7-jre postgresql-9.3 screen vim git
-apt-get install -y build-essential libxslt-dev libxml2-dev libpq.dev
+apt-get install -y build-essential libxslt-dev libxml2-dev libpq.dev libmysqlclient-dev
 
 # Install RVM
 gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
