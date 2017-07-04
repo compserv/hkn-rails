@@ -12,7 +12,7 @@ gem 'mechanize'
 gem 'net-ldap', '~> 0.16.0', require: 'net/http'
 gem 'nokogiri'
 gem 'pg'
-gem 'rails', '4.1.9'
+gem 'rails', '4.2.9'
 gem 'rails-observers'
 gem 'rdiscount'
 gem 'recaptcha', require: ['recaptcha', 'recaptcha/rails']
@@ -24,6 +24,9 @@ gem 'sunspot_solr'
 gem 'will_paginate', '~> 3.0'
 gem 'yaml_db'
 gem 'sass-rails'
+
+# Support class-level responders in Rails 4.2+
+gem 'responders', '~> 2.0'
 
 # TODO: Replace this gem with one that is maintained, like
 # rack-cas or omniauth-cas

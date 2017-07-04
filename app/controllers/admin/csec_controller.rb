@@ -23,7 +23,7 @@ class Admin::CsecController < Admin::AdminController
     @results    = SurveyData::Importer.import(params[:file].tempfile, params[:semester], params[:save], @ta)
     @success    = @results[:errors].empty?
     @results[:errors] << "No data was imported because of the above errors." if !@success && params[:save]
-    render 'upload_surveys'
+    render template: 'upload_surveys'
 
 ##    unless results[:errors].empty? then
 ##      return redirect_to admin_csec_upload_surveys_path, notice: "There was #{results[:errors].length} #{'error'.pluralize_for results[:errors].length} parsing that file:\n#{results[:errors].join('

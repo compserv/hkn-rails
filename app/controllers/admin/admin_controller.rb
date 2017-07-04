@@ -64,7 +64,7 @@ class Admin::AdminController < ApplicationController
 
   def candidate_announcements
     @announcements = Announcement.order("created_at desc")
-    #render "admin/candidate_announcements"
+    #render template: 'admin/candidate_announcements'
   end
 
   def create_announcement
@@ -86,7 +86,7 @@ class Admin::AdminController < ApplicationController
 
   def edit_announcement
     @announcement = Announcement.find(params[:id])
-    #render "admin/edit_announcement"
+    #render template: 'admin/edit_announcement'
   end
 
   def update_announcement
@@ -120,7 +120,7 @@ class Admin::AdminController < ApplicationController
     @acc_challenges = challenges.select { |c| c.status }
     @pending_challenges = challenges.select { |c| c.status == nil }
     @rejected_challenges = challenges.select { |c| c.status == false }
-    render "admin/confirm_challenges"
+    render template: 'admin/confirm_challenges'
   end
 
   def confirm_challenge
