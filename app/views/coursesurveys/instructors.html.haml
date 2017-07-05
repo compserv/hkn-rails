@@ -20,8 +20,8 @@
           - else
             = link_to course.course_abbr, surveys_course_path(course)
       %td
-        - unless rating.present?
-          [private]
-        - else
+        - if rating.present?
           #{sprintf "%.1f", rating} / #{@eff_q.max.to_f}
           = rating_bar(rating/@eff_q.max)
+        - else
+          [No data]
