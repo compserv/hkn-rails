@@ -53,11 +53,11 @@ group :development do
   gem 'binding_of_caller'
 
   # Deploy to production with capistrano
-  gem 'capistrano',               '~> 3.8'
-  gem 'capistrano-bundler',       '~> 1.2'
-  gem 'capistrano-faster-assets', '~> 1.0'
-  gem 'capistrano-rails',         '~> 1.3'
-  gem 'capistrano-rvm',           '~> 0.1'
+  gem 'capistrano',               '~> 3.8', require: false
+  gem 'capistrano-bundler',       '~> 1.2', require: false
+  gem 'capistrano-faster-assets', '~> 1.0', require: false
+  gem 'capistrano-rails',         '~> 1.3', require: false
+  gem 'capistrano-rvm',           '~> 0.1', require: false
 end
 
 group :development, :test do
