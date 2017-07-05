@@ -35,8 +35,9 @@ HknRails::Application.configure do
                                  print.css *.pdf)
 
   # These are per-controller stylesheets or javascripts
-  config.assets.precompile += %w(candidates.css coursesurveys.css events.css
-                                 exams.css home.css.erb indrel.css people.css.erb
+  config.assets.precompile += %w(candidates.css coursechart.css coursechart.js
+                                 coursesurveys.css events.css exams.css
+                                 home.css.erb indrel.css people.css.erb
                                  static.scss resume_books.css tutor.css.erb
                                  courseguide.js.erb coursesurveys.js.erb
                                  tutor.js)
