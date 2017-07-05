@@ -350,9 +350,3 @@ DEPENDENCIES
   will_paginate (~> 3.0)
   yaml_db
   yard
-
-RUBY VERSION
-   ruby 2.1.2p95
-
-BUNDLED WITH
-   1.15.0
