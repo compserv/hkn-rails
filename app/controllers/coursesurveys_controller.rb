@@ -261,7 +261,7 @@ class CoursesurveysController < ApplicationController
 
   def tas
     _instructors(:ta, params[:semester])
-    render template: 'instructors'
+    render 'instructors'
   end
 
   def semesters

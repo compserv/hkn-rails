@@ -33,7 +33,7 @@ class AlumnisController < ApplicationController
   def me
     if @current_user.alumni
       @alumni = @current_user.alumni
-      render template: 'show'
+      render 'show'
     else
       redirect_to new_alumni_url
     end
