@@ -136,14 +136,6 @@ class Person < ActiveRecord::Base
       return self.valid?
   end
 
-  def picture(guess=false)
-    # HACK: dynamically guesses user's picture
-    p = method_missing(:picture)
-    p = p.blank? && guess ? "https://hkn.eecs.berkeley.edu/files/officerpics/#{username}.png" : p
-    #p.gsub!(/^http/, 'https') if p =~ /^http:\/\/hkn.eecs.berkeley.edu/
-    p
-  end
-
   def full_name
     first_name + " " + last_name
   end
