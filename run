@@ -1,0 +1,6 @@
+#!/bin/bash -e
+. ~/.rvm/scripts/rvm
+cd ~/hkn-rails
+RAILS_ENV=production \
+      exec ~/.rvm/gems/ruby-2.1.2/bin/unicorn_rails \
+      -c ~/hkn-rails/prod/current/config/unicorn/production.rb
