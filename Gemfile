@@ -3,7 +3,7 @@ ruby '2.1.2'
 
 gem 'activesupport'
 gem 'activerecord-session_store'
-gem 'authlogic'
+gem 'authlogic', '~> 3.6'
 gem 'd3js-rails', '~> 3.1.6'
 gem 'exception_notification', '~> 4'
 gem 'haml-rails'
