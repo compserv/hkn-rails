@@ -18,8 +18,11 @@ log/*.log
 nbproject
 private/**/*
 !private/resume_books/templates/
+public/assets/
 public/cache/
 public/examfiles/
+public/images/
+public/pictures/
 spec/examples.txt
 tmp/**/*
 !tmp/restart.txt
@@ -30,12 +33,6 @@ vendor/bundle
 elections_hknmod
 hknmod.py
 log
-public/assets/
-public/eecsfactor/
-public/images/
-public/pictures/
-public/redmine
-public/student/
 run_hknmod
 solr/default/
 solr/development/

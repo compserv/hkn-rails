@@ -8,15 +8,13 @@ HknRails::Application.configure do
   config.consider_all_requests_local       = false
   #config.action_controller.perform_caching = true
   #config.action_controller.page_cache_directory = File.join Rails.root, 'public', 'cache'
-  config.force_ssl = true
+
+  # TODO: Enable force_ssl once moved to the OCF
+  config.force_ssl = false
   unless defined? Rails::Configuration::SSL
     module Rails module Configuration
       SSL = ! File.file?(".nossl")
     end end
-  end
-  config.after_initialize do
-    #SslRequirement.ssl_host = 'hkn.eecs.berkeley.edu:8079'
-    #SslRequirement.non_ssl_host = 'hkn.eecs.berkeley.edu:8080'
   end
 
   # Compress JavaScripts and CSS
