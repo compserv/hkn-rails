@@ -395,6 +395,11 @@ HknRails::Application.routes.draw do
 
   resources :shortlinks, except: :show
 
+  # Redirect to prot on OCF web hosting
+  # TODO: Try to proxy requests through this application to make this more seamless,
+  # or give prot it its own subdomain
+  match '/prot' => redirect("https://www.ocf.berkeley.edu/~hkn/wiki"), as: :prot, via: :all
+  match '/prot/*path', to: redirect { |params, request| "https://www.ocf.berkeley.edu/~hkn/wiki/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}" }, via: :all
 
   # This section must remain at the bottom of the routes, since they are
   # catch-all routes to enable arbitrary hierarchy and placement of static pages
