@@ -11,8 +11,10 @@ server 'apphost.ocf.berkeley.edu', user: 'hkn', roles: %w[web app db], primary: 
 
 set :deploy_to, '/home/h/hk/hkn/hkn-rails/prod'
 
-# Require production to use the master branch
-set :branch, 'master'
+# TODO: Require production to use the master branch
+# For now it uses a branch with some incompatible changes for the migration
+# to the OCF hosting (nginx vs apache, postgresql vs mysql)
+set :branch, 'ocf-migration'
 
 # role-based syntax
 # ==================
