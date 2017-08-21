@@ -9,8 +9,7 @@ HknRails::Application.configure do
   #config.action_controller.perform_caching = true
   #config.action_controller.page_cache_directory = File.join Rails.root, 'public', 'cache'
 
-  # TODO: Enable force_ssl once moved to the OCF
-  config.force_ssl = false
+  config.force_ssl = true
   unless defined? Rails::Configuration::SSL
     module Rails module Configuration
       SSL = ! File.file?(".nossl")
