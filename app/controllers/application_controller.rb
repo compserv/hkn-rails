@@ -108,7 +108,7 @@ class ApplicationController < ActionController::Base
           @auth[group.name] = true
         end
       end
-      @auth['comms'] = @auth['cmembers'] || @auth['officers']
+      @auth['comms'] = @auth['cmembers'] || @auth['assistants'] || @auth['officers']
     end
   end
 
