@@ -548,7 +548,7 @@ class Admin::TutorController < Admin::AdminController
   private
 
   def authorize_tutoring_signup
-    authorize(['officers', 'cmembers'])
+    authorize(['officers', 'cmembers', 'assistants'])
   end
 
   def compute_stats
