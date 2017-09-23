@@ -20,9 +20,6 @@ class HomeController < ApplicationController
       @tutoring_message = prop.tutoring_message
     end
 
-    # Temporary notice linking to the decal application
-    flash[:notice] = 'HKN is hosting a decal this semester, apply <a href="https://decal.berkeley.edu/courses/4111">here</a>!'.html_safe
-
     # Only respond with HTML to not error when other formats are requested
     respond_to :html
   end
