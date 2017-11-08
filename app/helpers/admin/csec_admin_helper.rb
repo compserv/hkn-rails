@@ -2,7 +2,8 @@ module SurveyData
   class Importer
     require 'csv'
 
-    COURSE_MATCH = /([A-Z ]+) (\w+) (\w+) (\d+) (.+)/
+    LECTURE_COURSE_MATCH = /([A-Z ]+) (\w+) (\w+) (\d+) (.+)/
+    DISC_COURSE_MATCH = /([A-Z ]+) (\w+) (\w+) (.+)/
     QUESTION_MAPPING = {
       "Considering both the limitations and possibilities of the subject matter and course, how would you rate the overall teaching effectiveness of this instructor?" => "Rate the overall teaching effectiveness of this instructor",
       "Focusing now on the course content, how worthwhile was this course in comparison to others you have taken in this department?" => "How worthwhile was this course compared with others at U.C.?",
@@ -48,7 +49,20 @@ module SurveyData
       # Remove 6 headers (class name, first name, last name, invited count, response count, response rate)
       rating_names = header.drop(6)
       name, first_name, last_name, enrollment, responses, _, *ratings = row
-      dept_abbr, course_number, type, section, long_name = name.match(COURSE_MATCH).captures
+
+      match = name.match(LECTURE_COURSE_MATCH)
+      if match.nil?
+        match = name.match(DISC_COURSE_MATCH)
+
+        if match.nil?
+          raise ParseError, "First element in spreadsheet at row #{row} did not match lecture or discussion format. Make sure it is something like 'EL ENG 00A LEC 001 COURSE NAME HERE' (may or may not have section number)"
+        end
+
+        dept_abbr, course_number, type, long_name = match.captures
+        section = "1"
+      else
+        dept_abbr, course_number, type, section, long_name = match.captures
+      end
 
       if rating_names.length != ratings.length
         raise ParseError, "Ratings and header information do not match, got #{rating_names.length} header names but #{ratings.length} ratings in row #{row}"
