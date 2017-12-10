@@ -113,6 +113,14 @@ class Instructor < ActiveRecord::Base
   end
 
   def Instructor.find_by_name(first_name, last_name)
+    # Avoid querying the database if either first or last name contain null
+    # bytes, since it just errors and causes spam for us and causes the
+    # Berkeley security scanner to retry this a bunch.
+    if (first_name and first_name.include? "\u0000" or
+        last_name and last_name.include? "\u0000")
+      return nil
+    end
+
     Instructor.where({first_name: first_name, last_name: last_name}).first
   end
 
