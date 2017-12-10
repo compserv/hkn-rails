@@ -184,9 +184,9 @@ class ExamsController < ApplicationController
 
       str = "%#{@query}%"
 
-      @results[:courses] = Course.where('description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str)
+      @results[:courses] = Course.where('description LIKE ? OR name LIKE ? OR CONCAT(prefix, course_number, suffix) LIKE ?', str, str, str)
       flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
-     end
+    end
 
     # if very likely have a single match, just go to it
     if @results[:courses].length == 1 then

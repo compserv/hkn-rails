@@ -483,8 +483,8 @@ class CoursesurveysController < ApplicationController
         @results[k] = FakeSearch.new
       end
 
-      @results[:courses].results = Course.where('description LIKE ? OR name LIKE ? OR (prefix||course_number||suffix) LIKE ?', str, str, str)
-      @results[:instructors].results = Instructor.select(:id,:first_name,:last_name,:private,:title).where("(first_name||' '||last_name) LIKE ?", str)
+      @results[:courses].results = Course.where('description LIKE ? OR name LIKE ? OR CONCAT(prefix, course_number, suffix) LIKE ?', str, str, str)
+      @results[:instructors].results = Instructor.select(:id, :first_name, :last_name, :private, :title).where("CONCAT(first_name, ' ', last_name) LIKE ?", str)
 
       flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
     end
