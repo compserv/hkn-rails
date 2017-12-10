@@ -78,6 +78,17 @@ class ApplicationController < ActionController::Base
   private
 
   def get_current_user
+    # Just return that this is a bad request if a null byte is given in a
+    # cookie. The Berkeley security scanner particularly likes doing this
+    # because it gets 500 errors that it thinks might give something useful, so
+    # give it a 4xx error instead since it's just generating spam for us.
+    if (request.cookies.key? '_session_id' and
+        request.cookies['_session_id'].include? "\u0000") or
+        (request.cookies.key? '_hkn-rails_session' and
+        request.cookies['_hkn-rails_session'].include? "\u0000")
+      render text: "400 Bad Request", status: 400 and return
+    end
+
     if UserSession.find
       @real_current_user = UserSession.find.person
 
