@@ -1,33 +1,40 @@
 # Welcome to HKN
 
-TODO: Add useful information.
-
-
 ## Vagrant, VMs, and You
 
 1. Install [VirtualBox][virtualbox] (`sudo apt-get install virtualbox`)
 2. Install the latest version of [Vagrant][vagrant] (`sudo apt-get install vagrant`)
-3. Download a backup of the website from hkn (`/var/www/hkn-rails/db/backups/`) and move it into your copy of hkn-rails.  See section below on making backups if you want a current one.
+3. Download a backup of the website from compserv (ask for a current backup,
+   these are kept secret because they contain sensitive data like password
+   hashes, for instance) and move it into your copy of hkn-rails.  See section
+   below on [making backups](#making-backups) if you want a current one.
 4. `cd hkn-rails`
 5. `vagrant up`
 
-  If Vagrant gives you an error along the lines of `The guest machine entered an invalid state...`, try to start the VM from VirtualBox.  If VirtualBox gives you the error `VT-x is not available...`, do the following:
+  If Vagrant gives you an error along the lines of `The guest machine entered
+  an invalid state...`, try to start the VM from VirtualBox.  If VirtualBox
+  gives you the error `VT-x is not available...`, do the following:
 
     1. `vagrant halt`
     2. `vagrant destroy`
-    3. Change your BIOS settings to enable hardware acceleration
+    3. Change your BIOS settings to enable hardware acceleration (this will
+       require a system reboot)
     4. `vagrant up` and continue to step 6.
+
 6. `vagrant ssh`
 7. `cd /vagrant`
 8. `rake db:create && rake db:backup:restore FROM=[path_to_backup_from_hkn]`
 9. `rails s`
 10. On your host machine, visit `localhost:3000`
 
-Your copy of hkn-rails on your host is a shared directory with `\vagrant` on your guest, so you can edit files in either machine.
+Your copy of hkn-rails on your host is a shared directory with `\vagrant` on
+your guest, so you can edit files in either machine.
 
-The guest is configured to port forward 3000 to 3000 on the host.  The VM is allocated 1 GB of memory and is based on Ubuntu 14.04 64-bit.
+The guest is configured to port forward 3000 to 3000 on the host.  The VM is
+allocated 1 GB of memory and is based on Ubuntu 14.04 64-bit.
 
-To stop the VM, either use `vagrant halt` or `vagrant suspend`. To resume again, `vagrant up`.
+To stop the VM, either use `vagrant halt` or `vagrant suspend`. To resume
+again, run `vagrant up`.
 
 [virtualbox]: https://www.virtualbox.org/wiki/Downloads
 [vagrant]: http://www.vagrantup.com/downloads.html
@@ -37,17 +44,20 @@ To stop the VM, either use `vagrant halt` or `vagrant suspend`. To resume again,
 
 1. On hkn, go into `/var/www/hkn-rails`
 2. `sudo su www-data`
-3. `export RAILS_ENV=production` (if you want backup of production)
-4. `rake db:backup:dump` (actual script is in `hkn-rails/lib/tasks/backups.rb`)
+3. `RAILS_ENV=production rake db:backup:dump` (actual script is in
+   `hkn-rails/lib/tasks/backups.rb`)
 
-This makes a backup in `hkn-rails/db/backups`, name based on datetime by default.
+This makes a backup in `hkn-rails/db/backups`, name based on datetime by
+default.
 
-To load a backup: `rake db:drop && rake db:create && rake db:backup:restore FROM=[path]`
+To load a backup: `rake db:drop && rake db:create && rake db:backup:restore
+FROM=[path]`
 
 
 ## Static Files
 
-To serve new static files in production, first run `RAILS_ENV=production bundle exec rake assets:precompile`
+To serve new static files in production, first run `RAILS_ENV=production bundle
+exec rake assets:precompile`
 
 
 ### How to use Solr
@@ -62,20 +72,23 @@ install Solr on Tomcat/Jetty/etc. yourself.
 Note: Puts index files somewhere in your `/tmp`
 
 1. `rake sunspot:solr:start`
-2. `rake sunspot:solr:reindex` whenever you change the 'searchable' information in your model.
+2. `rake sunspot:solr:reindex` whenever you change the 'searchable' information
+   in your model.
 
-   You don't have to reindex when you change data.
-   Also, the solr server has to be started before you reindex.
+   You don't have to reindex when you change data, that will be reindexed
+   automatically. Make sure the solr server is started before you reindex.
 
 3. `rake sunspot:solr:stop` if you want to stop the search daemon
 
 Sunspot:Solr presents an admin page on ports 8981:8983 (per environment; see
-`config/sunspot.yml`) that you probably want to close to the outside:
+`config/sunspot.yml`) that you probably want to close to the outside (this is
+already done in production):
 
-    iptables -I INPUT -j ACCEPT --dport 8981:8983 -i lo       # Allow local connections
-    iptables -I INPUT -j DROP --dport 8981:8983               # Else, drop
+    iptables -I INPUT -j ACCEPT --dport 8981:8983 -i lo # Allow local only
+    iptables -I INPUT -j DROP --dport 8981:8983         # Else, drop
 
-For examples of searching, see [coursesurveys#search][coursesurveys] and [course.rb][course.rb].
+For examples of searching, see [coursesurveys#search][coursesurveys] and
+[course.rb][course.rb].
 
 [searchables]: http://github.com/outoftime/sunspot/wiki/Setting-up-classes-for-search-and-indexing
 [coursesurveys]: app/controllers/coursesurveys_controller.rb#L448
