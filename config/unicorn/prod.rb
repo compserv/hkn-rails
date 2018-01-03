@@ -24,7 +24,7 @@ worker_processes 8
 working_directory "/home/h/hk/hkn/hkn-rails/prod/current"
 
 # listen on a Unix socket
-listen "/srv/apps/hkn/hkn.sock"
+listen "/srv/apps/hkn/prod.sock"
 
 # nuke workers after 60 seconds (the default)
 timeout 60

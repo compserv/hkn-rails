@@ -3,4 +3,4 @@
 cd ~/hkn-rails/prod/current
 RAILS_ENV=production \
       exec ~/.rvm/gems/ruby-2.1.2/bin/unicorn_rails \
-      -c ~/hkn-rails/prod/current/config/unicorn/production.rb
+      -c ~/hkn-rails/prod/current/config/unicorn/prod.rb
