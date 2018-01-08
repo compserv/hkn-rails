@@ -179,8 +179,9 @@ class ExamsController < ApplicationController
         order_by :department_id
       end.results
     else
-      # Solr isn't started, hack together some results
+      # Solr isn't started, hack together some results and notify compserv
       logger.warn "Solr isn't started, falling back to lame search"
+      CompservMailer.problem_report("Solr isn't started").deliver
 
       str = "%#{@query}%"
 
