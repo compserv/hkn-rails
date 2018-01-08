@@ -21,12 +21,9 @@ $(document).ready(function() {
     hourMax: 16,
     minTime: '11:00 am',
     maxTime: '4:00 pm',
-    // Months in JS are strange, they are actually zero-indexed while everything else is not.
-    // This is actually August, but zero-indexing makes it 7
-    //minDate: new Date(2017, 7, 23),
+    // Months in JS are strange, they are actually zero-indexed while
+    // everything else is not, so be careful when setting min/max dates here.
     minDate: new Date(),
-    // This is actually December, but zero-indexing makes it 11
-    maxDate: new Date(2017, 11, 8),
 
     dateFormat: 'yy-mm-dd',
     timeFormat: 'hh:mm tt',

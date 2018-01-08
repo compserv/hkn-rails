@@ -36,8 +36,8 @@ class DeptTourController < ApplicationController
         rescue => e
           flash[:notice] = "There was a problem submitting your request. Please try again, or email us directly if the problem persists."
         end
-      end # @errors.empty?
-    end # authenticity_token
+      end
+    end
   end
 
   def success
@@ -47,10 +47,9 @@ class DeptTourController < ApplicationController
     def valid_date?(date)
       dt = Time.parse(date)
       # Make sure to update this (along with the date/time restrictions in
-      # datetimepicker.js.erb to match only times and dates that HKN is open)
-      time_valid = (11..17).include?(dt.hour) and dt > DateTime.now
-      date_valid = dt <= DateTime.new(2017, 12, 8)
-      return (time_valid and date_valid)
+      # datetimepicker.js.erb to match only times and dates that we want to
+      # give tours)
+      return ((11..17).include?(dt.hour) and dt > DateTime.now)
     rescue ArgumentError
       # If this isn't something that can be parsed as a time, it's obviously invalid
       return false

@@ -21,32 +21,32 @@
 <%= form_tag(dept_tour_signup_path, method: :post) do%>
   <div class="field">
     <%= label_tag :name, "Name", class: 'required-field' %>
-    <%= text_field_tag :name %>
+    <%= text_field_tag :name, params[:name] %>
   </div>
 
   <div class="field">
     <%= label_tag :date, "Desired date & time", class: 'required-field' %>
-    <%= text_field_tag :date, nil, class: "datetimepicker depttourpicker" %>
+    <%= text_field_tag :date, params[:date], class: "datetimepicker depttourpicker" %>
   </div>
 
   <div class="field">
     <%= label_tag :email, "Contact email address", class: 'required-field' %>
-    <%= text_field_tag :email %>
+    <%= text_field_tag :email, params[:email] %>
   </div>
 
   <div class="field">
     <%= label_tag :email_confirmation, "Re-type email", class: 'required-field' %>
-    <%= text_field_tag :email_confirmation %>
+    <%= text_field_tag :email_confirmation, params[:email_confirmation] %>
   </div>
 
   <div class="field">
     <%= label_tag :phone, "Contact phone number", class: 'required-field' %>
-    <%= text_field_tag :phone %>
+    <%= text_field_tag :phone, params[:phone] %>
   </div>
 
   <div class="field">
     <%= label_tag :comments, "Additional comments:" %>
-    <%= text_area_tag :comments %>
+    <%= text_area_tag :comments, params[:comments] %>
   </div>
 
   <div class="field">
