@@ -477,7 +477,7 @@ class CoursesurveysController < ApplicationController
     else
       # Solr isn't started, hack together some results
       logger.warn "Solr isn't started, falling back to lame search"
-      CompservMailer.problem_report("Solr isn't started").deliver
+      ErrorMailer.problem_report("Solr isn't started").deliver
 
       str = "%#{params[:q]}%"
       [:courses, :instructors].each do |k|

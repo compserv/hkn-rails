@@ -75,7 +75,7 @@ class PeopleController < ApplicationController
     else
       # Solr isn't started, hack together some results
       logger.warn "Solr isn't started, falling back to lame search"
-      CompservMailer.problem_report("Solr isn't started").deliver
+      ErrorMailer.problem_report("Solr isn't started").deliver
 
       str = "%#{query}%"
       @results[:people] = FakeSearch.new

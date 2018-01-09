@@ -3,4 +3,6 @@ A problem occurred on hkn-rails at <%= Time.now() %>:
 <%= @problem %>
 
 Traceback:
-<%= @traceback %>
+<%- @traceback.each do |line| -%>
+  <%= line %>
+<%- end -%>
