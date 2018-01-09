@@ -1,3 +1,5 @@
+require 'yaml'
+
 # config valid only for current version of Capistrano
 lock "3.8.2"
 
@@ -16,8 +18,7 @@ set :ssh_options, forward_agent: true
 set :rollbar_env,  proc { fetch :stage }
 set :rollbar_role, proc { :app }
 set :rollbar_user, `git config user.name`
-# TODO: set rollbar token for deploy reporting
-# set :rollbar_token, 'token goes here'
+set :rollbar_token, YAML.load_file('config/secrets.yml')['common']['rollbar_api_key']
 
 # Use bundler with multiple cores
 set :bundle_jobs, 8

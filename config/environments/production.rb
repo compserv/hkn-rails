@@ -47,7 +47,7 @@ HknRails::Application.configure do
 
   # Disable Rails's static asset server
   # In production, Apache or nginx will already do this
-  config.serve_static_files = true  # apache can't intercept cache redirects with phusion passenger...
+  config.serve_static_files = true
 
   # Enable serving of images, stylesheets, and javascripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
@@ -59,8 +59,8 @@ HknRails::Application.configure do
       address:              'smtp.gmail.com',
       port:                 587,
       domain:               'hkn.eecs.berkeley.edu',
-      user_name:            ENV['MAIL_LOGIN'],
-      password:             ENV['MAIL_PASSWORD'],
+      user_name:            'hknwebsite@hkn.eecs.berkeley.edu',
+      password:             Rails.application.secrets.mail_password,
       authentication:       'plain',
       enable_starttls_auto: true
   }
