@@ -30,13 +30,13 @@ listen "/srv/apps/hkn/prod.sock"
 timeout 60
 
 # feel free to point this anywhere accessible on the filesystem
-pid "/home/h/hk/hkn/hkn-rails/prod/current/tmp/pids/unicorn.pid"
+pid "tmp/pids/unicorn.pid"
 
 # By default, the Unicorn logger will write to stderr.
 # Additionally, applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
-stderr_path "/home/h/hk/hkn/hkn-rails/prod/current/log/unicorn.stderr.log"
-stdout_path "/home/h/hk/hkn/hkn-rails/prod/current/log/unicorn.stdout.log"
+stderr_path "log/unicorn.stderr.log"
+stdout_path "log/unicorn.stdout.log"
 
 # combine Ruby 2.0.0+ with "preload_app true" for memory savings
 preload_app true

@@ -5,7 +5,7 @@ production:
     log_level: INFO
     path: '/solr/production'
     bind_address: 127.0.0.1
-    pid_dir: '/home/h/hk/hkn/hkn-rails/prod/shared/solr/pids/production'
+    pid_dir: 'tmp/pids'
     # read_timeout: 2
     # open_timeout: 0.5
 
