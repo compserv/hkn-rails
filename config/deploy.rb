@@ -61,7 +61,7 @@ namespace :deploy do
   desc "Zero-downtime restart of Unicorn"
   task :restart do
     on roles(:all) do |host|
-      execute :systemctl, '--user restart hkn-rails.service'
+      execute :systemctl, '--user reload hkn-rails.service'
     end
   end
 
