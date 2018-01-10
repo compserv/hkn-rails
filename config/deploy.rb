@@ -84,7 +84,8 @@ namespace :deploy do
     on roles(:all) do |host|
       within "#{current_path}" do
         with rails_env: :production do
-          execute :rake, "sunspot:solr:restart"
+          execute :rake, "sunspot:solr:stop"
+          execute :rake, "sunspot:solr:start"
         end
       end
     end
