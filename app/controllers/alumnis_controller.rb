@@ -95,9 +95,9 @@ class AlumnisController < ApplicationController
     # Similar funny business in update.
     respond_to do |format|
       if @alumni.save and @current_user.save
-        if @alumni.mailing_list
-          @alumni.subscribe
-        end
+        # TODO: Actually subscribe them to the mailing list through Google Apps
+        #if @alumni.mailing_list
+        #end
 
         format.html { redirect_to(@alumni, notice: 'Alumni was successfully created.') }
         format.xml  { render xml: @alumni, status: :created, location: @alumni }
@@ -118,11 +118,10 @@ class AlumnisController < ApplicationController
       if @alumni.update_attributes(alumni_params.merge(
         grad_semester: Alumni.grad_semester(params[:grad_season], params[:grad_year])
       ))
-        if !@alumni.mailing_list && params[:on_mailing_list].eql?('true')
-          @alumni.unsubscribe
-        elsif @alumni.mailing_list && params[:on_mailing_list].eql?('false')
-          @alumni.subscribe
-        end
+        # TODO: Actually subscribe and unsubscribe via Google Apps
+        #if !@alumni.mailing_list && params[:on_mailing_list].eql?('true')
+        #elsif @alumni.mailing_list && params[:on_mailing_list].eql?('false')
+        #end
 
         format.html { redirect_to(@alumni, notice: 'Alumni was successfully updated.') }
         format.xml  { head :ok }
