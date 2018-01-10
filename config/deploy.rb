@@ -58,10 +58,13 @@ set :linked_dirs, %w[log private public/examfiles public/files public/images pub
 # set :keep_releases, 5
 
 namespace :deploy do
-  desc "Zero-downtime restart of Unicorn"
+  desc "Restart unicorn"
   task :restart_unicorn do
     on roles(:all) do |host|
-      execute :systemctl, '--user reload hkn-rails.service'
+      # TODO: Attempt to get reloading to work correctly (currently it doesn't
+      # have downtime, but it doesn't actually update changes on the site,
+      # maybe due to preloading by unicorn?)
+      execute :systemctl, '--user restart hkn-rails.service'
     end
   end
 
