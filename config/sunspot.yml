@@ -5,8 +5,6 @@ production:
     log_level: INFO
     path: '/solr/production'
     bind_address: 127.0.0.1
-    solr_home: '/home/h/hk/hkn/hkn-rails/prod/shared/solr'
-    log_file: '/home/h/hk/hkn/hkn-rails/prod/shared/log/sunspot-solr-production.log'
     pid_dir: '/home/h/hk/hkn/hkn-rails/prod/shared/solr/pids/production'
     # read_timeout: 2
     # open_timeout: 0.5
