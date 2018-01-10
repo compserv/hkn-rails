@@ -46,7 +46,7 @@ set :bundle_flags, '--deployment'
 set :linked_files, %w[config/database.yml config/secrets.yml]
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w[log private public/examfiles public/files public/images public/pictures solr/data solr/pids tmp/pids tmp/cache tmp/sockets]
+set :linked_dirs, %w[log private public/examfiles public/files public/images public/pictures solr/production solr/pids tmp/pids tmp/cache tmp/sockets]
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -59,25 +59,49 @@ set :linked_dirs, %w[log private public/examfiles public/files public/images pub
 
 namespace :deploy do
   desc "Zero-downtime restart of Unicorn"
-  task :restart do
+  task :restart_unicorn do
     on roles(:all) do |host|
       execute :systemctl, '--user reload hkn-rails.service'
     end
   end
 
   desc "Start unicorn"
-  task :start do
+  task :start_unicorn do
     on roles(:all) do |host|
       execute :systemctl, '--user start hkn-rails.service'
     end
   end
 
   desc "Stop unicorn"
-  task :stop do
+  task :stop_unicorn do
     on roles(:all) do |host|
       execute :systemctl, '--user stop hkn-rails.service'
     end
   end
 
-  after :publishing, :restart
+  desc "Restart solr"
+  task :restart_solr do
+    on roles(:all) do |host|
+      within "#{current_path}" do
+        with rails_env: :production do
+          execute :rake, "sunspot:solr:restart"
+        end
+      end
+    end
+  end
+
+  desc "Reindex sunspot"
+  task :reindex_sunspot do
+    on roles(:all) do |host|
+      within "#{current_path}" do
+        with rails_env: :production do
+          execute :rake, "sunspot:reindex"
+        end
+      end
+    end
+  end
+
+  after :publishing, :restart_unicorn
+  after :publishing, :restart_solr
+  after :publishing, :reindex_sunspot
 end
