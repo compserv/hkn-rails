@@ -46,7 +46,7 @@ set :bundle_flags, '--deployment'
 set :linked_files, %w[config/database.yml config/secrets.yml]
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w[log private public/examfiles public/files public/images public/pictures solr tmp/pids tmp/cache tmp/sockets]
+set :linked_dirs, %w[log private public/examfiles public/files public/images public/pictures solr/data solr/pids tmp/pids tmp/cache tmp/sockets]
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
