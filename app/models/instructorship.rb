@@ -18,7 +18,7 @@ class Instructorship < ActiveRecord::Base
 
   default_scope  -> { where(hidden: false) }
 
-  has_many :survey_answers, -> { order('survey_answers') }, dependent: :destroy
+  has_many :survey_answers, -> { order('survey_answers.order') }, dependent: :destroy
   has_one  :course,         through: :klass
 
   validates_presence_of :klass_id
