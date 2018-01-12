@@ -169,7 +169,7 @@ class PeopleController < ApplicationController
 
     # Verify password
     if params[:password][:current]
-      if @current_user.valid_ldap_or_password?(params[:password][:current])
+      if @current_user.valid_password?(params[:password][:current])
         params[:person][:password] = params[:password][:new]
         params[:person][:password_confirmation] = params[:password][:confirm]
       else

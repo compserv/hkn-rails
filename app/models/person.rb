@@ -32,8 +32,6 @@
 #  graduation          :string(255)
 #
 
-require 'net/ldap'
-
 class Person < ActiveRecord::Base
   has_one :candidate, dependent: :destroy
   has_one :alumni, dependent: :destroy
@@ -181,20 +179,6 @@ class Person < ActiveRecord::Base
   def needs_to_fill_out_election?
     l = last_election
     l and Property.end_of_semester? and l.semester == Property.current_semester and !l.filled_out?
-  end
-
-  def valid_ldap_or_password?(password)
-    return valid_password?(password) || valid_ldap?(password)
-  end
-
-  def valid_ldap?(password)
-    begin
-      ldap = Net::LDAP.new(host: LDAP_SERVER, port: LDAP_SERVER_PORT, connect_timeout: 1)
-      a = ldap.bind(method: :simple, username: "uid=#{username}, ou=people, dc=hkn, dc=eecs, dc=berkeley, dc=edu", password: password)
-    rescue Net::LDAP::LdapError, Net::LDAP::Error
-      return false
-    end
-    return a
   end
 
   #Gets or creates the tutor object for a person.
