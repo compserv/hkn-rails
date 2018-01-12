@@ -1,73 +1,125 @@
 source 'https://rubygems.org'
-ruby '2.1.2'
+ruby '2.5.0'
 
-gem 'activesupport'
-gem 'activerecord-session_store'
+# Pin Rails to a strict version, since can easily have breaking changes
+gem 'rails', '4.2.10'
+
+# Authentication without having to write it all from scratch
 gem 'authlogic', '~> 3.6'
+
+# D3.js charts for course guide and course survey pages
 gem 'd3js-rails', '~> 3.1.6'
+
+# Send exception emails if anything breaks
 gem 'exception_notification', '~> 4'
-gem 'haml-rails'
-gem 'jquery-rails', '~> 2.1.4'
-gem 'mechanize'
-gem 'nokogiri'
-gem 'pg'
-gem 'rails', '4.2.9'
-gem 'rails-observers'
-gem 'rdiscount'
-gem 'recaptcha', require: ['recaptcha', 'recaptcha/rails']
-gem 'ri_cal'
-gem 'scrypt'
-gem 'stripe'
-gem 'sunspot_rails'
-gem 'sunspot_solr'
-gem 'will_paginate', '~> 3.0'
-gem 'yaml_db'
-gem 'sass-rails'
+
+# Use HAML for some templates
+gem 'haml-rails', '~> 1.0'
+
+# Use jQuery for nicer JS and more browser compatability
+gem 'jquery-rails', '~> 4.3.1'
+
+# Use nokogiri for schedule parsing (not used any more)
+gem 'nokogiri', '~> 1.8.1'
+
+# Rails observers were removed from Rails core in 4.0, these are used for model
+# life-cycle callbacks (after_save, before_create, etc.)
+gem 'rails-observers', '~> 0.1.5'
+
+# Markdown parser, used for static page contents
+gem 'rdiscount', '~> 2.2.0'
+
+# Used for captchas on department tour request pages, etc.
+gem 'recaptcha', '~> 4.6', require: ['recaptcha', 'recaptcha/rails']
 
 # Support class-level responders in Rails 4.2+
-gem 'responders', '~> 2.0'
+gem 'responders', '~> 2.4'
+
+# iCalendar support on the events pages
+gem 'ri_cal', '~> 0.8'
+
+# Sass support for stylesheets
+gem 'sass-rails', '~> 5.0'
+
+# More secure password hashing for authentication
+gem 'scrypt', '~> 3.0'
+
+# Indrel company payments by credit card
+gem 'stripe', '~> 3.9'
+
+# Full-text searching using Solr for exams and course surveys
+gem 'sunspot_rails', '~> 2.2'
+gem 'sunspot_solr', '~> 2.2'
+
+# Pagination on long pages
+gem 'will_paginate', '~> 3.1'
 
 # TODO: Replace this gem with one that is maintained, like
 # rack-cas or omniauth-cas
+# This is used for course surveys so that professors and TAs/GSIs can log in
+# and see their survey results using their Berkeley login
 gem 'rubycas-client', git: 'https://github.com/rubycas/rubycas-client'
 
+
+# Production-only gems
 group :production do
+  # The OCF hosting includes MySQL, so we use that
   gem 'mysql2',  '~> 0.4'
-  gem 'rollbar', '~> 2.14'
-  gem 'unicorn', '~> 5.3'
+
+  # Rollbar is nice for reporting errors in production instead of (or
+  # alongside) spamming emails. It also records deploys, which is nice
+  gem 'rollbar', '~> 2.15'
+
+  # Unicorn is a nice application server that has multiple workers, making the
+  # site scale a bit better if under load
+  gem 'unicorn', '~> 5.4'
 end
 
-group :development do
-  # Generate entity relationship diagram
-  gem 'rails-erd'
 
-  # Use a different development server
-  gem 'thin'
+# Development-only gems
+group :development do
+  # For now, PostgreSQL is used in the vagrant image, but production uses
+  # MySQL, so the development version should be changed to use MySQL too.
+  gem 'pg', '~> 0.21'
+
+  # Generate entity relationship diagrams between models
+  gem 'rails-erd', '~> 1.5'
+
+  # Use a different development server (generally a bit faster and lightweight)
+  gem 'thin', '~> 1.7'
 
   # Annotate models with database information
-  gem 'annotate'
+  gem 'annotate', '~> 2.7'
 
   # Nicer error pages with an interactive console
-  gem 'better_errors'
-  gem 'binding_of_caller'
+  gem 'better_errors', '~> 2.4'
+  gem 'binding_of_caller', '~> 0.8'
 
-  # Deploy to production with capistrano
-  gem 'capistrano',               '~> 3.8', require: false
-  gem 'capistrano-bundler',       '~> 1.2', require: false
-  gem 'capistrano-faster-assets', '~> 1.0', require: false
-  gem 'capistrano-rails',         '~> 1.3', require: false
-  gem 'capistrano-rvm',           '~> 0.1', require: false
+  # Deploy to production with capistrano. Needed in development because that's
+  # where the deploys occur from
+  gem 'capistrano',               '~> 3.10.1', require: false
+  gem 'capistrano-bundler',       '~> 1.3',    require: false
+  gem 'capistrano-faster-assets', '~> 1.1',    require: false
+  gem 'capistrano-rails',         '~> 1.3',    require: false
+  gem 'capistrano-rvm',           '~> 0.1',    require: false
 end
 
+
+# Development and testing gems
 group :development, :test do
-  gem 'autotest-rails'
-  gem 'rspec-rails'
-  gem 'rspec-activemodel-mocks'
-  gem 'rspec-collection_matchers'
-  gem 'rspec-html-matchers'
+  # General testing gems for rspec
+  gem 'autotest-rails',            '~> 4.2'
+  gem 'rspec-rails',               '~> 3.7'
+  gem 'rspec-activemodel-mocks',   '~> 1.0'
+  gem 'rspec-collection_matchers', '~> 1.1'
+  gem 'rspec-html-matchers',       '~> 0.9'
+
+  # Check how much code is covered by tests
   gem 'simplecov', '~> 0.7.1', require: false
 
-  # webrat is needed to make some specs pass
-  gem 'webrat'
-  gem 'yard'
+  # Webrat for some acceptance tests
+  gem 'webrat', '~> 0.7'
+
+  # Documentation generation
+  gem 'yard',   '~> 0.9.12'
 end
