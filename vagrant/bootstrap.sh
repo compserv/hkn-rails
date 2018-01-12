@@ -15,8 +15,8 @@ curl -L https://get.rvm.io | bash -s stable
 source /usr/local/rvm/scripts/rvm
 
 # Install Ruby
-rvm install 2.1.2
-rvm use 2.1.2 --default
+rvm install 2.5.0
+rvm use 2.5.0 --default
 
 # Install gems
 gem install bundler
