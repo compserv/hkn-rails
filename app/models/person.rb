@@ -73,6 +73,9 @@ class Person < ActiveRecord::Base
   scope :alpha,      lambda {order('first_name, last_name')}
 
   acts_as_authentic do |c|
+    # Explicitly use SCrypt (it is the default)
+    c.crypto_provider = Authlogic::CryptoProviders::SCrypt
+
     # Options go here if you have any
     c.merge_validates_length_of_password_field_options minimum: 8
     # Allows us to use the old password hashes. Upon successfully logging in,
