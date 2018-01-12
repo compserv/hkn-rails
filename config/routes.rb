@@ -282,7 +282,7 @@ HknRails::Application.routes.draw do
     match "rsvps" => "rsvps#my_rsvps", as: :my_rsvps, via: [:get, :post]
 
     # Routes for RSVP confirmation page
-    match "confirm_rsvps/:group" => "events#confirm_rsvps_index", as: :confirm_rsvps_index, constraints: {group: /(candidates|comms)/}, via: [:get, :post], via: [:get, :post], via: [:get, :post], via: [:get, :post]
+    match "confirm_rsvps/:group" => "events#confirm_rsvps_index", as: :confirm_rsvps_index, constraints: {group: /(candidates|comms)/}, via: [:get, :post]
     match "confirm_rsvps/:group/event/:id" => "events#confirm_rsvps", as: :confirm_rsvps, constraints: {group: /(candidates|comms)/}, via: [:get, :post]
     match "confirm/:id" => "rsvps#confirm", as: :confirm_rsvp, via: [:get, :post]
     match "unconfirm/:id" => "rsvps#unconfirm", as: :unconfirm_rsvp, via: [:get, :post]
