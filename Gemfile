@@ -76,6 +76,10 @@ group :production do
   # Unicorn is a nice application server that has multiple workers, making the
   # site scale a bit better if under load
   gem 'unicorn', '~> 5.4'
+
+  # Kill unicorn workers after a certain number of requests or if they use too
+  # much memory to prevent them getting too bloated
+  gem 'unicorn-worker-killer', '~> 0.4'
 end
 
 
