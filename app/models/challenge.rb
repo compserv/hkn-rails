@@ -27,7 +27,7 @@ class Challenge < ActiveRecord::Base
   scope :pending,   lambda { where(status: PENDING) }
 
   acts_as_notification do
-    image "/images/icons/notifications/challenge.jpg"
+    image ActionController::Base.helpers.asset_path("icons/notifications/challenge.jpg")
     desc  lambda { |c| "#{c.candidate.person.full_name} requested a challenge from you" }
     url   lambda { |c| '/admin/general/confirm_challenges/' }
   end
