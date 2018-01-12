@@ -3,7 +3,7 @@ production:
     hostname: localhost
     port: 8983
     log_level: INFO
-    path: '/solr/production'
+    path: '/solr/default'
     bind_address: 127.0.0.1
     pid_dir: 'tmp/pids'
     # read_timeout: 2
@@ -14,12 +14,14 @@ development:
     hostname: localhost
     port: 8982
     log_level: INFO
-    path: /solr/development
+    path: '/solr/development'
+    pid_dir: 'tmp/pids'
 
 test:
   solr:
     hostname: localhost
     port: 8981
     log_level: WARNING
-    path: /solr/test
+    path: '/solr/test'
+    pid_dir: 'tmp/pids'
 
