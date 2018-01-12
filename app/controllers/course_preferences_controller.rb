@@ -5,7 +5,8 @@ class CoursePreferencesController < ApplicationController
       @course_preference.destroy
       respond_to do |format|
         format.html { redirect_to :back, notice: "Course removed."}
-        format.xml {head :ok }
+        format.json { render nothing: true, status: 204 }
+        format.xml { head :ok }
       end
     end
   end

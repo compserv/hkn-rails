@@ -2,8 +2,6 @@
 
 <%= render partial: 'list' %>
 
-<%= ajaxify_links %>
-
 <% if @auth['comms'] %>
   <%= link_to 'New Event', new_event_path %>
 <% end %>

@@ -1,139 +1,121 @@
-<% content_for :header do %>
-  <%# autocomplete collides with the jquery-ui so must load the jquery before autocomplete%>
-  <%# source: http://stackoverflow.com/questions/3308935/jquery-autocomplete-this-source-is-not-a-function-error%>
-  <%# solution is the second or third post%>
-
-  <%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
-  <%= javascript_include_tag "jquery-autocomplete.min" %>
-
-  <%= stylesheet_link_tag "jquery-autocomplete" %>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $.ajax({
-        url: '/admin/tutor/find_courses',
-        success: function(data) {
-          d = []
-          for(var item in data){
-            d[item] = {text: data[item]["text"], url: data[item]["url"]}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $.ajax({
+      url: '<%= admin_find_courses_path %>',
+      success: function(data) {
+        $("#course_query").autocomplete({
+          minLength: 1,
+          source: data,
+          select: function(event, ui) {
+            $(this).val(ui.item.label);
+            $("#course_id").val(ui.item.value);
+            return false;
           }
-
-          $("#course_query").autocomplete(data, {
-            formatItem: function(item) {
-              return item.text;
-            }
-          }).result(function(event, item) {
-            $("#course_id").val(item.url);
-          });
-
-        }
-      });
-
-
-      function deleteCourse() {
-        ans = confirm('Are you sure?');
-
-        if (ans) {
-          course_pref_id = this.getAttribute('pref_id');
-          $.ajax({
-            type: 'DELETE',
-            url: '/course_preferences/' + course_pref_id,
-            success: function(data) {
-              $(".course[pref_id="+course_pref_id+"]").remove();
-
-              notice = $(".message")
-
-              if (notice.length == 0) {
-                // add the whole message thing
-                $("<div id='messages' class='no-translation'><div class='message'>Course removed.</div></div>").insertBefore("#add_course_errors");
-              } else {
-                notice_el = notice[0];
-                notice_el.textContent = "Course removed.";
-              }
-            }
-          });
-        }
-      };
-
-      $("a.delete_course").click(deleteCourse);
-
-
-
-
-      $("#form").submit(function(){
-        course_id = $("#course_id").val();
-        preference_level = $("input[name=preference_level]:checked").val();
-
-        $.post("/admin/tutor/add_course",
-          { course: course_id,
-            level: preference_level,
-            course_query: $("#course_query").val(),
-          },
-          function(data) {
-            if(data[0] == 1){ //OK submission
-              course_name = data[1];
-              course_pref_id = data[2];
-              $("input[name=course_query]").val(""); //clear fields
-              $("input[name=preference_level]:checked").removeAttr("checked");
-
-              //ajax
-              ch = $("<div class='course ui-draggable' pref_id='"+
-                  course_pref_id+"'></div>");
-              ch.append($('<span class="title" course_id='+
-                  course_id+'></span>').html(course_name));
-              ch.append($('<a class="delete_course" pref_id="'+
-                  course_pref_id+'" style="float: right;" >x</a>').click(deleteCourse));
-
-              ch.draggable({ revert: true});
-
-              $(".courses#current .drop-target").append(ch);
-              $("#messages").hide("slow");
-              $("#add_course_errors").html("");
-
-
-            } else{
-              $("#add_course_errors").html(data[1]);
-            }
-
-          }
-
-        );
-       return false;
-      });
-
+        });
+      }
     });
-  </script>
 
-  <style type="text/css">
-      .courses {
-          width: 30%;
-          float: left;
+
+    function deleteCourse() {
+      ans = confirm('Are you sure?');
+
+      if (ans) {
+        course_pref_id = this.getAttribute('pref_id');
+        $.ajax({
+          type: 'DELETE',
+          dataType: 'json',
+          url: '/course_preferences/' + course_pref_id,
+          success: function(_) {
+            $(".course[pref_id=" + course_pref_id + "]").remove();
+
+            notice = $(".message")
+
+            if (notice.length == 0) {
+              // add the whole message thing
+              $("<div id='messages' class='no-translation'><div class='message'>Course removed.</div></div>").insertBefore("#add_course_errors");
+            } else {
+              notice_el = notice[0];
+              notice_el.textContent = "Course removed.";
+            }
+          }
+        });
       }
+    };
 
-      .courses .drop-target {
-          min-height: 100px;
-          width: 90%;
-          display: inline-block;
-      }
-
-      .course {
-          margin: 2px;
-          background: #EEE;
-          border-radius: 5px;
-          text-align: center;
-          width: auto;
-          list-style-type: none;
-          cursor: default;
-          position: relative;
-          float: left;
-          width: 7em;
-
-      .course * {
-          display: inline;
-      }
+    $("a.delete_course").click(deleteCourse);
 
 
-  </style>
-<% end %>
+    $("#form").submit(function(){
+      course_id = $("#course_id").val();
+      preference_level = $("input[name=preference_level]:checked").val();
+
+      $.post("/admin/tutor/add_course",
+        { course: course_id,
+          level: preference_level,
+          course_query: $("#course_query").val(),
+        },
+        function(data) {
+          if(data[0] == 1){ //OK submission
+            course_name = data[1];
+            course_pref_id = data[2];
+            $("input[name=course_query]").val(""); //clear fields
+            $("input[name=preference_level]:checked").removeAttr("checked");
+
+            //ajax
+            ch = $("<div class='course ui-draggable' pref_id='"+
+                course_pref_id+"'></div>");
+            ch.append($('<span class="title" course_id='+
+                course_id+'></span>').html(course_name));
+            ch.append($('<a class="delete_course" pref_id="'+
+                course_pref_id+'" style="float: right;" >x</a>').click(deleteCourse));
+
+            ch.draggable({ revert: true});
+
+            $(".courses#current .drop-target").append(ch);
+            $("#messages").hide("slow");
+            $("#add_course_errors").html("");
+
+
+          } else{
+            $("#add_course_errors").html(data[1]);
+          }
+
+        }
+
+      );
+     return false;
+    });
+  });
+</script>
+
+<style type="text/css">
+    .courses {
+        width: 30%;
+        float: left;
+    }
+
+    .courses .drop-target {
+        min-height: 100px;
+        width: 90%;
+        display: inline-block;
+    }
+
+    .course {
+        margin: 2px;
+        background: #EEE;
+        border-radius: 5px;
+        text-align: center;
+        width: auto;
+        list-style-type: none;
+        cursor: default;
+        position: relative;
+        float: left;
+        width: 7em;
+
+    .course * {
+        display: inline;
+    }
+</style>
 
 <div id="add_course_errors"></div>
 <h1>Sign up for classes</h1>

@@ -2,8 +2,6 @@
 
 <%= render partial: 'calendar' %>
 
-<%= ajaxify_links %>
-
 <div style="float:right;text-align:right">
   <%= link_to "public event feed", events_ical_url({ format: :ics, protocol: "webcal" }) %>
   <% if @current_user %>

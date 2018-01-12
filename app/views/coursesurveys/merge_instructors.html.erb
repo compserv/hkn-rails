@@ -1,36 +1,38 @@
-<% content_for :header do %>
-  <%= javascript_include_tag "jquery-autocomplete.min" %>
-  <%= stylesheet_link_tag "jquery-autocomplete" %>
+<script type="text/javascript">
+  $(document).ready( function() {
+    $.ajax({
+      url: "<%= coursesurveys_instructor_ids_path %>",
+      success: function(data) {
+        <%- [0,1].each do |i| -%>
+          $('#ibox<%=i%>').autocomplete({
+            minLength: 1,
+            source: data,
+            select: function(event, ui) {
+              $(this).val(ui.item.label);
+              $('#id_<%=i%>')[0].value = ui.item.value;
+              return false;
+            }
+          });
 
-  <script type="text/javascript">
-    profname = function(prof) { return prof.name; }
-    $(document).ready( function() {
-      $.ajax({ url: <%= raw coursesurveys_instructor_ids_path.inspect %>,
-               success: function(data) {
-               <%-[0,1].each do |i|-%>
-               $('#ibox<%=i%>').
-                 autocomplete(data, {formatItem: profname} ).
-                 result( function(event,item) {
-                   $('#id_<%=i%>')[0].value = item.id;
-                   $('#ibox<%=i%>')[0].disabled = true;
-                 });
-               $('#ibox<%=i%>').keypress(function(event){if(event.which == 13) event.preventDefault();});
-<%-end-%> }
-             });
-      $("#submit").click( function() {
-      });
+          $('#ibox<%=i%>').keypress(function(event) {
+            // Ignore the enter key being pressed
+            if(event.which == 13) event.preventDefault();
+          });
+        <%- end -%>
+      }
+    });
 
-      });
-  </script>
+    $("#submit").click( function() {});
 
-  <style type="text/css">
-    #instructors .inst {
-      float: left;
-      width: 45%;
-    }
-  </style>
+  });
+</script>
 
-<%- end # header -%>
+<style type="text/css">
+  #instructors .inst {
+    float: left;
+    width: 45%;
+  }
+</style>
 
 <h1>Merging instructors</h1>
 

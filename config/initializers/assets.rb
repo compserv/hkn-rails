@@ -1,7 +1,6 @@
 Rails.application.config.assets.precompile += %w(
-    application.js jquery-autocomplete.min.js piglatin.js moonspeak.js acid.js
-    b.js kappa.js application.scss jquery-autocomplete.css mirror.css print.css
-    *.pdf
+    application.js piglatin.js moonspeak.js acid.js b.js kappa.js
+    application.scss mirror.css print.css *.pdf
 )
 
 # These are per-controller stylesheets or javascripts

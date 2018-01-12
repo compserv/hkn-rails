@@ -1,50 +1,49 @@
-<% content_for :header do %>
-  <%= javascript_include_tag "jquery-autocomplete.min" %>
-  <%= stylesheet_link_tag "jquery-autocomplete" %>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $.ajax({
-        url: '<%= find_officers_path %>',
-        success: function(data) {
-          $("#officer").autocomplete(data, {
-            formatItem: function(item) {
-              return item.name + ' ' + item.email;
-            }
-          }).result(function(event, item){
-            $('#officer_id').val(item.id);
-          });
-        }
-      });
-
-      $("#challenge_submit").click(function(){
-        officer_name = $("input[name=officer_id]").val();
-        challenge_name = $("input[name=challenge_name]").val();
-        description = $("textarea[name=description]").val();
-
-        $.post("<%= request_challenge_path %>",
-          { officer_id: officer_name, name: challenge_name, description: description},
-          function(data) {
-            //console.log(data);
-            if(data[0] == true){ //OK submission
-              $("#request_challenge_errors").empty();
-              $("input[name=officer]").val(""); //clear fields
-              $("input[name=challenge_name]").val("");
-              $("textarea[name=description]").val("");
-
-              $("#challenges").load("<%= update_challenges_path %>");
-              //$("#challenges").append("<%= escape_javascript(render partial: "challenges") %>");
-
-            } else{
-              $("#request_challenge_errors").html(data[1]);
-            }
-
+<script type="text/javascript">
+  $(document).ready(function() {
+    $.ajax({
+      url: '<%= find_officers_path %>',
+      success: function(data) {
+        $("#officer").autocomplete({
+          minLength: 1,
+          source: data,
+          select: function(event, ui) {
+            $(this).val(ui.item.label);
+            $('#officer_id').val(ui.item.value);
+            return false;
           }
-        );
-      });
-
+        });
+      }
     });
-  </script>
-<% end %>
+
+    $("#challenge_submit").click(function(){
+      officer_name = $("input[name=officer_id]").val();
+      challenge_name = $("input[name=challenge_name]").val();
+      description = $("textarea[name=description]").val();
+
+      $.post("<%= request_challenge_path %>",
+        { officer_id: officer_name, name: challenge_name, description: description},
+        function(data) {
+          //console.log(data);
+          if(data[0] == true){ //OK submission
+            $("#request_challenge_errors").empty();
+            $("input[name=officer]").val(""); //clear fields
+            $("input[name=challenge_name]").val("");
+            $("textarea[name=description]").val("");
+
+            $("#challenges").load("<%= update_challenges_path %>");
+            //$("#challenges").append("<%= escape_javascript(render partial: "challenges") %>");
+
+          } else{
+            $("#request_challenge_errors").html(data[1]);
+          }
+
+        }
+      );
+    });
+
+  });
+</script>
+
 <div id="sidebar" class="trans-bg">
   <h2>Upcoming Events <%= link_to "(see calendar)", events_calendar_path %></h2>
   <%= render partial: "events/upcoming" %>

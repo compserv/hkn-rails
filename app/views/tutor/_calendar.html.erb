@@ -10,7 +10,6 @@
   </ul>
   <div class="clear"></div>
   <span class="title"><%= @start_date.strftime('%B %Y') %></span>
-  <%= spinner %>
 
   <div class="ajax-controls">
     <span style="float:left;"><%= link_to "Prev Month", { month: @start_date.prev_month.month, year: @start_date.prev_month.year } %></span>

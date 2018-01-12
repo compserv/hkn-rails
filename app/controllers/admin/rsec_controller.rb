@@ -41,7 +41,7 @@ class Admin::RsecController < Admin::AdminController
   end
 
   def find_members
-    render json: Group.find_by_name("candplus").people.map { |c| { name: c.full_name, id: c.id, email: c.email } }
+    render json: Group.find_by_name("candplus").people.map { |c| { label: "#{c.full_name} #{c.email}", value: c.id } }
   end
 
   # POST add_elected/:id/:position

@@ -498,7 +498,7 @@ class Admin::TutorController < Admin::AdminController
   end
 
   def find_courses
-    render json: Course.all.map {|c| {text: c.course_abbr, url: c.id } }
+    render json: Course.all.map {|c| { label: c.course_abbr, value: c.id } }
   end
 
   def add_course

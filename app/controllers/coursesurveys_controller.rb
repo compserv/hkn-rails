@@ -506,7 +506,7 @@ class CoursesurveysController < ApplicationController
 
   # GET /instructor_ids
   def instructor_ids
-     render json: Instructor.order('last_name, first_name').collect {|i| {id: i.id, name: i.full_name_r} }
+     render json: Instructor.order('last_name, first_name').collect {|i| { label: i.full_name_r, value: i.id } }
   end
 
   # GET /merge

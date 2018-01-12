@@ -1,7 +1,4 @@
 <% content_for :header do %>
-  <%= javascript_include_tag "jquery-autocomplete.min" %>
-  <%= stylesheet_link_tag "jquery-autocomplete" %>
-
   <style type="text/css">
       .group {
           margin-bottom: 5em;
@@ -14,21 +11,22 @@
   </style>
 
   <script type="text/javascript">
-      $(document).ready(function() {
-          $.ajax({
-              url: 'find_members',
-              success: function(data) {
-                  $(".find_user").autocomplete(data, {
-                      formatItem: function(item) {
-                          return item.name + ' ' + item.email;
-                      }
-                  }).result(function(event, item) {
-                      // $("#user_id").val(item.id);
-                      $(this).parent().find(".user-id").val(item.id);
-                  });
-              }
+    $(document).ready(function() {
+      $.ajax({
+        url: '<%= admin_rsec_find_members_path %>',
+        success: function(data) {
+          $(".find_user").autocomplete({
+            minLength: 1,
+            source: data,
+            select: function(event, ui) {
+              $(this).val(ui.item.label);
+              $(this).parent().find(".user-id").val(ui.item.value);
+              return false;
+            }
           });
+        }
       });
+    });
   </script>
 <% end %>
 

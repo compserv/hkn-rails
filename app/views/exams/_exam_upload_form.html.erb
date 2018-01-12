@@ -1,34 +1,24 @@
-<% content_for :header do %>
-  <%= javascript_include_tag "jquery-autocomplete.min" %>
-  <%= stylesheet_link_tag "jquery-autocomplete" %>
-
-  <script type="text/javascript">
-    $(document).ready(function() {
-        $.ajax({
-          url: '/admin/tutor/find_courses',
-          success: function(data) {
-            d = []
-            for(var item in data) {
-              d[item] = {text: data[item]["text"], url: data[item]["url"]}
-            }
-
-            $("#course_query").autocomplete(data, {
-              formatItem: function(item) {
-                return item.text;
-              }
-            }).result(function(event, item) {
-              $("#course_id").attr("value", item.url);
-            });
+<script type="text/javascript">
+  $(document).ready(function() {
+    $.ajax({
+      url: '<%= admin_find_courses_path %>',
+      success: function(data) {
+        $("#course_query").autocomplete({
+          minLength: 1,
+          source: data,
+          select: function(event, ui) {
+            $(this).val(ui.item.label);
+            $("#course_id").attr("value", ui.item.value);
+            return false;
           }
         });
-      });
-  </script>
+      }
+    });
+  });
+</script>
 
-
-<% end %>
 
 <%= form_for @exam, url: :exams_create ,html: { multipart: true } do |f| %>
-
   <div>
     <div id="course_select">
       <%= label_tag "Search for class:" %>

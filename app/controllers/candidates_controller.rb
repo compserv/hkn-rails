@@ -43,7 +43,7 @@ class CandidatesController < ApplicationController
   end
 
   def find_officers
-    render json: Person.current_comms.map { |p| { name: p.full_name, id: p.id, email: p.email }}
+    render json: Person.current_comms.map { |p| { label: "#{p.full_name} #{p.email}", value: p.id }}
   end
 
   def application

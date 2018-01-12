@@ -7,7 +7,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require d3
-//= require jquery.history
 //= require common
 //= require navigation
 //= require quick-rsvp
