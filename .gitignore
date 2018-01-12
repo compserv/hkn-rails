@@ -34,9 +34,7 @@ elections_hknmod
 hknmod.py
 log
 run_hknmod
-solr/default/
-solr/development/
-solr/pids/
-solr/production/
-solr/test/
+solr/development/data
+solr/production/data
+solr/test/data
 tmp
