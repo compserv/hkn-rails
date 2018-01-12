@@ -70,6 +70,9 @@ group :production do
   # alongside) spamming emails. It also records deploys, which is nice
   gem 'rollbar', '~> 2.15'
 
+  # JS compression and minification for production
+  gem 'uglifier', '~> 4.1'
+
   # Unicorn is a nice application server that has multiple workers, making the
   # site scale a bit better if under load
   gem 'unicorn', '~> 5.4'

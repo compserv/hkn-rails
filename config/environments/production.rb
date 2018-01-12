@@ -17,8 +17,11 @@ HknRails::Application.configure do
     end end
   end
 
-  # Compress JavaScripts and CSS
-  config.assets.compress = true
+  # Compress JavaScripts and CSS.
+  # The sass-rails gem is automatically used for CSS compression if included in Gemfile and
+  # no config.assets.css_compressor option is set.
+  config.assets.js_compressor = :uglifier
+  # config.assets.css_compressor = :sass
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
   config.assets.compile = true
