@@ -20,6 +20,9 @@ class HomeController < ApplicationController
       @tutoring_message = prop.tutoring_message
     end
 
+    # Temporary notice for the Spring 2018 decal
+    flash.now[:notice] = 'Interested in learning more about EECS at Berkeley or what classes to take? <a href="https://decal.berkeley.edu/courses/4352">Apply for our 1-unit DeCal this semester</a>! Open for all majors.'.html_safe
+
     # Only respond with HTML to not error when other formats are requested
     respond_to :html
   end
