@@ -58,9 +58,6 @@
 
 <%# Admin functionality for manipulating groups %>
 <%- if @allow_edit -%>
-<%- content_for :header do -%>
-<%= javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js' %>
-<%- end -%>
 
 <%= link_to "Save", '#', onclick: 'updateGroups(); return false;' %>
 
@@ -89,7 +86,7 @@ updateGroups = function() {
   $.post(
     '<%= update_groups_person_path(@person) %>',
     {
-      groups : $.map( $('.my.groups .group'), function(e){ return e.innerHTML }).join(' ')
+      groups : $.map($('.my.groups .group'), function(e) { return e.innerHTML }).join(' ')
     },
     function(data, status, xhr) {
       window.location.reload();
@@ -104,8 +101,8 @@ $(function() {
     hoverClass : "ui-state-hover",
     accept     : ":not(.ui-sortable-helper)",
     drop       : function( event, ui ) {
-                   $( this ).find( ".placeholder" ).remove();
-                   ui.draggable.detach().appendTo( this ).removeAttr('style');
+      $(this).find( ".placeholder" ).remove();
+      ui.draggable.detach().appendTo(this).removeAttr('style');
     }
   });
 
