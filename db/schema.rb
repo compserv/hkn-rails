@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306022053) do
+ActiveRecord::Schema.define(version: 20180131074248) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -462,8 +462,8 @@ ActiveRecord::Schema.define(version: 20170306022053) do
   end
 
   create_table "resumes", force: true do |t|
-    t.decimal  "overall_gpa"
-    t.decimal  "major_gpa"
+    t.decimal  "overall_gpa",         precision: 10, scale: 4
+    t.decimal  "major_gpa",           precision: 10, scale: 4
     t.text     "resume_text"
     t.integer  "graduation_year"
     t.string   "graduation_semester"
