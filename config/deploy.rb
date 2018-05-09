@@ -4,7 +4,7 @@ require 'yaml'
 lock "3.10.1"
 
 set :application, 'hkn-rails'
-set :repo_url, 'git@github.com:compserv/hkn-rails.git'
+set :repo_url, 'git@github.com:jvperrin/hkn-rails.git'
 
 set :rails_env, 'production'
 
