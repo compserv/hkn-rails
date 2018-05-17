@@ -5,11 +5,11 @@ class Admin::BridgeController < Admin::AdminController
   end
 
   def photo_upload
-    @Officers = Committeeship.current.map(&:person).uniq
+    @officers = Committeeship.current.map(&:person).uniq
   end
 
   def photo_upload_post
-    @Officers = Committeeship.current.officers.map(&:person)
+    @officers = Committeeship.current.map(&:person).uniq
     p = Person.find_by_id(params[:person][:id])
     file_name = "public/pictures/#{p.username}.png"
 
