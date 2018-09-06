@@ -1,6 +1,6 @@
 #!/bin/bash -e
 . ~/.rvm/scripts/rvm
-cd ~/hkn-rails/prod/current
+cd $(dirname $0)
 RAILS_ENV=production \
       exec bundle exec unicorn_rails \
-      -c ~/hkn-rails/prod/current/config/unicorn/prod.rb
+      -c ./config/unicorn/prod.rb
