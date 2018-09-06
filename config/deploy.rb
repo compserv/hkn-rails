@@ -14,6 +14,9 @@ set :deploy_via, :remote_cache
 
 set :ssh_options, forward_agent: true
 
+# RVM config
+set :rvm_ruby_version, '2.5.1'
+
 # Rollbar config
 set :rollbar_env,  proc { fetch :stage }
 set :rollbar_role, proc { :app }
