@@ -39,6 +39,36 @@ again, run `vagrant up`.
 [virtualbox]: https://www.virtualbox.org/wiki/Downloads
 [vagrant]: http://www.vagrantup.com/downloads.html
 
+## Deploying
+
+First, ensure that your dev environment is setup:
+
+```sh
+bundle install
+```
+
+Then deploy to the `production` target with:
+
+```sh
+bundle exec cap production deploy
+```
+
+## Editing the Database
+
+Once you've ssh'd into the OCF apphost server (`hkn@apphost.ocf.berkeley.edu`),
+cd into the current production deploy folder and run:
+
+```sh
+bundle exec rails console -e production
+```
+
+This will open a Ruby interactive shell with access to the database model.
+
+If you would like to sandbox your session (roll back all changes once you finish), run:
+
+```sh
+bundle exec rails console -e production
+```
 
 ## Making Backups
 
