@@ -67,7 +67,7 @@ This will open a Ruby interactive shell with access to the database model.
 If you would like to sandbox your session (roll back all changes once you finish), run:
 
 ```sh
-bundle exec rails console -e production
+bundle exec rails console -e production --sandbox
 ```
 
 ## Making Backups
