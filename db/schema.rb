@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "alumnis", force: true do |t|
+  create_table "alumnis", force: :cascade do |t|
     t.string   "grad_semester"
     t.string   "grad_school"
     t.string   "job_title"
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "mailing_list"
   end
 
-  create_table "announcements", force: true do |t|
+  create_table "announcements", force: :cascade do |t|
     t.string   "title"
     t.string   "body"
     t.integer  "person_id"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "availabilities", force: true do |t|
+  create_table "availabilities", force: :cascade do |t|
     t.integer  "tutor_id"
     t.integer  "preferred_room"
     t.datetime "created_at"
@@ -51,21 +51,21 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.integer  "wday",                         null: false
   end
 
-  create_table "badges", force: true do |t|
+  create_table "badges", force: :cascade do |t|
     t.string   "name"
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "badges_people", id: false, force: true do |t|
+  create_table "badges_people", id: false, force: :cascade do |t|
     t.integer "badge_id"
     t.integer "person_id"
   end
 
   add_index "badges_people", ["badge_id", "person_id"], name: "index_badges_people_on_badge_id_and_person_id", unique: true, using: :btree
 
-  create_table "blocks", force: true do |t|
+  create_table "blocks", force: :cascade do |t|
     t.integer  "rsvp_cap"
     t.datetime "start_time"
     t.datetime "end_time"
@@ -74,14 +74,14 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.integer  "event_id"
   end
 
-  create_table "blocks_rsvps", id: false, force: true do |t|
+  create_table "blocks_rsvps", id: false, force: :cascade do |t|
     t.integer "block_id"
     t.integer "rsvp_id"
   end
 
   add_index "blocks_rsvps", ["block_id", "rsvp_id"], name: "index_blocks_rsvps_on_block_id_and_rsvp_id", unique: true, using: :btree
 
-  create_table "calnet_users", force: true do |t|
+  create_table "calnet_users", force: :cascade do |t|
     t.string   "uid"
     t.string   "name"
     t.boolean  "authorized_course_surveys"
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "candidates", force: true do |t|
+  create_table "candidates", force: :cascade do |t|
     t.integer  "person_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -100,7 +100,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "currently_initiating"
   end
 
-  create_table "challenges", force: true do |t|
+  create_table "challenges", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
     t.boolean  "status"
@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "committee_preferences", force: true do |t|
+  create_table "committee_preferences", force: :cascade do |t|
     t.integer  "group_id",     null: false
     t.integer  "candidate_id", null: false
     t.integer  "rank"
@@ -118,7 +118,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "committeeships", force: true do |t|
+  create_table "committeeships", force: :cascade do |t|
     t.string   "committee"
     t.string   "semester"
     t.string   "title"
@@ -127,7 +127,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.integer  "person_id"
   end
 
-  create_table "companies", force: true do |t|
+  create_table "companies", force: :cascade do |t|
     t.string   "name"
     t.text     "address"
     t.string   "website"
@@ -138,7 +138,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.string   "single_access_token", default: "", null: false
   end
 
-  create_table "contacts", force: true do |t|
+  create_table "contacts", force: :cascade do |t|
     t.string   "name"
     t.string   "email"
     t.string   "phone"
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.string   "cellphone"
   end
 
-  create_table "course_charts", force: true do |t|
+  create_table "course_charts", force: :cascade do |t|
     t.integer  "course_id"
     t.integer  "bias_x"
     t.integer  "bias_y"
@@ -161,7 +161,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
 
   add_index "course_charts", ["course_id"], name: "index_course_charts_on_course_id", using: :btree
 
-  create_table "course_preferences", force: true do |t|
+  create_table "course_preferences", force: :cascade do |t|
     t.integer  "course_id"
     t.integer  "tutor_id"
     t.integer  "level"
@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
 
   add_index "course_preferences", ["course_id", "tutor_id"], name: "index_course_preferences_on_course_id_and_tutor_id", unique: true, using: :btree
 
-  create_table "course_prereqs", force: true do |t|
+  create_table "course_prereqs", force: :cascade do |t|
     t.integer  "course_id",      null: false
     t.integer  "prereq_id",      null: false
     t.boolean  "is_recommended"
@@ -179,16 +179,16 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "course_types", force: true do |t|
+  create_table "course_types", force: :cascade do |t|
     t.float    "chart_pref_x"
     t.float    "chart_pref_y"
-    t.string   "color",        limit: nil
-    t.string   "name",         limit: nil
+    t.string   "color"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "courses", force: true do |t|
+  create_table "courses", force: :cascade do |t|
     t.string   "suffix",         default: ""
     t.string   "prefix",         default: ""
     t.string   "name"
@@ -205,7 +205,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
 
   add_index "courses", ["course_type_id"], name: "index_courses_on_course_type_id", using: :btree
 
-  create_table "coursesurveys", force: true do |t|
+  create_table "coursesurveys", force: :cascade do |t|
     t.integer  "max_surveyors",  default: 3
     t.integer  "status",         default: 0, null: false
     t.datetime "scheduled_time"
@@ -214,21 +214,21 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.integer  "klass_id",                   null: false
   end
 
-  create_table "coursesurveys_people", id: false, force: true do |t|
+  create_table "coursesurveys_people", id: false, force: :cascade do |t|
     t.integer "coursesurvey_id"
     t.integer "person_id"
   end
 
   add_index "coursesurveys_people", ["coursesurvey_id", "person_id"], name: "index_coursesurveys_people_on_coursesurvey_id_and_person_id", unique: true, using: :btree
 
-  create_table "departments", force: true do |t|
+  create_table "departments", force: :cascade do |t|
     t.string   "name"
     t.string   "abbr"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "dept_tour_requests", force: true do |t|
+  create_table "dept_tour_requests", force: :cascade do |t|
     t.string   "name"
     t.datetime "date"
     t.datetime "submitted"
@@ -240,7 +240,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "responded",  default: false
   end
 
-  create_table "elections", force: true do |t|
+  create_table "elections", force: :cascade do |t|
     t.integer  "person_id",                        null: false
     t.string   "position"
     t.integer  "sid"
@@ -256,7 +256,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.string   "desired_username"
   end
 
-  create_table "eligibilities", force: true do |t|
+  create_table "eligibilities", force: :cascade do |t|
     t.string   "first_name"
     t.string   "last_name"
     t.string   "middle_initial"
@@ -277,11 +277,11 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "event_types", force: true do |t|
+  create_table "event_types", force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "events", force: true do |t|
+  create_table "events", force: :cascade do |t|
     t.string   "name",                                     null: false
     t.string   "slug"
     t.string   "location"
@@ -297,7 +297,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "markdown",                 default: false
   end
 
-  create_table "exams", force: true do |t|
+  create_table "exams", force: :cascade do |t|
     t.integer  "klass_id",    null: false
     t.integer  "course_id",   null: false
     t.string   "filename",    null: false
@@ -308,7 +308,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "groups", force: true do |t|
+  create_table "groups", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
     t.datetime "created_at"
@@ -316,20 +316,20 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "committee",   default: false, null: false
   end
 
-  create_table "groups_people", id: false, force: true do |t|
+  create_table "groups_people", id: false, force: :cascade do |t|
     t.integer "group_id"
     t.integer "person_id"
   end
 
   add_index "groups_people", ["group_id", "person_id"], name: "index_groups_people_on_group_id_and_person_id", unique: true, using: :btree
 
-  create_table "indrel_event_types", force: true do |t|
+  create_table "indrel_event_types", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "indrel_events", force: true do |t|
+  create_table "indrel_events", force: :cascade do |t|
     t.datetime "time"
     t.integer  "location_id"
     t.integer  "indrel_event_type_id"
@@ -345,7 +345,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "instructors", force: true do |t|
+  create_table "instructors", force: :cascade do |t|
     t.string   "last_name",                   null: false
     t.string   "picture"
     t.string   "title"
@@ -360,7 +360,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.string   "first_name"
   end
 
-  create_table "instructorships", force: true do |t|
+  create_table "instructorships", force: :cascade do |t|
     t.integer  "klass_id"
     t.integer  "instructor_id"
     t.boolean  "ta",                            null: false
@@ -372,7 +372,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
 
   add_index "instructorships", ["klass_id", "ta"], name: "index_instructorships_on_klass_id_and_ta", using: :btree
 
-  create_table "klasses", force: true do |t|
+  create_table "klasses", force: :cascade do |t|
     t.integer  "course_id",    null: false
     t.string   "semester",     null: false
     t.string   "location"
@@ -384,7 +384,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "locations", force: true do |t|
+  create_table "locations", force: :cascade do |t|
     t.string   "name"
     t.integer  "capacity"
     t.datetime "created_at"
@@ -392,14 +392,14 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.text     "comments"
   end
 
-  create_table "mobile_carriers", force: true do |t|
+  create_table "mobile_carriers", force: :cascade do |t|
     t.string   "name",       null: false
     t.string   "sms_email",  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "people", force: true do |t|
+  create_table "people", force: :cascade do |t|
     t.string   "first_name",                          null: false
     t.string   "last_name",                           null: false
     t.string   "username",                            null: false
@@ -429,7 +429,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.string   "graduation"
   end
 
-  create_table "properties", force: true do |t|
+  create_table "properties", force: :cascade do |t|
     t.string   "semester",             default: "20103"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -440,7 +440,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "coursesurveys_active", default: false,   null: false
   end
 
-  create_table "quiz_responses", force: true do |t|
+  create_table "quiz_responses", force: :cascade do |t|
     t.string   "number",                       null: false
     t.string   "response"
     t.integer  "candidate_id",                 null: false
@@ -449,7 +449,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "correct",      default: false, null: false
   end
 
-  create_table "resume_books", force: true do |t|
+  create_table "resume_books", force: :cascade do |t|
     t.string   "title"
     t.string   "pdf_file"
     t.string   "iso_file"
@@ -461,7 +461,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "resumes", force: true do |t|
+  create_table "resumes", force: :cascade do |t|
     t.decimal  "overall_gpa",         precision: 10, scale: 4
     t.decimal  "major_gpa",           precision: 10, scale: 4
     t.text     "resume_text"
@@ -471,12 +471,12 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.integer  "person_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "included",            default: true, null: false
+    t.boolean  "included",                                     default: true, null: false
   end
 
   add_index "resumes", ["person_id"], name: "index_resumes_on_person_id", using: :btree
 
-  create_table "rsvps", force: true do |t|
+  create_table "rsvps", force: :cascade do |t|
     t.string   "confirmed"
     t.text     "confirm_comment"
     t.integer  "person_id",       null: false
@@ -487,7 +487,17 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.datetime "updated_at"
   end
 
-  create_table "shortlinks", force: true do |t|
+  create_table "sessions", force: :cascade do |t|
+    t.string   "session_id", null: false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
+  create_table "shortlinks", force: :cascade do |t|
     t.string   "in_url"
     t.text     "out_url"
     t.integer  "http_status", default: 301
@@ -498,7 +508,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
 
   add_index "shortlinks", ["in_url"], name: "index_shortlinks_on_in_url", using: :btree
 
-  create_table "slots", force: true do |t|
+  create_table "slots", force: :cascade do |t|
     t.integer  "room"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -506,14 +516,14 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.integer  "wday",       null: false
   end
 
-  create_table "slots_tutors", id: false, force: true do |t|
+  create_table "slots_tutors", id: false, force: :cascade do |t|
     t.integer "slot_id"
     t.integer "tutor_id"
   end
 
   add_index "slots_tutors", ["slot_id", "tutor_id"], name: "index_slots_tutors_on_slot_id_and_tutor_id", unique: true, using: :btree
 
-  create_table "static_pages", force: true do |t|
+  create_table "static_pages", force: :cascade do |t|
     t.integer  "parent_id"
     t.text     "content"
     t.string   "title",      null: false
@@ -525,14 +535,14 @@ ActiveRecord::Schema.define(version: 20180131074248) do
   add_index "static_pages", ["parent_id"], name: "index_static_pages_on_parent_id", using: :btree
   add_index "static_pages", ["url"], name: "index_static_pages_on_url", using: :btree
 
-  create_table "suggestions", force: true do |t|
+  create_table "suggestions", force: :cascade do |t|
     t.integer  "person_id"
     t.text     "suggestion"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "survey_answers", force: true do |t|
+  create_table "survey_answers", force: :cascade do |t|
     t.integer "survey_question_id",             null: false
     t.string  "frequencies",                    null: false
     t.float   "mean"
@@ -547,7 +557,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
   add_index "survey_answers", ["instructorship_id"], name: "index_survey_answers_on_instructorship_id", using: :btree
   add_index "survey_answers", ["survey_question_id"], name: "index_survey_answers_on_survey_question_id", using: :btree
 
-  create_table "survey_questions", force: true do |t|
+  create_table "survey_questions", force: :cascade do |t|
     t.string  "text",                      null: false
     t.boolean "important", default: false
     t.boolean "inverted",  default: false
@@ -555,7 +565,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.integer "keyword",   default: 0
   end
 
-  create_table "transactions", force: true do |t|
+  create_table "transactions", force: :cascade do |t|
     t.integer  "amount",         null: false
     t.string   "charge_id",      null: false
     t.text     "description"
@@ -566,7 +576,7 @@ ActiveRecord::Schema.define(version: 20180131074248) do
 
   add_index "transactions", ["charge_id"], name: "index_transactions_on_charge_id", unique: true, using: :btree
 
-  create_table "tutors", force: true do |t|
+  create_table "tutors", force: :cascade do |t|
     t.integer  "person_id",              null: false
     t.string   "languages"
     t.datetime "created_at"
