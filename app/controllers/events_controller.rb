@@ -73,7 +73,8 @@ class EventsController < ApplicationController
   def confirm_rsvps_index
     authorize ['pres', 'vp']
     @group = params[:group] || "candidates"
-    types = ["Mandatory for Candidates", "Big Fun", "Fun", "Service"]
+    # types = EventType.select(:name).distinct
+    types = ["Mandatory for Candidates", "Big Fun", "Fun", "Service", "Prodev", "Speaker Series", "Interactivities"]
 
     #Filters for candidate events (enumerated in "types" variable)
     candEventTypes = EventType.where("name IN (?)", types)
