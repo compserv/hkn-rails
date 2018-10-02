@@ -76,6 +76,9 @@ def initialize_eventtypes
     {'name'=> 'Exam'},
     {'name'=> 'Review Session'},
     {'name'=> 'Miscellaneous'},
+    {'name'=> 'Prodev'},
+    {'name'=> 'Speaker Series'},
+    {'name'=> 'Interactivities'},
   ]
 
   event_types.each do |event_type|
