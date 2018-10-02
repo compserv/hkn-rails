@@ -21,5 +21,8 @@
 .calendar .service { background-color: #8888FF; }
 .calendar .miscellaneous { background-color: #FF8000; }
 .calendar .exam { background-color: #FF6633; }
-.calendar .review-session { background-color: #3366FF; }
+.calendar .review-session { background-color: #00B0DA; }
+.calendar .prodev { background-color: #AAAAAA; }
+.calendar .speaker-series { background-color: #C4820E; }
+.calendar .interactivities { background-color: #EE1F60; }
 .calendar li { display: inline; border-radius: 3px; padding: 5px; }
