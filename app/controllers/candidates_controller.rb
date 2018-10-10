@@ -26,7 +26,9 @@ class CandidatesController < ApplicationController
       @done = Hash.new(false) #events, challenges, forms, resume, quiz, course_surveys
 
       @done["events"] = !@status.has_value?(false)
-      @done["challenges"] = @current_user.candidate.challenges.select {|c| c.status }.length >= 3
+      done_challenges = @current_user.candidate.challenges.select {|c| c.status }.length
+      done_interactivities = @rsvps["Interactivities"].select {|r| r.confirmed == 't' }.length
+      @done["challenges"] = done_challenges + done_interactivities >= 3
       @done["resume"] = @current_user.resumes.length >= 0
       @done["quiz"] = @current_user.candidate.quiz_score >= 18
       @done["forms"] = (@done["resume"] and @done["quiz"])

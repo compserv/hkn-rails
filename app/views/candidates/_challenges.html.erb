@@ -1,4 +1,6 @@
 <% @challenges = @current_user.candidate.challenges %>
+<% @interact = @rsvps["Interactivities"]%>
+<h4>Officer Challenges</h4>
 <% if @challenges.length > 0 %>
   <% for challenge in @challenges %>
     <li>
@@ -9,5 +11,14 @@
     </li>
   <% end %>
 <% else %>
-  No confirmations requested
+<p>No confirmations requested</p>
+<% end %>
+<h4>Officer Hours</h4>
+<% if @interact.length > 0 %>
+  <% for rsvp in @interact  %>
+    <span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span>
+    <%= rsvp.event.name %>
+  <% end %>
+<% else %>
+<p>No officer hours rsvp'd</p>
 <% end %>
