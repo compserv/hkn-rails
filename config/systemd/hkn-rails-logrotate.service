@@ -1,0 +1,7 @@
+[Unit]
+Description=hkn-rails logrotate
+ConditionHost=werewolves
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/logrotate -s /home/h/hk/hkn/logrotate/status /home/h/hk/hkn/logrotate/logrotate.conf
