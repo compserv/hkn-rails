@@ -50,6 +50,7 @@ class Candidate < ActiveRecord::Base
     req["Fun"] = 3
     req["Big Fun"] = 1
     req["Service"] = 1
+    req["Prodev/Speaker Series"] = 1
     return req
   end
 
@@ -64,6 +65,8 @@ class Candidate < ActiveRecord::Base
     done["Fun"] = 0
     done["Big Fun"] = 0
     done["Service"] = 0
+    done["Prodev"] = 0
+    done["Speaker Series"] = 0
 
     for rsvp in rsvps #Record finished requirements
       type = rsvp.event.event_type.name
@@ -87,7 +90,11 @@ class Candidate < ActiveRecord::Base
     reqs = event_requirements
     reqs.each do |key, value|
       sorted_rsvps[key] = [] if sorted_rsvps[key] == nil
-      assign = done[key] ? done[key] >= value : false
+      if key == "Prodev/Speaker Series"
+        p_and_ss = done["Prodev"] + done["Speaker Series"]
+        assign = p_and_ss ? p_and_ss >= value : false
+      else
+        assign = done[key] ? done[key] >= value : false
       status[key] = assign #Set the status to true if requirement finished (cand has done >= the actual requirement value)
     end
 
