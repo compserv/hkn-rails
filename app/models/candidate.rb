@@ -91,8 +91,7 @@ class Candidate < ActiveRecord::Base
     reqs.each do |key, value|
       sorted_rsvps[key] = [] if sorted_rsvps[key] == nil
       if key == "Prodev/Speaker Series"
-        p_and_ss = done["Prodev"] + done["Speaker Series"]
-        assign = p_and_ss ? p_and_ss >= value : false
+        assign = done["Prodev"] + done["Speaker Series"] >= value
       else
         assign = done[key] ? done[key] >= value : false
       status[key] = assign #Set the status to true if requirement finished (cand has done >= the actual requirement value)
