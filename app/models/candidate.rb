@@ -94,6 +94,7 @@ class Candidate < ActiveRecord::Base
         assign = done["Prodev"] + done["Speaker Series"] >= value
       else
         assign = done[key] ? done[key] >= value : false
+      end
       status[key] = assign #Set the status to true if requirement finished (cand has done >= the actual requirement value)
     end
 
