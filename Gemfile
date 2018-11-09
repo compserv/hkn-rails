@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.5.1'
+ruby '2.5.0'
 
 # Pin Rails to a strict version, since can easily have breaking changes
 gem 'rails', '4.2.10'
