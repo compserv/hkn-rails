@@ -122,8 +122,17 @@
             <%=h req.to_s %>
           </h4>
           <ul class="semi-plain">
-            <% for rsvp in @rsvps[req] %>
-            <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+            <% if req == "Prodev/Speaker Series" %>
+              <% for rsvp in @rsvps["Prodev"] %>
+                <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+              <% end %>
+              <% for rsvp in @rsvps["Speaker Series"] %>
+                <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+              <% end %>
+            <% else %>
+              <% for rsvp in @rsvps[req] %>
+                <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+              <% end %>
             <% end %>
           </ul>
         </li>
