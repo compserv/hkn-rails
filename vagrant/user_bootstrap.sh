@@ -14,5 +14,9 @@ gem install bundler
 cd /vagrant
 bundle install
 
-# Modify database.yml
+# Setup dev database, secrets
 cp vagrant/database.yml.vagrant config/database.yml
+cp config/secrets.yml.sample config/secrets.yml
+
+# Create database
+bundle exec rake db:setup
