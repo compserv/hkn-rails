@@ -171,23 +171,6 @@
         <%= submit_tag "Send Request", id: "challenge_submit" %>
         </p>
       </div>
-
-      <h3>
-        <span class="<%= "req_status " + (@done["forms"] ? "status_done" : "status_notdone") %>"></span>
-        Forms</h3>
-      <ul id="forms" class="semi-plain">
-        <li>
-          <span class="<%= "event_status " + (@done["resume"] ? 'event_done' : 'event_notdone') %>"></span>
-          <%= link_to "Resume", resumes_upload_path %>
-        </li>
-        <li>
-          <span class="<%= "event_status " + (@done["quiz"] ? 'event_done' : 'event_notdone') %>"></span>
-          <%= link_to "Quiz", candidate_quiz_path %>
-        </li>
-      </ul>
-
-    </div>
-    <div class="clear light-hbar"></div>
     <h3>
       <span class="<%= "req_status " + (@done["course_surveys"] ? "status_done" : "status_notdone") %>"></span>
       Course Surveys</h3>
