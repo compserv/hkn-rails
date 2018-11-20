@@ -19,9 +19,6 @@ apt-get install -y
     libmysqlclient-dev
 
 # Configure MySQL
-sudo mysql -e "CREATE DATABASE IF NOT EXISTS hkn_rails_development;"
-sudo mysql -e "CREATE DATABASE IF NOT EXISTS hkn_rails_test;"
-sudo mysql -e "GRANT ALL PRIVILEGES ON hkn_rails_development.* TO 'hkn_rails'@'localhost' IDENTIFIED BY 'hkn_rails';"
-sudo mysql -e "GRANT ALL PRIVILEGES ON hkn_rails_test.* TO 'hkn_rails'@'localhost' IDENTIFIED BY 'hkn_rails';"
+mysql -e "GRANT ALL PRIVILEGES ON \`hkn\_rails\_%\`.* TO 'hkn_rails'@'localhost' IDENTIFIED BY 'hkn_rails';"
 
 /etc/init.d/mysqld restart
