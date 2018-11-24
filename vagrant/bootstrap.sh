@@ -20,5 +20,3 @@ apt-get install -y \
 
 # Configure MySQL
 mysql -e "GRANT ALL PRIVILEGES ON \`hkn\_rails\_%\`.* TO 'hkn_rails'@'localhost' IDENTIFIED BY 'hkn_rails';"
-
-/etc/init.d/mysqld restart
