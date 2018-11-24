@@ -5,7 +5,7 @@ update-locale LC_ALL=en_US.UTF-8
 source /etc/default/locale
 
 apt-get update
-apt-get install -y
+apt-get install -y \
     build-essential \
     curl \
     openjdk-7-jre \
