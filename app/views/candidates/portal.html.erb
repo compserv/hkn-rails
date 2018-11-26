@@ -73,19 +73,26 @@
   <div id="requirements" class="trans-bg">
       <h2>Candidate Requirements</h2>
       <ol class = "plain">
-        <li>Attend Candidate Meeting</li>
-        <li>Attend all 3 General Meetings</li>
+        <li>Attend Candidate Meeting (CM) </li>
+        <li>Attend all 3 General Meetings (GM1, GM2, GM3)</li>
         <li>Attend 3+ Fun Events</li>
         <li>Attend 1+ Big Fun Events</li>
         <li>Attend 1+ Serv Events</li>
-        <li>Complete 2+ Interactivities</li>
-        <li>Officer Challenges</li>
-        <li>Officer Hangouts (formerly Officer Hours)</li>
+        <li>Complete 3+ Interactivities
+          <ul>
+            <li>Officer Challenges</li>
+            <li>Officer Hangouts (formerly Officer Hours)</li>
+          </ul>
+        </li>
         <li>Attend 1+ Speaker Series and/or Prodev Event</li>
         <li>Administer 1-2 Course Surveys</li>
         <li>Complete a Committee Project</li>
-        <li>Complete Bit-Byte Requirements</li>
-        <li>1 Boba or Equivalent</li>
+        <li>Complete Bit-Byte Requirements
+          <ul>
+            <li>1 Boba or Equivalent</li>
+            <li>2 Adventures</li>
+          </ul>
+        </li>
         <li>Pay all dues (2 sets)</li>
         <li>Complete all required forms</li>
       </ol>
@@ -94,9 +101,8 @@
   <div id="links" class="trans-bg">
       <h2>Form Links</h2>
       <ul class = "plain">
-        <li><a href = "http://hkn.mu/committee_preference">Committee Preference Ranking [ due by 11:59 PM, Friday October 5 ]</a></li>
-        <li><a href = "http://hkn.mu/bit_survey">Bit-Byte Signup Form [ due by 11:59 PM, Friday October 5 ]</a></li>
-        <li><a href = "http://hkn.mu/membership_app">Spring 2018 HKN Membership Application [ due by GM 1, Monday October 8]</a></li>
+        <li><a href = "https://docs.google.com/forms/d/e/1FAIpQLScg8rWBnyHhDgznHJXHIH8unS7ryRvEAS-lJjdpiX_3GRFvDg/viewform?usp=sf_link">Resume Drop [ due by 11:59 PM, Monday November 26 ]</a></li>
+        <li><a href = "https://docs.google.com/forms/d/e/1FAIpQLSfMQbj4tg9ekm8eGtaX87bgMSzGtZKBEXc0IysXZn72Y36vtA/viewform?usp=sf_link">Candidate Quiz [ due by 11:59 PM, Monday November 26 ]</a></li>
       </ul>
   </div>
 
@@ -115,8 +121,17 @@
             <%=h req.to_s %>
           </h4>
           <ul class="semi-plain">
-            <% for rsvp in @rsvps[req] %>
-            <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+            <% if req == "Prodev/Speaker Series" %>
+              <% for rsvp in @rsvps["Prodev"] %>
+                <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+              <% end %>
+              <% for rsvp in @rsvps["Speaker Series"] %>
+                <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+              <% end %>
+            <% else %>
+              <% for rsvp in @rsvps[req] %>
+                <li><span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span><%= rsvp.event.name %></li>
+              <% end %>
             <% end %>
           </ul>
         </li>
@@ -127,13 +142,13 @@
     <div style="float:left; width: 45%; padding-left: 3em;">
       <h3>
         <span class="<%= "req_status " + (@done["challenges"] ? "status_done" : "status_notdone") %>"></span>
-        Challenges</h3>
+        Interactivities</h3>
       <ul id="challenges" class="semi-plain">
         <%= render partial: "challenges"%>
       </ul>
 
       <div id="request_challenge_container">
-        <h4>Request Challenge Confirmation</h4>
+        <h4>Request Confirmation</h4>
         <span id="request_challenge_errors"></span>
         <div class="field">
           <%= label_tag "Find Officer" %>
@@ -141,7 +156,7 @@
         </div>
 
         <div class="field">
-        <%= label_tag "Challenge Name"%>
+        <%= label_tag "Challenge"%>
         <%= text_field_tag "challenge_name" %>
         </div>
 
@@ -156,23 +171,6 @@
         <%= submit_tag "Send Request", id: "challenge_submit" %>
         </p>
       </div>
-
-      <h3>
-        <span class="<%= "req_status " + (@done["forms"] ? "status_done" : "status_notdone") %>"></span>
-        Forms</h3>
-      <ul id="forms" class="semi-plain">
-        <li>
-          <span class="<%= "event_status " + (@done["resume"] ? 'event_done' : 'event_notdone') %>"></span>
-          <%= link_to "Resume", resumes_upload_path %>
-        </li>
-        <li>
-          <span class="<%= "event_status " + (@done["quiz"] ? 'event_done' : 'event_notdone') %>"></span>
-          <%= link_to "Quiz", candidate_quiz_path %>
-        </li>
-      </ul>
-
-    </div>
-    <div class="clear light-hbar"></div>
     <h3>
       <span class="<%= "req_status " + (@done["course_surveys"] ? "status_done" : "status_notdone") %>"></span>
       Course Surveys</h3>
