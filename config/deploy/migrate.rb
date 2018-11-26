@@ -12,7 +12,9 @@ server 'vampires.ocf.berkeley.edu', user: 'hkn', roles: %w[web app db], primary:
 set :deploy_to, '/home/h/hk/hkn/hkn-rails/migrate'
 
 # Require production to use the master branch
-set :branch, 'master'
+#set :branch, 'master'
+# Temporary branch for jessie/stretch migration
+set :branch, 'migrate'
 
 # role-based syntax
 # ==================
