@@ -48,6 +48,7 @@ def initialize_groups
     {"name"=>"studrel",   "description"=>"Student Relations"},
     {"name"=>"tutoring",  "description"=>"Tutoring"},
     {"name"=>"alumrel",   "description"=>"Alumni Relations"},
+    {"name"=>"prodev",    "description"=>"Professional Development"},
     {"name"=>"alumadv",   "description"=>"Alumni Advisor"},
     {"name"=>"facadv",    "description"=>"Faculty Advisor"},
 
