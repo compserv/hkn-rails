@@ -5,7 +5,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "debian/jessie64"
+  config.vm.box = "debian/stretch64"
 
   config.vm.provision :shell, :path => "vagrant/bootstrap.sh"
   config.vm.provision :shell, :privileged => false, :path => "vagrant/user_bootstrap.sh"
