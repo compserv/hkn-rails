@@ -4,10 +4,6 @@
 
 1. Install [VirtualBox][virtualbox] (`sudo apt-get install virtualbox`)
 2. Install the latest version of [Vagrant][vagrant] (`sudo apt-get install vagrant`)
-3. Download a backup of the website from compserv (ask for a current backup,
-   these are kept secret because they contain sensitive data like password
-   hashes, for instance) and move it into your copy of hkn-rails.  See section
-   below on [making backups](#making-backups) if you want a current one.
 4. `cd hkn-rails`
 5. `vagrant up`
 
@@ -23,8 +19,7 @@
 
 6. `vagrant ssh`
 7. `cd /vagrant`
-8. `rake db:create && rake db:backup:restore FROM=[path_to_backup_from_hkn]`
-9. `rails s`
+9. `rails s -b 0`
 10. On your host machine, visit `localhost:3000`
 
 Your copy of hkn-rails on your host is a shared directory with `\vagrant` on
@@ -49,6 +44,19 @@ vagrant rsync-auto
 ```
 
 This will trigger an rsync upon file changes.
+
+### Running from Backups
+
+If you would like to run with real data from the production database, then:
+
+1. Download a backup of the website from compserv. These are kept secret
+   because they contain sensitive data like password hashes.
+2. Move the database backup into your copy of hkn-rails.
+3. Make sure the database has been rsync'd into your VM (either by `vagrant rsync`
+   or by `vagrant rsync-auto`).
+4. `rake db:backup:restore FROM=[path_to_backup]`
+
+See section below on [making backups](#making-backups) for more info on getting a backup.
 
 [virtualbox]: https://www.virtualbox.org/wiki/Downloads
 [vagrant]: http://www.vagrantup.com/downloads.html
@@ -86,7 +94,7 @@ bundle exec rails console -e production --sandbox
 
 ## Making Backups
 
-1. On hkn, go into `/var/www/hkn-rails`
+1. On apphost.ocf.berkeley.edu, go into `/var/www/hkn-rails`
 2. `sudo su www-data`
 3. `RAILS_ENV=production rake db:backup:dump` (actual script is in
    `hkn-rails/lib/tasks/backups.rb`)
@@ -94,15 +102,19 @@ bundle exec rails console -e production --sandbox
 This makes a backup in `hkn-rails/db/backups`, name based on datetime by
 default.
 
-To load a backup: `rake db:drop && rake db:create && rake db:backup:restore
-FROM=[path]`
+To load a backup:
 
+```sh
+rake db:drop && rake db:create && rake db:backup:restore FROM=[path]
+```
 
 ## Static Files
 
-To serve new static files in production, first run `RAILS_ENV=production bundle
-exec rake assets:precompile`
+To serve new static files in production, first run 
 
+```sh
+RAILS_ENV=production bundle exec rake assets:precompile
+```
 
 ### How to use Solr
 
