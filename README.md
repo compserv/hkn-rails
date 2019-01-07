@@ -31,7 +31,7 @@ Your copy of hkn-rails on your host is a shared directory with `\vagrant` on
 your guest, so you can edit files in either machine.
 
 The guest is configured to port forward 3000 to 3000 on the host.  The VM is
-allocated 1 GB of memory and is based on Ubuntu 14.04 64-bit.
+allocated 1 GB of memory and is based on Debian 9 (stretch, 64 bit).
 
 To stop the VM, either use `vagrant halt` or `vagrant suspend`. To resume
 again, run `vagrant up`.
