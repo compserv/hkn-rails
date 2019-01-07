@@ -68,7 +68,7 @@ module CoursesurveysHelper
   end
 
   def surveys_instructor_path(instructor)
-    if Instructor.where(last_name: instructor.last_name, first_name: instructor.first_name).count > 1 then
+    if Instructor.where(last_name: instructor.last_name, first_name: instructor.first_name).count == 1 then
       coursesurveys_instructor_path("#{instructor.last_name},#{instructor.first_name}")
     else
       coursesurveys_instructor_path(instructor.id)
