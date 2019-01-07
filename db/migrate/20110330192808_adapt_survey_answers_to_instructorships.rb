@@ -1,20 +1,19 @@
 class AdaptSurveyAnswersToInstructorships < ActiveRecord::Migration
   def self.up
     # Move data to temp table
-    execute "SELECT *
-             INTO temp_answers
-             FROM survey_answers"
+    create_table(:temp_answers, temporary: true,
+      as: "SELECT * FROM survey_answers")
     execute "DELETE FROM survey_answers"
 
     # Change columns
-    remove_index  :survey_answers, :klass_id
+    # remove_index  :survey_answers, :klass_id
     remove_column :survey_answers, :instructor_id
     remove_column :survey_answers, :klass_id
     add_column :survey_answers, :instructorship_id, :integer
 
     # Process data
-    execute "INSERT INTO survey_answers (survey_question_id, frequencies, mean, deviation, median, \"order\", instructorship_id)
-             SELECT survey_question_id, frequencies, mean, deviation, median, \"order\", instructorships.id
+    execute "INSERT INTO survey_answers (survey_question_id, frequencies, mean, deviation, median, `order`, instructorship_id)
+             SELECT survey_question_id, frequencies, mean, deviation, median, `order`, instructorships.id
              FROM temp_answers INNER JOIN instructorships
              ON  instructorships.klass_id      = temp_answers.klass_id
              AND instructorships.instructor_id = temp_answers.instructor_id
