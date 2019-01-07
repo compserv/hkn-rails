@@ -36,6 +36,20 @@ allocated 1 GB of memory and is based on Ubuntu 14.04 64-bit.
 To stop the VM, either use `vagrant halt` or `vagrant suspend`. To resume
 again, run `vagrant up`.
 
+### Autosyncing
+
+The Vagrant VM uses Debian 9, the OS run on the OCF apphost. Because it does
+not have the Oracle VM Virtualbox Extension Pack installed, the `/vagrant`
+folder is synced with your computer's `hkn-rails` folder using `rsync`.
+
+By default, this is only done on VM startup, so to enable autosyncing run:
+
+```sh
+vagrant rsync-auto
+```
+
+This will trigger an rsync upon file changes.
+
 [virtualbox]: https://www.virtualbox.org/wiki/Downloads
 [vagrant]: http://www.vagrantup.com/downloads.html
 
