@@ -53,7 +53,8 @@ class EventsController < ApplicationController
       @events = @events.order(start_time: sort_direction)
     end
 
-    @events = @events.where.not(name: ["Exam", "Review Session"])
+    @events = @events.joins(:event_type)
+                     .where.not(event_types: {name: ["Exam", "Review Session"]})
 
     if (page_no = Integer(params[:page] || 1) rescue nil)
       @events = @events.page(page_no).per_page(per_page)
@@ -93,18 +94,25 @@ class EventsController < ApplicationController
   end
 
   def calendar
-    month = (params[:month] || Time.now.month).to_i
-    year = (params[:year] || Time.now.year).to_i
+    unless (month = Integer(params[:month] || Time.now.month) rescue nil) &&
+            month.between?(1, 12)
+      self.render_404
+    end
+
+    unless (year = Integer(params[:year] || Time.now.year) rescue nil) &&
+            year.between?(1900, 2100)
+      self.render_404
+    end
+    # month = (params[:month] || Time.now.month).to_i
+    # year = (params[:year] || Time.now.year).to_i
     # TODO: Fix this, I think we have timezone issues
     @start_date = Time.local(year, month).beginning_of_month
     @end_date = Time.local(year, month).end_of_month
     @events = Event.with_permission(@current_user)
                    .where(start_time: @start_date..@end_date)
                    .order(:start_time)
-    @events.to_a.delete_if { |e|
-      EventType.where("name IN (?)", ["Exam", "Review Session"])
-               .include?(e.event_type)
-    }
+    @events = @events.joins(:event_type)
+                     .where.not(event_types: {name: ["Exam", "Review Session"]})
 
     # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
