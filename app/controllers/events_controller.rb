@@ -23,13 +23,10 @@ class EventsController < ApplicationController
                      else "ASC"
                      end
     @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
-    # Maintains start_time as secondary sort column
-    # opts = { page: params[:page], per_page: per_page }
 
     category = params[:category] || 'all'
     event_finder = Event.with_permission(@current_user).includes(:event_type)
 
-    # We should paginate this
     if category == 'past'
       @events = event_finder.past
       @heading = "Past Events"
@@ -37,7 +34,6 @@ class EventsController < ApplicationController
       @events = event_finder.upcoming
       @heading = "Upcoming Events"
     else
-      #@events = Event.includes(:event_type).order(:start_time)
       @events = event_finder
       @heading = "All Events"
     end
@@ -47,7 +43,6 @@ class EventsController < ApplicationController
     end
 
     if order == "event_type"
-      # opts = { page: params[:page], per_page: per_page }
       @events = @events.order('event_type.name')
     else
       sort_direction = case params[:sort_direction]
@@ -56,16 +51,10 @@ class EventsController < ApplicationController
         else :asc
       end
       @events = @events.order(start_time: sort_direction)
-      # @events = case params[:sort_direction]
-              #  when "down" then @events.sort{|e1, e2| e2[order] <=> e1[order] }
-              #  else @events.sort{|e1, e2| e1[order] <=> e2[order] }
-              #  end
     end
 
     @events = @events.where.not(name: ["Exam", "Review Session"])
-    # @events.to_a.delete_if {|e| EventType.where("name IN (?)", ["Exam", "Review Session"]).include?(e.event_type)}
 
-    # @events = @events.paginate opts
     if (page_no = Integer(params[:page] || 1) rescue nil)
       @events = @events.page(page_no).per_page(per_page)
     else
