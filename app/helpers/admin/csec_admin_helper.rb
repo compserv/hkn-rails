@@ -76,7 +76,10 @@ module SurveyData
         raise ParseError, "Professor/T.A. '#{first_name}, #{last_name}' does have a first/last name in row #{row}"
       end
 
-      instructor = Instructor.find_by(['UPPER(last_name) LIKE ? AND UPPER(first_name) LIKE ?', last_name.upcase, first_name.upcase])
+      instructor = Instructor.where(['UPPER(last_name) LIKE ? AND UPPER(first_name) LIKE ?',
+                                    last_name.upcase, first_name.upcase])
+                             .order(created_at: :desc)
+                             .first
       if instructor.nil?
         # We can create klasses/TAs, but creating professors leads to pain with typos
         if is_ta
