@@ -133,7 +133,9 @@ module SurveyData
       klass.course = course
       raise ParseError, "Klass save failed: #{klass.inspect}" if not klass.save
 
-      raise ParseError, "Instructor save failed: #{instructor.inspect}" if not instructor.save
+      if not Instructor.exists?(instructor.id)
+        raise ParseError, "Instructor save failed: #{instructor.inspect}" if not instructor.save
+      end
 
       instructorship = Instructorship.where(klass_id: klass.id, instructor_id: instructor.id).first || Instructorship.new
       instructorship.ta, instructorship.instructor, instructorship.klass = is_ta, instructor, klass
