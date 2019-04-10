@@ -14,7 +14,7 @@ common: &common
   password: hkn_rails
   pool: 5
   host: localhost
-  encoding: unicode
+  encoding: utf8
 
 
 development:
