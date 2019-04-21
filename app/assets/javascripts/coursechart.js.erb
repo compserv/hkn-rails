@@ -377,17 +377,20 @@ var generateChart = function(info, loc, department_id) {
         done = true;
         force.stop();
 
+        var nodeData = []
         nodes.forEach(function(node) {
-            var nodeData = {"id": node.id, "startX": node.x, "startY": node.y};
-            jQuery.ajax("<%= Rails.application.routes.url_helpers.courseguide_update_pos_path %>", {
-                data: nodeData,
-                method: "POST",
-                success: function(data) {
-                    console.log(data)
-                },
-            });
+            var data = {"id": node.id, "startX": node.x, "startY": node.y};
+            nodeData.push(data);
         });
-        //console.log(nodes.length);
+
+        console.log(nodeData);
+        jQuery.ajax("<%= Rails.application.routes.url_helpers.courseguide_update_pos_path %>", {
+            data: {data: nodeData},
+            method: "POST",
+            success: function(data) {
+                console.log(data)
+            },
+        });
     });
     force.on("start", function() {
         while(!done) {
