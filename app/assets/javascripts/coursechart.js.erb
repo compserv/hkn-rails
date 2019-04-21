@@ -1,6 +1,5 @@
 var OPACITY_DURATION = 500;
 var DEFAULT_HEIGHT = 700;
-
 var generateChart = function(info, loc, department_id) {
     var nodes = [];
     var prereqs = [];
@@ -394,7 +393,16 @@ var generateChart = function(info, loc, department_id) {
     });
     force.on("start", function() {
         while(!done) {
-        force.tick();
+            var ticks = 10;
+            requestAnimationFrame(function render() {
+                for (var i = 0; i < ticks; i++) {
+                    force.tick();
+                }
+                if (force.alpha() > 0) {
+                    requestAnimationFrame(render);
+                }
+            })
+        // force.tick();
         }
     });
     force.start();
