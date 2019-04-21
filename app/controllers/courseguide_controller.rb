@@ -1,3 +1,4 @@
+require 'json'
 class CourseguideController < ApplicationController
 
   before_filter :authorize_tutoring, only: [:edit, :update]
@@ -33,6 +34,17 @@ class CourseguideController < ApplicationController
     else
       redirect_to courseguide_show_path(@course.dept_abbr, @course.full_course_number), notice: "Error updating the entry: #{@course.errors.inspect}"
     end
+  end
+
+  def update_render_pos
+    course = CourseChart.where(course_id: params[:id])
+    if course.any?
+      course[0].startX = params[:startX]
+      course[0].startY = params[:startY]
+      course[0].save
+    end
+
+    return render json: course[0].as_json
   end
 
   def get_courses_json
