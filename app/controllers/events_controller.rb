@@ -39,11 +39,11 @@ class EventsController < ApplicationController
     end
 
     if event_filter != "none"
-      @events = @events.where('lower(event_type.name) = ?', event_filter.downcase)
+      @events = @events.where('lower(event_types.name) = ?', event_filter.downcase)
     end
 
     if order == "event_type"
-      @events = @events.order('event_type.name')
+      @events = @events.order('event_types.name')
     else
       sort_direction = case params[:sort_direction]
         when "up" then :asc
