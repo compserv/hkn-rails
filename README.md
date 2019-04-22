@@ -1,6 +1,6 @@
 # Welcome to HKN
 
-## Vagrant, VMs, and You
+## Developing
 
 1. Install [VirtualBox][virtualbox] (`sudo apt-get install virtualbox`)
 2. Install the latest version of [Vagrant][vagrant] (`sudo apt-get install vagrant`)
@@ -94,9 +94,8 @@ bundle exec rails console -e production --sandbox
 
 ## Making Backups
 
-1. On apphost.ocf.berkeley.edu, go into `/var/www/hkn-rails`
-2. `sudo su www-data`
-3. `RAILS_ENV=production rake db:backup:dump` (actual script is in
+1. On apphost.ocf.berkeley.edu, go into `~/hkn-rails/prod/current/`
+2. `RAILS_ENV=production rake db:backup:dump` (actual script is in
    `hkn-rails/lib/tasks/backups.rb`)
 
 This makes a backup in `hkn-rails/db/backups`, name based on datetime by
@@ -105,7 +104,7 @@ default.
 To load a backup:
 
 ```sh
-rake db:drop && rake db:create && rake db:backup:restore FROM=[path]
+rake db:reset && rake db:backup:restore FROM=[path]
 ```
 
 ## Static Files
