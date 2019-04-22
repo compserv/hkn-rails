@@ -21,7 +21,7 @@ cd /vagrant
 bundle install
 
 # Setup dev database, secrets
-cp vagrant/database.yml.vagrant config/database.yml
+cp config/database.yml.sample config/database.yml
 cp config/secrets.yml.sample config/secrets.yml
 
 # Create database

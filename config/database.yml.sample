@@ -2,10 +2,9 @@ common: &common
   adapter: mysql2
   encoding: utf8
   pool: 5
-  username: hkn
-  password: hknweb-dev
+  username: hkn_rails
+  password: hkn_rails
   host: localhost
-
 
 development:
   <<: *common
