@@ -55,7 +55,7 @@ module HknRails
       email: {
         email_prefix: '[hkn-rails Exception] ',
         sender_address: '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
-        exception_recipients: ['website-errors@hkn.moe']
+        exception_recipients: ['website-errors@hkn.eecs.berkeley.edu']
       }
 
     # Enable the asset pipeline
