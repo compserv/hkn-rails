@@ -26,11 +26,11 @@ namespace :backup do
       config = Rails.configuration.database_configuration[Rails.env]
       case config['adapter']
       when /^mysql/
-        config[:cmd] = 'mysql'
-        config[:dump_cmd] = 'mysqldump'
+        config['cmd'] = 'mysql'
+        config['dump_cmd'] = 'mysqldump'
       when "postgresql"
-        config[:cmd] = 'psql'
-        config[:dump_cmd] = 'pg_dump'
+        config['cmd'] = 'psql'
+        config['dump_cmd'] = 'pg_dump'
         ENV['PGUSER']     = config["username"] if config["username"]
         ENV['PGHOST']     = config["host"] if config["host"]
         ENV['PGPORT']     = config["port"].to_s if config["port"]
@@ -64,7 +64,7 @@ namespace :backup do
       puts "Dumping into #{filename}"
 
       Dir.mkdir File.dirname(filename) unless File.directory? File.dirname(filename)
-      success = system "#{config['dump_cmd']} #{config['database']} --user #{config['username']} | gzip > \"#{filename}\""
+      success = system "#{config['dump_cmd']} #{config['database']} --user=#{config['username']} --password=#{config['password']} | gzip > \"#{filename}\""
       raise "#{config['dump_cmd']} error!" unless success
       puts "Done.\n"
     end
@@ -81,7 +81,7 @@ namespace :backup do
     ActiveRecord::Base.transaction do
       pg_wrapper do |config|
         puts "Loading from #{filename}"
-        success = system "gunzip -c #{filename} | #{config['cmd']} #{config['database']} --user #{config['username']}"
+        success = system "gunzip -c #{filename} | #{config['cmd']} #{config['database']} --user=#{config['username']} --password=#{config['password']}"
         raise "#{config['cmd']} error!" unless success
         puts "Resetting sequences..." and reset_id_seqs
         puts "Done.\n"
