@@ -2,6 +2,8 @@
 
 ## Developing
 
+### Quick Start
+
 1. Install [VirtualBox][virtualbox] (`sudo apt-get install virtualbox`)
 2. Install the latest version of [Vagrant][vagrant] (`sudo apt-get install vagrant`)
 4. `cd hkn-rails`
@@ -13,23 +15,67 @@
 
     1. `vagrant halt`
     2. `vagrant destroy`
-    3. Change your BIOS settings to enable hardware acceleration (this will
+    3. Change your BIOS settings to enable VM virtualization (this will
        require a system reboot)
     4. `vagrant up` and continue to step 6.
 
 6. `vagrant ssh`
 7. `cd /vagrant`
-9. `rails s -b 0`
+9. `bundle exec rails s -b 0`
 10. On your host machine, visit `localhost:3000`
+
+### Under the hood
+
+This setup uses a Debian 9 (stretch) virtual machine, running on VirtualBox
+and managed with Vagrant (dependencies, database setup, etc).
 
 Your copy of hkn-rails on your host is a shared directory with `\vagrant` on
 your guest, so you can edit files in either machine.
 
-The guest is configured to port forward 3000 to 3000 on the host.  The VM is
-allocated 1 GB of memory and is based on Debian 9 (stretch, 64 bit).
+The guest is configured to port forward 3000 on the vm to 3000 on the host. 
 
-To stop the VM, either use `vagrant halt` or `vagrant suspend`. To resume
-again, run `vagrant up`.
+When creating virtual machine, the provisioning script in `Vagrantfile` will:
+
+1. Install Debian dependencies with `apt-get`: `build-essentials`,
+   `vim`, `git`, `mariadb`, etc.
+2. Create a MySQL user `hkn_rails`, with password `hkn_rails`,
+   with all privileges on all databases `hkn_rails_*`.
+3. Install [RVM](https://rvm.io/), a Ruby version manager, so we can
+   install the specific version of Ruby that matches the production server.
+4. Compile and install Ruby.
+5. Install [Bundler](https://bundler.io/), a Ruby environment manager,
+   with the Ruby package manager [gem](https://guides.rubygems.org/rubygems-basics/).
+6. Install Ruby dependencies with `bundle`.
+7. Create `config/database.yml` and `config/secrets.yml` from the
+   sample files in `config/`.
+8. Create the MySQL database: `bundle exec rake db:setup`.
+
+### Vagrant operations
+
+- Start the VM with `vagrant up`. It must boot, like any operating system.
+- Stop the VM with `vagrant halt` or `vagrant suspend`.
+- Re-run the provision script with `vagrant up --provision`.
+- Sync files from your local machine to inside the VM with `vagrant rsync`.
+- Sync files automatically, in the background, with `vagrant rsync-auto`.
+
+### Ruby / Rails operations
+
+**You need to run these operations inside `/vagrant`.** If you run these
+directly after ssh-ing into the VM, you will be in the home folder
+`/home/vagrant`, and **your operations will fail**.
+
+- (Re)install all Ruby dependencies with `bundle install`.
+- Run *all* Ruby operations with `bundle exec <command here>`. This ensures
+  you have access to the `bundle`-installed dependencies.
+- You may occasionally need to run with a particular rails environment:
+  `RAILS_ENV=production bundle exec <command here>`.
+  Besides `production`, there is also `development` (the default)
+  and `test` (rarely used).
+- Run the Rails web server with `bundle exec rails server -b 0.0.0.0`.
+- Run the Rails console with `bundle exec rails console`.
+- Setup the database with `bundle exec rake db:setup`.
+- Reset the database (drop & setup) with `bundle exec rake db:reset`.
+- List all `rake` tasks with `bundle exec rake --tasks`.
 
 ### Autosyncing
 
