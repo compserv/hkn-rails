@@ -36,7 +36,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         libxml2-dev \
         mariadb-client \
         mariadb-server \
-        libmariadbclient-dev-compat
+        libmariadbclient-dev-compat \
+        nodejs
 
     # Configure MySQL
     mysql -e "GRANT ALL PRIVILEGES ON \\`hkn\\_rails\\_%\\`.* TO 'hkn_rails'@'localhost' IDENTIFIED BY 'hkn_rails';"
