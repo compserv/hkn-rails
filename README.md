@@ -55,8 +55,6 @@ When creating virtual machine, the provisioning script in `Vagrantfile` will:
 - Start the VM with `vagrant up`. It must boot, like any operating system.
 - Stop the VM with `vagrant halt` or `vagrant suspend`.
 - Re-run the provision script with `vagrant up --provision`.
-- Sync files from your local machine to inside the VM with `vagrant rsync`.
-- Sync files automatically, in the background, with `vagrant rsync-auto`.
 
 ### Ruby / Rails operations
 
@@ -76,20 +74,6 @@ directly after ssh-ing into the VM, you will be in the home folder
 - Setup the database with `bundle exec rake db:setup`.
 - Reset the database (drop & setup) with `bundle exec rake db:reset`.
 - List all `rake` tasks with `bundle exec rake --tasks`.
-
-### Autosyncing
-
-The Vagrant VM uses Debian 9, the OS run on the OCF apphost. Because it does
-not have the Oracle VM Virtualbox Extension Pack installed, the `/vagrant`
-folder is synced with your computer's `hkn-rails` folder using `rsync`.
-
-By default, this is only done on VM startup, so to enable autosyncing run:
-
-```sh
-vagrant rsync-auto
-```
-
-This will trigger an rsync upon file changes.
 
 ### Running from Backups
 
