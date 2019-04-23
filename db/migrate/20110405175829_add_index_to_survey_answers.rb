@@ -6,7 +6,7 @@ class AddIndexToSurveyAnswers < ActiveRecord::Migration
   def self.up
     Indices.each do |table, cols|
       add_index table, cols
-      execute "ANALYZE #{table.to_s}"
+      # execute "ANALYZE #{table.to_s}"
     end
 
   end

@@ -68,21 +68,21 @@ namespace :deploy do
       # TODO: Attempt to get reloading to work correctly (currently it doesn't
       # have downtime, but it doesn't actually update changes on the site,
       # maybe due to preloading by unicorn?)
-      execute :systemctl, '--user restart hkn-rails.service'
+      execute :systemctl, '--user restart hkn-rails-migrate.service'
     end
   end
 
   desc "Start unicorn"
   task :start_unicorn do
     on roles(:all) do |host|
-      execute :systemctl, '--user start hkn-rails.service'
+      execute :systemctl, '--user start hkn-rails-migrate.service'
     end
   end
 
   desc "Stop unicorn"
   task :stop_unicorn do
     on roles(:all) do |host|
-      execute :systemctl, '--user stop hkn-rails.service'
+      execute :systemctl, '--user stop hkn-rails-migrate.service'
     end
   end
 

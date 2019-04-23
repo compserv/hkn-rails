@@ -5,7 +5,6 @@ class SetDefaultsForProperties < ActiveRecord::Migration
       t.change_default :tutoring_enabled, false
       t.change_default :tutoring_start, 11
       t.change_default :tutoring_end, 16
-      t.change_default :tutoring_message, ""
     end
   end
 
@@ -15,7 +14,6 @@ class SetDefaultsForProperties < ActiveRecord::Migration
       t.change_default :tutoring_enabled, nil
       t.change_default :tutoring_start, nil
       t.change_default :tutoring_end, nil
-      t.change_default :tutoring_message, nil
     end
   end
 end

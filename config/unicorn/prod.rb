@@ -21,7 +21,7 @@ worker_processes 8
 
 # Help ensure your application will always spawn in the symlinked
 # "current" directory that Capistrano sets up.
-working_directory "/home/h/hk/hkn/hkn-rails/prod/current"
+working_directory "/home/h/hk/hkn/hkn-rails/migrate/current"
 
 # listen on a Unix socket
 listen "/srv/apps/hkn/prod.sock"

@@ -1,6 +1,6 @@
 [Unit]
 Description=hkn-rails logrotate
-ConditionHost=werewolves
+ConditionHost=vampires
 
 [Service]
 Type=oneshot

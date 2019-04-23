@@ -1,6 +1,6 @@
 [Unit]
 Description=HKN Rails App
-ConditionHost=werewolves
+ConditionHost=vampires
 
 [Install]
 WantedBy=default.target

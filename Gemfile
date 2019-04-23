@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.5.0'
+ruby '2.5.1'
 
 # Pin Rails to a strict version, since can easily have breaking changes
 gem 'rails', '4.2.10'
@@ -60,12 +60,11 @@ gem 'will_paginate', '~> 3.1'
 # and see their survey results using their Berkeley login
 gem 'rubycas-client', git: 'https://github.com/rubycas/rubycas-client'
 
+# The OCF hosting includes MySQL, so we use that
+gem 'mysql2',  '~> 0.4'
 
 # Production-only gems
 group :production do
-  # The OCF hosting includes MySQL, so we use that
-  gem 'mysql2',  '~> 0.4'
-
   # Rollbar is nice for reporting errors in production instead of (or
   # alongside) spamming emails. It also records deploys, which is nice
   gem 'rollbar', '~> 2.15'
@@ -82,13 +81,8 @@ group :production do
   gem 'unicorn-worker-killer', '~> 0.4'
 end
 
-
 # Development-only gems
 group :development do
-  # For now, PostgreSQL is used in the vagrant image, but production uses
-  # MySQL, so the development version should be changed to use MySQL too.
-  gem 'pg', '~> 0.21'
-
   # Generate entity relationship diagrams between models
   gem 'rails-erd', '~> 1.5'
 

@@ -23,13 +23,10 @@ class EventsController < ApplicationController
                      else "ASC"
                      end
     @search_opts = {'sort' => order, 'sort_direction' => sort_direction }.merge params
-    # Maintains start_time as secondary sort column
-    opts = { page: params[:page], per_page: per_page }
 
     category = params[:category] || 'all'
-    event_finder = Event.with_permission(@current_user)
+    event_finder = Event.with_permission(@current_user).includes(:event_type)
 
-    # We should paginate this
     if category == 'past'
       @events = event_finder.past
       @heading = "Past Events"
@@ -37,29 +34,33 @@ class EventsController < ApplicationController
       @events = event_finder.upcoming
       @heading = "Upcoming Events"
     else
-      #@events = Event.includes(:event_type).order(:start_time)
       @events = event_finder
       @heading = "All Events"
     end
 
     if event_filter != "none"
-      @events = @events.select {|e| e.event_type.name.downcase == event_filter}
+      @events = @events.where('lower(event_types.name) = ?', event_filter.downcase)
     end
 
     if order == "event_type"
-      opts = { page: params[:page], per_page: per_page }
-      @events = @events.sort{|e1, e2| e1.event_type.name <=> e2.event_type.name }
+      @events = @events.order('event_types.name')
     else
-      @events = @events.sort{|e1, e2| e1.start_time <=> e2.start_time }
-      @events = case params[:sort_direction]
-               when "down" then @events.sort{|e1, e2| e2[order] <=> e1[order] }
-               else @events.sort{|e1, e2| e1[order] <=> e2[order] }
-               end
+      sort_direction = case params[:sort_direction]
+        when "up" then :asc
+        when "down" then :desc
+        else :asc
+      end
+      @events = @events.order(start_time: sort_direction)
     end
 
-    @events.to_a.delete_if {|e| EventType.where("name IN (?)", ["Exam", "Review Session"]).include?(e.event_type)}
+    @events = @events.joins(:event_type)
+                     .where.not(event_types: {name: ["Exam", "Review Session"]})
 
-    @events = @events.paginate opts
+    if (page_no = Integer(params[:page] || 1) rescue nil)
+      @events = @events.page(page_no).per_page(per_page)
+    else
+      self.render_404
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -93,18 +94,25 @@ class EventsController < ApplicationController
   end
 
   def calendar
-    month = (params[:month] || Time.now.month).to_i
-    year = (params[:year] || Time.now.year).to_i
+    unless (month = Integer(params[:month] || Time.now.month) rescue nil) &&
+            month.between?(1, 12)
+      self.render_404
+    end
+
+    unless (year = Integer(params[:year] || Time.now.year) rescue nil) &&
+            year.between?(1900, 2100)
+      self.render_404
+    end
+    # month = (params[:month] || Time.now.month).to_i
+    # year = (params[:year] || Time.now.year).to_i
     # TODO: Fix this, I think we have timezone issues
     @start_date = Time.local(year, month).beginning_of_month
     @end_date = Time.local(year, month).end_of_month
     @events = Event.with_permission(@current_user)
                    .where(start_time: @start_date..@end_date)
                    .order(:start_time)
-    @events.to_a.delete_if { |e|
-      EventType.where("name IN (?)", ["Exam", "Review Session"])
-               .include?(e.event_type)
-    }
+    @events = @events.joins(:event_type)
+                     .where.not(event_types: {name: ["Exam", "Review Session"]})
 
     # Really convoluted way of getting the first Sunday of the calendar,
     # which usually lies in the previous month
