@@ -24,7 +24,9 @@ module CourseChartHelper
         type_id: course.course_type_id,
         bias_x: course_chart.bias_x,
         bias_y: course_chart.bias_y,
-        depth: course_chart.depth
+        depth: course_chart.depth,
+        startX: course_chart.startX,
+        startY: course_chart.startY
       }
       return c
     end

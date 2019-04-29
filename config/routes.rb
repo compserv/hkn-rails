@@ -229,6 +229,7 @@ HknRails::Application.routes.draw do
   # Course Guides
   scope "courseguides" do
     match "/"                              => "courseguide#index", as: :courseguide, via: [:get, :post]
+    match "/chart_pos_update"             => "courseguide#update_render_pos", as: :courseguide_update_pos, via: [:post]
     match "/chartinfo/"                   => "courseguide#get_courses_json", as: :courseguide_chartinfo, via: [:get]
     match "/:dept_abbr/:course_number"     => "courseguide#show", as: :courseguide_show, via: [:get, :post]
     get "/:dept_abbr/:course_number/edit"  => "courseguide#edit", as: :courseguide_edit

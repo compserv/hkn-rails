@@ -1,6 +1,5 @@
 var OPACITY_DURATION = 500;
 var DEFAULT_HEIGHT = 700;
-
 var generateChart = function(info, loc, department_id) {
     var nodes = [];
     var prereqs = [];
@@ -41,7 +40,8 @@ var generateChart = function(info, loc, department_id) {
             link: course.link,
             bias_x: course.bias_x,
             bias_y: course.bias_y,
-            y: h*course.depth/max_depth
+            y: course.startY,
+            x: course.startX
         };
         nodes.push(newclass);
         classHash[course.id] = newclass;
@@ -59,6 +59,7 @@ var generateChart = function(info, loc, department_id) {
 
     // generate link array
     nodes.forEach(function(node) {
+        console.log("("+node.x+", "+node.y+")");
         node.prereqs.forEach(function(prereq) {
             if(!(classHash[prereq.prereq_id] === undefined)) {
             prereqs.push({source: classHash[prereq.prereq_id], target: node, recommended: prereq.is_recommended});
@@ -89,6 +90,7 @@ var generateChart = function(info, loc, department_id) {
             return 300;
         }
     })
+    .alpha(0.01)
     .size([w,h]);
 
     // gets the base class for a given edge object (either edge recommended or edge required)
@@ -309,7 +311,7 @@ var generateChart = function(info, loc, department_id) {
             });
         });
 
-        var k = 0.1*e.alpha;
+        var k = 0.1 * e.alpha;
         nodes.forEach(function(o,i) {
             var charth = h - LEGEND_OFFSET - 2*NODE_RADIUS; // amount of space to draw on not including the legend
             var targety = 0;
@@ -373,10 +375,34 @@ var generateChart = function(info, loc, department_id) {
     force.on("end", function() {
         done = true;
         force.stop();
+
+        var nodeData = []
+        nodes.forEach(function(node) {
+            var data = {"id": node.id, "startX": node.x, "startY": node.y};
+            nodeData.push(data);
+        });
+
+        console.log(nodeData);
+        jQuery.ajax("<%= Rails.application.routes.url_helpers.courseguide_update_pos_path %>", {
+            data: {data: nodeData},
+            method: "POST",
+            success: function(data) {
+                console.log(data)
+            },
+        });
     });
     force.on("start", function() {
         while(!done) {
-        force.tick();
+            var ticks = 10;
+            requestAnimationFrame(function render() {
+                for (var i = 0; i < ticks; i++) {
+                    force.tick();
+                }
+                if (force.alpha() > 0) {
+                    requestAnimationFrame(render);
+                }
+            })
+        // force.tick();
         }
     });
     force.start();
