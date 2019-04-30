@@ -1,5 +1,5 @@
 <% @challenges = @current_user.candidate.challenges %>
-<% @interact = @rsvps["Interactivities"]%>
+<% @interact = @rsvps ? @rsvps["Interactivities"] : nil %>
 <h4>Officer Challenges</h4>
 <% if @challenges.length > 0 %>
   <% for challenge in @challenges %>
