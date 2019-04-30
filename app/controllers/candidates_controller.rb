@@ -28,7 +28,11 @@ class CandidatesController < ApplicationController
 
       @done["events"] = !@status.has_value?(false)
       done_challenges = @current_user.candidate.challenges.select {|c| c.status }.length
-      done_interactivities = @rsvps["Interactivities"].select {|r| r.confirmed == 't' }.length
+      if interactivities = @rsvps["Interactivities"]
+        done_interactivities = @rsvps["Interactivities"].select {|r| r.confirmed == 't' }.length
+      else
+        done_interactivities = 0
+      end
       @done["challenges"] = done_challenges + done_interactivities >= 3
       @done["resume"] = @current_user.resumes.length >= 0
       @done["quiz"] = @current_user.candidate.quiz_score >= 18

@@ -14,7 +14,7 @@
 <p>No confirmations requested</p>
 <% end %>
 <h4>Officer Hangouts</h4>
-<% if @interact.length > 0 %>
+<% if @interact and @interact.length > 0 %>
   <% for rsvp in @interact  %>
     <span class="<%= "event_status " + (rsvp.confirmed == 't' ? 'event_done' : 'event_notdone') %>"></span>
     <%= rsvp.event.name %>
