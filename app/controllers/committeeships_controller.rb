@@ -33,4 +33,18 @@ class CommitteeshipsController < ApplicationController
     end
     redirect_to person_url(@committeeship.person)
   end
+
+  def create_assistant
+    @committeeship = Committeeship.new
+    @committeeship.semester = Property.current_semester
+    @committeeship.title = "assistant"
+    @committeeship.person = Person.find_by_id(params[:id])
+    @committeeship.committee = params[:committeeship][:committee]
+    if @committeeship.save
+      flash[:notice] = "Successfully added assistant officer"
+    else
+      flash[:notice] = "Error in adding assistant officer"
+    end
+    redirect_to person_url(@committeeship.person)
+  end
 end
