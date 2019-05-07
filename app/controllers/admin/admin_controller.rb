@@ -9,7 +9,7 @@ class Admin::AdminController < ApplicationController
 
     @candidates = @candidates.select { |cand| cand.person_id && Person.find_by_id(cand.person_id).groups.include?(candidate_group) }
     cand_ids = @candidates.collect { |cand| cand.id }
-    @candidates = Candidate.includes(:challenges, :quiz_responses, person: :resumes, person: :groups, person: :events).order("people.first_name").find(cand_ids)
+    @candidates = Candidate.includes(:challenges, :quiz_responses, person: [:resumes, :groups, :events]).order("people.first_name").find(cand_ids)
     @candidates.map! { |cand|
       calculate_status(cand)
     }
