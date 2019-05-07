@@ -12,13 +12,13 @@ class CommitteeshipsController < ApplicationController
   def create
     @committeeship = Committeeship.new
     @committeeship.semester = Property.current_semester
-    @committeeship.title = "cmember"
+    @committeeship.title = params[:committeeship][:title]
     @committeeship.person = Person.find_by_id(params[:id])
     @committeeship.committee = params[:committeeship][:committee]
     if @committeeship.save
-      flash[:notice] = "Successfully added committee member"
+      flash[:notice] = "Successfully added as #{@committeeship.nice_committee} #{@committeeship.nice_title}"
     else
-      flash[:notice] = "Error in adding committee member"
+      flash[:notice] = "Error in adding #{@committeeship.nice_title}"
     end
     redirect_to person_url(@committeeship.person)
   end
@@ -30,20 +30,6 @@ class CommitteeshipsController < ApplicationController
       flash[:notice] = "Successfully deleted the committeeship"
     else
       flash[:notice] = "You do not have the authorization to do that."
-    end
-    redirect_to person_url(@committeeship.person)
-  end
-
-  def create_assistant
-    @committeeship = Committeeship.new
-    @committeeship.semester = Property.current_semester
-    @committeeship.title = "assistant"
-    @committeeship.person = Person.find_by_id(params[:id])
-    @committeeship.committee = params[:committeeship][:committee]
-    if @committeeship.save
-      flash[:notice] = "Successfully added assistant officer"
-    else
-      flash[:notice] = "Error in adding assistant officer"
     end
     redirect_to person_url(@committeeship.person)
   end
