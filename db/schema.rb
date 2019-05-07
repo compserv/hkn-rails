@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180131074248) do
+ActiveRecord::Schema.define(version: 20190428201710) do
 
   create_table "alumnis", force: :cascade do |t|
     t.string   "grad_semester", limit: 255
@@ -154,6 +154,8 @@ ActiveRecord::Schema.define(version: 20180131074248) do
     t.boolean  "show"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "startX",     limit: 4,  default: 0
+    t.integer  "startY",     limit: 4,  default: 0
   end
 
   add_index "course_charts", ["course_id"], name: "index_course_charts_on_course_id", using: :btree

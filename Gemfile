@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.5.1'
 
 # Pin Rails to a strict version, since can easily have breaking changes
-gem 'rails', '4.2.10'
+gem 'rails', '4.2.11.1'
 
 # Authentication without having to write it all from scratch
 gem 'authlogic', '~> 3.6'
@@ -20,7 +20,7 @@ gem 'haml-rails', '~> 1.0'
 gem 'jquery-rails', '~> 4.3.1'
 
 # Use nokogiri for schedule parsing (not used any more)
-gem 'nokogiri', '~> 1.8.1'
+gem 'nokogiri', '~> 1.8.5'
 
 # Rails observers were removed from Rails core in 4.0, these are used for model
 # life-cycle callbacks (after_save, before_create, etc.)
@@ -61,7 +61,7 @@ gem 'will_paginate', '~> 3.1'
 gem 'rubycas-client', git: 'https://github.com/rubycas/rubycas-client'
 
 # The OCF hosting includes MySQL, so we use that
-gem 'mysql2',  '~> 0.4'
+gem 'mysql2', '~> 0.4.0'
 
 # Production-only gems
 group :production do
