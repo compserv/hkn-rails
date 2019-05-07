@@ -98,7 +98,7 @@ group :development do
 
   # Deploy to production with capistrano. Needed in development because that's
   # where the deploys occur from
-  gem 'capistrano',               '~> 3.10.1', require: false
+  gem 'capistrano',               '~> 3.10.2', require: false
   gem 'capistrano-bundler',       '~> 1.3',    require: false
   gem 'capistrano-faster-assets', '~> 1.1',    require: false
   gem 'capistrano-rails',         '~> 1.3',    require: false
