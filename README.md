@@ -32,7 +32,7 @@ and managed with Vagrant (dependencies, database setup, etc).
 Your copy of hkn-rails on your host is a shared directory with `\vagrant` on
 your guest, so you can edit files in either machine.
 
-The guest is configured to port forward 3000 on the vm to 3000 on the host. 
+The guest is configured to port forward 3000 on the vm to 3000 on the host.
 
 When creating virtual machine, the provisioning script in `Vagrantfile` will:
 
@@ -139,7 +139,7 @@ rake db:reset && rake db:backup:restore FROM=[path]
 
 ## Static Files
 
-To serve new static files in production, first run 
+To serve new static files in production, first run
 
 ```sh
 RAILS_ENV=production bundle exec rake assets:precompile
@@ -174,6 +174,16 @@ already done in production):
 
 For examples of searching, see [coursesurveys#search][coursesurveys] and
 [course.rb][course.rb].
+
+## Documentation
+
+To generate the API documentation, run:
+
+```sh
+bundle exec yard
+```
+
+This will generate documentation from source comments at `doc/`.
 
 [searchables]: http://github.com/outoftime/sunspot/wiki/Setting-up-classes-for-search-and-indexing
 [coursesurveys]: app/controllers/coursesurveys_controller.rb#L448
