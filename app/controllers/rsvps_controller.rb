@@ -8,7 +8,18 @@ class RsvpsController < ApplicationController
   # GET /rsvps.xml
   def index
     # Most recently created RSVPs will show on top of the list
-    @rsvps = @event.rsvps.sort{|r1, r2| r2.created_at <=> r1.created_at }
+    rsvps = @event.rsvps.sort {|a, b| b.created_at <=> a.created_at }
+    cap = @event.blocks.first.rsvp_cap
+    if cap.nil? or cap < 1
+      # No cap
+      admitted = rsvps
+      waitlist = []
+    else
+      admitted = rsvps[0, cap]
+      waitlist = rsvps[cap, -1]
+    end
+
+    @rsvp_lists = [["Admitted", admitted], ["Waitlist", waitlist]]
 
     respond_to do |format|
       format.html # index.html.erb
@@ -30,13 +41,14 @@ class RsvpsController < ApplicationController
   # GET /rsvps/new
   # GET /rsvps/new.xml
   def new
-    if @event.blocks.size == 1
-      block = @event.blocks.first
-      if block.full?
-        redirect_to @event, notice: 'Event is full.'
-        return
-      end
-    end
+    # Allow all RSVPS, but waitlist
+    # if @event.blocks.size == 1
+      # block = @event.blocks.first
+      # if block.full?
+      #   redirect_to @event, notice: 'Event is full.'
+      #   return
+      # end
+    # end
     @rsvp = Rsvp.new
 
     respond_to do |format|

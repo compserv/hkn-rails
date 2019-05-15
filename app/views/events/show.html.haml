@@ -9,16 +9,26 @@
     - if @event.need_transportation
       %p
         Total Transportation: #{@total_transportation}
-    %p
-      - events = @event.rsvps.sort {|x,y| x.person.first_name <=> y.person.first_name }
-      - events.each do |rsvp|
+    %h2 Admitted
+    %ul
+      - @admitted.each do |rsvp|
         - person = rsvp.person
-        = link_to person.fullname, person
-        = " (#{person.email})" if @auth_event_owner
-        - if @event.need_transportation
-          (#{rsvp.transportation})
-        - if events.last != rsvp
-          ,
+        %li
+          = link_to person.fullname, person
+          = " (#{person.email})" if @auth_event_owner
+          - if @event.need_transportation
+            (#{rsvp.transportation})
+    - if not (@waitlist.nil? or @waitlist.empty?)
+      %h2 Waitlist
+      %ul
+        - @waitlist.each do |rsvp|
+          - person = rsvp.person
+          %li
+            = link_to person.fullname, person
+            = " (#{person.email})" if @auth_event_owner
+            - if @event.need_transportation
+              (#{rsvp.transportation})
+    %p
       - if @event.blocks.size > 1
         %h1 Time Slots
         - @event.blocks.each do |block|

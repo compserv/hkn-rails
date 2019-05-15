@@ -147,6 +147,17 @@ class EventsController < ApplicationController
       @total_transportation = @event.rsvps.collect{|r| r.transportation || -1}.sum
       #@total_transportation = @event.rsvps.map{|rsvp| rsvp.transportation}.sum
     end
+    @rsvps = @event.rsvps.sort {|x,y| x.person.first_name <=> y.person.first_name }
+    cap = @event.blocks.first.rsvp_cap
+    if cap.nil? or cap < 1
+      # No cap
+      @admitted = @rsvps
+      @waitlist = []
+    else
+      @rsvps = @rsvps.sort{|a,b| b.created_at <=> a.created_at}
+      @admitted = @rsvps[0..cap]
+      @waitlist = @rsvps[cap..-1]
+    end
     @auth_event_owner = (@event.event_type.name == "Service" ? @auth['serv'] : @auth['act'])
     respond_to do |format|
       format.html # show.html.erb

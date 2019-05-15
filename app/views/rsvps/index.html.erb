@@ -1,5 +1,7 @@
 <h1>Listing RSVPs for <%= @event.name %></h1>
 
+<% @rsvp_lists.each do |label, list| %>
+<h2><%= label %></h2>
 <table>
   <tr>
     <th>Person</th>
@@ -15,7 +17,7 @@
     <% end %>
   </tr>
 
-<% @rsvps.each do |rsvp| %>
+<% list.each do |rsvp| %>
   <tr>
     <td><%= rsvp.person.fullname %></td>
     <td><%= rsvp.comment if rsvp.comment.present? %></td>
@@ -33,5 +35,6 @@
 </table>
 
 <br />
+<% end %>
 
 <%= link_to 'New Rsvp', new_event_rsvp_path(@event) %>
