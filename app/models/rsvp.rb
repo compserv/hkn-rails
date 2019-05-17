@@ -63,4 +63,15 @@ class Rsvp < ActiveRecord::Base
       self.transportation ||= TRANSPORT_ENUM.first.last
     end
   end
+
+  def waitlist_spot
+    cap = event.cap
+    if cap.nil? || cap < 1
+      0
+    else
+      [0, Rsvp.where(event_id: rsvp.event.id)
+              .where('created_at < ?', rsvp.created_at)
+              .count + 1 - event.cap].max
+    end
+  end
 end

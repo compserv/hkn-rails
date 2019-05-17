@@ -177,16 +177,6 @@ class RsvpsController < ApplicationController
 
   def my_rsvps
     @rsvps = @current_user.rsvps
-    @waitlist_spots = @rsvps.map do |rsvp|
-      cap = rsvp.event.cap
-      if cap.nil? || cap < 1
-        0
-      else
-        [0, Rsvp.where(event_id: rsvp.event.id)
-                .where('created_at < ?', rsvp.created_at)
-                .count + 1 - cap].max
-      end
-    end
   end
 
 private
