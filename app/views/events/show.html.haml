@@ -19,7 +19,7 @@
           - if @event.need_transportation
             (#{rsvp.transportation})
     - if not (@waitlist.nil? or @waitlist.empty?)
-      %h2 Waitlist
+      %h2 Waitlist (#{@waitlist.count})
       %ul
         - @waitlist.each do |rsvp|
           - person = rsvp.person
