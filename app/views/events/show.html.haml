@@ -9,7 +9,7 @@
     - if @event.need_transportation
       %p
         Total Transportation: #{@total_transportation}
-    %h2 Admitted
+    %h2 Admitted (#{@admitted.count})
     %ul
       - @admitted.each do |rsvp|
         - person = rsvp.person
