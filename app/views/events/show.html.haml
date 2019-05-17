@@ -78,10 +78,6 @@
       = link_to 'Remove My RSVP', event_rsvp_path(@event, @current_user_rsvp), confirm: 'Are you sure?', method: :delete
       |
     - elsif @event.can_rsvp? @current_user
-      - if ((@event.blocks.size == 1 and !@event.blocks.first.full?) or (@event.blocks.size > 1))
-        = link_to 'RSVP', '/events/' + @event.id.to_s + '/rsvps/new'
-        |
-      - else
-        %strong RSVPs FULL
-        |
+      = link_to 'RSVP', '/events/' + @event.id.to_s + '/rsvps/new'
+      |
   = link_to 'Back to Calendar', events_calendar_path(year: @event.start_time.year, month: @event.start_time.month)

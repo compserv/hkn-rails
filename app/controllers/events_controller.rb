@@ -154,8 +154,8 @@ class EventsController < ApplicationController
       @admitted = @rsvps
       @waitlist = []
     else
-      @rsvps = @rsvps.sort{|a,b| b.created_at <=> a.created_at}
-      @admitted = @rsvps[0..cap]
+      @rsvps = @rsvps.sort{ |a,b| a.created_at <=> b.created_at }
+      @admitted = @rsvps[0..cap-1]
       @waitlist = @rsvps[cap..-1]
     end
     @auth_event_owner = (@event.event_type.name == "Service" ? @auth['serv'] : @auth['act'])

@@ -8,8 +8,8 @@ class RsvpsController < ApplicationController
   # GET /rsvps.xml
   def index
     # Most recently created RSVPs will show on top of the list
-    rsvps = @event.rsvps.sort {|a, b| b.created_at <=> a.created_at }
-    cap = @event.blocks.first.rsvp_cap
+    rsvps = @event.rsvps.sort {|a, b| a.created_at <=> b.created_at }
+    cap = @event.cap
     if cap.nil? or cap < 1
       # No cap
       admitted = rsvps
@@ -177,6 +177,16 @@ class RsvpsController < ApplicationController
 
   def my_rsvps
     @rsvps = @current_user.rsvps
+    @waitlist_spots = @rsvps.map do |rsvp|
+      cap = rsvp.event.cap
+      if cap.nil? || cap < 1
+        0
+      else
+        [0, Rsvp.where(event_id: rsvp.event.id)
+                .where('created_at < ?', rsvp.created_at)
+                .count + 1 - cap].max
+      end
+    end
   end
 
 private

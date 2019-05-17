@@ -3,6 +3,7 @@
 <table>
   <tr>
     <th>Event</th>
+    <th>Waitlist spot</th>
     <th>Confirmed?</th>
     <th></th>
     <% if @auth['comms'] %>
@@ -11,9 +12,10 @@
     <% end %>
   </tr>
 
-<% @rsvps.each do |rsvp| %>
+<% @rsvps.zip(@waitlist_spots).each do |rsvp, waitlist| %>
   <tr>
     <td><%= rsvp.event.name %></td>
+    <td><%= waitlist == 0 ? "not on waitlist" : waitlist %></td>
     <td><%= rsvp.confirmed == 't' ? "Yes" : "No" %></td>
     <td><%= link_to 'Show', event_rsvp_path(rsvp.event, rsvp) %></td>
     <% if @auth['comms'] %>

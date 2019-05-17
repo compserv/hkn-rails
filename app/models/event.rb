@@ -60,6 +60,10 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def cap
+    blocks.first.rsvp_cap
+  end
+
   def valid_time_range
     if !start_time.blank? and !end_time.blank?
       errors[:end_time] << "must be after start time" unless start_time < end_time
