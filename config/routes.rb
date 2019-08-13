@@ -397,9 +397,9 @@ HknRails::Application.routes.draw do
   resources :shortlinks, except: :show
 
   # Redirect to prot's subdomain, keeping the path and any extensions in the request
-  match '/mediawiki(/*path)', via: :all, to: redirect { |params, _| "https://prot-hkn.eecs.berkeley.edu/w/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}" }
-  match '/prot(/*path)', via: :all, to: redirect { |params, _| "https://prot-hkn.eecs.berkeley.edu/wiki/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}" }
-  match '/prot2(/*path)', via: :all, to: redirect { |params, _| "https://prot-hkn.eecs.berkeley.edu/w/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}" }
+  match '/mediawiki(/*path)', via: :all, to: redirect { |params, _| URI.encode("https://prot-hkn.eecs.berkeley.edu/w/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}") }
+  match '/prot(/*path)',      via: :all, to: redirect { |params, _| URI.encode("https://prot-hkn.eecs.berkeley.edu/wiki/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}") }
+  match '/prot2(/*path)',     via: :all, to: redirect { |params, _| URI.encode("https://prot-hkn.eecs.berkeley.edu/w/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}") }
 
   # Redirect some alumni sites that were discontinued but requested redirects to
   # prevent any old links breaking
@@ -409,8 +409,8 @@ HknRails::Application.routes.draw do
   match '/~calbear/research.html', via: :all, to: redirect { "http://research.mbbaer.com/" }
   match '/~calbear/research/', via: :all, to: redirect { "http://mbbaer.com/" }
 
-  match '/~chenm(/*path)', via: :all, to: redirect { |params, _| "https://www.ocf.berkeley.edu/~morganjchen/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}" }
-  match '/~dyoo(/*path)', via: :all, to: redirect { |params, _| "http://www.hashcollision.org/hkn/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}" }
+  match '/~chenm(/*path)', via: :all, to: redirect { |params, _| URI.encode("https://www.ocf.berkeley.edu/~morganjchen/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}") }
+  match '/~dyoo(/*path)', via: :all, to: redirect { |params, _| URI.encode("http://www.hashcollision.org/hkn/#{ params[:path] }#{ '.' + params[:format] if params[:format].present?}") }
 
   # This section must remain at the bottom of the routes, since they are
   # catch-all routes to enable arbitrary hierarchy and placement of static pages
