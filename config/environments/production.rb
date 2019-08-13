@@ -76,4 +76,8 @@ HknRails::Application.configure do
   config.eager_load = true
 
   config.log_level = :info
+
+  # Turn off ip spoofing checks, since they are spammy and not helpful since we
+  # don't do IP-based whitelisting
+  config.action_dispatch.ip_spoofing_check = false
 end
