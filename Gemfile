@@ -122,5 +122,5 @@ group :development, :test do
   gem 'webrat', '~> 0.7'
 
   # Documentation generation
-  gem 'yard',   '~> 0.9.12'
+  gem 'yard',   '~> 0.9.20'
 end
