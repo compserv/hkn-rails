@@ -9,25 +9,17 @@
     - if @event.need_transportation
       %p
         Total Transportation: #{@total_transportation}
-    %h2 Admitted (#{@admitted.count})
-    %ul
-      - @admitted.each do |rsvp|
-        - person = rsvp.person
-        %li
-          = link_to person.fullname, person
-          = " (#{person.email})" if @auth_event_owner
-          - if @event.need_transportation
-            (#{rsvp.transportation})
-    - if not (@waitlist.nil? or @waitlist.empty?)
-      %h2 Waitlist (#{@waitlist.count})
-      %ul
-        - @waitlist.each do |rsvp|
-          - person = rsvp.person
-          %li
-            = link_to person.fullname, person
-            = " (#{person.email})" if @auth_event_owner
-            - if @event.need_transportation
-              (#{rsvp.transportation})
+    - @rsvp_lists.each do |label, list|
+      - if not (list.nil? or list.empty?)
+        %h2 #{label} (#{list.count})
+        %ul
+          - list.each do |rsvp|
+            - person = rsvp.person
+            %li
+              = link_to person.fullname, person
+              = " (#{person.email})" if @auth_event_owner
+              - if @event.need_transportation
+                (#{rsvp.transportation})
     %p
       - if @event.blocks.size > 1
         %h1 Time Slots

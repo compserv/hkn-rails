@@ -8,22 +8,22 @@ class RsvpsController < ApplicationController
   # GET /rsvps.xml
   def index
     # Most recently created RSVPs will show on top of the list
-    rsvps = @event.rsvps.sort {|a, b| a.created_at <=> b.created_at }
+    rsvps = @event.rsvps.order(:created_at)
     cap = @event.cap
     if cap.nil? or cap < 1
       # No cap
       admitted = rsvps
       waitlist = []
     else
-      admitted = rsvps[0, cap]
-      waitlist = rsvps[cap, -1]
+      admitted = rsvps[0...cap]
+      waitlist = rsvps[cap..-1]
     end
 
     @rsvp_lists = [["Admitted", admitted], ["Waitlist", waitlist]]
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render xml: @rsvps }
+      format.xml  { render xml: rsvps }
     end
   end
 
@@ -42,13 +42,6 @@ class RsvpsController < ApplicationController
   # GET /rsvps/new.xml
   def new
     # Allow all RSVPS, but waitlist
-    # if @event.blocks.size == 1
-      # block = @event.blocks.first
-      # if block.full?
-      #   redirect_to @event, notice: 'Event is full.'
-      #   return
-      # end
-    # end
     @rsvp = Rsvp.new
 
     respond_to do |format|
@@ -72,22 +65,6 @@ class RsvpsController < ApplicationController
     @rsvp.confirmed = Rsvp::Unconfirmed
 
     assign_blocks
-
-    # if @event.blocks.size == 1
-    #   block = @event.blocks.first
-    #   if block.full?
-    #     redirect_to @event, notice: 'Event is full.'
-    #     return
-    #   end
-    # elsif @event.blocks.size > 1
-    #   @event.blocks.each do |block|
-    #     if block.full? and @rsvp.blocks.include? block
-    #       @rsvp.errors[:base] << "One or more RSVP blocks you selected is full."
-    #       render action: "new"
-    #       return
-    #     end
-    #   end
-    # end
 
     respond_to do |format|
       if @rsvp.save
