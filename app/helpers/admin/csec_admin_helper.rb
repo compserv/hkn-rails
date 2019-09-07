@@ -14,7 +14,7 @@ module SurveyData
     # only if COMMIT is true.
     def self.import(file, semester, commit=false, is_ta=false)
       results = { errors: [], info: [] }
-      rows = CSV.read(file.path)
+      rows = CSV.read(file.path, mode: 'rb:bom|utf-8')
       header = rows.first
 
       header.each_with_index do |header_item, index|

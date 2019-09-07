@@ -172,23 +172,18 @@ def parse_tsv filename
   # During this, we check whether each klass, professor, and question has been created already
   # We create hashes for each survey answer and store them in answers. After passing checks,
   # we save the answers into the database.
-  file = File.open(filename, "r")
+  lines = File.readlines(filename, encoding: "bom|utf-8")
   i = 0
-  lines = file.readlines
 
   answers = []
   while i < lines.size
     (lines_read, instructor, klass) = parse_klass_info(lines[i].split("\t"))
     i += lines_read
-
     i += parse_frequencies
-
     i += parse_answers(lines, i, instructor, klass, answers)
   end
   puts "Passed checks. Continuing with inserting results into database"
-  answers.each do |answer|
-    SurveyAnswer.create(answer)
-  end
+  answers.each { |answer| SurveyAnswer.create(answer) }
 end
 
 if ARGV.size == 0
