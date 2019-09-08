@@ -57,6 +57,7 @@ module HknRails
         'ActionController::UnknownFormat'
       ] + ExceptionNotifier.ignored_exceptions,
       ignore_crawlers: %s{PiplBot SemrushBot},
+      error_grouping: true,
       email: {
         email_prefix: '[hkn-rails Exception] ',
         sender_address: '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
