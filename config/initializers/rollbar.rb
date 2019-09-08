@@ -32,7 +32,9 @@ if Rails.env.production?
       'ActiveRecord::RecordNotFound' => 'ignore',
       'AbstractController::ActionNotFound' => 'ignore',
       'ActionController::RoutingError' => 'ignore',
-      'ActionView::Template::Error' => 'ignore'
+      'ActionView::Template::Error' => 'ignore',
+      # Ignore 400 errors too, as they are client-caused
+      'ActionController::BadRequest' => 'ignore'
     )
 
     # Enable asynchronous reporting (uses girl_friday or Threading if girl_friday

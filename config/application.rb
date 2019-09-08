@@ -52,6 +52,11 @@ module HknRails
 
     # Exception Notification
     config.middleware.use ExceptionNotification::Rack,
+      ignore_exceptions: [
+        'ActionController::BadRequest',
+        'ActionController::UnknownFormat'
+      ] + ExceptionNotifier.ignored_exceptions,
+      ignore_crawlers: %s{PiplBot SemrushBot},
       email: {
         email_prefix: '[hkn-rails Exception] ',
         sender_address: '"hkn-rails Notifier" <notifier@hkn.eecs.berkeley.edu>',
