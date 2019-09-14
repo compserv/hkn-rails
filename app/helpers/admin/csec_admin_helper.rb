@@ -14,7 +14,7 @@ module SurveyData
     # only if COMMIT is true.
     def self.import(file, semester, commit=false, is_ta=false)
       results = { errors: [], info: [] }
-      rows = CSV.read(file.path, mode: 'rb:bom|utf-8')
+      rows = CSV.read(file.path, 'rb:bom|utf-8')
       header = rows.first
 
       header.each_with_index do |header_item, index|
@@ -46,9 +46,9 @@ module SurveyData
     # Takes a row from the course evaluation csv and extracts ratings.
     # Appends log output to LOG.
     def self.parse_row(row, header, semester, is_ta, log)
-      # Remove 6 headers (class name, first name, last name, invited count, response count, response rate)
-      rating_names = header.drop(6)
-      name, first_name, last_name, enrollment, responses, _, *ratings = row
+      # Remove 7 headers (class name, first name, last name, uid, invited count, response count, response rate)
+      rating_names = header.drop(7)
+      name, first_name, last_name, uid, enrollment, responses, _, *ratings = row
 
       match = name.match(LECTURE_COURSE_MATCH)
       if match.nil?
