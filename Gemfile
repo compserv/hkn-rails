@@ -67,7 +67,7 @@ gem 'mysql2', '~> 0.4.0'
 group :production do
   # Rollbar is nice for reporting errors in production instead of (or
   # alongside) spamming emails. It also records deploys, which is nice
-  gem 'rollbar', '~> 2.15'
+  gem 'rollbar', '~> 2.22'
 
   # JS compression and minification for production
   gem 'uglifier', '~> 4.1'
