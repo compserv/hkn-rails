@@ -15,7 +15,13 @@
 <% @rsvps.each do |rsvp| %>
   <tr>
     <td><%= rsvp.event.name %></td>
-    <td><%= rsvp.waitlist_spot == 0 ? "not on waitlist" : rsvp.waitlist_spot %></td>
+    <td>
+      <% if rsvp.waitlist_spot == 0 %>
+        not on waitlist
+      <% elsif rsvp.waitlist_spot > 0 %>
+        <%= rsvp.waitlist_spot %>
+      <% end %>
+    </td>
     <td><%= rsvp.confirmed == 't' ? "Yes" : "No" %></td>
     <td><%= link_to 'Show', event_rsvp_path(rsvp.event, rsvp) %></td>
     <% if @auth['comms'] %>

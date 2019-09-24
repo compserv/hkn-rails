@@ -148,7 +148,7 @@ class EventsController < ApplicationController
       #@total_transportation = @event.rsvps.map{|rsvp| rsvp.transportation}.sum
     end
     # @rsvps = @event.rsvps.sort {|x,y| x.person.first_name <=> y.person.first_name }
-    cap = @event.blocks.first.rsvp_cap
+    cap = @event.cap
     rsvps = @event.rsvps.order(:created_at)
     if cap.nil? or cap < 1
       # No cap

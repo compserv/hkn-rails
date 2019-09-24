@@ -67,7 +67,7 @@ class Rsvp < ActiveRecord::Base
   def waitlist_spot
     cap = event.cap
     if cap.nil? || cap < 1
-      0
+      -1
     else
       [0, Rsvp.where(event_id: rsvp.event.id)
               .where('created_at < ?', rsvp.created_at)
