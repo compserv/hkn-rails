@@ -64,6 +64,20 @@ class Event < ActiveRecord::Base
     blocks.first.rsvp_cap
   end
 
+  def rsvp_lists
+    rsvps_by_time = self.rsvps.order(:created_at)
+    if cap.nil? or cap < 1
+      # No cap
+      admitted = rsvps_by_time
+      waitlist = []
+    else
+      admitted = rsvps_by_time[0...cap]
+      waitlist = rsvps_by_time[cap..-1]
+    end
+
+    [["Admitted", admitted], ["Waitlist", waitlist]]
+  end
+
   def valid_time_range
     if !start_time.blank? and !end_time.blank?
       errors[:end_time] << "must be after start time" unless start_time < end_time

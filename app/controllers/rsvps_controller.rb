@@ -8,19 +8,7 @@ class RsvpsController < ApplicationController
   # GET /rsvps.xml
   def index
     # Most recently created RSVPs will show on top of the list
-    rsvps = @event.rsvps.order(:created_at)
-    cap = @event.cap
-    if cap.nil? or cap < 1
-      # No cap
-      admitted = rsvps
-      waitlist = []
-    else
-      admitted = rsvps[0...cap]
-      waitlist = rsvps[cap..-1]
-    end
-
-    @rsvp_lists = [["Admitted", admitted], ["Waitlist", waitlist]]
-
+    @rsvp_lists = @event.rsvp_lists
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render xml: rsvps }
