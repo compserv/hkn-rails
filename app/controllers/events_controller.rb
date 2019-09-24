@@ -147,6 +147,7 @@ class EventsController < ApplicationController
       @total_transportation = @event.rsvps.collect{|r| r.transportation || -1}.sum
       #@total_transportation = @event.rsvps.map{|rsvp| rsvp.transportation}.sum
     end
+    @rsvp_lists = @event.rsvp_lists
     @auth_event_owner = (@event.event_type.name == "Service" ? @auth['serv'] : @auth['act'])
     respond_to do |format|
       format.html # show.html.erb

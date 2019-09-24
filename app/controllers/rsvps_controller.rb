@@ -8,11 +8,10 @@ class RsvpsController < ApplicationController
   # GET /rsvps.xml
   def index
     # Most recently created RSVPs will show on top of the list
-    @rsvps = @event.rsvps.sort{|r1, r2| r2.created_at <=> r1.created_at }
-
+    @rsvp_lists = @event.rsvp_lists
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render xml: @rsvps }
+      format.xml  { render xml: rsvps }
     end
   end
 
@@ -30,13 +29,7 @@ class RsvpsController < ApplicationController
   # GET /rsvps/new
   # GET /rsvps/new.xml
   def new
-    if @event.blocks.size == 1
-      block = @event.blocks.first
-      if block.full?
-        redirect_to @event, notice: 'Event is full.'
-        return
-      end
-    end
+    # Allow all RSVPS, but waitlist
     @rsvp = Rsvp.new
 
     respond_to do |format|
@@ -61,26 +54,15 @@ class RsvpsController < ApplicationController
 
     assign_blocks
 
-    if @event.blocks.size == 1
-      block = @event.blocks.first
-      if block.full?
-        redirect_to @event, notice: 'Event is full.'
-        return
-      end
-    elsif @event.blocks.size > 1
-      @event.blocks.each do |block|
-        if block.full? and @rsvp.blocks.include? block
-          @rsvp.errors[:base] << "One or more RSVP blocks you selected is full."
-          render action: "new"
-          return
-        end
-      end
-    end
-
     respond_to do |format|
       if @rsvp.save
-        format.html { redirect_to(@event, notice: 'Thanks for RSVPing! See you there!') }
-        format.xml  { render xml: @rsvp, status: :created, location: @rsvp }
+        if @rsvp.waitlist_spot > 0
+          format.html { redirect_to(@event, notice: "RSVP successful. You are on the waitlist, position #{@rsvp.waitlist_spot}") }
+          format.xml  { render xml: @rsvp, status: :created, location: @rsvp }
+        else
+          format.html { redirect_to(@event, notice: 'Thanks for RSVPing! See you there!') }
+          format.xml  { render xml: @rsvp, status: :created, location: @rsvp }
+        end
       else
         format.html { render action: "new" }
         format.xml  { render xml: @rsvp.errors, status: :unprocessable_entity }

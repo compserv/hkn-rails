@@ -9,16 +9,18 @@
     - if @event.need_transportation
       %p
         Total Transportation: #{@total_transportation}
+    - @rsvp_lists.each do |label, list|
+      - if not (list.nil? or list.empty?)
+        %h2 #{label} (#{list.count})
+        %ul
+          - list.each do |rsvp|
+            - person = rsvp.person
+            %li
+              = link_to person.fullname, person
+              = " (#{person.email})" if @auth_event_owner
+              - if @event.need_transportation
+                (#{rsvp.transportation})
     %p
-      - events = @event.rsvps.sort {|x,y| x.person.first_name <=> y.person.first_name }
-      - events.each do |rsvp|
-        - person = rsvp.person
-        = link_to person.fullname, person
-        = " (#{person.email})" if @auth_event_owner
-        - if @event.need_transportation
-          (#{rsvp.transportation})
-        - if events.last != rsvp
-          ,
       - if @event.blocks.size > 1
         %h1 Time Slots
         - @event.blocks.each do |block|
@@ -68,10 +70,6 @@
       = link_to 'Remove My RSVP', event_rsvp_path(@event, @current_user_rsvp), confirm: 'Are you sure?', method: :delete
       |
     - elsif @event.can_rsvp? @current_user
-      - if ((@event.blocks.size == 1 and !@event.blocks.first.full?) or (@event.blocks.size > 1))
-        = link_to 'RSVP', '/events/' + @event.id.to_s + '/rsvps/new'
-        |
-      - else
-        %strong RSVPs FULL
-        |
+      = link_to 'RSVP', '/events/' + @event.id.to_s + '/rsvps/new'
+      |
   = link_to 'Back to Calendar', events_calendar_path(year: @event.start_time.year, month: @event.start_time.month)
