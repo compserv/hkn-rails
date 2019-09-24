@@ -69,7 +69,7 @@ class RsvpsController < ApplicationController
     respond_to do |format|
       if @rsvp.save
         if @rsvp.waitlist_spot > 0
-          format.html { redirect_to(@event, notice: 'RSVP successful. You are on the waitlist, position #{@rsvp.waitlist_spot}') }
+          format.html { redirect_to(@event, notice: "RSVP successful. You are on the waitlist, position #{@rsvp.waitlist_spot}") }
           format.xml  { render xml: @rsvp, status: :created, location: @rsvp }
         else
           format.html { redirect_to(@event, notice: 'Thanks for RSVPing! See you there!') }

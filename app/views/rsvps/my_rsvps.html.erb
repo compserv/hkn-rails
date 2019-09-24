@@ -16,9 +16,7 @@
   <tr>
     <td><%= rsvp.event.name %></td>
     <td>
-      <% if rsvp.waitlist_spot == 0 %>
-        not on waitlist
-      <% elsif rsvp.waitlist_spot > 0 %>
+      <% if rsvp.waitlist_spot > 0 %>
         <%= rsvp.waitlist_spot %>
       <% end %>
     </td>

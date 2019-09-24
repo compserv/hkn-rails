@@ -56,22 +56,22 @@ class Rsvp < ActiveRecord::Base
     event and event.need_transportation
   end
 
+  def waitlist_spot
+    if event.cap.nil? || event.cap < 1
+      -1
+    else
+      spot = Rsvp.where(event: event)
+                 .where('created_at < ?', created_at)
+                 .count - event.cap
+      [0, spot].max
+    end
+  end
+
   private
 
   def set_default_transportation
     if self.need_transportation
       self.transportation ||= TRANSPORT_ENUM.first.last
-    end
-  end
-
-  def waitlist_spot
-    cap = event.cap
-    if cap.nil? || cap < 1
-      -1
-    else
-      [0, Rsvp.where(event_id: rsvp.event.id)
-              .where('created_at < ?', rsvp.created_at)
-              .count + 1 - event.cap].max
     end
   end
 end
