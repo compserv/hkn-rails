@@ -61,7 +61,11 @@ class Event < ActiveRecord::Base
   end
 
   def cap
-    blocks.first.rsvp_cap
+    if blocks.nil?
+      nil
+    else
+      blocks.first.rsvp_cap
+    end
   end
 
   def rsvp_lists
