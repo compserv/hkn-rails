@@ -57,8 +57,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     source $HOME/.rvm/scripts/rvm || source /etc/profile.d/rvm.sh
 
     # Install Ruby
-    rvm install 2.5.1
-    rvm use 2.5.1 --default
+    rvm install 2.5.7
+    rvm use 2.5.7 --default
 
     # Install gems
     gem install bundler

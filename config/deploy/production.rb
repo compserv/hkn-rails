@@ -37,7 +37,7 @@ set :branch, 'master'
 # Feel free to add new variables to customise your setup.
 
 # RVM config
-set :rvm_ruby_version, '2.5.1'
+set :rvm_ruby_version, '2.5.7'
 
 
 # Custom SSH Options

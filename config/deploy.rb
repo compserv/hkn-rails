@@ -16,7 +16,7 @@ set :ssh_options, forward_agent: true
 
 # RVM config
 # Moved to environment config (production, migrate)
-# set :rvm_ruby_version, '2.5.1'
+# set :rvm_ruby_version, '2.5.7'
 
 # Rollbar config
 set :rollbar_env,  proc { fetch :stage }
