@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.5.1'
+ruby '2.5.7'
 
 # Pin Rails to a strict version, since can easily have breaking changes
 gem 'rails', '4.2.11.1'
@@ -39,7 +39,7 @@ gem 'responders', '~> 2.4'
 gem 'ri_cal', '~> 0.8'
 
 # Sass support for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sassc-rails', '~> 2.1'
 
 # More secure password hashing for authentication
 gem 'scrypt', '~> 3.0'
