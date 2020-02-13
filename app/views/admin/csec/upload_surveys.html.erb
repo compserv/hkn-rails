@@ -26,7 +26,7 @@
 <div class="upload-form">
   <%= form_tag admin_csec_upload_surveys_post_path, multipart: true, method: :post do %>
     <%= label_tag :semester, "Semester (in a format like 'Fall 20XX', 'Spring 20XX', or 'Summer 20XX')" %>
-    <%= text_field_tag :semester, :required => true %>
+    <%= text_field_tag :semester, nil, :required => true %>
     <br/>
     <small>Upload raw survey data as <b>CSV</b> (a.k.a. doublequoted and comma-delimited).</small>
     <br/>
