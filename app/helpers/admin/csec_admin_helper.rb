@@ -7,6 +7,7 @@ module SurveyData
     QUESTION_MAPPING = {
       "Considering both the limitations and possibilities of the subject matter and course, how would you rate the overall teaching effectiveness of this instructor?" => "Rate the overall teaching effectiveness of this instructor",
       "Focusing now on the course content, how worthwhile was this course in comparison to others you have taken in this department?" => "How worthwhile was this course compared with others at U.C.?",
+      "How worthwhile was this course in comparison to others you have taken at this university?" => "How worthwhile was this course compared with others at U.C.?",
       "Overall teaching effectiveness" => "Rate the T.A.'s overall teaching effectiveness",
     }
 
