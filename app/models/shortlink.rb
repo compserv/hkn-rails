@@ -19,6 +19,6 @@ class Shortlink < ActiveRecord::Base
   belongs_to :person
 
   def own?(current_user, auth)
-    person == current_user || auth['superuser']
+    person == current_user || auth['officers'] || auth['superuser']
   end
 end
