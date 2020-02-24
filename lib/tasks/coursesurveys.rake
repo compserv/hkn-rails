@@ -11,7 +11,7 @@ def parse_header(header)
   end
 
   # Remove '- Mean' or '(Mean)' suffixes
-  header.sub!(/ -? \(?Mean\)?/, '')
+  header.sub!(/( -)? \(?Mean\)?/, '')
 
   # Shorten long headers
   if QUESTION_MAPPING.key?(header)
@@ -151,7 +151,8 @@ namespace :coursesurveys do
     importer.import!
   end
 
-  # rake coursesurveys:import["<csv>", <true/false>, <cols>...]
+  # rake coursesurveys:import["<csv>", <ta: true/false>, <commit: true/false>] FROM="..." COLS=1,2,3,...
+  # Note: col 1 is Professor effectiveness, col 51 is GSI effectiveness
   task :import, [:semester, :ta, :commit] do |t, args|
     # require Admin::CsecAdminHelper::Importer
     file = ENV["FROM"]
