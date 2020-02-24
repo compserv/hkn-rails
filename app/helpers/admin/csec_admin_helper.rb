@@ -10,6 +10,15 @@ module SurveyData
       "How worthwhile was this course in comparison to others you have taken at this university?" => "How worthwhile was this course compared with others at U.C.?",
       "Overall teaching effectiveness" => "Rate the T.A.'s overall teaching effectiveness",
     }
+    SKIPPED_QUESTIONS = {
+      "Courses - Name" => true,
+      "Instructors - First Name" => true,
+      "Instructors - Last Name" => true,
+      "UID" => true,
+      "Invited Count" => true,
+      "Response Count" => true,
+      "Response Rate" => true
+    }
 
     # Imports all of the course surveys from the specified file. Commits
     # only if COMMIT is true.
