@@ -1,7 +1,12 @@
 <h1>Sign up for a Department tour!</h1>
+<% if @closed %>
+  <%= render partial: 'closed' %>
+<% end %>
 <p>
   HKN provides tours of the Berkeley EECS department.
   Sign up here, and your request will be sent to the HKN officer corps.
+</p>
+<p>
   If you have any special requests, list them in the additional comments section.
   Tours are offered during our open hours (MTWTF, 11am-5pm).
   Please allow three days for confirmation.
