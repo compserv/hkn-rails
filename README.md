@@ -137,6 +137,44 @@ To load a backup:
 rake db:reset && rake db:backup:restore FROM=[path]
 ```
 
+## Uploading Course Surveys
+
+The course survey uploads do need to be manually re-uploaded sometimes,
+especially if a column is missing. (Note that this is a bug! By no means is
+this expected behavior, nor should it be allowed to continue.)
+
+1. `scp` the relevant course survey CSV to apphost.ocf.berkeley.edu.
+2. `ssh` in and go into `~/hkn-rails/prod/current/`.
+3. Execute the following rake task to import surveys:
+
+```sh
+   $ RAILS_ENV=production bundle exec rake "coursesurveys:import[<semester>, <ta?>, <commit?>]"
+      FROM=survey.csv
+```
+
+If specific columns of data are missing, specify which columns to upload
+(by `SurveyAnswer` model IDs, requires Rails console access) with
+the `COLS` environment variable:
+
+```sh
+$ RAILS_ENV=production bundle exec rake "coursesurveys:import[<semester>,<ta?>,<commit?>]"
+   FROM=survey.csv COLS=id1,id2,...
+```
+
+Example: to upload the instructor data for Fall 2019 (saving to the
+database), only uploading the ID=1 survey question ('effectiveness'), we run:
+```sh
+$ RAILS_ENV=production bundle exec rake "coursesurveys:import[Fall 2019,false,true]"
+   FROM=survey.csv COLS=1
+```
+
+Example: to upload all TA data for Summer 2019 (without saving to the database),
+we run:
+```sh
+$ RAILS_ENV=production bundle exec rake "coursesurveys:import[Summer 2019,true,false]"
+   FROM=survey.csv
+```
+
 ## Static Files
 
 To serve new static files in production, first run
