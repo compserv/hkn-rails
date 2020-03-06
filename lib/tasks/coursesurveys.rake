@@ -90,7 +90,7 @@ def find_instructor(first_name, last_name, is_ta, commit=false)
         raise ParseError, "Created new (TA) Instructor, but save failed: #{instructor.inspect}"
       end
     else
-      puts "Could not find Instructor '#{first_name}, #{last_name}' in database"
+      puts "Could not find Instructor '#{last_name}, #{first_name} (Last, First)' in database"
       # raise ParseError, "Could not find Instructor '#{first_name}, #{last_name}' in database"
     end
   end
@@ -166,7 +166,7 @@ namespace :coursesurveys do
     commit = args.commit.to_s == 'true'
 
     csv = CSV.open(file, "r:bom|utf-8",
-                   headers: true, 
+                   headers: true,
                    header_converters: lambda {|header| parse_header(header)})
 
     csv.each do |row|
