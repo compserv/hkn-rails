@@ -42,7 +42,7 @@ def find_dept(dept_abbr)
   return dept
 end
 
-def find_course(dept, number, commit=false)
+def find_course(dept, number, commit)
   prefix, course_number, suffix = Course.split_course_number(number, {hash: false})
   course_hash = {
     prefix: prefix,
@@ -57,7 +57,7 @@ def find_course(dept, number, commit=false)
   return course
 end
 
-def find_klass(section, course, semester, commit=false)
+def find_klass(section, course, semester, commit)
   klass_hash = {section: section, course_id: course.id, semester: semester}
   klass = Klass.find_by(klass_hash)
   if klass.nil?
@@ -70,7 +70,7 @@ def find_klass(section, course, semester, commit=false)
   return klass
 end
 
-def find_instructor(first_name, last_name, is_ta, commit=false)
+def find_instructor(first_name, last_name, is_ta, commit)
   instructor = Instructor.where(
     "UPPER(last_name) LIKE ? AND UPPER(first_name) LIKE ?",
     last_name.upcase,
@@ -97,10 +97,10 @@ def find_instructor(first_name, last_name, is_ta, commit=false)
   return instructor
 end
 
-def find_instructorship(instructor, klass, is_ta, commit=false)
+def find_instructorship(instructor, klass, is_ta, commit)
   iship = Instructorship.find_by(klass: klass, instructor: instructor)
   if iship.nil? and not (instructor.nil? or klass.nil?)
-    iship = Instructorship.new(ta: is_ta, instructor_id: instructor.id, klass_id: klass.id)
+    iship = Instructorship.new(ta: is_ta, instructor: instructor, klass: klass)
     if commit and not iship.save
       raise ParseError, "Instructorship save failed: #{instructorship.inspect}, errors: #{instructorship.errors.inspect}"
     end
@@ -108,7 +108,7 @@ def find_instructorship(instructor, klass, is_ta, commit=false)
   return iship
 end
 
-def make_survey_answer(instructorship, question, attrs, order, commit=false)
+def make_survey_answer(instructorship, question, attrs, order, commit)
   if instructorship.nil?
     puts "Instructorship not found"
     return
@@ -119,7 +119,11 @@ def make_survey_answer(instructorship, question, attrs, order, commit=false)
   a.frequencies = attrs[:frequencies]
   a.enrollment = attrs[:enrollment]
   a.num_responses = attrs[:responses]
-  p a
+  if a.instructorship.id.nil?
+    puts "Uncommitted: #{a.inspect}"
+  else
+    puts "#{a.instructorship&.klass&.to_s}, #{a.instructor.full_name_r}, question #{a.survey_question.id}: #{a.mean}"
+  end
   if commit
     if a.save
       a.order = order
@@ -201,11 +205,11 @@ namespace :coursesurveys do
         raise ParseError, "Professor/T.A. '#{first_name}, #{last_name}' does have a first/last name in row #{row}"
       end
 
-      instructor = find_instructor(first_name, last_name, ta)
+      instructor = find_instructor(first_name, last_name, ta, commit)
       dept = find_dept(dept_abbr)
-      course = find_course(dept, course_number)
-      klass = find_klass(section, course, semester)
-      instructorship = find_instructorship(instructor, klass, ta)
+      course = find_course(dept, course_number, commit)
+      klass = find_klass(section, course, semester, commit)
+      instructorship = find_instructorship(instructor, klass, ta, commit)
 
       order = 1
       row.each do |entry|
