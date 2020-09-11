@@ -10,8 +10,8 @@
 <table id="daily_tutoring_schedule" class="landing tutoring small">
   <tr>
     <th></th>
-    <th>290 Cory</th>
-    <th>345 Soda</th>
+    <th>Online</th>
+    <th> </th>
   </tr>
 <% for hour in @hours %>
   <% cory_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Cory, @day, hour) %>

@@ -3,10 +3,16 @@
 <div style="float: left; width: 80%; text-align: center; margin-bottom: 30px;">
 
 <p><strong>Notice:</strong> Due to course policy, HKN tutors cannot help with projects.</p>
+<p><strong>Both tables are the same room. To read it, the tutors in each table that will show up at a particular time and day will be available in the same online room.</p>
 
 <% tutors = [] %>
 <% Slot::Room::Both.each do |room| %>
-<h1><%= @room_numbers[room] %></h1>
+
+<h1><p>Online</p></h1>
+<!-----
+  <h1><%= @room_numbers[room] %></h1>
+----->
+
 <table class="tutoring" id="cory_schedule">
   <tr>
     <th>Hours</th>
