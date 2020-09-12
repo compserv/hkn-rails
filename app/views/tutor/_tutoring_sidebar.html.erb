@@ -7,21 +7,17 @@
 <div class="small infobar_links"><%= link_to "weekly schedule", "/tutor" %></div>
 <% if @tutoring_enabled %>
 <% tutors = [] %>
-<table id="daily_tutoring_schedule" class="landing tutoring small">
+<table id="daily_tutoring_schedule" class="landing tutoring small" style="width:60%">
   <tr>
-    <th></th>
+    <th>Times (PDT)</th>
     <th>Online</th>
-    <th> </th>
   </tr>
 <% for hour in @hours %>
-  <% cory_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Cory, @day, hour) %>
-  <% soda_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Soda, @day, hour) %>
+  <% people = @slots.find_by_wday_and_hour(@day, hour) %>
   <tr>
-    <td class="time"><%= format_hour_slot hour %></td>
-    <td class="pcell"><%= render cory_slot %></td>
-    <td class="pcell"><%= render soda_slot %></td>
-    <% tutors.concat(cory_slot.tutors) %>
-    <% tutors.concat(soda_slot.tutors) %>
+    <td class="time" style="width:30%"><%= format_hour_slot hour %></td>
+    <td class="pcell" style="width:70%"><%= render people %></td>
+    <% tutors.concat(people.tutors) %>
   </tr>
 <% end %>
 </table>
