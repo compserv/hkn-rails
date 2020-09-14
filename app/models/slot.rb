@@ -53,7 +53,7 @@ class Slot < ActiveRecord::Base
 
   def display
     start, stop = [hour, hour + 1].collect { |h| h > 12 ? h - 12 : h }
-    "#{day_name}, #{start}-#{stop} @ #{room_name}"
+    "#{day_name}, #{start}-#{stop} @ Online" # @ #{room_name}"
   end
 
   def room_name

@@ -72,7 +72,7 @@ Note that there are five levels of preference, which roughly translate to "stron
     </tr>
   <% @hours.each do |hour| %>
     <tr>
-      <td  rowspan="4" class="slot"><%= format_hour_slot (hour + (hour >= 15 ? 5 : 0))%></td>
+      <td  rowspan="4" class="slot"><%= format_hour_slot hour%></td>
       <% @wdays.each do |wday| %>
         <td class="slot slot-preferred">
           <%= radio_button_tag availability_form_name(wday, hour, :preference_level),
