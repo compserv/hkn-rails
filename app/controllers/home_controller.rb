@@ -7,8 +7,11 @@ class HomeController < ApplicationController
     prop = Property.get_or_create
     @tutoring_enabled = prop.tutoring_enabled
     @hours = prop.tutoring_start .. prop.tutoring_end
-    time = Time.now
-    time = time.tomorrow if time.hour > prop.tutoring_end
+    time = Time.now.in_time_zone('Pacific Time (US & Canada)')
+
+    applyTempFix = true
+    time = time.tomorrow if time.hour > (prop.tutoring_end + ((applyTempFix) ? 5 : 0))
+    
     time = time.next_week unless (1..5).include? time.wday
     @day = time.wday
     @tutor_title = "#{time.strftime("%A")}'s Tutoring Schedule"
