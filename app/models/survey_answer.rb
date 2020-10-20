@@ -15,7 +15,7 @@
 class SurveyAnswer < ActiveRecord::Base
   include CoursesurveysHelper
 
-  belongs_to :instructorship
+  belongs_to :instructorship, dependent: :destroy
   belongs_to :survey_question
 
   has_one :instructor, through: :instructorship
