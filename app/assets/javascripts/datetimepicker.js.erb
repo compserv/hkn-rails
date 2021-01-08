@@ -5,8 +5,13 @@ $(document).ready(function() {
     // Only show weekdays, since tours are not offered on weekends
     beforeShowDay: function(date) {
       var td = date.getDay();
+      // OLD
       // Don't allow Saturday (6) or Sunday (0) for tours
-      var selectable = (td != 0 && td != 6);
+      // var selectable = (td != 0 && td != 6);
+
+      // NEW - Jan 7, 2021
+      // Thursday (4) at 6pm, Saturday (6) at 10 am and Saturday at 12 pm
+      var selectable = (td == 4 || td == 6);
 
       // This must return [0: Whether this date is selectable or not,
       //                   1: A CSS class name to use (or '' for the default,
@@ -17,10 +22,10 @@ $(document).ready(function() {
     // Make sure to change these hours and dates as needed to only allow tours
     // within dates and times that HKN is open.
     // This goes along with the restrictions in dept_tour_controller.rb
-    hourMin: 11,
-    hourMax: 16,
-    minTime: '11:00 am',
-    maxTime: '4:00 pm',
+    hourMin: 10,
+    hourMax: 18,
+    minTime: '10:00 am',
+    maxTime: '6:00 pm',
     // Months in JS are strange, they are actually zero-indexed while
     // everything else is not, so be careful when setting min/max dates here.
     minDate: new Date(),
@@ -30,7 +35,7 @@ $(document).ready(function() {
 
     stepHour: 1,
     stepMinute: 5,
-    hourGrid: 1,
+    hourGrid: 2,
     minuteGrid: 15,
 
     showOn: "button",
