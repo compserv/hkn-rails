@@ -7,7 +7,7 @@ class DeptTourController < ApplicationController
       @errors[:email_confirmation] = "Email confirmation did not match" unless params[:email] == params[:email_confirmation]
       @errors[:name]               = "Name must not be blank"           if params[:name].length == 0
       @errors[:recaptcha]          = "Captcha validation failed"        unless verify_recaptcha
-      @errors[:date]               = "Invalid date or time specified. Must be in the future, when HKN is open (not during school breaks), and between 11 (11am) and 17 (5pm)"   unless params[:date] && valid_date?(params[:date])
+      @errors[:date]               = "Invalid time selection. Please select a date and time from one of the options specified above." unless params[:date] && valid_date?(params[:date])
       @errors[:phone]              = "Phone must not be blank"          if params[:phone].blank?
 
       # Optional
@@ -49,7 +49,15 @@ class DeptTourController < ApplicationController
       # Make sure to update this (along with the date/time restrictions in
       # datetimepicker.js.erb to match only times and dates that we want to
       # give tours)
-      return ((11..17).include?(dt.hour) and dt > DateTime.now)
+
+      # Thursday (4) at 6pm, Saturday (6) at 10 am and Saturday at 12 pm
+      if dt.thursday?
+        return (dt.hour == (12 + 6) and dt > DateTime.now)
+      end
+      if dt.saturday?
+        return ((dt.hour == 10 or dt.hour == 12) and dt > DateTime.now)
+      end
+      # return ((11..17).include?(dt.hour) and dt > DateTime.now)
     rescue ArgumentError
       # If this isn't something that can be parsed as a time, it's obviously invalid
       return false
