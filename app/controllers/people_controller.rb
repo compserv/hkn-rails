@@ -77,7 +77,6 @@ class PeopleController < ApplicationController
       logger.warn "Solr isn't started, falling back to lame search"
       if $SUNSPOT_EMAIL_ENABLED
         ErrorMailer.problem_report("Solr isn't started (The only email sent until solr reactivated)").deliver
-        $SUNSPOT_EMAIL_ENABLED = false
       end
 
       str = "%#{query}%"
@@ -89,7 +88,11 @@ class PeopleController < ApplicationController
 
       @results[:people].results = Person.where('first_name LIKE :search or last_name LIKE :search or username LIKE :search or email LIKE :search', search: str).paginate opts
 
-      flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
+      if Rails.env.development?
+        flash[:notice] = "Solr isn't started, so your results are probably lacking."
+      elsif @auth['compserv']
+        flash[:notice] = "Solr isn't started."
+      end
     end
     @people = @results[:people].results
 
