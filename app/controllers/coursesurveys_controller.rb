@@ -477,7 +477,10 @@ class CoursesurveysController < ApplicationController
     else
       # Solr isn't started, hack together some results
       logger.warn "Solr isn't started, falling back to lame search"
-      ErrorMailer.problem_report("Solr isn't started").deliver
+      if $SUNSPOT_EMAIL_ENABLED
+        ErrorMailer.problem_report("Solr isn't started (The only email sent until solr reactivated)").deliver
+        $SUNSPOT_EMAIL_ENABLED = false
+      end
 
       str = "%#{params[:q]}%"
       [:courses, :instructors].each do |k|
