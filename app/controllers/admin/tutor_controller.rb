@@ -507,7 +507,7 @@ class Admin::TutorController < Admin::AdminController
       if $SUNSPOT_ENABLED then
         results = Course.search {keywords params[:course_query]}.results
       else
-        str = "%#{course_query}%"
+        str = "%#{params[:course_query]}%"
         results = Course.where('description LIKE ? OR name LIKE ? OR CONCAT(prefix, course_number, suffix) LIKE ?', str, str, str)
       end
       if results.length == 1 then

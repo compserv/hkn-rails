@@ -479,7 +479,6 @@ class CoursesurveysController < ApplicationController
       logger.warn "Solr isn't started, falling back to lame search"
       if $SUNSPOT_EMAIL_ENABLED
         ErrorMailer.problem_report("Solr isn't started (The only email sent until solr reactivated)").deliver
-        $SUNSPOT_EMAIL_ENABLED = false
       end
 
       str = "%#{params[:q]}%"
@@ -490,7 +489,11 @@ class CoursesurveysController < ApplicationController
       @results[:courses].results = Course.where('description LIKE ? OR name LIKE ? OR CONCAT(prefix, course_number, suffix) LIKE ?', str, str, str)
       @results[:instructors].results = Instructor.select(:id, :first_name, :last_name, :private, :title).where("CONCAT(first_name, ' ', last_name) LIKE ?", str)
 
-      flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
+      if Rails.env.development?
+        flash[:notice] = "Solr isn't started, so your results are probably lacking."
+      elsif @auth['compserv']
+        flash[:notice] = "Solr isn't started."
+      end
     end
 
     # redirect if only one result
