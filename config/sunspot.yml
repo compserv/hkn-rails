@@ -2,6 +2,7 @@ production:
   solr:
     hostname: localhost
     port: 8983
+    memory: 1G
     log_level: INFO
     path: '/solr/production'
     bind_address: 127.0.0.1
