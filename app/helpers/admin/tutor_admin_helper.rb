@@ -18,8 +18,6 @@ module Admin::TutorAdminHelper
   end
 
   def format_hour_slot(hour)
-    applyTempFix = true
-    hour = hour + ((hour >= 15 && applyTempFix) ? 5 : 0)
     return format_hour(hour) + "-" + format_hour(hour+1)
   end
 end

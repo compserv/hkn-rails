@@ -52,12 +52,7 @@ class Slot < ActiveRecord::Base
   end
 
   def display
-    applyTempFix = true
     start, stop = [hour, hour + 1].collect { |h| h > 12 ? h - 12 : h }
-    if applyTempFix && start >= 15
-      start = start + 5
-      stop = stop + 5
-    end
     "#{day_name}, #{start}-#{stop} @ Online" # @ #{room_name}"
   end
 

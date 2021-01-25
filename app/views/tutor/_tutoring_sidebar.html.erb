@@ -7,17 +7,23 @@
 <div class="small infobar_links"><%= link_to "weekly schedule", "/tutor" %></div>
 <% if @tutoring_enabled %>
 <% tutors = [] %>
-<table id="daily_tutoring_schedule" class="landing tutoring small" style="width:60%">
+<table id="daily_tutoring_schedule" class="landing tutoring small" style="width:70%">
   <tr>
-    <th>Times (PDT)</th>
+    <th>Times (Pacific Time)</th>
     <th>Online</th>
   </tr>
 <% for hour in @hours %>
   <% people = @slots.find_by_wday_and_hour(@day, hour) %>
   <tr>
     <td class="time" style="width:30%"><%= format_hour_slot hour %></td>
-    <td class="pcell" style="width:70%"><%= render people %></td>
-    <% tutors.concat(people.tutors) %>
+	<td class="pcell" style="width:70%">
+		<% if people %>
+			<%= render people %>
+			<% tutors.concat(people.tutors) %>
+		<% else %>
+			No Tutors
+		<% end %>
+	</td>
   </tr>
 <% end %>
 </table>
