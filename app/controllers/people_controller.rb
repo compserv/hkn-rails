@@ -75,7 +75,10 @@ class PeopleController < ApplicationController
     else
       # Solr isn't started, hack together some results
       logger.warn "Solr isn't started, falling back to lame search"
-      ErrorMailer.problem_report("Solr isn't started").deliver
+      if $SUNSPOT_EMAIL_ENABLED
+        ErrorMailer.problem_report("Solr isn't started (The only email sent until solr reactivated)").deliver
+        $SUNSPOT_EMAIL_ENABLED = false
+      end
 
       str = "%#{query}%"
       @results[:people] = FakeSearch.new
@@ -84,7 +87,7 @@ class PeopleController < ApplicationController
                per_page: params[:per_page] || 20
              }
 
-      @results[:people].results = Person.where('(first_name||last_name||username||email) LIKE ?', str).paginate opts
+      @results[:people].results = Person.where('first_name LIKE :search or last_name LIKE :search or username LIKE :search or email LIKE :search', search: str).paginate opts
 
       flash[:notice] = "Solr isn't started, so your results are probably lacking." if Rails.env.development?
     end

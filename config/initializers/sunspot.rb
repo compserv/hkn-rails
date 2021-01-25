@@ -3,6 +3,8 @@ Sunspot.config.pagination.default_per_page = 50
 # Fake out sunspot if the server isn't running.
 # Otherwise, model save/destroy will throw an error.
 $SUNSPOT_ENABLED = false
+# Emails will be sent only ONCE on errors via bool set on appropriate areas
+$SUNSPOT_EMAIL_ENABLED = true
 
 begin
   File.file?(pidfile = Sunspot::Rails::Server.new.pid_path)

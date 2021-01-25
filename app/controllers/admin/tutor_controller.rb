@@ -503,8 +503,13 @@ class Admin::TutorController < Admin::AdminController
 
   def add_course
     course = Course.find(params[:course].to_i) unless params[:course].blank?
-    if (course.nil? || !course.course_abbr.eql?(params[:course_query]) ) && $SUNSPOT_ENABLED then
-      results = Course.search {keywords params[:course_query]}.results
+    if (course.nil? || !course.course_abbr.eql?(params[:course_query]) ) then
+      if $SUNSPOT_ENABLED then
+        results = Course.search {keywords params[:course_query]}.results
+      else
+        str = "%#{course_query}%"
+        results = Course.where('description LIKE ? OR name LIKE ? OR CONCAT(prefix, course_number, suffix) LIKE ?', str, str, str)
+      end
       if results.length == 1 then
         course = results.first
       else
