@@ -10,8 +10,8 @@ $(document).ready(function() {
       // var selectable = (td != 0 && td != 6);
 
       // NEW - Jan 7, 2021
-      // Thursday (4) at 6pm, Saturday (6) at 10 am and Saturday at 12 pm
-      var selectable = (td == 4 || td == 6);
+      // Tuesday (2) at 8pm, Saturday (6) at 10 am and Saturday at 12 pm
+      var selectable = (td == 2 || td == 6);
 
       // This must return [0: Whether this date is selectable or not,
       //                   1: A CSS class name to use (or '' for the default,
@@ -23,9 +23,9 @@ $(document).ready(function() {
     // within dates and times that HKN is open.
     // This goes along with the restrictions in dept_tour_controller.rb
     hourMin: 10,
-    hourMax: 18,
+    hourMax: 20,
     minTime: '10:00 am',
-    maxTime: '6:00 pm',
+    maxTime: '8:00 pm',
     // Months in JS are strange, they are actually zero-indexed while
     // everything else is not, so be careful when setting min/max dates here.
     minDate: new Date(),
@@ -33,7 +33,7 @@ $(document).ready(function() {
     dateFormat: 'yy-mm-dd',
     timeFormat: 'hh:mm tt',
 
-    stepHour: 1,
+    stepHour: 2,
     stepMinute: 5,
     hourGrid: 2,
     minuteGrid: 15,

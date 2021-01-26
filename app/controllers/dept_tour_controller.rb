@@ -50,13 +50,15 @@ class DeptTourController < ApplicationController
       # datetimepicker.js.erb to match only times and dates that we want to
       # give tours)
 
-      # Thursday (4) at 6pm, Saturday (6) at 10 am and Saturday at 12 pm
-      if dt.thursday?
-        return (dt.hour == (12 + 6) and dt > DateTime.now)
+      # Tuesday (2) at 8pm, Saturday (6) at 10 am and Saturday at 12 pm
+      if dt.tuesday?
+        return (dt.hour == (12 + 8) and dt > DateTime.now)
       end
       if dt.saturday?
         return ((dt.hour == 10 or dt.hour == 12) and dt > DateTime.now)
       end
+
+      return false
       # return ((11..17).include?(dt.hour) and dt > DateTime.now)
     rescue ArgumentError
       # If this isn't something that can be parsed as a time, it's obviously invalid
