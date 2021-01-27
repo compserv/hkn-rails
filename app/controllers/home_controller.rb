@@ -8,9 +8,7 @@ class HomeController < ApplicationController
     @tutoring_enabled = prop.tutoring_enabled
     @hours = prop.tutoring_start .. prop.tutoring_end
     time = Time.now.in_time_zone('Pacific Time (US & Canada)')
-
-    applyTempFix = true
-    time = time.tomorrow if time.hour > (prop.tutoring_end + ((applyTempFix) ? 5 : 0))
+    time = time.tomorrow if time.hour > prop.tutoring_end
     
     time = time.next_week unless (1..5).include? time.wday
     @day = time.wday
