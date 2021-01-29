@@ -198,7 +198,7 @@ class ExamsController < ApplicationController
       end
 
       cs_term = !(str_courseNum.slice! "cs").nil?
-      cs_term = !(str_courseNum.slice! "compsci").nil? or cs_term
+      cs_term = !(str_courseNum.slice! "compsci").nil? || cs_term
       if cs_term
         cs_depts = Department.where(abbr: "COMPSCI")
         if cs_depts.length > 0
@@ -207,7 +207,7 @@ class ExamsController < ApplicationController
       end
 
       ee_term = !(str_courseNum.slice! "ee").nil?
-      ee_term = !(str_courseNum.slice! "eleng").nil? or ee_term
+      ee_term = !(str_courseNum.slice! "eleng").nil? || ee_term
       if ee_term
         ee_depts = Department.where(abbr: "EL ENG")
         if ee_depts.length > 0
