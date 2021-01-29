@@ -514,8 +514,8 @@ class Admin::TutorController < Admin::AdminController
         eecs_term = !(str_courseNum.slice! "eecs").nil?
         if eecs_term
           eecs_depts = Department.where(abbr: "EECS")
-          if eecs_dept.length > 0
-            dept_id = eecs_dept.first.id
+          if eecs_depts.length > 0
+            dept_id = eecs_depts.first.id
           end
         end
 
@@ -532,8 +532,8 @@ class Admin::TutorController < Admin::AdminController
         ee_term = !(str_courseNum.slice! "eleng").nil? or ee_term
         if ee_term
           ee_depts = Department.where(abbr: "EL ENG")
-          if ee_dept.length > 0
-            dept_id = ee_dept.first.id
+          if ee_depts.length > 0
+            dept_id = ee_depts.first.id
           end
         end
 
