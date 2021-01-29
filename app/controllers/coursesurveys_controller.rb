@@ -482,11 +482,48 @@ class CoursesurveysController < ApplicationController
       end
 
       str = "%#{params[:q]}%"
+      str_courseNum = str.downcase.delete(" ")
+      dept_id = -1
+
+      eecs_term = !(str_courseNum.slice! "eecs").nil?
+      if eecs_term
+        eecs_depts = Department.where(abbr: "EECS")
+        if eecs_dept.length > 0
+          dept_id = eecs_dept.first.id
+        end
+      end
+
+      cs_term = !(str_courseNum.slice! "cs").nil?
+      cs_term = !(str_courseNum.slice! "compsci").nil? or cs_term
+      if cs_term
+        cs_depts = Department.where(abbr: "COMPSCI")
+        if cs_depts.length > 0
+          dept_id = cs_depts.first.id
+        end
+      end
+
+      ee_term = !(str_courseNum.slice! "ee").nil?
+      ee_term = !(str_courseNum.slice! "eleng").nil? or ee_term
+      if ee_term
+        ee_depts = Department.where(abbr: "EL ENG")
+        if ee_dept.length > 0
+          dept_id = ee_dept.first.id
+        end
+      end
+
+      str_courseNum = str_courseNum.upcase
+
       [:courses, :instructors].each do |k|
         @results[k] = FakeSearch.new
       end
 
-      @results[:courses].results = Course.where('description LIKE ? OR name LIKE ? OR CONCAT(prefix, course_number, suffix) LIKE ?', str, str, str)
+      query_str = 'description LIKE ? OR name LIKE ? OR CONCAT(prefix, course_number, suffix) LIKE ?'
+      if dept_id > -1
+        query_str = '(' + query_str + ') AND department_id = ?'
+        @results[:courses].results = Course.where(query_str, str, str, str_courseNum, dept_id)
+      else
+        @results[:courses].results = Course.where(query_str, str, str, str_courseNum)
+      end
       @results[:instructors].results = Instructor.select(:id, :first_name, :last_name, :private, :title).where("CONCAT(first_name, ' ', last_name) LIKE ?", str)
 
       if Rails.env.development?
