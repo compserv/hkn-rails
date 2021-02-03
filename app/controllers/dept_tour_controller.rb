@@ -51,6 +51,10 @@ class DeptTourController < ApplicationController
       # give tours)
 
       # Tuesday (2) at 8pm, Saturday (6) at 10 am and Saturday at 12 pm
+      if dt.min != 0
+        return false
+      end
+      
       if dt.tuesday?
         return (dt.hour == (12 + 8) and dt > DateTime.now)
       end
