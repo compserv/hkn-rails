@@ -58,9 +58,13 @@ class Slot < ActiveRecord::Base
       if start == 11 or start == 12
         start = start + 2
         stop = stop + 2
-      else (1 + 12) <= start and start <= (3 + 12)
-        start = start + 6
-        stop = stop + 6
+      elsif start == (1 + 12)
+        # Large slot between 3 PM to 7 PM - for No Tutoring
+        start = start + 2
+        stop = stop + 5
+      else (2 + 12) <= start and start <= (4 + 12)
+        start = start + 5
+        stop = stop + 5
       end
     end
     "#{day_name}, #{start}-#{stop} @ Online" # @ #{room_name}"

@@ -11,6 +11,7 @@ class HomeController < ApplicationController
     
     applyTempFix = true
     if applyTempFix
+      # Change when it is 10 PM PT
       time = time.tomorrow if time.hour > (10 + 12)
     else
       time = time.tomorrow if time.hour > prop.tutoring_end
