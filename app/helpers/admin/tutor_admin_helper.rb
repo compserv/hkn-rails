@@ -20,10 +20,10 @@ module Admin::TutorAdminHelper
   def format_hour_slot(hour)
     applyTempFix = true
     if applyTempFix
-      if hour == 11 or hour == 12
+      if hour == 11 or hour == 12 or hour == 13
         hour = hour + 2
-      else (1 + 12) <= hour and hour <= (3 + 12)
-        hour = hour + 6
+      else (2 + 12) <= hour and hour <= (4 + 12)
+        hour = hour + 5
       end
     end
     
