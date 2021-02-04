@@ -18,6 +18,15 @@ module Admin::TutorAdminHelper
   end
 
   def format_hour_slot(hour)
+    applyTempFix = true
+    if applyTempFix
+      if hour == 11 or hour == 12
+        hour = hour + 2
+      else (1 + 12) <= hour and hour <= (3 + 12)
+        hour = hour + 6
+      end
+    end
+    
     return format_hour(hour) + "-" + format_hour(hour+1)
   end
 end
