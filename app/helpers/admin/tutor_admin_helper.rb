@@ -19,14 +19,21 @@ module Admin::TutorAdminHelper
 
   def format_hour_slot(hour)
     applyTempFix = true
+    start, stop = [hour, hour + 1]
     if applyTempFix
-      if hour == 11 or hour == 12 or hour == 13
-        hour = hour + 2
-      else (2 + 12) <= hour and hour <= (4 + 12)
-        hour = hour + 5
+      if start == 11 or start == 12
+        start = start + 2
+        stop = stop + 2
+      elsif start == (1 + 12)
+        # Large slot between 3 PM to 7 PM - for No Tutoring
+        start = start + 2
+        stop = stop + 5
+      else (2 + 12) <= start and start <= (4 + 12)
+        start = start + 5
+        stop = stop + 5
       end
     end
     
-    return format_hour(hour) + "-" + format_hour(hour+1)
+    return format_hour(start) + "-" + format_hour(stop)
   end
 end
