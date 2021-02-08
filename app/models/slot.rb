@@ -53,7 +53,7 @@ class Slot < ActiveRecord::Base
 
   def display
     applyTempFix = true
-    start, stop = [hour, hour + 1].collect { |h| h > 12 ? h - 12 : h }
+    start, stop = [hour, hour + 1].collect { |h| h }
     if applyTempFix
       if start == 11 or start == 12
         start = start + 2
@@ -62,11 +62,13 @@ class Slot < ActiveRecord::Base
         # Large slot between 3 PM to 7 PM - for No Tutoring
         start = start + 2
         stop = stop + 5
+        # This time section shouldn't show for the Spring 2021 tutors anyway...
       else (2 + 12) <= start and start <= (4 + 12)
         start = start + 5
         stop = stop + 5
       end
     end
+    start, stop = [start, stop].collect { |h| h > 12 ? h - 12 : h }
     "#{day_name}, #{start}-#{stop} @ Online" # @ #{room_name}"
   end
 
