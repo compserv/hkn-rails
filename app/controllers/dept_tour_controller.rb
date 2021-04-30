@@ -7,7 +7,8 @@ class DeptTourController < ApplicationController
       @errors[:email_confirmation] = "Email confirmation did not match" unless params[:email] == params[:email_confirmation]
       @errors[:name]               = "Name must not be blank"           if params[:name].length == 0
       @errors[:recaptcha]          = "Captcha validation failed"        unless verify_recaptcha
-      @errors[:date]               = "Invalid time selection. Please select a date and time from one of the options specified above." unless params[:date] && valid_date?(params[:date])
+      #TEMPORARY FOR SUMMER! REMOVE "true" AND CHANGE BACK DURING SCHOOL YEAR ALONG WITH app\views\dept_tour\signup.html.erb AND app\models\dept_tour_request.rb
+      #@errors[:date]   = "Invalid time selection. Please select a date and time from one of the options specified above." unless params[:date] && valid_date?(params[:date])
       @errors[:phone]              = "Phone must not be blank"          if params[:phone].blank?
 
       # Optional

@@ -9,6 +9,14 @@
 </p>
 
 <p>
+  Since spring 2021 semester is coming to an end, 
+  we have stopped giving official department tours until the beginning of Fall 2021 semester. 
+  If you have special circumstances or cannot delay the tour for fall semester, please fill out the following form, 
+  specify your preferred time in the "additional comments" section, and we'll contact you back if a tour time becomes possible.
+</p>
+<!--
+TEMPORARY FOR SUMMER REMOVE THIS LINE AND LINES ABOVE ONCE FALL SEMESTER BEGINS
+<p>
   Tours are offered weekly at the following times, and will be 1-1:30 hours long:
 </p>
 
@@ -61,6 +69,7 @@
 <p>
     Note: Tour requests made less than 48 hours in advance from the requested time cannot be guaranteed.
 </p>
+-->
 
   <% if @errors && @errors.any? %>
     <div id="errorExplanation">
@@ -78,11 +87,12 @@
     <%= label_tag :name, "Name", class: 'required-field' %>
     <%= text_field_tag :name, params[:name] %>
   </div>
-
+  <!-- RE-ADD class: 'required-field' once Fall semester begins!
   <div class="field">
-    <%= label_tag :date, "Desired date & time", class: 'required-field' %>
+    <%= label_tag :date, "Desired date & time", class: 'required-field'%> 
     <%= text_field_tag :date, params[:date], class: "datetimepicker depttourpicker" %>
   </div>
+  -->
 
   <div class="field">
     <%= label_tag :email, "Contact email address", class: 'required-field' %>
