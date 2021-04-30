@@ -16,7 +16,7 @@
 
 class DeptTourRequest < ActiveRecord::Base
   validates_presence_of :name
-  validates_presence_of :date
+#  validates_presence_of :date    TEMPORARY CHANGE FOR THE SUMMER. CHANGE BACK DURING SCHOOL YEAR ALONG WITH app\controllers\dept_tour_controller.rb and app\views\dept_tour\signup.html.erb
   validates_presence_of :submitted
   validates_presence_of :contact
   validates_inclusion_of :responded, in: [true, false]
