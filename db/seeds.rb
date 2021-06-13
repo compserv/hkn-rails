@@ -38,6 +38,7 @@ def initialize_groups
     {"name"=>"vp",        "description"=>"Vice President"},
     {"name"=>"rsec",      "description"=>"Recording Secretary"},
     {"name"=>"csec",      "description"=>"Corresponding Secretary"},
+    {"name"=>"opsec",     "description"=>"Operations Secretary"},
     {"name"=>"treas",     "description"=>"Treasury"},
     {"name"=>"deprel",    "description"=>"Department Relations"},
     {"name"=>"serv",      "description"=>"Service"},
