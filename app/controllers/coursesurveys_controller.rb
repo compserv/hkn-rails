@@ -398,6 +398,10 @@ class CoursesurveysController < ApplicationController
   def rating
     @answer = SurveyAnswer.find(params[:id])
     return redirect_to coursesurveys_path, notice: "Error: Couldn't find that rating." unless @answer
+    # TODO: survey answers not deleted if instructorship link broken
+    if @answer.instructor.nil?
+      self.render_404
+    end
     @instructor = @answer.instructor
     if @instructor.private && !@privileged
       return redirect_to(coursesurveys_path, notice: "You are not authorized to view that page.")
