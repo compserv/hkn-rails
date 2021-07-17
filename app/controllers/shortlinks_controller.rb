@@ -36,7 +36,7 @@ class ShortlinksController < ApplicationController
   # PATCH/PUT /shortlinks/1
   def update
     if @shortlink.update(shortlink_params)
-      redirect_to @shortlink, notice: 'Shortlink was successfully updated.'
+      redirect_to shortlinks_url, notice: 'Shortlink was successfully updated.'
     else
       render :edit
     end
