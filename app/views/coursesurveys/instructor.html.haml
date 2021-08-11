@@ -9,7 +9,7 @@
       - if @instructor.picture && !@instructor.picture.blank? && !@instructor.picture.match?(/\..+$/)
         - # Manual Photo entry by name without extension, ignoring if an extension is provided (in the past, images saved in a folder)
         = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.picture}.jpg", class: 'instructor-photo'
-      - else
+      - elsif @instructor.picture.nil? || @instructor.picture != "NOPICTURE.NOPICTURE" 
         = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", class: 'instructor-photo'
     - else
       -# no picture
