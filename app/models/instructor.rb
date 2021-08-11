@@ -111,7 +111,7 @@ class Instructor < ActiveRecord::Base
     # Ordering is important here, with the first valid URL that returns an image to be used
     urls = [first_last_name_only, first_name_only, last_name_only]
     limit = 5 * urls.length()
-    urls.each_with_index do |url, index|
+    for url in urls do
       uri = URI.parse(url)
       response = Net::HTTP.get_response(uri)
       case response
