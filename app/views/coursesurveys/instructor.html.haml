@@ -6,9 +6,10 @@
     - if @instructor.picture && !@instructor.picture.blank? && File.file?(File.join('public', @instructor.picture))
       = image_tag "https://hkn.eecs.berkeley.edu/#{@instructor.picture}", class: "instructor-photo" unless @instructor.picture.blank?
     - elsif @instructor.instructor? # guess the picture, but only if instructor..
-      - if @instructor.picture && !@instructor.picture.blank? # Manual Photo entry by name without extension
+      - if @instructor.picture && !@instructor.picture.blank? && !@instructor.picture.match?(/\..+$/)
+        - # Manual Photo entry by name without extension, ignoring if an extension is provided (in the past, images saved in a folder)
         = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.picture}.jpg", class: 'instructor-photo'
-      - else
+      - elsif @instructor.picture.nil? || @instructor.picture != "NOPICTURE.NOPICTURE" 
         = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", class: 'instructor-photo'
     - else
       -# no picture
