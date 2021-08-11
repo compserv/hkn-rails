@@ -2,10 +2,14 @@
   <h1><%= @instructor.full_name %></h1>
 
   <div style="float:left; margin-right: 1em;">
-    <% if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank? %>
+    <% if @instructor.picture && !@instructor.picture.blank? && File.file?(File.join('public', @instructor.picture)) %>
       <%= image_tag @instructor.picture, class: "instructor-photo" unless @instructor.picture.blank? %>
     <% elsif @instructor.instructor? # guess the picture, but only if instructor.. %>
-      <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", class: 'instructor-photo' %>
+      <% if @instructor.picture && !@instructor.picture.blank? # Manual Photo entry by name without extension %>
+        <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.picture}.jpg", class: 'instructor-photo' %>
+      <% else %>
+        <%= image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", class: 'instructor-photo' %>
+      <% end %>
     <% else %>
       <%# no picture %>
     <% end %>
