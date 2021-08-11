@@ -5,8 +5,8 @@
   %div{style: "float:left; margin-right: 1em;"}
     - if @instructor.picture && File.file?(File.join('public', @instructor.picture)) && !@instructor.picture.blank?
       = image_tag "https://hkn.eecs.berkeley.edu/#{@instructor.picture}", class: "instructor-photo" unless @instructor.picture.blank?
-    - elsif @instructor.instructor? # guess the picture, but only if instructor..
-      = image_tag "http://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{@instructor.last_name.downcase}.jpg", class: 'instructor-photo'
+    - elsif @instructor.instructor? && !(@possible_picture_url = @instructor.get_possible_remote_image).nil? # guess the picture, but only if instructor..
+      = image_tag @possible_picture_url, class: 'instructor-photo'
     - else
       -# no picture
 

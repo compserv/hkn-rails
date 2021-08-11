@@ -96,6 +96,40 @@ class Instructor < ActiveRecord::Base
     [last_name, first_name].join ','
   end
 
+  def get_possible_remote_image
+    if !instructor?
+      return nil
+    end
+    
+    first_name_downcased = first_name[/\w+/].downcase
+    last_name_downcased = last_name[/\w+/].downcase
+    
+    first_name_only = "https://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{first_name_downcased}.jpg"
+    first_last_name_only = "https://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{first_name_downcased}#{last_name_downcased}.jpg"
+    last_name_only = "https://www.eecs.berkeley.edu/Faculty/Photos/Homepages/#{last_name_downcased}.jpg"
+    
+    urls = [first_name_only, first_last_name_only, last_name_only]
+    limit = 5 * urls.length()
+    urls.each_with_index do |url, index|
+      uri = URI.parse(url)
+      response = Net::HTTP.get_response(uri)
+      case response
+      when Net::HTTPSuccess then
+        if response['Content-Type'].start_with? 'image'
+          return url
+        end
+      when Net::HTTPRedirection then
+        location = response['location']
+        if urls.length() <= limit
+          # Add more if less than the limit
+          urls << location
+        end
+      else
+      end
+    end
+    return nil
+  end
+
   def ta?
     not instructor? and not student_instructor?
 #    if title.blank? then
