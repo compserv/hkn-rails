@@ -117,7 +117,7 @@ class PeopleController < ApplicationController
     @candidate.save
 
     if verify_recaptcha(message: "Captcha validation failed", model: @person) && @person.save
-      flash[:notice] = "Account registered!"
+      flash[:notice] = "Account registered! Please Slack (preferred) or email CompServ channel (DMs discouraged) to activate your account."
       redirect_to root_url
     else
       render action: "new"
