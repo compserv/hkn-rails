@@ -104,9 +104,9 @@ class Admin::TutorController < Admin::AdminController
 
   end
 
-  @@OFFICES = [:Cory, :Soda]
+  @@OFFICES = [:Cory, :Soda, :Online]
   @@DAYS = [:Monday, :Tuesday, :Wednesday, :Thursday, :Friday]
-  @@HOURS = (11..16).to_a
+  @@HOURS = (0..21).to_a
 
   def gen_course_list
     # Create ["cs61a", "cs61b", ... ]

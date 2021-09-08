@@ -19,8 +19,8 @@ class Property < ActiveRecord::Base
   validate :there_is_only_one, on: :create
 
   # Can't modify the range since there are hardcoded sections of the hkn-rails website
-  validates_numericality_of :tutoring_start, greater_than_or_equal_to: 11
-  validates_numericality_of :tutoring_end, greater_than: :tutoring_start, less_than_or_equal_to: 16
+  validates_numericality_of :tutoring_start, greater_than_or_equal_to: 0
+  validates_numericality_of :tutoring_end, greater_than: :tutoring_start, less_than_or_equal_to: 23
 
   MONTH_SEMESTER_MAP = { 1..5 => 1, 6..7 => 2, 8..12 => 3 }
   SEMESTER_MAP = { 1 => "Spring", 2 => "Summer", 3 => "Fall" }
