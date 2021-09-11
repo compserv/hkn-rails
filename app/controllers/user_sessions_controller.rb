@@ -39,7 +39,7 @@ class UserSessionsController < ApplicationController
         redirect_to root_url
       end
     elsif @user_session.errors[:base].size == 1 and @user_session.errors[:base].include? "Your account is not approved"
-      @messages << "Your user account has not been approved yet. Please Slack (preferred) or email CompServ channel (DMs discouraged) to activate your account."
+      @messages << "Your user account has not been approved yet. Please Slack the CompServ Channel (preferred, DMs discouraged) or email CompServ to activate your account."
       render action: :new
     else
       session[:login_attempts] ||= 0
