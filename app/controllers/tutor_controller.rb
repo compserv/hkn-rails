@@ -9,7 +9,7 @@ class TutorController < ApplicationController
     @days = %w(Monday Tuesday Wednesday Thursday Friday)
     @wdays = 1..5
     @hours = prop.tutoring_start .. prop.tutoring_end
-    @room_numbers = ["290 Cory", "345 Soda", "Online"]
+    @room_numbers = ["Online / Cory 290", "Online / Soda 345", "Online"]
     @rows = @hours
   end
 
