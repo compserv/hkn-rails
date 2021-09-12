@@ -8,15 +8,8 @@ class HomeController < ApplicationController
     @tutoring_enabled = prop.tutoring_enabled
     @hours = prop.tutoring_start .. prop.tutoring_end
     time = Time.now.in_time_zone('Pacific Time (US & Canada)')
-    
-    applyTempFix = true
-    if applyTempFix
-      # Change when it is 10 PM PT
-      time = time.tomorrow if time.hour > (10 + 12)
-    else
-      time = time.tomorrow if time.hour > prop.tutoring_end
-    end
-    
+
+    time = time.tomorrow if time.hour > prop.tutoring_end
     time = time.next_week unless (1..5).include? time.wday
     @day = time.wday
     @tutor_title = "#{time.strftime("%A")}'s Tutoring Schedule"
@@ -27,7 +20,7 @@ class HomeController < ApplicationController
     else
       @tutoring_message = prop.tutoring_message
     end
-
+    
     # Only respond with HTML to not error when other formats are requested
     respond_to :html
   end

@@ -15,11 +15,11 @@
       <% end %>
     </tr>
     <% @hours.each do |hour| %>
-      <% [:cory, :soda].each do |room_name| %>
+      <% [:cory, :soda, :online].each do |room_name| %>
         <% room = Slot::ROOMS[room_name] %>
         <tr>
           <% if room_name == :cory %>
-            <td rowspan="2"><%= format_hour_slot hour %></td>
+            <td rowspan="3"><%= format_hour_slot hour %></td>
           <% end %>
           <% @wdays.each do |wday| %>
           <td  class="slot <%= room_name.to_s %>">

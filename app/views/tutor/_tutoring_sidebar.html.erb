@@ -7,23 +7,25 @@
 <div class="small infobar_links"><%= link_to "weekly schedule", "/tutor" %></div>
 <% if @tutoring_enabled %>
 <% tutors = [] %>
-<table id="daily_tutoring_schedule" class="landing tutoring small" style="width:70%">
+<table id="daily_tutoring_schedule" class="landing tutoring small" style="width:100%">
   <tr>
-    <th>Times (Pacific Time)</th>
-    <th>Online</th>
+    <th>Times<br/><small>(Pacific)</small></th>
+    <th>Online /<br/>Cory 290</th>
+    <th>Online /<br/>Soda 345</th>
+	<th>Online only</th>
   </tr>
 <% for hour in @hours %>
-  <% people = @slots.find_by_wday_and_hour(@day, hour) %>
+  <% cory_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Cory, @day, hour) %>
+  <% soda_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Soda, @day, hour) %>
+  <% online_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Online, @day, hour) %>
   <tr>
-    <td class="time" style="width:30%"><%= format_hour_slot hour %></td>
-	<td class="pcell" style="width:70%">
-		<% if people %>
-			<%= render people %>
-			<% tutors.concat(people.tutors) %>
-		<% else %>
-			No Tutors
-		<% end %>
-	</td>
+    <td class="time"><%= format_hour_slot hour %></td>
+    <td class="pcell"><%= render cory_slot %></td>
+    <td class="pcell"><%= render soda_slot %></td>
+	<td class="pcell"><%= render online_slot %></td>
+    <% tutors.concat(cory_slot.tutors) %>
+    <% tutors.concat(soda_slot.tutors) %>
+	<% tutors.concat(online_slot.tutors) %>
   </tr>
 <% end %>
 </table>

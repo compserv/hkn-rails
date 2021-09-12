@@ -46,11 +46,11 @@
 <h1>Sign up for tutoring slots</h1>
 <p>For each time slot below, indicate your preference level for office hours.
 <span style="color:green">Green</span> = "preferred," <span style="color:#E7D701">yellow</span> = "less preferred but can make it," and <span style="color:red">red</span> = "cannot make it."</p>
-<!----
+
 <p>You can also indicate your office preference for individual time slots, or simply use the universal bar below to indicate for all slots.</p>
 Note that there are five levels of preference, which roughly translate to "strongly prefer," "slightly prefer," and "no preference."
 <span style="color:orange">Orange</span> = Cory, <span style="color:blue">blue</span> = Soda.</p>
----->
+
 <p>Finally, you can also indicate your preference of adjacent time slots below. </p><p>"Adjacent Slots" means having two 1-hour time slots next to each other, forming a 2-hour time slot.</p><br />
 
 <%= form_tag admin_tutor_update_slots_path, method: :post do %>
@@ -58,11 +58,8 @@ Note that there are five levels of preference, which roughly translate to "stron
   <%= select_tag :adjacent_slots, options_for_select([["Don't care", 0], ["Yes", 1], ["No", -1]], @adjacency) %>
   <br /><br />
 
-  <!--
   <div id="big-slider-container"><div id="big-slider"></div></div>
   <pre><h1>Cory                                    Soda</h1></pre>
-  --> 
-
   <table id="slot-table">
     <tr>
       <th>Hours</th>
@@ -72,7 +69,7 @@ Note that there are five levels of preference, which roughly translate to "stron
     </tr>
   <% @hours.each do |hour| %>
     <tr>
-      <td  rowspan="4" class="slot"><%= format_hour_slot hour%></td>
+      <td  rowspan="4" class="slot"><%= format_hour_slot hour %></td>
       <% @wdays.each do |wday| %>
         <td class="slot slot-preferred">
           <%= radio_button_tag availability_form_name(wday, hour, :preference_level),
@@ -100,22 +97,11 @@ Note that there are five levels of preference, which roughly translate to "stron
       <% end %>
     </tr>
     <tr>
-    
-      
       <% @wdays.each do |wday| %>
-        <td class="spacing">
-        <spacer type="horizontal" width="500" height="500"> &nbsp; </spacer>
-        </td>
-      <!--  
       <td class="slot slider-container">
-        
         <div class="slider"></div>
         <%= hidden_field_tag availability_form_name(wday, hour, :slider), @sliders[wday][hour] %></td>
-      --> 
-
       <% end %>
-      
-
     </tr>
   <% end %>
   </table>

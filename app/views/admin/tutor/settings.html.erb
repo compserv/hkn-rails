@@ -12,10 +12,10 @@
 	<%= label_tag :year, "Current year:" %>
 	<%= text_field_tag :year, @year, size: 10 %>
 	<br />
-	<%= label_tag :start, "First hour (integer between 11 and 16):" %>
+	<%= label_tag :start, "First hour (integer between 0 and 23):" %>
 	<%= text_field_tag :start, @start, size: 10 %>
 	<br />
-	<%= label_tag :end, "Last hour (integer between 11 and 16):" %>
+	<%= label_tag :end, "Last hour (integer between 0 and 23):" %>
 	<%= text_field_tag :end, @end, size: 10 %>
 	<br />
 	<%= submit_tag "Save changes" %>

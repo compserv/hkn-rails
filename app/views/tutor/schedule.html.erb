@@ -6,13 +6,11 @@
 <a href="http://hkn.mu/ohqueue">Head to hkn.mu/ohqueue!</a>
 
 <% tutors = [] %>
-
-<h1><p>Online</p></h1>
-
-
-<table class="tutoring" id="cory_schedule">
+<% Slot::Room::Valid.each do |room| %>
+<h1><%= @room_numbers[room] %></h1>
+<table class="tutoring" id="schedule">
   <tr>
-    <th>Hours (Pacific Time)</th>
+    <th>Hours<br/><small>(Pacific Time)</small></th>
     <% @days.each do |day| %>
       <th><%= day %></th>
     <% end %>
@@ -21,8 +19,8 @@
     <tr>
       <td class="time"><%= format_hour_slot hour %></td>
       <% @wdays.each do |wday| %>
-        <td class="slot Online pcell" id="slot-<%= slot_id 0, wday, hour %>">
-        <% slot = Slot.find_by_wday_and_hour(wday, hour) %>
+        <td class="slot <%= Slot::ROOMS.key(room).to_s %> pcell" id="slot-<%= slot_id room, wday, hour %>">
+        <% slot = Slot.find_by_room_and_wday_and_hour(room, wday, hour) %>
         <%= render slot %>
         <% tutors.concat(slot.tutors) %>
       </td>
@@ -30,6 +28,7 @@
     </tr>
   <% end %>
 </table>
+<% end %>
 </div>
 
 <div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 70px; line-height: 1.75em;">

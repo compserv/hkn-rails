@@ -14,9 +14,10 @@ class Slot < ActiveRecord::Base
   # This is a tutoring office hours slot
 
   module Room
-    Cory  = 0
-    Soda  = 1
-    Valid = [Cory, Soda]
+    Cory   = 0
+    Soda   = 1
+    Online = 2
+    Valid = [Cory, Soda, Online]
     Both  = Valid         # just an alias
   end
 
@@ -27,10 +28,10 @@ class Slot < ActiveRecord::Base
   end
 
   module Hour
-    Valid = (11 .. 16)
+    Valid = (0 .. 23)
   end
 
-  ROOMS = { cory: Room::Cory, soda: Room::Soda }
+  ROOMS = { cory: Room::Cory, soda: Room::Soda, online: Room::Online }
 
   has_and_belongs_to_many :tutors, before_add: :check_tutor
 
@@ -41,7 +42,7 @@ class Slot < ActiveRecord::Base
   validates :hour, presence: true, inclusion: { in: Hour::Valid }, uniqueness: { scope: [:wday, :room] }
 
   HOUR_RANGE_ERROR = "hour must be within tutoring hours"
-  ROOM_ERROR = "room needs to be 0 (Cory) or 1 (Soda)"
+  ROOM_ERROR = "room needs to be 0 (Cory), 1 (Soda), or 2 (Online)"
 
   def to_s
     "Slot #{room_name} #{day_name} #{hour}"
@@ -52,24 +53,8 @@ class Slot < ActiveRecord::Base
   end
 
   def display
-    applyTempFix = true
-    start, stop = [hour, hour + 1].collect { |h| h }
-    if applyTempFix
-      if start == 11 or start == 12
-        start = start + 2
-        stop = stop + 2
-      elsif start == (1 + 12)
-        # Large slot between 3 PM to 7 PM - for No Tutoring
-        start = start + 2
-        stop = stop + 5
-        # This time section shouldn't show for the Spring 2021 tutors anyway...
-      else (2 + 12) <= start and start <= (4 + 12)
-        start = start + 5
-        stop = stop + 5
-      end
-    end
-    start, stop = [start, stop].collect { |h| h > 12 ? h - 12 : h }
-    "#{day_name}, #{start}-#{stop} @ Online" # @ #{room_name}"
+    start, stop = [hour, hour + 1].collect { |h| h > 12 ? h - 12 : h }
+    "#{day_name}, #{start}-#{stop} @ #{room_name}"
   end
 
   def room_name
@@ -77,6 +62,8 @@ class Slot < ActiveRecord::Base
       "Cory"
     elsif room == Room::Soda then
       "Soda"
+    elsif room == Room::Online then
+      "Online"
     end
   end
 
@@ -87,7 +74,7 @@ class Slot < ActiveRecord::Base
 
   def valid_room
     if !room.blank?
-      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1)
+      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1 or room == 2)
     end
   end
 
