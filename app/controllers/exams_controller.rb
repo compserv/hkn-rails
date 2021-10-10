@@ -159,6 +159,10 @@ class ExamsController < ApplicationController
   def department
     @dept_name, @courses = Exam.get_dept_name_courses_tuples(params[:dept_abbr])
 
+    if (@dept_name.length() == 0) && ( @courses.length() == 0) then
+      self.render_404
+    end
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render xml: @exams }
