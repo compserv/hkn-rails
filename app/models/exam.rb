@@ -54,6 +54,9 @@ class Exam < ActiveRecord::Base
 
   def Exam.get_dept_name_courses_tuples(dept_abbr)
     dept = Department.find_by_nice_abbr(dept_abbr)
+    if dept.nil?
+      return ["", []]
+    end
     dept_name = dept.name
     courses = Course.where(department_id: dept.id)
                     .includes(:exams)
