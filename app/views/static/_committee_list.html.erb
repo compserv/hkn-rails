@@ -8,7 +8,7 @@
       <h3><%= cships[0].nice_committee %> (<%= c_name %>@hkn)</h3>
       <% for cship, person in cships.collect { |c| [c, c.person] }.sort { |a, b| [b[0].title, a[1].last_name] <=> [a[0].title, b[1].last_name] } %>
         <div class="officer">
-          <div class="photo <%= "no-photo" if person.picture.blank? %>">
+          <div class="photo <%= "no-photo" if person.picture.blank? %>" style="text-align: center;">
             <%= image_tag(person.picture, style: 'max-width: 125px; height: 100px;') unless person.picture.blank? %>
           </div>
           <span class="name"><%= person.full_name %></span>
