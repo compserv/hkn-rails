@@ -266,6 +266,7 @@ HknRails::Application.routes.draw do
     match "how-to"                         => "static#coursesurveys_how_to",     as: :coursesurveys_how_to, via: [:get, :post]
     match "info-profs"                     => "coursesurveys#coursesurveys_info_profs", as: :coursesurveys_info_profs, via: [:get, :post]
     match "ferpa"                          => "static#coursesurveys_ferpa",      as: :coursesurveys_ferpa, via: [:get, :post]
+    match "transparency"                   => "static#coursesurveys_transparency",      as: :coursesurveys_transparency, via: [:get, :post]
 
     # Admin stuff
     get   "instructor_ids"                 => "coursesurveys#instructor_ids", as: :coursesurveys_instructor_ids
