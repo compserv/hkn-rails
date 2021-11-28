@@ -1,0 +1,97 @@
+
+<p>
+    
+    A <a href="https://rtl.berkeley.edu/services-programs/course-evaluations">course survey</a> is a survey given to students every semester to rate the class or a course staff member. Each rating is listed on the <a href="https://hkn.eecs.berkeley.edu/coursesurveys">HKN website</a> as either red (poor), yellow (fair), or green (good). More information can be found <a href="https://hkn.eecs.berkeley.edu/coursesurveys/how-to">here</a>.
+</p>
+
+
+<p>
+    
+    The EECS department writes questions for student feedback on certain topics about a class. Near the end of the semester, these questions are listed in an online survey on <a href="https://technology.berkeley.edu/services/teaching-and-learning-enterprise-applications/course-evaluations">Berkeley’s survey platform</a>. Each survey is <a href="https://rtl.berkeley.edu/services-programs/course-evaluations/resources-students">anonymous and voluntary</a>. HKN visits all of the EECS courses to explain the survey and ensure that students have in-class time to fill out the survey.
+</p>
+
+<p>
+    Once the survey period is over, the survey data is anonymized and sent to HKN, where it’s processed and displayed on our website.
+</p>
+
+<p>
+    At HKN, we believe that the data displayed and the <em>way</em> that the data is displayed is:
+</p>
+    <ol>
+        <li>An <em>accurate</em> reflection of a course and/or course staff member</li>
+        <li><em>Usable</em> and <em>accessible</em> by students in evaluating a course and/or course staff member</li>
+        <li><em>Transparent</em> for the general public to understand</li>
+    </ol>
+
+<h2 id="a-more-detailed-look">A more detailed look</h2>
+
+<h3 id="hkn-encourages-participation">HKN encourages participation</h3>
+
+<p>
+    HKN helps the EECS department by visiting classes and administering course surveys to increase response rates in comparison to other classes using the online system. Shortly before the course surveying period begins, HKN organizes its members to each EECS course. Each member assigned reaches out to the professor(s) of a course using an email template, asking for dedicated class time for students to fill out the survey. The allotted class time is typically around 15 minutes and occurs at the beginning of the class period.
+</p>
+
+<h3 id="hkn-encourages-transparency">HKN encourages transparency</h3>
+
+<p>
+    All of our code is open source and available at <a href="https://github.com/compserv/hkn-rails">https://github.com/compserv/hkn-rails</a>!
+</p>
+
+<p>
+    The course surveys pipeline is as follows.
+</p>
+
+<p>
+    <em>Step 1</em>: HKN’s Corresponding Secretary receives anonymized data from the department.
+</p>
+<blockquote>
+
+    <p>
+        As the format of the data received from the department changes from semester to semester, we do light preprocessing to reformat the data into something readable by our website. The data is then uploaded to the website. No content is changed.
+    </p>
+
+    <p>
+        The code for the interface for uploading course surveys can be found <a href="https://github.com/compserv/hkn-rails/blob/master/app/views/admin/csec/upload_surveys.html.erb">here</a>.
+    </p>
+</blockquote>
+
+<p>
+    <em>Step 2</em>: The HKN website stores the data directly into our production database.
+</p>
+<blockquote>
+
+    <p>
+        Some data is removed at this step because the data is missing critical values, such as for when no student responded to a class’ survey question. Other than that, no content is changed.
+    </p>
+
+    <p>
+        The code for how the website stores the data into our production database can be found <a href="https://github.com/compserv/hkn-rails/blob/5e3e7fcc86a105bc8a45b777955a77bbb8a53654/app/helpers/admin/csec_admin_helper.rb#L58">here</a>.
+    </p>
+
+    <p>
+        Some examples of removing data are <a href="https://github.com/compserv/hkn-rails/blob/5e3e7fcc86a105bc8a45b777955a77bbb8a53654/app/helpers/admin/csec_admin_helper.rb#L86">missing partial to full name</a>, <a href="https://github.com/compserv/hkn-rails/blob/5e3e7fcc86a105bc8a45b777955a77bbb8a53654/app/helpers/admin/csec_admin_helper.rb#L104">invalid department listed</a>, and <a href="https://github.com/compserv/hkn-rails/blob/5e3e7fcc86a105bc8a45b777955a77bbb8a53654/app/helpers/admin/csec_admin_helper.rb#L168">missing ratings for a survey question</a>.
+    </p>
+</blockquote>
+
+<p>
+    <em>Step 3</em>: A user requests data and the website displays the appropriate data.
+</p>
+<blockquote>
+
+    <p>
+        For each question, we summarize the survey results using only the mean of the ratings. This system is imperfect in many ways, and we’re working on improving it in the next iteration of the HKN website (if you’re interested in more information about this, feel free to contact HKN directly).
+    </p>
+
+    <p>
+        We believe that if students feel strongly enough about a question to give an extra low or high rating, our website should reflect that, which is why we chose the mean as the summary statistic instead of e.g. the median of the ratings.
+    </p>
+
+    <p>
+        We also display the number of respondents. This is for the cases where the number of respondents to a question is low, and the survey ratings may not be the most representative of the true ratings.
+    </p>
+</blockquote>
+<h3 id="coming-soon">Coming soon</h3>
+
+<p>
+    Information about how HKN encourages accuracy, usability, and accessibility through course surveys.
+</p>
