@@ -125,7 +125,7 @@ bundle exec rails console -e production --sandbox
 ## Making Backups
 
 1. On apphost.ocf.berkeley.edu, go into `~/hkn-rails/prod/current/`
-2. `RAILS_ENV=production rake db:backup:dump` (actual script is in
+2. `RAILS_ENV=production bundle exec rake db:backup:dump` (actual script is in
    `hkn-rails/lib/tasks/backups.rb`)
 
 This makes a backup in `hkn-rails/db/backups`, name based on datetime by
