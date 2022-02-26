@@ -8,6 +8,9 @@
 <% tutors = [] %>
 <% Slot::Room::Valid.each do |room| %>
 <h1><%= @room_numbers[room] %></h1>
+<% if room == Slot::Room::ProDevSoda %>
+  <h2>No class tutoring</h2>
+<% end %>
 <table class="tutoring" id="schedule">
   <tr>
     <th>Hours<br/><small>(Pacific Time)</small></th>
@@ -24,7 +27,7 @@
         <%= render slot %>
         <% tutors.concat(slot.tutors) %>
       </td>
-      <% end%>
+      <% end %>
     </tr>
   <% end %>
 </table>
@@ -32,6 +35,10 @@
 </div>
 
 <div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 70px; line-height: 1.75em;">
+  <div class="small">
+    Click on a class to highlight which tutors can tutor for that specific class.
+  </div>
+  <br/>
 	<div class="small">
 	<% courses = CoursePreference.all_courses(tutors.uniq) %>
 	<% for key in courses.keys %>

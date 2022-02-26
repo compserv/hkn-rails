@@ -66,7 +66,7 @@ class Slot < ActiveRecord::Base
     elsif room == Room::Online then
       "Online"
     elsif room == Room::ProDevSoda then
-      "ProDev at Soda"
+      "ProDev OH (Online / Soda 345)"
     end
   end
 
