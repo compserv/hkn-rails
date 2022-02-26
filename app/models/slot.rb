@@ -17,7 +17,8 @@ class Slot < ActiveRecord::Base
     Cory   = 0
     Soda   = 1
     Online = 2
-    Valid = [Cory, Soda, Online]
+    ProDevSoda = 3
+    Valid = [Cory, Soda, Online, ProDevSoda]
     Both  = Valid         # just an alias
   end
 
@@ -28,10 +29,10 @@ class Slot < ActiveRecord::Base
   end
 
   module Hour
-    Valid = (12 .. 21)
+    Valid = (10 .. 21)
   end
 
-  ROOMS = { cory: Room::Cory, soda: Room::Soda, online: Room::Online }
+  ROOMS = { cory: Room::Cory, soda: Room::Soda, online: Room::Online, prodevsoda: Room::ProDevSoda}
 
   has_and_belongs_to_many :tutors, before_add: :check_tutor
 
@@ -42,7 +43,7 @@ class Slot < ActiveRecord::Base
   validates :hour, presence: true, inclusion: { in: Hour::Valid }, uniqueness: { scope: [:wday, :room] }
 
   HOUR_RANGE_ERROR = "hour must be within tutoring hours"
-  ROOM_ERROR = "room needs to be 0 (Cory), 1 (Soda), or 2 (Online)"
+  ROOM_ERROR = "room needs to be 0 (Cory), 1 (Soda), 2 (Online), or 3 (ProDev at Soda)"
 
   def to_s
     "Slot #{room_name} #{day_name} #{hour}"
@@ -64,6 +65,8 @@ class Slot < ActiveRecord::Base
       "Soda"
     elsif room == Room::Online then
       "Online"
+    elsif room == Room::ProDevSoda then
+      "ProDev at Soda"
     end
   end
 
@@ -74,7 +77,7 @@ class Slot < ActiveRecord::Base
 
   def valid_room
     if !room.blank?
-      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1 or room == 2)
+      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1 or room == 2 or room == 3)
     end
   end
 

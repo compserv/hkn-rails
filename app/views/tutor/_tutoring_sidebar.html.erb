@@ -12,20 +12,26 @@
     <th>Times<br/><small>(Pacific)</small></th>
     <th>Online /<br/>Cory 290</th>
     <th>Online /<br/>Soda 345</th>
-	<th>Online only</th>
+    <th>Online only</th>
+    <th>ProDev Office Hours (Online / Soda 345)</th>
+
   </tr>
 <% for hour in @hours %>
   <% cory_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Cory, @day, hour) %>
   <% soda_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Soda, @day, hour) %>
   <% online_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Online, @day, hour) %>
+  <% prodevsoda_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::ProDevSoda, @day, hour) %>
   <tr>
     <td class="time"><%= format_hour_slot hour %></td>
     <td class="pcell"><%= render cory_slot %></td>
     <td class="pcell"><%= render soda_slot %></td>
 	<td class="pcell"><%= render online_slot %></td>
+	<td class="pcell"><%= render prodevsoda_slot %></td>
     <% tutors.concat(cory_slot.tutors) %>
     <% tutors.concat(soda_slot.tutors) %>
 	<% tutors.concat(online_slot.tutors) %>
+	<% tutors.concat(prodevsoda_slot.tutors) %>
+
   </tr>
 <% end %>
 </table>
