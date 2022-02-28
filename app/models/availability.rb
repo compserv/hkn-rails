@@ -21,7 +21,7 @@ class Availability < ActiveRecord::Base
 
   PREF = { unavailable: 0, preferred: 1, available: 2 }
   VALID_PREF_STRINGS = PREF.keys.map { |x| x.to_s }
-  ROOM_ERROR = "room needs to be 0 (Cory), 1 (Soda), or 2 (Online)"
+  ROOM_ERROR = "room needs to be 0 (Cory), 1 (Soda), 2 (Online), or 3 (ProDev at Soda)"
   Room = Slot::Room
 
   validates :tutor, presence: true
@@ -39,7 +39,7 @@ class Availability < ActiveRecord::Base
     presence:  true,
     inclusion: {
       in:      Slot::Room::Valid,
-      message: "should be Cory (#{Slot::Room::Cory}), Soda (#{Slot::Room::Soda}), or Online (#{Slot::Room::Online})"
+      message: "should be Cory (#{Slot::Room::Cory}), Soda (#{Slot::Room::Soda}), Online (#{Slot::Room::Online}), or ProDev at Soda (#{Slot::Room::ProDevSoda})"
     }
   validates_uniqueness_of :tutor_id, scope: [:hour, :wday]
 

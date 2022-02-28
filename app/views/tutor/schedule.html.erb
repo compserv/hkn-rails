@@ -5,9 +5,29 @@
 <p><strong>Notice:</strong> Due to course policy, HKN tutors cannot help with projects.</p>
 <a href="http://hkn.mu/ohqueue">Head to hkn.mu/ohqueue!</a>
 
+<div style="text-align: left;">
+  <p>HKN is offering drop-in career advice hours at Soda 345 and online at <a href="http://hkn.mu/ohqueue">hkn.mu/ohqueue!</a>.
+  Please look at the <b>ProDev Office Hours (Online / Soda 345)</b> schedule on this page for when they are hosted</p>
+
+  <p>These are a great opportunity for you to ask questions about:
+    <ul>
+      <li>Applying to internships/full-time jobs</li>
+      <li>Getting tips for resumes and interviews</li>
+      <li>Evaluating, comparing, and negotiating job offers</li>
+      <li>Research and grad school</li>
+      <li>Getting involved with teaching/clubs/organizations</li>
+      <li>Choosing which coursework to take</li>
+      <li>And more!</li>
+    </ul>
+  </p>
+</div>
+
 <% tutors = [] %>
 <% Slot::Room::Valid.each do |room| %>
 <h1><%= @room_numbers[room] %></h1>
+<% if room == Slot::Room::ProDevSoda %>
+  <h2>No class tutoring</h2>
+<% end %>
 <table class="tutoring" id="schedule">
   <tr>
     <th>Hours<br/><small>(Pacific Time)</small></th>
@@ -24,7 +44,7 @@
         <%= render slot %>
         <% tutors.concat(slot.tutors) %>
       </td>
-      <% end%>
+      <% end %>
     </tr>
   <% end %>
 </table>
@@ -32,6 +52,10 @@
 </div>
 
 <div style="float: left; max-width: 18%; padding-left: 2%; padding-top: 70px; line-height: 1.75em;">
+  <div class="small">
+    Click on a class to highlight which tutors can tutor for that specific class.
+  </div>
+  <br/>
 	<div class="small">
 	<% courses = CoursePreference.all_courses(tutors.uniq) %>
 	<% for key in courses.keys %>
