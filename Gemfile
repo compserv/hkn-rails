@@ -109,6 +109,7 @@ end
 # Development and testing gems
 group :development, :test do
   # General testing gems for rspec
+  gem 'autotest-rails',            '~> 4.2'
   gem 'rspec-rails',               '~> 3.7'
   gem 'rspec-activemodel-mocks',   '~> 1.0'
   gem 'rspec-collection_matchers', '~> 1.1'
