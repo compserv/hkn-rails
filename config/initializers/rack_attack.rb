@@ -8,7 +8,7 @@ class Rack::Attack
             req.ip =~ spammer_regexp
         end
     end
-    attack_ban_retries  = ENV['RACK_ATTACK_RETRY'].try(:to_i) || 1
+    attack_ban_retries  = ENV['RACK_ATTACK_RETRY'].try(:to_i) || 0
     attack_ban_findtime = ENV['RACK_ATTACK_FIND_TIME'].try(:to_i) || 10
     attack_ban_bandtime = ENV['RACK_ATTACK_BAND_TIME'].try(:to_i) || 60
     if attack_ban_retries > 0
