@@ -425,7 +425,6 @@ class EventsController < ApplicationController
     # which usually lies in the previous month
 
     respond_to do |format|
-      format.html { render :hkn, layout: false }
       format.ics {
         render text: generate_ical_text(@events)
       }
@@ -439,8 +438,7 @@ class EventsController < ApplicationController
   def ical_single_event
     @event = [Event.with_permission(@current_user).find(params[:id])]
     respond_to do |format|
-        format.html { render :hkn, layout: false }
-        format.ics { render text: generate_ical_text(@event) }
+      format.ics { render text: generate_ical_text(@event) }
     end
   end
 
