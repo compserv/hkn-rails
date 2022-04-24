@@ -33,4 +33,3 @@ class Rack::Attack
         [503, {}, ["Server Error\n"]]
     end
 end
-    
