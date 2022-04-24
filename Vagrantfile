@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     rvm use 2.5.7 --default
 
     # Install gems
-    gem install bundler
+    gem install bundler -v "< 2.0"
     cd /vagrant
     bundle install
 
