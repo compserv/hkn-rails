@@ -93,7 +93,7 @@ group :development do
   gem 'annotate', '~> 2.7'
 
   # Nicer error pages with an interactive console
-  gem 'better_errors', '~> 2.4'
+  gem 'better_errors', '~> 2.8'
   gem 'binding_of_caller', '~> 0.8'
 
   # Deploy to production with capistrano. Needed in development because that's
