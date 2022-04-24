@@ -108,7 +108,17 @@ bundle exec cap production deploy
 ## Editing the Database
 
 Once you've ssh'd into the OCF apphost server (`hkn@apphost.ocf.berkeley.edu`),
-cd into the current production deploy folder and run:
+activate the `.rvm` environment
+
+```sh
+. ~/.rvm/scripts/rvm
+```
+
+Nothing will show up (including the "(conda)" or "(.venv)" that you are used to),
+but the following console commands should now work
+(Solves problem with: "Your Ruby version is #.#.#, but your Gemfile specified #.#.#" when trying to run a Rails console)
+
+Then, cd into the current production deploy folder and run:
 
 ```sh
 bundle exec rails console -e production
