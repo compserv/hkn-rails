@@ -20,7 +20,7 @@ gem 'haml-rails', '~> 1.0'
 gem 'jquery-rails', '~> 4.3.1'
 
 # Use nokogiri for schedule parsing (not used any more)
-gem 'nokogiri', '~> 1.10.4'
+gem 'nokogiri', '~> 1.12.5'
 
 # Rails observers were removed from Rails core in 4.0, these are used for model
 # life-cycle callbacks (after_save, before_create, etc.)
