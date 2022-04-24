@@ -124,3 +124,8 @@ group :development, :test do
   # Documentation generation
   gem 'yard',   '~> 0.9.20'
 end
+
+# Block certain IPs that spam
+# https://blog.kommit.co/how-to-protect-your-rails-app-from-bad-clients-a6eda756e1c4
+gem 'rack-attack', '~> 6.2', '>= 6.2.2' 
+gem 'figaro'
