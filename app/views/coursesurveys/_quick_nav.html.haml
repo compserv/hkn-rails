@@ -5,10 +5,15 @@
   = text_field_tag(:q, "")
   = submit_tag "Search", name: nil
 
-%div=link_to "Log in for official course staff hiring", coursesurveys_auth_path
-
-If you still don't have access to private ratings, please
-%div{style: "display: inline-block;"}=link_to "contact us.", about_contact_path
+%h2 Hiring
+- if not session[:cas_user]
+  = link_to "Log in for official course staff hiring", coursesurveys_auth_path
+- else
+  = "You are logged in for official course staff hiring"
+  %br
+  = "If you still don't have access to private ratings, please"
+  = link_to "contact us", about_contact_path
+  = "."
 
 %h2 Browse Instructors and Courses
 %ul.plain
