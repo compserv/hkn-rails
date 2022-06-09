@@ -328,10 +328,10 @@ HknRails::Application.routes.draw do
 
   # Static pages
   scope "about" do
-    match "contact"   => "static#contact",     via: [:get, :post]
-    match "comingsoon" => "static#comingsoon", via: [:get, :post]
-    match "yearbook"  => "static#yearbook",    via: [:get, :post]
-    match "slideshow" => "static#slideshow",   via: [:get, :post]
+    match "contact"   => "static#contact", as: "about_contact",     via: [:get, :post]
+    match "comingsoon" => "static#comingsoon",                      via: [:get, :post]
+    match "yearbook"  => "static#yearbook",                         via: [:get, :post]
+    match "slideshow" => "static#slideshow",                        via: [:get, :post]
     match "officers(/:semester)" => "static#officers", as: :about_officers, via: [:get, :post]
     match "cmembers(/:semester)" => "static#cmembers", as: :about_cmembers, via: [:get, :post]
   end
