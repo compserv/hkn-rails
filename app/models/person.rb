@@ -56,14 +56,15 @@ class Person < ActiveRecord::Base
     module Regex
       Https = /\A(https:\/\/|\/).*\z/i
       BerkeleyEmail = /@berkeley\.edu\z/i
+      HKNEmail = /@hkn\.eecs\.berkeley\.edu\z/i
     end
   end
 
   validates_format_of :picture,    with: Validation::Regex::Https,
                                    allow_nil: true,
                                    allow_blank: true
-  # validates_format_of :email,      with: Validation::Regex::BerkeleyEmail,
-  #                                  message: 'must be an @berkeley.edu email'
+  validates_format_of :email,      with: Validation::Regex::HKNEmail,
+                                   message: 'must be an HKN Gmail using the hkn.eecs domain'
 
   # Username, password, and email validation is done by AuthLogic
 
