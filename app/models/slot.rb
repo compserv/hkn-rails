@@ -16,9 +16,8 @@ class Slot < ActiveRecord::Base
   module Room
     Cory   = 0
     Soda   = 1
-    Online = 2
-    ProDevSoda = 3
-    Valid = [Cory, Soda, Online, ProDevSoda]
+    ProDevSoda = 2
+    Valid = [Cory, Soda, ProDevSoda]
     Both  = Valid         # just an alias
   end
 
@@ -32,7 +31,7 @@ class Slot < ActiveRecord::Base
     Valid = (10 .. 21)
   end
 
-  ROOMS = { cory: Room::Cory, soda: Room::Soda, online: Room::Online, prodevsoda: Room::ProDevSoda}
+  ROOMS = { cory: Room::Cory, soda: Room::Soda, prodevsoda: Room::ProDevSoda}
 
   has_and_belongs_to_many :tutors, before_add: :check_tutor
 
@@ -63,8 +62,6 @@ class Slot < ActiveRecord::Base
       "Cory"
     elsif room == Room::Soda then
       "Soda"
-    elsif room == Room::Online then
-      "Online"
     elsif room == Room::ProDevSoda then
       "ProDev OH (Online / Soda 345)"
     end
@@ -77,7 +74,7 @@ class Slot < ActiveRecord::Base
 
   def valid_room
     if !room.blank?
-      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1 or room == 2 or room == 3)
+      errors[:room] << ROOM_ERROR unless (room == 0 or room == 1 or room == 2)
     end
   end
 
