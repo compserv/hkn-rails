@@ -52,7 +52,7 @@ describe Person, "when created with blank parameters" do
   it "should require an email of correct length" do
     @person.should_not be_valid
     #@person.errors[:email].should include("is too short (minimum is 6 characters)")
-    @person.errors[:email].should include("should look like an email address.")
+    @person.errors[:email].should include("should look like an HKN email address.")
   end
 
   it "should require a username of correct length" do
@@ -90,7 +90,7 @@ describe Person do
   it "should require an email to be correctly formatted" do
     person = Person.create(@good_opts.merge(email: "no_at_sign_and_no_domain"))
     person.should_not be_valid
-    person.errors[:email].should include("should look like an email address.")
+    person.errors[:email].should include("should look like an HKN email address.")
   end
 
   it "should require the password to be at least 8 characters long" do
