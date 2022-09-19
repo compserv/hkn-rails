@@ -29,6 +29,8 @@
       <th><%= @semester ? "" : "Last Taught" %></th>
     </tr>
 
+    <%# TODO: For EE or EECS, combine the set of EE and EECS lower divs -- TAG EE-EECS %>
+
     <%- courses.each do |c| -%>
       <%# Course name %>
       <td><%= link_to "#{c[:course].course_abbr} #{c[:course].name}",
