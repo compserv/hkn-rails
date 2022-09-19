@@ -16,8 +16,8 @@ class Slot < ActiveRecord::Base
   module Room
     Cory   = 0
     Soda   = 1
-    ProDevSoda = 2
-    Valid = [Cory, Soda, ProDevSoda]
+    ProDevCory = 2
+    Valid = [Cory, Soda, ProDevCory]
     Both  = Valid         # just an alias
   end
 
@@ -31,7 +31,7 @@ class Slot < ActiveRecord::Base
     Valid = (11 .. 16)
   end
 
-  ROOMS = { cory: Room::Cory, soda: Room::Soda, prodevsoda: Room::ProDevSoda}
+  ROOMS = { cory: Room::Cory, soda: Room::Soda, prodevcory: Room::ProDevCory}
 
   has_and_belongs_to_many :tutors, before_add: :check_tutor
 
@@ -62,7 +62,7 @@ class Slot < ActiveRecord::Base
       "Cory"
     elsif room == Room::Soda then
       "Soda"
-    elsif room == Room::ProDevSoda then
+    elsif room == Room::ProDevCory then
       "ProDev OH (Online / Soda 345)"
     end
   end
@@ -85,6 +85,10 @@ class Slot < ActiveRecord::Base
   end
 
   def check_tutor(tutor)
+    if (room == 3)
+      # If it's a ProDev slot, ok to duplicate ... just not Soda and Cory tho
+      return
+    end
     flip_room = room == 0 ? 1 : 0
     otherslot = Slot.find_by_wday_and_hour_and_room(wday, hour, flip_room)
     unless otherslot.nil?

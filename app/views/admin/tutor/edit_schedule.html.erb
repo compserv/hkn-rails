@@ -15,7 +15,7 @@
       <% end %>
     </tr>
     <% @hours.each do |hour| %>
-      <% [:cory, :soda, :prodevsoda].each do |room_name| %>
+      <% [:cory, :soda, :prodevcory].each do |room_name| %>
         <% room = Slot::ROOMS[room_name] %>
         <tr>
           <% if room_name == :cory %>

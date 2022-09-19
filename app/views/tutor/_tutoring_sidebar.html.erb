@@ -13,18 +13,18 @@
     <th>Times<br/><small>(Pacific)</small></th>
     <th>Cory 290</th>
     <th>Soda 345</th>
-    <th>ProDev OH (Soda 345)<br/><small>No class tutoring</small></th>
+    <th>ProDev OH (Cory 290)<br/><small>No class tutoring</small></th>
 
   </tr>
 <% for hour in @hours %>
   <% cory_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Cory, @day, hour) %>
   <% soda_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::Soda, @day, hour) %>
-  <% prodevsoda_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::ProDevSoda, @day, hour) %>
+  <% prodevcory_slot = @slots.find_by_room_and_wday_and_hour(Slot::Room::ProDevCory, @day, hour) %>
   <tr>
     <td class="time"><%= format_hour_slot hour %></td>
     <td class="pcell"><%= render cory_slot %></td>
     <td class="pcell"><%= render soda_slot %></td>
-	  <td class="pcell"><%= render prodevsoda_slot %></td>
+	  <td class="pcell"><%= render prodevcory_slot %></td>
     <% tutors.concat(cory_slot.tutors) %>
     <% tutors.concat(soda_slot.tutors) %>
     <!-- Do not make ProDev Soda tutors part of the tutors list, unless on the other rooms -->
