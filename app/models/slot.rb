@@ -85,7 +85,7 @@ class Slot < ActiveRecord::Base
   end
 
   def check_tutor(tutor)
-    if (room == ProDevCory)
+    if (room == Room::ProDevCory)
       # If it's a ProDev slot, ok to duplicate ... just not Soda and Cory tho
       return
     end
