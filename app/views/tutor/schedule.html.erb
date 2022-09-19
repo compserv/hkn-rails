@@ -3,23 +3,10 @@
 <div style="float: left; width: 80%; text-align: center; margin-bottom: 30px;">
 
 <p><strong>Notice:</strong> Due to course policy, HKN tutors cannot help with projects.</p>
-<a href="https://hkn.mu/ohqueue">Head to hkn.mu/ohqueue!</a>
 
 <div style="text-align: left;">
-  <p>HKN is offering drop-in career advice hours at Cory 290 at <a href="http://hkn.mu/ohqueue">hkn.mu/ohqueue!</a>.
+  <p>HKN is offering drop-in career advice hours at Cory 290.
   Please look at the <b>ProDev Office Hours (Cory 290)</b> schedule on this page for when they are hosted</p>
-
-  <p>These are a great opportunity for you to ask questions about:
-    <ul>
-      <li>Applying to internships/full-time jobs</li>
-      <li>Getting tips for resumes and interviews</li>
-      <li>Evaluating, comparing, and negotiating job offers</li>
-      <li>Research and grad school</li>
-      <li>Getting involved with teaching/clubs/organizations</li>
-      <li>Choosing which coursework to take</li>
-      <li>And more!</li>
-    </ul>
-  </p>
 </div>
 
 <% tutors = [] %>
@@ -27,6 +14,19 @@
 <h1><%= @room_numbers[room] %></h1>
 <% if room == Slot::Room::ProDevCory %>
   <h2>No class tutoring</h2>
+  <div style="text-align:left">
+    <p>These are a great opportunity for you to ask questions about:
+      <ul>
+        <li>Applying to internships/full-time jobs</li>
+        <li>Getting tips for resumes and interviews</li>
+        <li>Evaluating, comparing, and negotiating job offers</li>
+        <li>Research and grad school</li>
+        <li>Getting involved with teaching/clubs/organizations</li>
+        <li>Choosing which coursework to take</li>
+        <li>And more!</li>
+      </ul>
+    </p>
+  </div>
 <% end %>
 <table class="tutoring" id="schedule">
   <tr>
