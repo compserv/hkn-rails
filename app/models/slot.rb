@@ -42,7 +42,7 @@ class Slot < ActiveRecord::Base
   validates :hour, presence: true, inclusion: { in: Hour::Valid }, uniqueness: { scope: [:wday, :room] }
 
   HOUR_RANGE_ERROR = "hour must be within tutoring hours"
-  ROOM_ERROR = "room needs to be 0 (Cory), 1 (Soda), 2 (Online), or 3 (ProDev at Soda)"
+  ROOM_ERROR = "room needs to be 0 (Cory), 1 (Soda), 2 (Online), or 3 (ProDev at Cory)"
 
   def to_s
     "Slot #{room_name} #{day_name} #{hour}"
@@ -63,7 +63,7 @@ class Slot < ActiveRecord::Base
     elsif room == Room::Soda then
       "Soda"
     elsif room == Room::ProDevCory then
-      "ProDev OH (Online / Soda 345)"
+      "ProDev OH (Cory 290)"
     end
   end
 
