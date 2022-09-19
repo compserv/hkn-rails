@@ -4,7 +4,7 @@
     <div title="<%= tutor.person.fullname %>"
       id="tutor-<%= slot.id %>-<%= tutor.id %>"
       class="person <%= tutor.course_preferences.map { |pref| pref.course.course_abbr + '_' + pref.level.to_s }.join(" ") %>">
-      <%= tutor.person.abbr_name %>
+      <%= tutor.person.fullname %>
     </div>
 
     <!-- popup begins here -->
