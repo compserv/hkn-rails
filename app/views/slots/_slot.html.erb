@@ -49,5 +49,11 @@
 
   <% end %>
 <% else %>
-  <div class="infobox person">No Tutoring!</div>
+  <div class="infobox person">
+    <% if slot.room != Slot::Room::ProDevCory %>
+      No Tutoring!
+    <% else %>
+      &nbsp;
+    <% end %>
+  </div>
 <% end %>
