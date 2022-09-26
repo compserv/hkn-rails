@@ -63,8 +63,8 @@ class Person < ActiveRecord::Base
   validates_format_of :picture,    with: Validation::Regex::Https,
                                    allow_nil: true,
                                    allow_blank: true
-  validates_format_of :email,      with: Validation::Regex::HKNEmail,
-                                   message: 'must be an HKN Gmail using the hkn.eecs domain'
+  # validates_format_of :email,      with: Validation::Regex::HKNEmail,
+  #                                  message: 'must be an HKN Gmail using the hkn.eecs domain'
 
   # Username, password, and email validation is done by AuthLogic
 

@@ -106,6 +106,8 @@ class PeopleController < ApplicationController
 
   def create
     @person = Person.new(person_params)
+    
+    email_check = !@person.email.match(Person::Validation::Regex::HKNEmail).nil?
 
     # defaults to making a candidate
     @person.groups << Group.find_by_name("candidates")
@@ -116,10 +118,13 @@ class PeopleController < ApplicationController
     @candidate.person = @person
     @candidate.save
 
-    if verify_recaptcha(message: "Captcha validation failed", model: @person) && @person.save
+    if verify_recaptcha(message: "Captcha validation failed", model: @person) && email_check && @person.save
       flash[:notice] = "Account registered! Please Slack the CompServ Channel (preferred, DMs discouraged) or email CompServ to activate your account."
       redirect_to root_url
     else
+      if !email_check
+        @person.errors.add(:email, 'must be an HKN Gmail using the hkn.eecs domain')
+      end
       render action: "new"
     end
   end
