@@ -51,6 +51,8 @@ class CoursesurveysController < ApplicationController
   def department
     params[:dept_abbr].downcase! if params[:dept_abbr]
 
+    # TODO: For EE or EECS, combine the set of EE and EECS lower divs -- TAG EE-EECS
+
     @department  = Department.find_by_nice_abbr(params[:dept_abbr])
     @prof_eff_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     @lower_div   = []
