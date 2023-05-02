@@ -36,6 +36,8 @@ def initialize_groups
     # Committees
     {"name"=>"pres",      "description"=>"President"},
     {"name"=>"vp",        "description"=>"Vice President"},
+    {"name"=>"evp",       "description"=>"External Vice President"},
+    {"name"=>"ivp",       "description"=>"Internal Vice President"},
     {"name"=>"rsec",      "description"=>"Recording Secretary"},
     {"name"=>"csec",      "description"=>"Corresponding Secretary"},
     {"name"=>"opsec",     "description"=>"Operations Secretary"},
