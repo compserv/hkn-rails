@@ -5,7 +5,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "debian/contrib-stretch64"
+  config.vm.box = "debian/contrib-buster64"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine.
@@ -40,7 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         nodejs
 
     # Configure MySQL
-    mysql -e "GRANT ALL PRIVILEGES ON \\`hkn\\_rails\\_%\\`.* TO 'hkn_rails'@'localhost' IDENTIFIED BY 'hkn_rails';"
+    # mysql -e "GRANT ALL PRIVILEGES ON \\`hkn\\_rails\\_%\\`.* TO 'hkn_rails'@'localhost' IDENTIFIED BY 'hkn_rails';"
   SHELL
 
   # User-level bootstrap
