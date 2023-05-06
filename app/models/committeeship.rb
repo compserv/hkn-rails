@@ -12,10 +12,10 @@
 #
 
 class Committeeship < ActiveRecord::Base
-  @Committees = %w(pres evp ivp rsec treas csec deprel act bridge compserv decal indrel serv studrel tutoring pub examfiles ejc prodev)	#This generates a constant which is an array of possible committees.
+  @Committees = %w(pres vp evp ivp rsec treas csec deprel alumrel opsec act bridge compserv decal indrel serv studrel tutoring pub examfiles ejc prodev)	#This generates a constant which is an array of possible committees.
   Semester = /\A\d{4}[0-4]\z/                  # A regex which validates the semester
   Positions = %w(officer assistant cmember candidate)  # A list of possible positions
-  Execs = %w(pres evp ivp rsec csec treas deprel) # Executive positions
+  Execs = %w(pres vp evp ivp rsec csec treas deprel alumrel opsec) # Executive positions
   NonExecs = @Committees - Execs
 
   validates_presence_of :person_id
