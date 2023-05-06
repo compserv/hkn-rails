@@ -24,6 +24,10 @@
 9. `bundle exec rails s -b 0`
 10. On your host machine, visit `localhost:3000`
 
+
+### [May 2023] Changes to enable development
+This branch is a working development branch with several changes to dependencies and the Vagrant development box. **This branch is not intended for merging into production.**
+
 ### Under the hood
 
 This setup uses a Debian 9 (stretch) virtual machine, running on VirtualBox
