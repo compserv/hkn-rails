@@ -33,6 +33,10 @@ class SurveyQuestion < ActiveRecord::Base
   def SurveyQuestion.find_by_keyword(value)
     where(keyword: KEYWORDS.index(value)).first
   end
+  
+  def SurveyQuestion.find_all_by_keyword(value)
+    where(keyword: KEYWORDS.index(value))
+  end
 
   def SurveyQuestion.keyword_to_i(value)
     KEYWORDS.index(value)
