@@ -170,9 +170,6 @@ class CoursesurveysController < ApplicationController
       @results << result
     end # @course.klasses
 
-    #relies on having only 1 effectiveness/worthwhile question
-    #might be able to get it to work with multiple, but if they have a different maximum value
-    #that will make averages meaningless
     [ :effectiveness, :worthwhile ].each do |qname|
       @overall[qname][:score] = @results.collect do |result|
         result[:ratings].map { |r| r[qname] }.sum.to_f / result[:ratings].size
