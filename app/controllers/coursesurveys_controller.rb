@@ -119,6 +119,10 @@ class CoursesurveysController < ApplicationController
     effective_q  = SurveyQuestion.find_by_keyword(:prof_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
 
+    prof_eff_array = SurveyQuestion.find_all_by_keyword(:prof_eff).ids
+    ta_eff_array = SurveyQuestion.find_all_by_keyword(:ta_eff).ids
+    worth_array = SurveyQuestion.find_all_by_keyword(:worthwhile).ids
+
     @results = []
     @overall = { effectiveness:  {max: effective_q.max },
                  worthwhile:     {max: worthwhile_q.max}
@@ -133,15 +137,30 @@ class CoursesurveysController < ApplicationController
 
         catch :nil_answer do
           # Some heavier computations
-          [ [:effectiveness, effective_q ],
-            [:worthwhile,    worthwhile_q]
+          current_instructorship = Instructorship.where(klass_id: klass.id).first
+          current_answers = SurveyAnswer.where(instructorship_id: current_instructorship.id)
+          current_eff_array   = (current_instructorship.ta ? ta_eff_array : prof_eff_array)
+          current_eff_answers = current_answers.where('survey_question_id IN (?)', current_eff_array)
+          current_worth_answers = current_answers.where('survey_question_id IN (?)', worth_array)
+          current_eff_q = SurveyQuestion.where(id: current_eff_answers.first.survey_question_id).first
+          current_worth_q = SurveyQuestion.where(id: current_worth_answers.first.survey_question_id).first
+          if current_eff_q.nil?
+            logger.warn "coursesurveys#course: nil question for :eff"
+            throw :nil_answer
+          end
+          if current_worth_q.nil?
+            logger.warn "coursesurveys#course: nil question for :worth"
+            throw :nil_answer
+          end
+          [ [:effectiveness, current_eff_q ],
+            [:worthwhile, current_worth_q]
           ].each do |qname, q|
             answer = klass.survey_answers.where(survey_question_id: q.id, instructorships: { instructor_id: instructor.id}).first
             if answer.nil?
               logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
               throw :nil_answer
             else
-              rating[qname] = answer.mean
+              rating[qname] = answer.mean / q.max * 5.0
             end
           end
           result[:ratings] << rating
@@ -151,11 +170,15 @@ class CoursesurveysController < ApplicationController
       @results << result
     end # @course.klasses
 
+    #relies on having only 1 effectiveness/worthwhile question
+    #might be able to get it to work with multiple, but if they have a different maximum value
+    #that will make averages meaningless
     [ :effectiveness, :worthwhile ].each do |qname|
       @overall[qname][:score] = @results.collect do |result|
         result[:ratings].map { |r| r[qname] }.sum.to_f / result[:ratings].size
       end.sum / @results.size.to_f
     end
+
   end
 
   def klass
@@ -309,28 +332,57 @@ class CoursesurveysController < ApplicationController
     ta_eff_q     = SurveyQuestion.find_by_keyword(:ta_eff)
     worthwhile_q = SurveyQuestion.find_by_keyword(:worthwhile)
 
+    prof_eff_array = SurveyQuestion.find_all_by_keyword(:prof_eff).ids
+    ta_eff_array = SurveyQuestion.find_all_by_keyword(:ta_eff).ids
+    worth_array = SurveyQuestion.find_all_by_keyword(:worthwhile).ids
+    
     # Build results of
     #   [ klass, my effectiveness answer, my worthwhile answer, [other instructors] ]
     # and totals
     #
     @instructor.instructorships.each do |i|
-      klasstype = i.ta ? :tad_klasses : :klasses
-      results = @results[klasstype]   # BUCKET SORT YEAHHHHHH
-      eff_q   = (i.ta ? ta_eff_q : prof_eff_q)
-      result  = [i.klass,
-                 i.survey_answers.find_by_survey_question_id(eff_q.id),
-                 i.survey_answers.find_by_survey_question_id(worthwhile_q.id),
-                 i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
-                ]
-      #next unless result.all?
-      next unless result[1]
-      results << result
+      catch :nil_answer do
+        current_answers = SurveyAnswer.where(instructorship_id: i.id)
+        current_eff_array   = (i.ta ? ta_eff_array : prof_eff_array)
+        current_eff_answers = current_answers.where('survey_question_id IN (?)', current_eff_array)
+        current_worth_answers = current_answers.where('survey_question_id IN (?)', worth_array)
+        if current_eff_answers.first.nil?
+          logger.warn "coursesurveys#instructor: nil question for :eff"
+          throw :nil_answer
+        end
+        if current_worth_answers.first.nil?
+          logger.warn "coursesurveys#instructor: nil question for :worth"
+          throw :nil_answer
+        end
+        current_eff_q = SurveyQuestion.where(id: current_eff_answers.first.survey_question_id).first
+        current_worth_q = SurveyQuestion.where(id: current_worth_answers.first.survey_question_id).first
+        if current_eff_q.nil?
+          logger.warn "coursesurveys#instructor: nil question for :eff"
+          throw :nil_answer
+        end
+        if current_worth_q.nil?
+          logger.warn "coursesurveys#instructor: nil question for :worth"
+          throw :nil_answer
+        end
 
-      t = (@totals[klasstype][i.course.classification][i.course] ||= {eff: [], ww: []})
-      t[:eff]     <<  result[1].mean
-      t[:ww]      <<  (result[2] ? result[2].mean : nil)
-      t[:eff_max] ||= result[1].survey_question.max
-      t[:ww_max ] ||= (result[2] ? result[2].survey_question.max : nil)
+        klasstype = i.ta ? :tad_klasses : :klasses
+        results = @results[klasstype]   # BUCKET SORT YEAHHHHHH
+        result  = [i.klass,
+                  i.survey_answers.find_by_survey_question_id(current_eff_q.id),
+                  i.survey_answers.find_by_survey_question_id(current_worth_q.id),
+                  i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
+                  ]
+        #next unless result.all?
+        next unless result[1]
+        results << result
+
+        #Maybe make this allow :eff to be nil too? Right now it only allows worthwhile to be nil
+        t = (@totals[klasstype][i.course.classification][i.course] ||= {eff: [], ww: []})
+        t[:eff]     <<  (result[1].mean / result[1].survey_question.max) * 5.0
+        t[:ww]      <<  (result[2] ? (result[2].mean / result[2].survey_question.max * 5.0) : nil)
+        t[:eff_max] ||= 5.0
+        t[:ww_max ] ||= (result[2] ? 5.0 : nil)
+      end
     end
 
     @totals.values.collect(&:values).flatten.collect(&:values).flatten.each {|t| t[:ww].compact!}
