@@ -11,6 +11,7 @@ module SurveyData
       "How worthwhile was this course in comparison to others you have taken at this university?" => "How worthwhile was this course compared with others at U.C.?",
       "Overall teaching effectiveness" => "Rate the T.A.'s overall teaching effectiveness",
       "The GSI’s instructional activities, contributions, and/or feedback enhanced my learning." => "Rate the T.A.'s overall teaching effectiveness",
+      "Please rate the GSI's overall teaching effectiveness" => "Rate the T.A.'s overall teaching effectiveness",
     }
     SKIPPED_QUESTIONS = {
       "Courses - Name" => true,
