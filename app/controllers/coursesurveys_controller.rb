@@ -142,6 +142,22 @@ class CoursesurveysController < ApplicationController
           current_eff_array   = (current_instructorship.ta ? ta_eff_array : prof_eff_array)
           current_eff_answers = current_answers.where('survey_question_id IN (?)', current_eff_array)
           current_worth_answers = current_answers.where('survey_question_id IN (?)', worth_array)
+          if current_eff_answers.nil?
+            logger.warn "coursesurveys#course: nil answer array for :eff"
+            throw :nil_answer
+          end
+          if current_worth_answers.nil?
+            logger.warn "coursesurveys#course: nil answer array for :worth"
+            throw :nil_answer
+          end
+          if current_eff_answers.first.nil?
+            logger.warn "coursesurveys#course: nil answer for :eff"
+            throw :nil_answer
+          end
+          if current_worth_answers.first.nil?
+            logger.warn "coursesurveys#course: nil answer for :worth"
+            throw :nil_answer
+          end
           current_eff_q = SurveyQuestion.where(id: current_eff_answers.first.survey_question_id).first
           current_worth_q = SurveyQuestion.where(id: current_worth_answers.first.survey_question_id).first
           if current_eff_q.nil?
@@ -343,12 +359,20 @@ class CoursesurveysController < ApplicationController
         current_eff_array   = (i.ta ? ta_eff_array : prof_eff_array)
         current_eff_answers = current_answers.where('survey_question_id IN (?)', current_eff_array)
         current_worth_answers = current_answers.where('survey_question_id IN (?)', worth_array)
+        if current_eff_answers.nil?
+          logger.warn "coursesurveys#instructor: nil answer array for :eff"
+          throw :nil_answer
+        end
+        if current_worth_answers.nil?
+          logger.warn "coursesurveys#instructor: nil answer array for :worth"
+          throw :nil_answer
+        end
         if current_eff_answers.first.nil?
-          logger.warn "coursesurveys#instructor: nil question for :eff"
+          logger.warn "coursesurveys#instructor: nil answer for :eff"
           throw :nil_answer
         end
         if current_worth_answers.first.nil?
-          logger.warn "coursesurveys#instructor: nil question for :worth"
+          logger.warn "coursesurveys#instructor: nil answer for :worth"
           throw :nil_answer
         end
         current_eff_q = SurveyQuestion.where(id: current_eff_answers.first.survey_question_id).first
