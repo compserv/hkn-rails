@@ -160,7 +160,7 @@ class CoursesurveysController < ApplicationController
               logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
               throw :nil_answer
             else
-              rating[qname] = answer.mean / q.max * 5.0
+              rating[qname] = answer.mean
             end
           end
           result[:ratings] << rating
@@ -336,6 +336,7 @@ class CoursesurveysController < ApplicationController
     #   [ klass, my effectiveness answer, my worthwhile answer, [other instructors] ]
     # and totals
     #
+    
     @instructor.instructorships.each do |i|
       catch :nil_answer do
         current_answers = SurveyAnswer.where(instructorship_id: i.id)
@@ -373,10 +374,10 @@ class CoursesurveysController < ApplicationController
         results << result
 
         t = (@totals[klasstype][i.course.classification][i.course] ||= {eff: [], ww: []})
-        t[:eff]     <<  (result[1].mean / result[1].survey_question.max) * 5.0
-        t[:ww]      <<  (result[2] ? (result[2].mean / result[2].survey_question.max * 5.0) : nil)
-        t[:eff_max] ||= 5.0
-        t[:ww_max ] ||= (result[2] ? 5.0 : nil)
+        t[:eff]     <<  result[1].mean
+        t[:ww]      <<  (result[2] ? result[2].mean : nil)
+        t[:eff_max] ||= result[1].survey_question.max
+        t[:ww_max ] ||= (result[2] ? result[2].survey_question.max : nil)
       end
     end
 
