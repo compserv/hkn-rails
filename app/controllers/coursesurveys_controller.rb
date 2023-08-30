@@ -137,6 +137,7 @@ class CoursesurveysController < ApplicationController
 
         catch :nil_answer do
           # Some heavier computations
+          #TODO: Improve efficiency. Currently performs 5 database reads per instructorship.
           current_instructorship = Instructorship.where(klass_id: klass.id).first
           current_answers = SurveyAnswer.where(instructorship_id: current_instructorship.id)
           current_eff_array   = (current_instructorship.ta ? ta_eff_array : prof_eff_array)
@@ -355,6 +356,7 @@ class CoursesurveysController < ApplicationController
     
     @instructor.instructorships.each do |i|
       catch :nil_answer do
+        #TODO: Improve efficiency. Currently performs 4 database reads per instructorship.
         current_answers = SurveyAnswer.where(instructorship_id: i.id)
         current_eff_array   = (i.ta ? ta_eff_array : prof_eff_array)
         current_eff_answers = current_answers.where('survey_question_id IN (?)', current_eff_array)
