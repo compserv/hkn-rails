@@ -28,7 +28,7 @@ class Slot < ActiveRecord::Base
   end
 
   module Hour
-    Valid = (11 .. 16)
+    Valid = (11 .. 17)
   end
 
   ROOMS = { cory: Room::Cory, soda: Room::Soda, prodevcory: Room::ProDevCory}
