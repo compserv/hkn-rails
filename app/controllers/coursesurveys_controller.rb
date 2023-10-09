@@ -177,7 +177,7 @@ class CoursesurveysController < ApplicationController
               logger.warn "coursesurveys#course: nil score for #{klass.to_s} question #{q.text}"
               throw :nil_answer
             else
-              rating[qname] = answer.mean
+              rating[qname] = answer.mean / q.max * 5.0
             end
           end
           result[:ratings] << rating
@@ -365,45 +365,50 @@ class CoursesurveysController < ApplicationController
           logger.warn "coursesurveys#instructor: nil answer array for :eff"
           throw :nil_answer
         end
-        if current_worth_answers.nil?
-          logger.warn "coursesurveys#instructor: nil answer array for :worth"
-          throw :nil_answer
-        end
         if current_eff_answers.first.nil?
           logger.warn "coursesurveys#instructor: nil answer for :eff"
           throw :nil_answer
         end
-        if current_worth_answers.first.nil?
-          logger.warn "coursesurveys#instructor: nil answer for :worth"
-          throw :nil_answer
-        end
         current_eff_q = SurveyQuestion.where(id: current_eff_answers.first.survey_question_id).first
-        current_worth_q = SurveyQuestion.where(id: current_worth_answers.first.survey_question_id).first
         if current_eff_q.nil?
           logger.warn "coursesurveys#instructor: nil question for :eff"
           throw :nil_answer
         end
-        if current_worth_q.nil?
+
+        if !i.ta && current_worth_answers.nil?
+          logger.warn "coursesurveys#instructor: nil answer array for :worth"
+          throw :nil_answer
+        end
+        if !i.ta && current_worth_answers.first.nil?
+          logger.warn "coursesurveys#instructor: nil answer for :worth"
+          throw :nil_answer
+        end
+        current_worth_q = nil
+        if !current_worth_answers.first.nil?
+          current_worth_q = SurveyQuestion.where(id: current_worth_answers.first.survey_question_id).first
+        end
+        if !i.ta && current_worth_q.nil?
           logger.warn "coursesurveys#instructor: nil question for :worth"
           throw :nil_answer
         end
 
         klasstype = i.ta ? :tad_klasses : :klasses
         results = @results[klasstype]   # BUCKET SORT YEAHHHHHH
+        worth_answer = current_worth_q.nil? ? nil : i.survey_answers.find_by_survey_question_id(current_worth_q.id)
         result  = [i.klass,
                   i.survey_answers.find_by_survey_question_id(current_eff_q.id),
-                  i.survey_answers.find_by_survey_question_id(current_worth_q.id),
+                  worth_answer,
                   i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
                   ]
-        #next unless result.all?
-        next unless result[1]
+        
+        next unless result[1] # eff_q is required, worth_q is not
         results << result
 
         t = (@totals[klasstype][i.course.classification][i.course] ||= {eff: [], ww: []})
-        t[:eff]     <<  result[1].mean
-        t[:ww]      <<  (result[2] ? result[2].mean : nil)
-        t[:eff_max] ||= result[1].survey_question.max
-        t[:ww_max ] ||= (result[2] ? result[2].survey_question.max : nil)
+        t[:eff]     <<  (result[1].mean / result[1].survey_question.max) * 5.0
+        t[:ww]      <<  (result[2] ? (result[2].mean / result[2].survey_question.max * 5.0) : nil)
+        t[:eff_max] ||= 5.0
+        t[:ww_max ] ||= (result[2] ? 5.0 : nil)
       end
     end
 
