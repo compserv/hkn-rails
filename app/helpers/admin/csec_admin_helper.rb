@@ -4,6 +4,8 @@ module SurveyData
 
     LECTURE_COURSE_MATCH = /([A-Z ]+) (\w+) (\w+) (\d+) (.+)/
     DISC_COURSE_MATCH = /([A-Z ]+) (\w+) (\w+) (.+)/
+    # Before creating new mappings, ensure that we want it to be mapped to an existing surveyQuestion. 
+    # As of fa23 these are all valid questions, but if new questions are created they may not have a corresponding question (with a suitable max score) to map to
     QUESTION_MAPPING = {
       "Considering both the limitations and possibilities of the subject matter and course, how would you rate the overall teaching effectiveness of this instructor?" => "Rate the overall teaching effectiveness of this instructor",
       "The instructor’s lectures, facilitation of classes, and/or office hours and help sessions enhanced my learning." => "Rate the overall teaching effectiveness of this instructor",
@@ -119,7 +121,9 @@ module SurveyData
           name = rating_name
         end
 
-        question = SurveyQuestion.where({ text: name }).first || SurveyQuestion.search { keywords name }.results.first
+        # It is now possible for multiple questions to have the same text and keyword, so we use .last to get the most recently added question (instead of the oldest one).
+        # This is a hack that works as of fa23 where we need survey questions with the same text and different max scores. 
+        question = SurveyQuestion.where({ text: name }).last || SurveyQuestion.search { keywords name }.results.last
         raise ParseError, "Could not find survey question '#{name}' in database (from row #{row})" if question.nil?
 
         survey_answers << [question.id, { mean: rating.to_f, frequencies: '{}', enrollment: enrollment, responses: responses }]
