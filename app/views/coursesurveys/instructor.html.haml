@@ -193,7 +193,6 @@
                     - numz = courses.values.collect{|v|v[s] * 5.0 / v[:eff_max]}.flatten
                   - else 
                     - numz = s == :eff ? courses.values.collect{|v|v[s] * 7.0 / v[:eff_max]}.flatten : courses.values.collect{|v|v[s] * 7.0 / v[:ww_max]}.flatten
-                  - end
                   - if s != :eff || !@instructor.private || @privileged
                     %td= rating_and_bar(numz.avg, courses.values.drop_while{|x|x.nil?}.collect{|x|x["#{s}_max".to_sym]}.compact.first || 1) unless courses.empty? || !numz.any?
                   - else
