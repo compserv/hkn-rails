@@ -49,6 +49,12 @@ class Admin::RsecController < Admin::AdminController
   # for the POSITION.
   #
   def add_elected
+    if params[:position] == ""
+      return redirect_to admin_rsec_elections_path, notice: "Failed to elect for selected position, since no position was selected"
+    end
+    if params[:person_id] == ""
+      return redirect_to admin_rsec_elections_path, notice: "Failed to elect for \"#{params[:position]}\" because no one was selected"
+    end
     e = Election.new(person_id: params[:person_id].to_i, position: params[:position])
     unless e.valid? && e.save
       return redirect_to admin_rsec_elections_path, notice: "Failed to elect: #{e.person} because #{e.errors.inspect}"
