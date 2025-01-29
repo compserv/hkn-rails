@@ -90,11 +90,12 @@
             - if rating == ratings.first
               %td{rowspan: ratings.size}
                 %span.semester= link_to klass.proper_semester, surveys_klass_path(klass)
-            %td
-              = link_to instructor.full_name, surveys_instructor_path(instructor)
-            - [ :effectiveness, :worthwhile ].each do |qname|
-              %td
-                = rating_and_bar rating[qname], @overall[qname][:max]
+            %td= link_to instructor.full_name, surveys_instructor_path(instructor)
+            - if !instructor.private || @priviliged
+              %td= rating_and_bar rating[:effectiveness], @overall[:effectiveness][:max]
+            - else
+              %td{style: "font-style:italic;"} hidden
+            %td= rating_and_bar rating[:worthwhile], @overall[:worthwhile][:max]
       %tr
         %th{colspan: "2"} Overall Rating
         %th Teaching Effectiveness
