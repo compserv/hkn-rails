@@ -91,7 +91,7 @@
               %td{rowspan: ratings.size}
                 %span.semester= link_to klass.proper_semester, surveys_klass_path(klass)
             %td= link_to instructor.full_name, surveys_instructor_path(instructor)
-            - if !instructor.private || @priviliged
+            - if !instructor.private
               %td= rating_and_bar rating[:effectiveness], @overall[:effectiveness][:max]
             - else
               %td{style: "font-style:italic;"} hidden
