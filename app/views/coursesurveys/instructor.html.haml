@@ -143,12 +143,17 @@
             %tr
               %td
                 %span.semester= link_to klass.to_s, surveys_klass_path(klass, instructor: @instructor.full_name_r_strip)
-              - if !@instructor.private || @privileged
-                %td= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a
+              <!-- We were asked to remove these ratings if the issue gets resolved or we find data to substiture it then remove this if -->
+              - if klass.semester.to_i > 20160 && klass.semester.to_i < 20250 && !@priviliged
+                %td{style: "font-style:italic;"} unavailable
+                %td{style: "font-style:italic;"} unavailable
               - else
-                %td{style: "font-style:italic;"} hidden
-              - unless klasstype == :tad_klasses
-                %td= rating_and_bar ww_a.mean, ww_a.survey_question.max, surveys_rating_path(ww_a) if ww_a
+                - if !@instructor.private || @privileged
+                  %td= rating_and_bar eff_a.mean, eff_a.survey_question.max, surveys_rating_path(eff_a) if eff_a
+                - else
+                  %td{style: "font-style:italic;"} hidden
+                - unless klasstype == :tad_klasses
+                  %td= rating_and_bar ww_a.mean, ww_a.survey_question.max, surveys_rating_path(ww_a) if ww_a
               %td
                 %span.others= raw (                                            |
         (klass.instructors - [@instructor]).collect { |instructor|             |

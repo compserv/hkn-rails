@@ -91,11 +91,16 @@
               %td{rowspan: ratings.size}
                 %span.semester= link_to klass.proper_semester, surveys_klass_path(klass)
             %td= link_to instructor.full_name, surveys_instructor_path(instructor)
-            - if !instructor.private
-              %td= rating_and_bar rating[:effectiveness], @overall[:effectiveness][:max]
-            - else
-              %td{style: "font-style:italic;"} hidden
-            %td= rating_and_bar rating[:worthwhile], @overall[:worthwhile][:max]
+            <!-- We were asked to remove these ratings if the issue gets resolved or we find data to substiture it then remove this if -->
+            - if klass.semester.to_i > 20160 && klass.semester.to_i < 20250
+              %td{style: "font-style:italic;"} unavailable
+              %td{style: "font-style:italic;"} unavailable
+            - else 
+              - if !instructor.private
+                %td= rating_and_bar rating[:effectiveness], @overall[:effectiveness][:max]
+              - else
+                %td{style: "font-style:italic;"} hidden
+              %td= rating_and_bar rating[:worthwhile], @overall[:worthwhile][:max]
       %tr
         %th{colspan: "2"} Overall Rating
         %th Teaching Effectiveness
