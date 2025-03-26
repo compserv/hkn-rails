@@ -57,6 +57,9 @@ class EventsController < ApplicationController
                      .where.not(event_types: {name: ["Exam", "Review Session"]})
 
     if (page_no = Integer(params[:page] || 1) rescue nil)
+      if (page_no < 1)
+        self.render_404
+      end
       @events = @events.page(page_no).per_page(per_page)
     else
       self.render_404
