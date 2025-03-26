@@ -60,7 +60,7 @@ class ShortlinksController < ApplicationController
     end
 
     def authorize_shortlinks
-      authorize(['officers', 'cmembers'])
+      authorize(['officers', 'assistants', 'cmembers'])
     end
 
     def authorize_own_shortlink
