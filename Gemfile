@@ -17,7 +17,7 @@ gem 'exception_notification', '~> 4'
 gem 'haml-rails', '~> 1.0'
 
 # Use jQuery for nicer JS and more browser compatability
-gem 'jquery-rails', '~> 4.3.1'
+gem 'jquery-rails', '~> 4.4.0'
 
 # Use nokogiri for schedule parsing (not used any more)
 gem 'nokogiri', '~> 1.10.4'
