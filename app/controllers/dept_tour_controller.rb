@@ -35,7 +35,8 @@ class DeptTourController < ApplicationController
           end
           redirect_to dept_tour_success_path
         rescue => e
-          flash[:notice] = "There was a problem submitting your request. Please try again, or email us directly if the problem persists."
+          Rails.logger.warn "ERROR mailing the tour #{e}"
+	  flash[:notice] = "There was a problem submitting your request. Please try again, or email us directly if the problem persists."
         end
       end
     end

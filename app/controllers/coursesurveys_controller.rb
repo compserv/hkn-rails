@@ -36,6 +36,10 @@ class CoursesurveysController < ApplicationController
   def index
   end
 
+  def temporary_notice_redirect
+    return redirect_to coursesurveys_path, notice: "Coursesurveys are temporairly unavailable. Apologies for the inconvenience."
+  end
+
   def logout
     CASClient::Frameworks::Rails::Filter.logout(self)
   end
@@ -401,29 +405,33 @@ class CoursesurveysController < ApplicationController
                   i.klass.send(i.ta ? :tas : :instructors).order(:last_name) - [@instructor]
                   ]
 
-	
-        # Added because we were asked to remove this ratings, remove following few lines to add 2016-2025 surveys into average calculation
-        klass_sem = Klass.where(id:i.klass_id).first().semester.to_i
-        if klass_sem > 20160 && klass_sem < 20250
-	  next
-	end
-
         next unless result[1] # eff_q is required, worth_q is not
         results << result
 
         t = (@totals[klasstype][i.course.classification][i.course] ||= {eff: [], ww: []})
-        t[:eff]     <<  result[1].mean
-        t[:ww]      <<  (result[2] ? result[2].mean : nil)
-        t[:eff_max] ||= result[1].survey_question.max
-        t[:ww_max ] ||= (result[2] ? result[2].survey_question.max : nil)
-
+       
 
         # Added because we were asked to remove this ratings, remove following few lines to add 2016-2025 surveys into average calculation
-        klass_sem = Klass.where(id:i.klass_id).first().semester.to_i
-        if klass_sem > 20160 && klass_sem < 20250
-	  results.pop
-	  t[:eff].pop
-	  t[:ww].pop
+	# To undo just remove all three if statements and only leave last 4 lines in the else statement, or well we have git for old versions lol :p
+	klass_sem = Klass.where(id:i.klass_id).first().semester.to_i
+        if klass_sem > 20160 && klass_sem < 20250 
+	  if t[:eff].none?
+	    t[:eff]     <<  0
+	    t[:ww]      <<  0
+	    t[:eff_max] ||= 0
+	    t[:ww_max ] ||= 0
+	  end
+	  next
+	else
+	  if !t[:eff].none? && t[:eff][-1] == 0
+	    t[:eff].pop
+	    t[:ww].pop
+	  end
+
+	  t[:eff]     <<  result[1].mean
+	  t[:ww]      <<  (result[2] ? result[2].mean : nil)
+	  t[:eff_max] ||= result[1].survey_question.max
+	  t[:ww_max ] ||= (result[2] ? result[2].survey_question.max : nil)
 	end
       end
     end
@@ -455,7 +463,6 @@ class CoursesurveysController < ApplicationController
     rescue
       raise if Rails.env == 'development'
     end
-
   end #instructor
 
   def newinstructor
