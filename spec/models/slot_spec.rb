@@ -81,12 +81,12 @@ describe Slot do
   end
 
   it "should not allow a tutor to be assigned to another office at the same time" do
-    cory = Slot.create @good_opts.merge(room: 0)
-    soda = Slot.create @good_opts.merge(room: 1)
+    cory284 = Slot.create @good_opts.merge(room: Slot::Room::Cory284)
+    cory290 = Slot.create @good_opts.merge(room: Slot::Room::Cory290)
     tutor = Tutor.new(person_id: 0)
     tutor.save!(validate: false)
-    cory.tutors << tutor
-    expect{soda.tutors << tutor}.to raise_error(RuntimeError)
+    cory284.tutors << tutor
+    expect{cory290.tutors << tutor}.to raise_error(RuntimeError)
     tutor.delete
   end
 end
@@ -111,10 +111,10 @@ describe Slot, 'utility methods' do
   end
 
   it 'should have room_name' do
-    soda = Slot.new @good_opts.merge(room: Slot::Room::Soda)
-    soda.room_name.should == "Soda"
-    cory = Slot.new @good_opts.merge(room: Slot::Room::Cory)
-    cory.room_name.should == "Cory"
+    cory284 = Slot.new @good_opts.merge(room: Slot::Room::Cory284)
+    cory284.room_name.should == "Cory 284"
+    cory290 = Slot.new @good_opts.merge(room: Slot::Room::Cory290)
+    cory290.room_name.should == "Cory 290"
   end
 
   it 'should have adjacent_to' do
