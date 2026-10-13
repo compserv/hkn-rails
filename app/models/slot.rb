@@ -82,10 +82,6 @@ class Slot < ActiveRecord::Base
   end
 
   def check_tutor(tutor)
-    if (room == Room::ProDevCory)
-      # If it's a ProDev slot, ok to duplicate ... just not Soda and Cory tho
-      return
-    end
     flip_room = room == 0 ? 1 : 0
     otherslot = Slot.find_by_wday_and_hour_and_room(wday, hour, flip_room)
     unless otherslot.nil?
