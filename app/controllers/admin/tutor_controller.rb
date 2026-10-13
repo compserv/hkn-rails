@@ -104,7 +104,7 @@ class Admin::TutorController < Admin::AdminController
 
   end
 
-  @@OFFICES = [:Cory, :Soda, :ProDevCory]
+  @@OFFICES = [:Cory284, :Cory290]
   @@DAYS = [:Monday, :Tuesday, :Wednesday, :Thursday, :Friday]
   @@HOURS = (0..21).to_a
 
